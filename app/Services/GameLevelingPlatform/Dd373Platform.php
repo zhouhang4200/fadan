@@ -178,16 +178,16 @@ class Dd373Platform implements GameLevelingPlatformInterface
     public static function onSale(GameLevelingOrder $order)
     {
         try {
-            $platformTradeNo = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
+            $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                 ->where('platform_id', 4)
                 ->first();
 
-            if (! $platformTradeNo) {
+            if (! $gameLevelingPlatform) {
                 return true;
             }
 
             $options = [
-                'platformOrderNo' => $platformTradeNo->platform_trade_no,
+                'platformOrderNo' => $gameLevelingPlatform->platform_trade_no,
                 'timestamp' => time(),
             ];
             // 对参数进行加工
@@ -215,16 +215,16 @@ class Dd373Platform implements GameLevelingPlatformInterface
     public static function offSale(GameLevelingOrder $order)
     {
         try {
-            $platformTradeNo = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
+            $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                 ->where('platform_id', 4)
                 ->first();
 
-            if (! $platformTradeNo) {
+            if (! $gameLevelingPlatform) {
                 return true;
             }
 
             $options = [
-                'platformOrderNo' => $platformTradeNo->platform_trade_no,
+                'platformOrderNo' => $gameLevelingPlatform->platform_trade_no,
                 'timestamp' => time(),
             ];
             // 对参数进行加工
@@ -480,16 +480,16 @@ class Dd373Platform implements GameLevelingPlatformInterface
     public static function delete(GameLevelingOrder $order)
     {
         try {
-            $platformTradeNo = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
+            $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                 ->where('platform_id', 4)
                 ->first();
 
-            if (!$platformTradeNo) {
+            if (! $gameLevelingPlatform) {
                 return true;
             }
 
             $options = [
-                'platformOrderNo' => $platformTradeNo->platform_trade_no,
+                'platformOrderNo' => $gameLevelingPlatform->platform_trade_no,
                 'timestamp' => time(),
             ];
             // 对参数进行加工
@@ -510,8 +510,16 @@ class Dd373Platform implements GameLevelingPlatformInterface
     public static function modifyOrder(GameLevelingOrder $order)
     {
         try {
+            $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('platform_id', 4)
+                ->first();
+
+            if (! $gameLevelingPlatform) {
+                return true;
+            }
+
             $options = [
-                'order_no'                         => $order->platform_trade_no,
+                'order_no'                         => $gameLevelingPlatform->platform_trade_no,
                 'game_name'                        => $order->gameLevelingOrderDetail->game_name,
                 'game_region'                      => $order->gameLevelingOrderDetail->game_region_name,
                 'game_serve'                       => $order->gameLevelingOrderDetail->game_server_name,
@@ -562,16 +570,16 @@ class Dd373Platform implements GameLevelingPlatformInterface
     public static function addTime(GameLevelingOrder $order)
     {
         try {
-            $platformTradeNo = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
+            $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                 ->where('platform_id', 4)
                 ->first();
 
-            if (! $platformTradeNo) {
+            if (! $gameLevelingPlatform) {
                 return true;
             }
 
             $options = [
-                'platformOrderNo' => $platformTradeNo->platform_trade_no,
+                'platformOrderNo' => $gameLevelingPlatform->platform_trade_no,
                 'days' => $order->day,
                 'hours' => $order->hour,
                 'timestamp' => time(),
@@ -595,16 +603,16 @@ class Dd373Platform implements GameLevelingPlatformInterface
     public static function addAmount(GameLevelingOrder $order)
     {
         try {
-            $platformTradeNo = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
+            $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                 ->where('platform_id', 4)
                 ->first();
 
-            if (! $platformTradeNo) {
+            if (! $gameLevelingPlatform) {
                 return true;
             }
 
             $options = [
-                'platformOrderNo' => $platformTradeNo->platform_trade_no,
+                'platformOrderNo' => $gameLevelingPlatform->platform_trade_no,
                 'add_money' => $order->amount,
                 'timestamp' => time(),
             ];
@@ -627,19 +635,19 @@ class Dd373Platform implements GameLevelingPlatformInterface
     public static function getOrderDetail(GameLevelingOrder $order)
     {
         try {
-            $platformTradeNo = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
+            $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                 ->where('platform_id', 4)
                 ->first();
 
-            if (! $platformTradeNo) {
+            if (! $gameLevelingPlatform) {
                 return true;
             }
 
             $options = [
-                'platformOrderNo' => $platformTradeNo->platform_trade_no,
+                'platformOrderNo' => $gameLevelingPlatform->platform_trade_no,
                 'platformSign' => config('leveling.dd373.platform-sign'),
             ];
-            $str = "platformOrderNo=".$platformTradeNo->platform_trade_no."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
+            $str = "platformOrderNo=".$gameLevelingPlatform->platform_trade_no."&platformSign=".config('leveling.dd373.platform-sign').config('leveling.dd373.key');
 
             $options['Sign'] = md5($str);
             // 发送
@@ -778,7 +786,7 @@ class Dd373Platform implements GameLevelingPlatformInterface
      * @param string $file
      * @throws GameLevelingOrderOperateException
      */
-    public static function sendCompleteImage(GameLevelingOrder $order, $file = '')
+    public static function sendImage(GameLevelingOrder $order, $pic = '')
     {
         try {
             $options = [
@@ -789,7 +797,7 @@ class Dd373Platform implements GameLevelingPlatformInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::formDataRequest(array_merge($options, ['fileBase' => $file]), config('leveling.dd373.url')['sendCompleteImage'], $order, 'sendCompleteImage');
+            static::formDataRequest(array_merge($options, ['fileBase' => $pic]), config('leveling.dd373.url')['sendImage'], $order, 'sendImage');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '发送截图', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());

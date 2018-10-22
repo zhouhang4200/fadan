@@ -17,7 +17,7 @@ interface GameLevelingPlatformInterface
     public static function agreeConsult(GameLevelingOrder $order); // 同意撤销
     public static function refuseConsult(GameLevelingOrder $order); // 不同意撤销
     public static function forceDelete(GameLevelingOrder $order); // 强制撤单
-    public static function applyComplain(GameLevelingOrder $order); // 申请仲裁
+    public static function applyComplain(GameLevelingOrder $order, $pic); // 申请仲裁
     public static function cancelComplain(GameLevelingOrder $order); // 取消仲裁
     public static function arbitration(GameLevelingOrder $order); // 强制仲裁(客服仲裁)
     public static function applyComplete(GameLevelingOrder $order); // 申请验收
@@ -35,9 +35,9 @@ interface GameLevelingPlatformInterface
     public static function getOrderDetail(GameLevelingOrder $order); // 获取订单详情
     public static function getScreenShot(GameLevelingOrder $order); // 获取订单截图
     public static function getMessage(GameLevelingOrder $order); // 获取留言
-    public static function replyMessage(GameLevelingOrder $order); // 回复留言
+    public static function replyMessage(GameLevelingOrder $order, $message); // 回复留言
     public static function modifyGamePassword(GameLevelingOrder $order); // 更改接单后的游戏账号密码
-    public static function sendCompleteImage(GameLevelingOrder $order); // 发送完成截图
+    public static function sendImage(GameLevelingOrder $order, $pic); // 发送完成截图
     public static function getComplainDetail(GameLevelingOrder $order); // 获取仲裁信息（留言，截图)
-    public static function addComplainDetail(GameLevelingOrder $order); // 增加仲裁信息（留言，截图)
+    public static function addComplainDetail(GameLevelingOrder $order, $pic, $content); // 增加仲裁信息（留言，截图)
 }

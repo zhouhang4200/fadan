@@ -103,7 +103,44 @@ return [
 		'addArbitrationInfo'       => 'addArbitrationInfo', // '添加仲裁证据'
 	],
 
-	// 蚂蚁代练的信息
+    // 新的方法对应关系
+    'new_action' => [
+        'onSale' => 'onSale', // 上架
+        'offSale' => 'offSale', // 下架
+        'take' => 'take', // 接单
+        'applyConsult' => 'applyConsult', // 申请协商
+        'cancelConsult' => 'cancelConsult', // 取消协商
+        'agreeConsult' => 'agreeConsult', // 同意协商
+        'forceDelete' => 'forceDelete', // 强制撤单
+        'refuseConsult' => 'refuseConsult', // 不同意协商
+        'applyComplain' => 'applyComplain', // 申请仲裁
+        'cancelComplain' => 'cancelComplain', // 取消仲裁
+        'arbitration' => 'arbitration', // 客服仲裁
+        'applyComplete' => 'applyComplete', // 申请验收
+        'cancelComplete' => 'cancelComplete', // 取消验收
+        'complete' => 'complete', // 完成验收
+        'lock' => 'lock', // 锁定
+        'cancelLock' => 'cancelLock', // 取消锁定
+        'anomaly' => 'anomaly', // 异常
+        'cancelAnomaly' => 'cancelAnomaly', // 取消异常
+        'delete' => 'delete', // 撤单
+
+        'modifyOrder' => 'modifyOrder', // 修改订单
+        'addTime' => 'addTime', // 订单加时
+        'addAmount' => 'addAmount', // 订单加款
+        'getOrderDetail' => 'getOrderDetail', // 获取订单详情
+        'getScreenShot' => 'getScreenShot', // 获取订单截图
+        'getMessage' => 'getMessage', // 获取留言
+        'replyMessage' => 'replyMessage', // 回复留言
+        'modifyGamePassword' => 'modifyGamePassword', // 修改游戏账号的密码
+        'sendCompleteImage' => 'sendCompleteImage', // 上传完成截图
+        'setTop' => 'setTop', // 置顶
+        'getComplainDetail' => 'getComplainDetail', // 获取仲裁详情
+        'addComplainDetail' => 'addComplainDetail', // 添加仲裁证据
+    ],
+
+
+    // 蚂蚁代练的信息
 	'mayidailian' => [
 		'uid'       => 49,
 		'appid'     => '2f666a796ba36a6b',
