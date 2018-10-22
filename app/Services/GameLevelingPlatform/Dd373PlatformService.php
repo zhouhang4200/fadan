@@ -243,11 +243,6 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-    public static function take(GameLevelingOrder $order)
-    {
-
-    }
-
     /**
      * 申请协商
      * @param GameLevelingOrder $order
@@ -348,9 +343,6 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
-    public static function forceDelete(GameLevelingOrder $order){}
-
     /**
      * 申请仲裁
      * @param GameLevelingOrder $order
@@ -401,10 +393,6 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
-
-    public static function arbitration(GameLevelingOrder $order){}
-    public static function applyComplete(GameLevelingOrder $order){}
-    public static function cancelComplete(GameLevelingOrder $order){}
 
     /**
      * 完成
@@ -472,11 +460,11 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
-    public static function anomaly(GameLevelingOrder $order){}
-    public static function cancelAnomaly(GameLevelingOrder $order){}
-
-
+    /**
+     * 撤单
+     * @param GameLevelingOrder $order
+     * @return bool
+     */
     public static function delete(GameLevelingOrder $order)
     {
         try {
@@ -505,6 +493,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
     /**
      * 修改订单
      * @param GameLevelingOrder $order
+     * @return bool
      * @throws GameLevelingOrderOperateException
      */
     public static function modifyOrder(GameLevelingOrder $order)
@@ -877,4 +866,12 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
+
+    public static function anomaly(GameLevelingOrder $order){}
+    public static function arbitration(GameLevelingOrder $order){}
+    public static function forceDelete(GameLevelingOrder $order){}
+    public static function take(GameLevelingOrder $order){}
+    public static function applyComplete(GameLevelingOrder $order){}
+    public static function cancelComplete(GameLevelingOrder $order){}
+    public static function cancelAnomaly(GameLevelingOrder $order){}
 }

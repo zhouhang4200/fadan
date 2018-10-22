@@ -235,9 +235,6 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
-    public static function take(GameLevelingOrder $order){}
-
     /**
      * 申请协商
      * @param GameLevelingOrder $order
@@ -337,9 +334,6 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
-    public static function forceDelete(GameLevelingOrder $order){}
-
     /**
      * 申请仲裁
      * @param GameLevelingOrder $order
@@ -370,7 +364,11 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
+    /**
+     * 取消仲裁
+     * @param GameLevelingOrder $order
+     * @throws GameLevelingOrderOperateException
+     */
     public static function cancelComplain(GameLevelingOrder $order)
     {
         try {
@@ -389,11 +387,6 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
-
-
-    public static function arbitration(GameLevelingOrder $order){}
-    public static function applyComplete(GameLevelingOrder $order){}
-    public static function cancelComplete(GameLevelingOrder $order){}
 
     /**
      * 完成
@@ -466,10 +459,6 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
-
-
-    public static function anomaly(GameLevelingOrder $order){}
-    public static function cancelAnomaly(GameLevelingOrder $order){}
 
     /**
      * 撤单
@@ -805,9 +794,6 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
-    public static function sendImage(GameLevelingOrder $order, $pic){}
-
     /**
      * 置顶
      * @param $orderDatas
@@ -931,4 +917,13 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
+
+    public static function sendImage(GameLevelingOrder $order, $pic){}
+    public static function anomaly(GameLevelingOrder $order){}
+    public static function arbitration(GameLevelingOrder $order){}
+    public static function forceDelete(GameLevelingOrder $order){}
+    public static function take(GameLevelingOrder $order){}
+    public static function applyComplete(GameLevelingOrder $order){}
+    public static function cancelComplete(GameLevelingOrder $order){}
+    public static function cancelAnomaly(GameLevelingOrder $order){}
 }

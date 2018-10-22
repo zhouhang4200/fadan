@@ -242,7 +242,6 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
     /**
      * 下架
      * @param GameLevelingOrder $order
@@ -287,10 +286,6 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
-
-
-    public static function take(GameLevelingOrder $order){}
-
     /**
      * 申请协商
      * @param GameLevelingOrder $order
@@ -374,11 +369,6 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
-
-
-    public static function forceDelete(GameLevelingOrder $order){}
-    public static function refuseConsult(GameLevelingOrder $order){}
-
     /**
      * 申请仲裁
      * @param GameLevelingOrder $order
@@ -439,11 +429,6 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
-    public static function arbitration(GameLevelingOrder $order){}
-    public static function applyComplete(GameLevelingOrder $order){}
-    public static function cancelComplete(GameLevelingOrder $order){}
-
     /**
      * 完成
      * @param GameLevelingOrder $order
@@ -471,6 +456,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
+
 
     /**
      * 锁定
@@ -527,11 +513,6 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
-
-
-    public static function anomaly(GameLevelingOrder $order){}
-    public static function cancelAnomaly(GameLevelingOrder $order){}
-
 
     /**
      * 撤单
@@ -888,10 +869,6 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
-
-    public static function sendImage(GameLevelingOrder $order, $pic){}
-
     /**
      * 获取仲裁详情
      * @param GameLevelingOrder $order
@@ -972,4 +949,14 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
+
+    public static function sendImage(GameLevelingOrder $order, $pic){}
+    public static function take(GameLevelingOrder $order){}
+    public static function forceDelete(GameLevelingOrder $order){}
+    public static function refuseConsult(GameLevelingOrder $order){}
+    public static function anomaly(GameLevelingOrder $order){}
+    public static function cancelAnomaly(GameLevelingOrder $order){}
+    public static function arbitration(GameLevelingOrder $order){}
+    public static function applyComplete(GameLevelingOrder $order){}
+    public static function cancelComplete(GameLevelingOrder $order){}
 }

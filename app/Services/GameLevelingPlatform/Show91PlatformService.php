@@ -316,9 +316,6 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
-    public static function forceDelete(GameLevelingOrder $order){}
-
     /**
      * 申请仲裁
      * @param GameLevelingOrder $order
@@ -369,11 +366,6 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
-    public static function arbitration(GameLevelingOrder $order){}
-    public static function applyComplete(GameLevelingOrder $order){}
-    public static function cancelComplete(GameLevelingOrder $order){}
-
     /**
      * 完成
      * @param GameLevelingOrder $order
@@ -396,11 +388,6 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
-
-    public static function lock(GameLevelingOrder $order){}
-    public static function cancelLock(GameLevelingOrder $order){}
-    public static function anomaly(GameLevelingOrder $order){}
-    public static function cancelAnomaly(GameLevelingOrder $order){}
 
     /**
      * 撤单
@@ -754,10 +741,6 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
-    public static function sendCompleteImage(GameLevelingOrder $order, $file){}
-
-
     /**
      * 获取仲裁详情
      * @param GameLevelingOrder $order
@@ -822,6 +805,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
+
     /**
      * 添加仲裁证据
      * @param GameLevelingOrder $order
@@ -850,8 +834,14 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-    public static function sendImage(GameLevelingOrder $order, $pic = [])
-    {
-        // TODO: Implement sendImage() method.
-    }
+    public static function sendImage(GameLevelingOrder $order, $pic = []){}
+    public static function sendCompleteImage(GameLevelingOrder $order, $file){}
+    public static function lock(GameLevelingOrder $order){}
+    public static function arbitration(GameLevelingOrder $order){}
+    public static function forceDelete(GameLevelingOrder $order){}
+    public static function applyComplete(GameLevelingOrder $order){}
+    public static function cancelComplete(GameLevelingOrder $order){}
+    public static function cancelLock(GameLevelingOrder $order){}
+    public static function anomaly(GameLevelingOrder $order){}
+    public static function cancelAnomaly(GameLevelingOrder $order){}
 }
