@@ -849,4 +849,9 @@ class Show91Platform implements GameLevelingPlatformInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
+
+    public static function sendImage(GameLevelingOrder $order, $pic = [])
+    {
+        // TODO: Implement sendImage() method.
+    }
 }

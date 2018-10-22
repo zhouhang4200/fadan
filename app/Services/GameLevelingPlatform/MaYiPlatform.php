@@ -2,36 +2,38 @@
 
 namespace App\Services\GameLevelingPlatform;
 
+use App\Models\GameLevelingOrder;
+
 class MaYiPlatform implements GameLevelingPlatformInterface
 {
-    public static function onSale($order){}
-    public static function offSale($order){}
-    public static function take($order){}
-    public static function applyConsult($order){}
-    public static function cancelConsult($order){}
-    public static function agreeConsult($order){}
-    public static function refuseConsult($order){}
-    public static function forceDelete($order){}
-    public static function applyComplain($order){}
-    public static function cancelComplain($order){}
-    public static function arbitration($order){}
-    public static function applyComplete($order){}
-    public static function cancelComplete($order){}
-    public static function complete($order){}
-    public static function lock($order){}
-    public static function cancelLock($order){}
-    public static function anomaly($order){}
-    public static function cancelAnomaly($order){}
-    public static function delete($order){}
-    public static function modifyOrder($order){}
-    public static function addTime($order){}
-    public static function addAmount($order){}
-    public static function getOrderDetail($order){}
-    public static function getScreenShot($order){}
-    public static function getMessage($order){}
-    public static function replyMessage($order){}
-    public static function modifyGamePassword($order){}
-    public static function sendCompleteImage($order){}
-    public static function getComplainDetail($order){}
-    public static function addComplainDetail($order){}
+    public static function onSale(GameLevelingOrder $order){}
+    public static function offSale(GameLevelingOrder $order){}
+    public static function take(GameLevelingOrder $order){}
+    public static function applyConsult(GameLevelingOrder $order){}
+    public static function cancelConsult(GameLevelingOrder $order){}
+    public static function agreeConsult(GameLevelingOrder $order){}
+    public static function refuseConsult(GameLevelingOrder $order){}
+    public static function forceDelete(GameLevelingOrder $order){}
+    public static function applyComplain(GameLevelingOrder $order, $pic){}
+    public static function cancelComplain(GameLevelingOrder $order){}
+    public static function arbitration(GameLevelingOrder $order){}
+    public static function applyComplete(GameLevelingOrder $order){}
+    public static function cancelComplete(GameLevelingOrder $order){}
+    public static function complete(GameLevelingOrder $order){}
+    public static function lock(GameLevelingOrder $order){}
+    public static function cancelLock(GameLevelingOrder $order){}
+    public static function anomaly(GameLevelingOrder $order){}
+    public static function cancelAnomaly(GameLevelingOrder $order){}
+    public static function delete(GameLevelingOrder $order){}
+    public static function modifyOrder(GameLevelingOrder $order){}
+    public static function addTime(GameLevelingOrder $order){}
+    public static function addAmount(GameLevelingOrder $order){}
+    public static function getOrderDetail(GameLevelingOrder $order){}
+    public static function getScreenShot(GameLevelingOrder $order){}
+    public static function getMessage(GameLevelingOrder $order){}
+    public static function replyMessage(GameLevelingOrder $order, $message){}
+    public static function modifyGamePassword(GameLevelingOrder $order){}
+    public static function sendImage(GameLevelingOrder $order, $pic){}
+    public static function getComplainDetail(GameLevelingOrder $order){}
+    public static function addComplainDetail(GameLevelingOrder $order, $pic, $content){}
 }
