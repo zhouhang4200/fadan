@@ -314,8 +314,6 @@ class GameLevelingOrder extends Model
             Redis::hDel('order:price-markup', $order->trade_no); // 没有设置或设置取消了，清除redis
         } elseif (isset($order->price_increase_step) && ! empty($order->price_increase_step)
             && isset($order->price_ceiling) && ! empty($order->price_ceiling)) {
-            $bool = bcsub($order->amount, $order->price_ceiling) < 0 ? true : false;
-
             if (bcsub($order->amount, $order->price_ceiling) >= 0) {
                 Redis::hDel('order:price-markup', $order->trade_no); // 设置的最大加价金额小于代练金额，清除redis
             } else {
@@ -333,7 +331,7 @@ class GameLevelingOrder extends Model
      * 更新相同淘宝单号的所有订单来源价格
      * @param $order
      */
-    public static function changeSameOriginOrderSourcePrice($order, $data = [])
+    public static function changeSameOriginOrderSourcePrice(GameLevelingOrder $order, $data = [])
     {
         if ($order->channel_order_trade_no) {
             $gameLevelingOrderRelationChannel = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)

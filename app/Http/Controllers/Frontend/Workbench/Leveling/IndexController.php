@@ -2201,8 +2201,8 @@ class IndexController extends Controller
     }
 
     /**
-     * 获取游戏下面的区
-     * @return string
+     * 获取游戏下面的区和代练类型
+     * @return array
      */
     public function regions()
     {
@@ -2296,6 +2296,7 @@ class IndexController extends Controller
     }
 
     /**
+     * 新的下单
      * @param Request $request
      * @return mixed
      */
@@ -2322,53 +2323,8 @@ class IndexController extends Controller
 
             return response()->ajax(1, '下单成功！');
         } catch (Exception $e) {
-            return response()->ajax(0, '下单失败请联系平台工作人员');
+            return response()->ajax(0, '下单失败请联系平台工作人员!');
         }
-
-
-
-//            $gameId = $orderData['game_id']; // 游戏ID
-//            $templateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id'); // 模版ID
-//            $originalPrice = $orderData['source_price']; // 原价
-//            $price = $orderData['game_leveling_amount']; // 代练价格
-//            $foreignOrderNO = isset($orderData['source_order_no']) ? $orderData['source_order_no'] : ''; // 来源订单号
-//            $orderData['urgent_order'] = isset($orderData['urgent_order']) ? 1 : 0; // 是否加急
-//
-//            $userId = Auth::user()->id; // 下单用户ID
-//            $orderData['customer_service_name'] = Auth::user()->username; // 下单人名字
-//            $orderData['order_source'] = '天猫'; // 订单来源
-//
-//            if (isset($request->value) && ! empty($request->value)) {
-//                // 原始发单人
-//                if (isset($orderData['creator_user_id'])) {
-//                    $originalUser = User::where('id', $orderData['creator_user_id'])->first();
-//                    $orderData['customer_service_name'] = $originalUser->username;
-//                    $userId = $originalUser->id;
-//                }
-//            }
-
-//            try {
-//                $order = Order::handle(new CreateLeveling($gameId, $templateId, $userId, $foreignOrderNO, $price, $originalPrice, $orderData));
-//
-//                // 提示哪些平台下单成功，哪些平台下单失败
-//                $orderDetails = OrderDetail::where('order_no', $order->no)
-//                    ->pluck('field_value', 'field_name')
-//                    ->toArray();
-//
-//                // 下单成功之后，查看此订单是否设置了每小时自动加价
-//                $this->checkIfAutoMarkup($order, $orderDetails);
-//
-//                return response()->ajax(1, '下单成功！');
-//            } catch (CustomException $exception) {
-//                return response()->ajax(0, $exception->getMessage());
-//            } catch (DailianException $dailianException) {
-//                return response()->ajax(0, $dailianException->getMessage());
-//            } catch (AssetException $assetException) {
-//                return response()->ajax(0, $assetException->getMessage());
-//            }
-//        } catch (CustomException $customException) {
-//            return response()->ajax(0, '下单失败请联系平台工作人员');
-//        }
     }
 
     public function newIndex()

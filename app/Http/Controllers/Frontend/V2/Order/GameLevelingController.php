@@ -734,7 +734,7 @@ class GameLevelingController extends Controller
             // 是否设置了自动加价
             GameLevelingOrder::checkAutoMarkUpPrice($gameLevelingOrder);
 
-            // /***存在来源订单号（淘宝主订单号）, 写入关联淘宝订单表***/
+           /***存在来源订单号（淘宝主订单号）, 写入关联淘宝订单表***/
             GameLevelingOrder::changeSameOriginOrderSourcePrice($gameLevelingOrder, $requestData);
 
             // 更新基础表数据
@@ -756,6 +756,6 @@ class GameLevelingController extends Controller
         }
         DB::commit();
 
-        return response()->ajax(1, '修改成功');
+        return response()->ajax(1, '修改成功!');
     }
 }
