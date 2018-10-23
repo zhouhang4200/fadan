@@ -4,6 +4,7 @@ namespace App\Models;
 
 use DB;
 use Auth;
+use Redis;
 use Exception;
 use Carbon\Carbon;
 use App\Services\RedisConnect;
@@ -226,87 +227,7 @@ class GameLevelingOrder extends Model
             $gameLevelingOrderDetail = GameLevelingOrderDetail::create($details);
 
             /***存在来源订单号（淘宝主订单号）, 写入关联淘宝订单表***/
-            if ($order->source_order_no) {
-                // 将淘宝主订单号写入关联的淘宝订单表
-                GameLevelingOrderRelationChannel::create([
-                    'channel' => 1,
-                    'game_leveling_order_trade_no' => $order->trade_no,
-                    'game_leveling_channel_order_trade_no' => $order->source_order_no,
-                    'payment' => $sourcePrice,
-                ]);
-                // 是否存在不同的补款单号1
-                if (isset($data['source_order_no_1']) && ! empty($data['source_order_no_1']) && $data['source_order_no_1'] != $order->source_order_no) {
-                    $payment1 = TaobaoTrade::where('tid', $data['source_order_no_1'])->value('payment');
-                    GameLevelingOrderRelationChannel::create([
-                        'channel' => 1,
-                        'game_leveling_order_trade_no' => $order->trade_no,
-                        'game_leveling_channel_order_trade_no' => $data['source_order_no_1'],
-                        'payment' => $payment1,
-                    ]);
-                }
-                // 是否存在不同的补款单号2
-                if (isset($data['source_order_no_2']) && ! empty($data['source_order_no_2']) && $data['source_order_no_2'] != $order->source_order_no) {
-                    $payment2 = TaobaoTrade::where('tid', $data['source_order_no_2'])->value('payment');
-                    GameLevelingOrderRelationChannel::create([
-                        'channel' => 1,
-                        'game_leveling_order_trade_no' => $order->trade_no,
-                        'game_leveling_channel_order_trade_no' => $data['source_order_no_2'],
-                        'payment' => $payment2,
-                    ]);
-                }
-
-                /*****更新订单的来源价格*********/
-                $totalSourcePrice = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)->sum('payment');
-
-                if ($totalSourcePrice != $order->source_price) {
-                    $order->source_price = $totalSourcePrice;
-                    $order->save();
-                }
-
-                /********更新相同淘宝单号的所有订单来源价格*********/
-                $otherGameLevelingOrders = GameLevelingOrderRelationChannel::where('taobao_trade_no', $data['source_order_no'])
-                    ->where('game_leveling_order_trade_no', '!=', $order->trade_no)
-                    ->pluck('game_leveling_order_trade_no')
-                    ->unique();
-
-                if ($otherGameLevelingOrders->count() > 1) {
-                    foreach($otherGameLevelingOrders as $otherGameLevelingOrder) {
-                        $otherGameLevelingOrder->source_price = $totalSourcePrice;
-                        // 关联表的订单也随着修改或新增
-                        if (isset($data['source_order_no_1']) && ! empty($data['source_order_no_1']) && $data['source_order_no_1'] != $order->source_order_no) {
-                            $issetRecord1 = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)
-                                ->where('game_leveling_channel_order_trade_no', $data['source_order_no_1'])
-                                ->first();
-
-                            GameLevelingOrderRelationChannel::updateOrCreate([
-                                'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
-                                'game_leveling_channel_order_trade_no' =>  $data['source_order_no_1'],
-                            ],[
-                                'channel' => 1,
-                                'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
-                                'game_leveling_channel_order_trade_no' =>  $data['source_order_no_1'],
-                                'payment' => $issetRecord1->payment,
-                            ]);
-                        }
-                        // 关联表的订单也随着修改或新增
-                        if (isset($data['source_order_no_2']) && ! empty($data['source_order_no_2']) && $data['source_order_no_2'] != $order->source_order_no) {
-                            $issetRecord2 = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)
-                                ->where('game_leveling_channel_order_trade_no', $data['source_order_no_2'])
-                                ->first();
-
-                            GameLevelingOrderRelationChannel::updateOrCreate([
-                                'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
-                                'game_leveling_channel_order_trade_no' =>  $data['source_order_no_2'],
-                            ],[
-                                'channel' => 1,
-                                'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
-                                'game_leveling_channel_order_trade_no' =>  $data['source_order_no_2'],
-                                'payment' => $issetRecord2->payment,
-                            ]);
-                        }
-                    }
-                }
-            }
+            static::changeSameOriginOrderSourcePrice($order, $data);
 
             /************写入订单操作记录***********/
             $historyData = [
@@ -380,4 +301,142 @@ class GameLevelingOrder extends Model
         DB::commit();
         return $order;
     }
+
+    /**
+     * 设置了自动加价,则开启加价
+     * @param $order
+     */
+    public static function checkAutoMarkUpPrice($order)
+    {
+        // 设置了自动加价,则开启加价
+        if (! isset($order->price_increase_step) || empty($order->price_increase_step)
+            || ! isset($order->price_ceiling) || empty($order->price_ceiling)) {
+            Redis::hDel('order:price-markup', $order->trade_no); // 没有设置或设置取消了，清除redis
+        } elseif (isset($order->price_increase_step) && ! empty($order->price_increase_step)
+            && isset($order->price_ceiling) && ! empty($order->price_ceiling)) {
+            $bool = bcsub($order->amount, $order->price_ceiling) < 0 ? true : false;
+
+            if (bcsub($order->amount, $order->price_ceiling) >= 0) {
+                Redis::hDel('order:price-markup', $order->trade_no); // 设置的最大加价金额小于代练金额，清除redis
+            } else {
+                $key = $order->trade_no;
+                $name = "order:price-markup";
+                $value = "0@".$order->amount."@".$order->updated_at;
+
+                Redis::hSet($name, $key, $value);
+            }
+        }
+    }
+
+
+    /**
+     * 更新相同淘宝单号的所有订单来源价格
+     * @param $order
+     */
+    public static function changeSameOriginOrderSourcePrice($order, $data = [])
+    {
+        if ($order->channel_order_trade_no) {
+            $gameLevelingOrderRelationChannel = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('game_leveling_channel_order_trade_no', $order->channel_order_trade_no)
+                ->first();
+
+            if (!$gameLevelingOrderRelationChannel) {
+                // 将淘宝主订单号写入关联的淘宝订单表
+                GameLevelingOrderRelationChannel::create([
+                    'channel' => 1,
+                    'game_leveling_order_trade_no' => $order->trade_no,
+                    'game_leveling_channel_order_trade_no' => $order->channel_order_trade_no,
+                    'payment' => $order->source_price,
+                ]);
+            }
+
+            // 是否存在不同的补款单号1
+            if (isset($data['source_order_no_1']) && ! empty($data['source_order_no_1']) && $data['source_order_no_1'] != $order->source_order_no) {
+                $payment1 = TaobaoTrade::where('tid', $data['source_order_no_1'])->value('payment');
+
+                $gameLevelingOrderRelationChannel1 = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)
+                    ->where('game_leveling_channel_order_trade_no', $data['source_order_no_1'])
+                    ->first();
+
+                if (!$gameLevelingOrderRelationChannel1) {
+                    GameLevelingOrderRelationChannel::create([
+                        'channel' => 1,
+                        'game_leveling_order_trade_no' => $order->trade_no,
+                        'game_leveling_channel_order_trade_no' => $data['source_order_no_1'],
+                        'payment' => $payment1,
+                    ]);
+                }
+            }
+            // 是否存在不同的补款单号2
+            if (isset($data['source_order_no_2']) && ! empty($data['source_order_no_2']) && $data['source_order_no_2'] != $order->source_order_no) {
+                $payment2 = TaobaoTrade::where('tid', $data['source_order_no_2'])->value('payment');
+
+                $gameLevelingOrderRelationChannel2 = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)
+                    ->where('game_leveling_channel_order_trade_no', $data['source_order_no_1'])
+                    ->first();
+
+                if (!$gameLevelingOrderRelationChannel2) {
+                    GameLevelingOrderRelationChannel::create([
+                        'channel' => 1,
+                        'game_leveling_order_trade_no' => $order->trade_no,
+                        'game_leveling_channel_order_trade_no' => $data['source_order_no_2'],
+                        'payment' => $payment2,
+                    ]);
+                }
+            }
+
+            /*****更新订单的来源价格*********/
+            $totalSourcePrice = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)->sum('payment');
+
+            if ($totalSourcePrice != $order->source_price) {
+                $order->source_price = $totalSourcePrice;
+                $order->save();
+            }
+
+            /********更新相同淘宝单号的所有订单来源价格*********/
+            $otherGameLevelingOrders = GameLevelingOrderRelationChannel::where('game_leveling_channel_order_trade_no', $order->channel_order_trade_no)
+                ->where('game_leveling_order_trade_no', '!=', $order->trade_no)
+                ->pluck('game_leveling_order_trade_no')
+                ->unique();
+
+            if ($otherGameLevelingOrders->count() > 1) {
+                foreach($otherGameLevelingOrders as $otherGameLevelingOrder) {
+                    $otherGameLevelingOrder->source_price = $totalSourcePrice;
+                    // 关联表的订单也随着修改或新增
+                    if (isset($data['source_order_no_1']) && ! empty($data['source_order_no_1']) && $data['source_order_no_1'] != $order->source_order_no) {
+                        $issetRecord1 = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)
+                            ->where('game_leveling_channel_order_trade_no', $data['source_order_no_1'])
+                            ->first();
+
+                        GameLevelingOrderRelationChannel::updateOrCreate([
+                            'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
+                            'game_leveling_channel_order_trade_no' =>  $data['source_order_no_1'],
+                        ],[
+                            'channel' => 1,
+                            'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
+                            'game_leveling_channel_order_trade_no' =>  $data['source_order_no_1'],
+                            'payment' => $issetRecord1->payment,
+                        ]);
+                    }
+                    // 关联表的订单也随着修改或新增
+                    if (isset($data['source_order_no_2']) && ! empty($data['source_order_no_2']) && $data['source_order_no_2'] != $order->source_order_no) {
+                        $issetRecord2 = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)
+                            ->where('game_leveling_channel_order_trade_no', $data['source_order_no_2'])
+                            ->first();
+
+                        GameLevelingOrderRelationChannel::updateOrCreate([
+                            'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
+                            'game_leveling_channel_order_trade_no' =>  $data['source_order_no_2'],
+                        ],[
+                            'channel' => 1,
+                            'game_leveling_order_trade_no' => $otherGameLevelingOrder->trade_no,
+                            'game_leveling_channel_order_trade_no' =>  $data['source_order_no_2'],
+                            'payment' => $issetRecord2->payment,
+                        ]);
+                    }
+                }
+            }
+        }
+    }
+
 }

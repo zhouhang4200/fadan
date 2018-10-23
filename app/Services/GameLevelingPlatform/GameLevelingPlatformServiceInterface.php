@@ -32,5 +32,4 @@ interface GameLevelingPlatformServiceInterface
     public static function modifyGamePassword(GameLevelingOrder $order); // 更改接单后的游戏账号密码
     public static function complainInfo(GameLevelingOrder $order); // 获取仲裁信息（留言，截图)
     public static function addComplainDetail(GameLevelingOrder $order, $pic, $content); // 增加仲裁信息（留言，截图)
-    public static function sendImage(GameLevelingOrder $order, $pic); // 发送截图
 }
