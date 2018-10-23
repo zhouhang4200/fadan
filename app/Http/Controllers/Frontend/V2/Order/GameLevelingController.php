@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order;
 
-use App\Models\OrderBasicData;
 use DB;
 use Auth;
 use Exception;
 use Carbon\Carbon;
+use App\Models\OrderHistory;
+use App\Models\OrderBasicData;
 use App\Models\GameLevelingOrder;
 use App\Http\Controllers\Controller;
 use App\Models\GameLevelingPlatform;
@@ -734,7 +735,7 @@ class GameLevelingController extends Controller
             GameLevelingOrder::checkAutoMarkUpPrice($gameLevelingOrder);
 
             // /***存在来源订单号（淘宝主订单号）, 写入关联淘宝订单表***/
-            static::changeSameOriginOrderSourcePrice($gameLevelingOrder, $requestData);
+            GameLevelingOrder::changeSameOriginOrderSourcePrice($gameLevelingOrder, $requestData);
 
             // 更新基础表数据
             $orderBasicData = OrderBasicData::where('order_no', $gameLevelingOrder->trade_no)->first();
