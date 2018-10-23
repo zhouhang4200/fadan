@@ -2386,5 +2386,10 @@ class IndexController extends Controller
 //            return response()->ajax(0, '下单失败请联系平台工作人员');
 //        }
     }
+
+    public function newIndex()
+    {
+        return view('frontend.v1.workbench.leveling.send-order');
+    }
 }
 
