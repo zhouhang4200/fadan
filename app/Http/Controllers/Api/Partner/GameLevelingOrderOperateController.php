@@ -153,12 +153,12 @@ class GameLevelingOrderOperateController
             }
 
             // 询用查询接口
-            $queryResult = call_user_func_array([config('leveling.controller')[$order->platform_id], config('leveling.action')['orderDetail']], $order);
+            $queryResult = call_user_func_array([config('leveling.controller')[$order->platform_id], config('leveling.action')['getOrderDetail']], $order);
 
             // 同步价格
             if ($queryResult[config('leveling.third_orders_price')[$order->platform_id]['data']][config('leveling.third_orders_price')[$order->platform_id]['price']] != $order->amount) {
                 AutoMarkupOrderEveryHour::deleteRedisHashKey($order->trade_no);
-                return response()->partner(0, '接单失败, 订单价格不一致' . $order->trade_no);
+                return response()->partner(0, '接单失败, 订单价格不一致!' . $order->trade_no);
             }
 
             // 开始调用

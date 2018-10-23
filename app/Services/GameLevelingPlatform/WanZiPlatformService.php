@@ -2,7 +2,10 @@
 
 namespace App\Services\GameLevelingPlatform;
 
+use Exception;
+use GuzzleHttp\Client;
 use App\Models\GameLevelingOrder;
+use App\Models\GameLevelingPlatform;
 use App\Exceptions\GameLevelingOrderOperateException;
 
 class WanZiPlatformService implements GameLevelingPlatformServiceInterface
@@ -15,7 +18,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param $order
      * @param string $method
      * @return mixed
-     * @throws GameLevelingOrderOperateException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function formDataRequest($options, $url, $functionName, $order, $method = 'POST')
     {
@@ -85,7 +88,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param $order
      * @param string $method
      * @return mixed
-     * @throws GameLevelingOrderOperateException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function normalRequest($options, $url, $functionName, $order, $method = 'POST')
     {
@@ -160,6 +163,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function onSale(GameLevelingOrder $order)
     {
@@ -200,6 +204,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function offSale(GameLevelingOrder $order)
     {
@@ -239,6 +244,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * 申请协商
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function applyConsult(GameLevelingOrder $order)
     {
@@ -266,6 +272,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * 取消协商
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function cancelConsult(GameLevelingOrder $order)
     {
@@ -290,6 +297,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * 同意协商
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function agreeConsult(GameLevelingOrder $order)
     {
@@ -314,6 +322,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * 不同意协商
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function refuseConsult(GameLevelingOrder $order)
     {
@@ -339,6 +348,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @param $pic
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function applyComplain(GameLevelingOrder $order, $pic)
     {
@@ -368,6 +378,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * 取消仲裁
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function cancelComplain(GameLevelingOrder $order)
     {
@@ -392,6 +403,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * 完成
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function complete(GameLevelingOrder $order)
     {
@@ -416,6 +428,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * 锁定
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function lock(GameLevelingOrder $order)
     {
@@ -440,6 +453,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * 取消锁定
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function cancelLock(GameLevelingOrder $order)
     {
@@ -465,6 +479,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function delete(GameLevelingOrder $order)
     {
@@ -500,6 +515,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function modifyOrder(GameLevelingOrder $order)
     {
@@ -557,6 +573,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function addTime(GameLevelingOrder $order)
     {
@@ -593,6 +610,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function addAmount(GameLevelingOrder $order)
     {
@@ -627,6 +645,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @return mixed
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function getOrderDetail(GameLevelingOrder $order)
     {
@@ -660,6 +679,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @return array
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function getScreenShot(GameLevelingOrder $order)
     {
@@ -699,6 +719,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @return array|string
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function getMessage(GameLevelingOrder $order)
     {
@@ -746,6 +767,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @param $message
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function replyMessage(GameLevelingOrder $order, $message)
     {
@@ -771,6 +793,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * 修改账号密码
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function modifyGamePassword(GameLevelingOrder $order)
     {
@@ -799,6 +822,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param $orderDatas
      * @return bool
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function setTop($order)
     {
@@ -832,6 +856,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param GameLevelingOrder $order
      * @return array
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function getComplainDetail(GameLevelingOrder $order)
     {
@@ -853,7 +878,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             }
 
             if (! isset($details) || ! is_array($details) || count($details) < 1) {
-                return '暂无相关信息';
+                return '暂无相关信息!';
             }
 
 
@@ -895,6 +920,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param $content
      * @return mixed
      * @throws GameLevelingOrderOperateException
+     * * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function addComplainDetail(GameLevelingOrder $order, $pic, $content)
     {

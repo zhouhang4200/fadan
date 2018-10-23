@@ -219,8 +219,6 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
     }
 
 
-    public static function take(GameLevelingOrder $order){}
-
     /**
      * 申请协商
      * @param GameLevelingOrder $order
@@ -805,7 +803,6 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-
     /**
      * 添加仲裁证据
      * @param GameLevelingOrder $order
@@ -844,4 +841,5 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
     public static function cancelLock(GameLevelingOrder $order){}
     public static function anomaly(GameLevelingOrder $order){}
     public static function cancelAnomaly(GameLevelingOrder $order){}
+    public static function take(GameLevelingOrder $order){}
 }

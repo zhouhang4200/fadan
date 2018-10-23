@@ -5,6 +5,7 @@ namespace App\Services\GameLevelingPlatform;
 use Exception;
 use GuzzleHttp\Client;
 use App\Models\GameLevelingOrder;
+use App\Models\GameLevelingPlatform;
 use App\Exceptions\GameLevelingOrderOperateException;
 
 class MaYiPlatformService implements GameLevelingPlatformServiceInterface
