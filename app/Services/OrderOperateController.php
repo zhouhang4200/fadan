@@ -551,7 +551,7 @@ class OrderOperateController
      * 不同意协商
      * @throws Exception
      */
-    public function refuseConsult()
+    public function rejectConsult()
     {
         DB::beginTransaction();
         try {

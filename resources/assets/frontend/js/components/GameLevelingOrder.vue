@@ -95,6 +95,7 @@
             'pageTitle',
             'gameLevelingOrderApi',
             'gameLevelingOrderDeleteApi',
+            'gameLevelingOrderTake',
         ],
         data() {
             return {

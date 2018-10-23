@@ -324,7 +324,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function refuseConsult(GameLevelingOrder $order)
+    public static function rejectConsult(GameLevelingOrder $order)
     {
         try {
             $options = [
@@ -336,7 +336,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            static::normalRequest($options, config('gameleveling.wanzi.url')['refuseConsult'], 'refuseConsult', $order);
+            static::normalRequest($options, config('gameleveling.wanzi.url')['rejectConsult'], 'rejectConsult', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '不同意协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -647,7 +647,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function getOrderDetail(GameLevelingOrder $order)
+    public static function orderInfo(GameLevelingOrder $order)
     {
         try {
             $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
@@ -667,7 +667,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $sign = static::getSign($options);
             $options['sign'] = $sign;
             // 发送
-            return static::normalRequest($options, config('gameleveling.wanzi.url')['getOrderDetail'], 'getOrderDetail', $order);
+            return static::normalRequest($options, config('gameleveling.wanzi.url')['orderInfo'], 'orderInfo', $order);
         } catch (Exception $e) {
             myLog('wanzi-platform-error', ['方法' => '订单详情', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -858,7 +858,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function getComplainDetail(GameLevelingOrder $order)
+    public static function complainInfo(GameLevelingOrder $order)
     {
         try {
             $options = [
@@ -871,7 +871,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             $options['sign'] = $sign;
 
             // 发送
-            $result = static::normalRequest($options, config('gameleveling.wanzi.url')['getComplainDetail'], 'getComplainDetail', $order);
+            $result = static::normalRequest($options, config('gameleveling.wanzi.url')['complainInfo'], 'complainInfo', $order);
             $details = [];
             if (isset($result) && $result['code'] == 1 && isset($result['data'])) {
                 $details = $result['data'];

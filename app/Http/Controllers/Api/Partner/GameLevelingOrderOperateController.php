@@ -153,7 +153,7 @@ class GameLevelingOrderOperateController
             }
 
             // 询用查询接口
-            $queryResult = call_user_func_array([config('leveling.controller')[$order->platform_id], config('leveling.action')['getOrderDetail']], $order);
+            $queryResult = call_user_func_array([config('leveling.controller')[$order->platform_id], config('leveling.action')['orderInfo']], $order);
 
             // 同步价格
             if ($queryResult[config('leveling.third_orders_price')[$order->platform_id]['data']][config('leveling.third_orders_price')[$order->platform_id]['price']] != $order->amount) {
@@ -308,7 +308,7 @@ class GameLevelingOrderOperateController
      * 不同意协商
      * @return mixed
      */
-    public function refuseConsult()
+    public function rejectConsult()
     {
         DB::beginTransaction();
         try {
@@ -322,7 +322,7 @@ class GameLevelingOrderOperateController
             }
 
             // 开始调用
-            OrderOperateController::init($order, request('user'))->refuseConsult();
+            OrderOperateController::init($order, request('user'))->rejectConsult();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             myLog('game-leveling-order-operate-error', ['订单号' => request('order_no') ?? '', '不同意协商接口失败原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);

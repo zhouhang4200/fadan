@@ -694,7 +694,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function getOrderDetail(GameLevelingOrder $order)
+    public static function orderInfo(GameLevelingOrder $order)
     {
         try {
             $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
@@ -716,7 +716,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'sign' => static::getSign('dlOrderInfo', $time),
             ];
 
-            return static::normalRequest($options, 'getOrderDetail', $order);
+            return static::normalRequest($options, 'orderInfo', $order);
         } catch (Exception $e) {
             myLog('mayi-platform-error', ['方法' => '订单详情', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -877,7 +877,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function getComplainDetail(GameLevelingOrder $order)
+    public static function complainInfo(GameLevelingOrder $order)
     {
         try {
             $time = time();
@@ -891,7 +891,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'sign'      => static::getSign('dlOrdertsPubInfo', $time),
             ];
 
-            $details = static::normalRequest($options, 'getComplainDetail', $order);
+            $details = static::normalRequest($options, 'complainInfo', $order);
 
             if (! isset($details) || ! isset($details['status']) || $details['status'] != 1 || ! isset($details['data']) || ! is_array($details)) {
                 return '暂无相关信息';
@@ -954,7 +954,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
     public static function sendImage(GameLevelingOrder $order, $pic){}
     public static function take(GameLevelingOrder $order){}
     public static function forceDelete(GameLevelingOrder $order){}
-    public static function refuseConsult(GameLevelingOrder $order){}
+    public static function rejectConsult(GameLevelingOrder $order){}
     public static function anomaly(GameLevelingOrder $order){}
     public static function cancelAnomaly(GameLevelingOrder $order){}
     public static function arbitration(GameLevelingOrder $order){}

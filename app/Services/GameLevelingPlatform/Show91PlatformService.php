@@ -296,7 +296,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function refuseConsult(GameLevelingOrder $order)
+    public static function rejectConsult(GameLevelingOrder $order)
     {
         try {
             $options = [
@@ -307,7 +307,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
                 'p'       => config('gameleveling.show91.password'),
             ];
             // 发送
-            static::normalRequest($options, config('gameleveling.show91.url')['refuseConsult'], 'refuseConsult', $order);
+            static::normalRequest($options, config('gameleveling.show91.url')['rejectConsult'], 'rejectConsult', $order);
         } catch (Exception $e) {
             myLog('show91-platform-error', ['方法' => '不同意协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -553,7 +553,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function getOrderDetail(GameLevelingOrder $order)
+    public static function orderInfo(GameLevelingOrder $order)
     {
         try {
             $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
@@ -570,7 +570,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
                 'oid'     => $gameLevelingPlatform->platform_trade_no,
             ];
             // 发送
-            return static::normalRequest($options, config('gameleveling.show91.url')['getOrderDetail'], 'getOrderDetail', $order);
+            return static::normalRequest($options, config('gameleveling.show91.url')['orderInfo'], 'orderInfo', $order);
         } catch (Exception $e) {
             myLog('show91-platform-error', ['方法' => '订单详情', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -746,7 +746,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function getComplainDetail(GameLevelingOrder $order)
+    public static function complainInfo(GameLevelingOrder $order)
     {
         try {
             $options = [
@@ -756,7 +756,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             ];
 
             // 获取详情
-            $result = static::normalRequest($options, config('gameleveling.show91.url')['getComplainDetail'], 'getComplainDetail', $order);
+            $result = static::normalRequest($options, config('gameleveling.show91.url')['complainInfo'], 'complainInfo', $order);
 
             $details = [];
             if (isset($result) && $result['result'] == 0 && isset($result['data']) && isset($result['data']['evis'])) {

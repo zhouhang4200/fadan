@@ -332,7 +332,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function refuseConsult(GameLevelingOrder $order)
+    public static function rejectConsult(GameLevelingOrder $order)
     {
         try {
             $options = [
@@ -344,7 +344,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             // 对参数进行加工
             $options = static::handleOptions($options);
             // 发送
-            static::normalRequest($options, config('gameleveling.dd373.url')['refuseConsult'], $order, 'refuseConsult');
+            static::normalRequest($options, config('gameleveling.dd373.url')['rejectConsult'], $order, 'rejectConsult');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '不同意撤销', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -639,7 +639,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function getOrderDetail(GameLevelingOrder $order)
+    public static function orderInfo(GameLevelingOrder $order)
     {
         try {
             $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
@@ -658,7 +658,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
 
             $options['Sign'] = md5($str);
             // 发送
-            return static::normalRequest($options, config('gameleveling.dd373.url')['getOrderDetail'], $order, 'getOrderDetail');
+            return static::normalRequest($options, config('gameleveling.dd373.url')['orderInfo'], $order, 'orderInfo');
         } catch (Exception $e) {
             myLog('dd373-platform-error', ['方法' => '订单详情', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -823,7 +823,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function getComplainDetail(GameLevelingOrder $order)
+    public static function complainInfo(GameLevelingOrder $order)
     {
         try {
             $options = [
@@ -835,7 +835,7 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
 
             $options['Sign'] = md5($str);
             // 发送
-            $result = static::formDataRequest($options, config('gameleveling.dd373.url')['getComplainDetail'], $order, 'getComplainDetail');
+            $result = static::formDataRequest($options, config('gameleveling.dd373.url')['complainInfo'], $order, 'complainInfo');
 
             if (!isset($result) || $result['code'] != 0) {
                 return '接口无相关信息';

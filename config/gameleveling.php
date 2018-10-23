@@ -69,7 +69,7 @@ return [
         'cancelConsult' => 'cancelConsult', // 取消撤销
         'agreeConsult' => 'agreeConsult', // 同意撤销
         'forceDelete' => 'forceDelete', // 强制撤销
-        'refuseConsult' => 'refuseConsult', // 不同意撤销
+        'rejectConsult' => 'rejectConsult', // 不同意撤销
         'applyComplain' => 'applyComplain', // 申请仲裁
         'cancelComplain' => 'cancelComplain', // 取消仲裁
         'arbitration' => 'arbitration', // 强制仲裁(客服仲裁)
@@ -84,14 +84,14 @@ return [
         'modifyOrder' => 'modifyOrder', // 修改订单
         'addTime' => 'addTime', // 订单加时
         'addAmount' => 'addAmount', // 订单加款
-        'getOrderDetail' => 'getOrderDetail', // 获取订单详情
+        'orderInfo' => 'orderInfo', // 获取订单详情
         'getScreenShot' => 'getScreenShot', // 获取订单截图
         'getMessage' => 'getMessage', // 获取留言
         'replyMessage' => 'replyMessage', // 回复留言
         'modifyGamePassword' => 'modifyGamePassword', // 修改游戏账号密码
         'sendImage' => 'sendImage', // 上传截图
         'setTop' => 'setTop', // 置顶
-        'getComplainDetail' => 'getComplainDetail', // 获取仲裁详情
+        'complainInfo' => 'complainInfo', // 获取仲裁详情
         'addComplainDetail' => 'addComplainDetail', // '添加仲裁证据'
     ],
 
@@ -129,15 +129,15 @@ return [
             'modifyOrder' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=modifyOrder', // 修改订单
             'addTime' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=addTime', // 加时
             'addAmount' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=addPrice', // 加款
-            'getOrderDetail' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=getDetails', // 订单详情
+            'orderInfo' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=getDetails', // 订单详情
             'getScreenShot' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=getImages', // 订单截图
             'getMessage' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=getMessages', //获取留言
             'replyMessage' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=sendMessage', // 回复留言
             'modifyGamePassword' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=changePwd', // 修改账号密码
-            'refuseConsult' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=CancelAction', // 不同意撤销
+            'rejectConsult' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=CancelAction', // 不同意撤销
             'sendImage' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=uploadImage', //上传截图
             'setTop' => '',
-            'getComplainDetail' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=getArbitrate', // 查看仲裁详情
+            'complainInfo' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=getArbitrate', // 查看仲裁详情
             'addComplainDetail' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=sendArbitrateMessage', // 添加仲裁证据
 
             'getArbitrationList' => env('DD373_API_URL', 'http://sdk.dd373.com/DLSdk.html') . '?action=getArbitrateMessages', // **留言列表**
@@ -199,15 +199,15 @@ return [
             'modifyOrder' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/qs/updateOrder', // 修改订单
             'addTime' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/addLimitTime3', // 加时
             'addAmount' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/addPrice2', // 加款
-            'getOrderDetail' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/orderDetail', // 订单详情
+            'orderInfo' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/orderDetail', // 订单详情
             'getScreenShot' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/topic', // 订单截图
             'getMessage' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/messageList', //获取留言
             'replyMessage' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/addMess', // 回复留言addMess
             'modifyGamePassword' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/editOrderAccPwd', // 修改账号密码
-            'refuseConsult' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/confirmSc', // 不同意撤销
+            'rejectConsult' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/confirmSc', // 不同意撤销
             'getPlays' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/getPlays', // 获取代练类型
             'setTop' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/setTop', // 获取代练类型
-            'getComplainDetail' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/seeappeal2', // 查看仲裁详情
+            'complainInfo' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/seeappeal2', // 查看仲裁详情
             'addComplainDetail' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/addevidence', // 添加仲裁证据
             'getArbitrationList' => env('SHOW91_API_URL', 'http://www.show91.com') . '/oauth/appeals', // **仲裁列表**
         ],
@@ -244,14 +244,14 @@ return [
             'applyConsult' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/apply-consult', // 申请撤销
             'cancelConsult' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/cancel-consult', // 取消撤销
             'agreeConsult' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/agree-consult', // 同意撤销
-            'refuseConsult' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/reject-consult', // 不同意撤销
+            'rejectConsult' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/reject-consult', // 不同意撤销
             'applyComplain' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/apply-complain', // 申请仲裁
             'cancelComplain' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/cancel-complain', // 取消仲裁
             'complete' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/complete', // 订单完成
             'lock' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/lock', // 锁定
             'cancelLock' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/cancel-lock',// 取消锁定
             'delete' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/delete', // 删除订单
-            'getOrderDetail' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/detail', // 订单详情
+            'orderInfo' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/detail', // 订单详情
             'addTime' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/add-time', // 加时
             'addAmount' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/add-money', // 加款
             'modifyGamePassword' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/update-account-password', // 修改账号密码
@@ -260,7 +260,7 @@ return [
             'addComplainDetail' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/complain-message', // 添加仲裁证据
             'getMessage' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/get-message', //获取留言
             'replyMessage' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/send-message', // 回复留言
-            'getComplainDetail' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/get-complain-info', // 查看仲裁详情
+            'complainInfo' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/get-complain-info', // 查看仲裁详情
             'setTop' => env('WANZI_API_URL', 'http://www.fulugou.net') . '/tm/top', // 置顶
         ],
     ],
@@ -274,7 +274,7 @@ return [
         'cancelConsult' => '取消撤销', // 取消撤销
         'agreeConsult' => '同意撤销', // 同意撤销
         'forceDelete' => '强制撤销', // 强制撤销
-        'refuseConsult' => '不同意撤销', // 不同意撤销
+        'rejectConsult' => '不同意撤销', // 不同意撤销
         'applyComplain' => '申请仲裁', // 申请仲裁
         'cancelComplain' => '取消仲裁', // 取消仲裁
         'arbitration' => '强制仲裁', // 强制仲裁(客服仲裁)
@@ -289,14 +289,14 @@ return [
         'modifyOrder' => '修改订单', // 修改订单
         'addTime' => '订单加时', // 订单加时
         'addAmount' => '订单加款', // 订单加款
-        'getOrderDetail' => '获取订单详情', // 获取订单详情
+        'orderInfo' => '获取订单详情', // 获取订单详情
         'getScreenShot' => '获取订单截图', // 获取订单截图
         'getMessage' => '获取留言', // 获取留言
         'replyMessage' => '回复留言', // 回复留言
         'modifyGamePassword' => '修改游戏账号密码', // 修改游戏账号密码
         'sendImage' => '上传截图', // 上传截图
         'setTop' => '置顶', // 置顶
-        'getComplainDetail' => '获取仲裁详情', // 获取仲裁详情
+        'complainInfo' => '获取仲裁详情', // 获取仲裁详情
         'addComplainDetail' => '添加仲裁证据', // '添加仲裁证据'
     ],
 ];
