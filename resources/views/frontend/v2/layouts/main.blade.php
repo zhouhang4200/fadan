@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
-    <link rel="stylesheet" href="{{mix('/v2/css/app.css', 'frontend')}}">
-    <link rel="stylesheet" href="{{mix('/v2/css/theme.css', 'frontend')}}">
+    <link rel="stylesheet" href="{{mix('/css/app.css', 'frontend/v2')}}">
+    <link rel="stylesheet" href="{{mix('/css/theme.css', 'frontend/v2')}}">
 </head>
 <body>
 <div id="app">
@@ -15,8 +15,8 @@
         @yield('content')
     </layout>
 </div>
-<script src="{{mix('/v2/js/manifest.js', 'frontend')}}"></script>
-<script src="{{mix('/v2/js/vendor.js', 'frontend')}}"></script>
-<script src="{{mix('/v2/js/app.js', 'frontend')}}"></script>
+<script src="{{mix('js/manifest.js', 'frontend/v2')}}"></script>
+<script src="{{mix('js/vendor.js', 'frontend/v2')}}"></script>
+<script src="{{mix('js/app.js', 'frontend/v2')}}"></script>
 </body>
 </html>

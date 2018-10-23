@@ -661,7 +661,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         // this.getTableData();
                     }).catch(function (err) {
                         // this.loading = false;
-                        _this3.$MessageBox.alert('6526356565');
+                        _this3.$alert('6526356565');
                         _this3.$customModal('sss');
 
                         // this.$Modal.confirm({
@@ -109926,7 +109926,7 @@ __webpack_require__("./resources/assets/frontend/js/bootstrap.js");
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_iview___default.a);
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_4__components_Test_Test_js__["a" /* default */]);
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_3_element_ui__["MessageBox"]);
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('layout', __webpack_require__("./resources/assets/frontend/js/components/Layout.vue"));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('game-leveling-order', __webpack_require__("./resources/assets/frontend/js/components/GameLevelingOrder.vue"));
@@ -109944,8 +109944,7 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
 
 var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
     el: '#app',
-    store: store,
-    MessageBox: __WEBPACK_IMPORTED_MODULE_3_element_ui__["MessageBox"]
+    store: store
 });
 
 /***/ }),
@@ -110221,7 +110220,7 @@ var Notice = function Notice(content) {
     return NoticeInstance.vm;
 };
 
-/* harmony default export */ __webpack_exports__["a"] = ({
+/* unused harmony default export */ var _unused_webpack_default_export = ({
     install: function install(Vue) {
         Vue.prototype.$test = Notice; // 将Notice组件暴露出去，并挂载在Vue的prototype上
     }
