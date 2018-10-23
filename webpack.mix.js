@@ -23,5 +23,5 @@ mix.js('resources/assets/frontend/js/app.js', 'public/frontend/v2/js')
     })
     .extract(['vue', 'axios'])
     .setResourceRoot('/frontend/') // 设置资源目录
-    .setPublicPath('public/frontend/') // 设置 mix-manifest.json 目录
+    .setPublicPath('public/frontend/v2/') // 设置 mix-manifest.json 目录
     .version(); // 生成的文件加上版本号
