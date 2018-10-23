@@ -891,32 +891,4 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
-
-    public static function anomaly(GameLevelingOrder $order)
-    {
-    }
-
-    public static function arbitration(GameLevelingOrder $order)
-    {
-    }
-
-    public static function forceDelete(GameLevelingOrder $order)
-    {
-    }
-
-    public static function take(GameLevelingOrder $order)
-    {
-    }
-
-    public static function applyComplete(GameLevelingOrder $order)
-    {
-    }
-
-    public static function cancelComplete(GameLevelingOrder $order)
-    {
-    }
-
-    public static function cancelAnomaly(GameLevelingOrder $order)
-    {
-    }
 }

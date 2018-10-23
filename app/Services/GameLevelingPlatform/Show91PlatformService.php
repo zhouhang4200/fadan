@@ -831,15 +831,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
         }
     }
 
-    public static function sendImage(GameLevelingOrder $order, $pic = []){}
-    public static function sendCompleteImage(GameLevelingOrder $order, $file){}
     public static function lock(GameLevelingOrder $order){}
-    public static function arbitration(GameLevelingOrder $order){}
-    public static function forceDelete(GameLevelingOrder $order){}
-    public static function applyComplete(GameLevelingOrder $order){}
-    public static function cancelComplete(GameLevelingOrder $order){}
     public static function cancelLock(GameLevelingOrder $order){}
-    public static function anomaly(GameLevelingOrder $order){}
-    public static function cancelAnomaly(GameLevelingOrder $order){}
-    public static function take(GameLevelingOrder $order){}
+    public static function sendImage(GameLevelingOrder $order, $pic = []){}
 }

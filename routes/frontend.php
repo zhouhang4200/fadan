@@ -25,7 +25,7 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 // 接单
                 Route::post('take', 'GameLevelingController@take')->name('order.game-leveling.take');
                 // 撤单
-                Route::post('delete', 'GameLevelingController@delete')->name('order.game-leveling.take');
+                Route::post('delete', 'GameLevelingController@delete')->name('order.game-leveling.delete');
                 // 申请验收
                 Route::post('apply-complete', 'GameLevelingController@applyComplete')->name('order.game-leveling.apply-complete');
                 // 取消验收
@@ -52,10 +52,14 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 Route::post('agree-consult', 'GameLevelingController@agreeConsult')->name('order.game-leveling.agree-consult');
                 // 不同意撤销
                 Route::post('reject-consult', 'GameLevelingController@rejectConsult')->name('order.game-leveling.reject-consult');
+                // 强制撤单
+                Route::post('force-delete', 'GameLevelingController@forceDelete')->name('order.game-leveling.force-delete');
                 // 申请仲裁
                 Route::post('apply-complain', 'GameLevelingController@applyComplain')->name('order.game-leveling.apply-complain');
                 // 取消仲裁
                 Route::post('cancel-complain', 'GameLevelingController@cancelComplain')->name('order.game-leveling.cancel-complain');
+                // 客服仲裁
+                Route::post('arbitration', 'GameLevelingController@arbitration')->name('order.game-leveling.arbitration');
                 // 申请验收图片
                 Route::get('apply-complete-image/{trade_no}', 'GameLevelingController@applyCompleteImage')->name('order.game-leveling.apply-complete-image');
                 // 订单操作日志
