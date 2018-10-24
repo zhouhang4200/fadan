@@ -436,5 +436,4 @@ class GameLevelingOrder extends Model
             }
         }
     }
-
 }
