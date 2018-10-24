@@ -1,11 +1,10 @@
+/* 改变主题色变量 */
+$--color-primary: #ff9900;
 
-// Fonts
-//@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
 
-// Variables
-//@import "variables";
+@import "~element-ui/packages/theme-chalk/src/index";
 
-//// Bootstrap
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap";
-
+// #f5f7f9
 

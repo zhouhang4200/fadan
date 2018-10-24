@@ -3,8 +3,10 @@
 @section('title', '代练订单')
 
 @section('content')
+    {{--<test></test>--}}
     <game-leveling-order
             page-title="代练订单"
+            game-leveling-image-base64-api="{{ route('order.game-leveling.image-base64') }}"
             game-leveling-order-api="{{ route('order.game-leveling.data-list') }}"
             game-leveling-order-delete-api="{{ route('order.game-leveling.delete') }}"
             game-leveling-order-on-sale-api="{{ route('order.game-leveling.on-sale') }}"

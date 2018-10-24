@@ -22,6 +22,13 @@ use App\Exceptions\GameLevelingOrderOperateException;
  */
 class GameLevelingController extends Controller
 {
+
+    public function imageBase64()
+    {
+
+    }
+
+
     /**
      * 代练订单视图
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View

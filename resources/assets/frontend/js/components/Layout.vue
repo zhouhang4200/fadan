@@ -1,231 +1,145 @@
+<template>
+    <el-container style="height: auto; border: 1px solid #eee">
+        <el-aside v-bind:style="{'width': collapse ? '64px':'200px', 'background-color': '#515a6e'}">
+            <!--:default-openeds="['1', '3']"-->
+            <div class="logo">
+                <i class="icon-tao" style="font-size:32px;color:#fff"></i>
+                <img src="/frontend/v2/images/logo.png" style="vertical-align: top" v-show="!collapse">
+            </div>
+            <el-menu
+                    :collapse-transition="collapseTransition"
+                    default-active="1-4-1"
+                    class="el-menu-vertical-demo"
+                    background-color="#515a6e"
+                    :min-height="menuMinHeight"
+                    text-color="#fff"
+                    active-text-color="#ffd04b"
+                    :collapse="collapse">
+                <el-submenu index="1">
+                    <template slot="title">
+                        <i class="el-icon-location"></i>
+                        <span slot="title">导航一</span>
+                    </template>
+                    <el-menu-item-group>
+                        <a href="http://baidu.com"><el-menu-item index="1-1" href="baidu.com">选项1</el-menu-item></a>
+                        <el-menu-item index="1-2">选项2</el-menu-item>
+                    </el-menu-item-group>
+                    <el-menu-item-group title="分组2">
+                        <el-menu-item index="1-3">选项3</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+                <el-menu-item index="2">
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">导航二</span>
+                </el-menu-item>
+                <el-menu-item index="3" >
+                    <i class="el-icon-document"></i>
+                    <span slot="title">导航三</span>
+                </el-menu-item>
+                <el-menu-item index="4">
+                    <i class="el-icon-setting"></i>
+                    <span slot="title">导航四</span>
+                </el-menu-item>
+            </el-menu>
+        </el-aside>
+        <el-container>
+            <el-header style="font-size: 30px;height:60px;line-height:60px">
+                <i class="icon-ios-menu" :class="rotateIcon" @click="handleCollapse"></i>
+                <el-menu  class="el-menu-demo" mode="horizontal"  style="float: right">
+                    <el-menu-item index="1">处理中心</el-menu-item>
+                    <el-submenu index="2">
+                        <template slot="title">我的工作台</template>
+                        <el-menu-item index="2-1">选项1</el-menu-item>
+                        <el-menu-item index="2-2">选项2</el-menu-item>
+                        <el-menu-item index="2-3">选项3</el-menu-item>
+                    </el-submenu>
+                </el-menu>
+            </el-header>
+            <el-main>
+                <div :style="contentContainerStyle">
+                    <slot></slot>
+                </div>
+            </el-main>
+        </el-container>
+    </el-container>
+</template>
+
 <style scoped>
-    .layout{
-        border: 1px solid #d7dde4;
-        background: #f5f7f9;
-        position: relative;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-    .layout-header-bar{
-        background: #fff;
-        box-shadow: 0 1px 1px rgba(0,0,0,.1);
-    }
-    .layout-logo-left{
-        width: 90%;
-        height: 30px;
-        background: #5b6270;
-        border-radius: 3px;
-        margin: 15px auto;
-    }
-    .menu-icon{
-        transition: all .3s;
-    }
-    .rotate-icon{
-        transform: rotate(-90deg);
-    }
-    .menu-item span{
-        display: inline-block;
-        overflow: hidden;
-        width: 117px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        vertical-align: bottom;
-    }
     .logo {
         height: 60px;
         background-color: #ff9900;
-        padding: 14px 0px 14px 18px;
+        padding: 14px 0 14px 16px;
+        line-height: 32px;
     }
-    .logo i {
-        font-size: 32px;
-        margin-right:0;
-        color:#fff;
-    }
-    .menu-item i{
-        transform: translateX(0px);
-        transition: font-size .2s ease, transform .2s ease;
-        vertical-align: middle;
-        font-size: 16px;
-    }
-
-    /*** 重写左侧菜单间距 ***/
-    .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item .ivu-menu-submenu .ivu-menu-submenu-title {
-        color:#ffffff;
-        padding: 14px 15px;
-    }
-    /*** 重写头部菜单高度 ***/
-    .ivu-layout-header {
-        height: 60px;
+    .el-header {
+        color: #333;
         line-height: 60px;
     }
-
-    .collapsed .ivu-tooltip .ivu-tooltip-popper {
-        top:70px;
+    .el-aside {
+        color: #333;
     }
-    /*** 重写右侧折叠后菜单样式 ***/
-    .collapsed .ivu-select-dropdown,
-    .collapsed .ivu-dropdown > .ivu-select-dropdown {
-        background-color: #515a6e;
-        border-radius:0px;
+    .el-menu {
+        border-right:none;
     }
-    .collapsed .ivu-dropdown-item {
-        color:#fff;
+    .el-main {
+        background-color: #f5f7f9;
     }
-    .collapsed .ivu-dropdown-item:hover {
-        background: #363e4f;
-        color: #ff9900;
+    .el-menu-vertical-demo:not(.el-menu--collapse) {
+        width: 200px;
+        min-height: 400px;
     }
-    /*** 去除右侧菜单折叠动画 ***/
-    .ivu-layout-sider {
-        -webkit-transition: none;
-        transition: none;
+    .rotate-icon {
+        -webkit-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+    }
+    .menu-icon {
+        -webkit-transition: all .3s;
+        transition: all .3s;
     }
 </style>
 
-<template>
-    <div class="layout">
-        <Layout>
-            <Sider ref="side1" hide-trigger collapsible :collapsed-width="78" v-model="isCollapsed">
-                <div class="logo">
-                    <Icon type="ios-tao iconfont" v-bind:style="{'padding-left': isCollapsed ? '5px':'0'}"></Icon>
-                    <img src="/frontend/v2/images/logo.png" style="vertical-align: -webkit-baseline-middle;" v-show="!isCollapsed">
-                </div>
-                <div class="expand">
-                    <Menu active-name="2" theme="dark" width="auto" :class="" :style="expandStyle">
-                        <MenuItem name="2">
-                            <Icon type="ios-search"></Icon>
-                            <span>Option 2</span>
-                        </MenuItem>
-                        <MenuItem name="3">
-                            <Icon type="ios-settings"></Icon>
-                            <span>Option 3</span>
-                        </MenuItem>
-
-                        <Submenu name="4">
-                            <template slot="title">
-                                <Icon type="ios-analytics"></Icon>
-                                <span>Option 3</span>
-                            </template>
-                            <MenuItem name="3-1">Option 1</MenuItem>
-                            <MenuItem name="3-2">Option 2</MenuItem>
-                        </Submenu>
-                    </Menu>
-                </div>
-                <div class="collapsed" :style="collapsedStyle">
-                    <Tooltip content="Left Top text" placement="left-start" style="display: block">
-                        <a style="padding: 14px 15px;display:block;width:78px;text-align:center">
-                            <Icon type="ios-analytics" style="font-size: 22px;"></Icon>
-                        </a>
-                    </Tooltip>
-                    <Dropdown placement="right-start" style="display: block">
-                        <a href="javascript:void(0)" style="padding: 14px 15px;display:block;width:78px;text-align:center">
-                            <Icon type="ios-analytics" style="font-size: 22px;"></Icon>
-                        </a>
-                        <DropdownMenu slot="list">
-                            <DropdownItem>驴打滚</DropdownItem>
-                            <DropdownItem>炸酱面</DropdownItem>
-                            <DropdownItem>豆汁儿</DropdownItem>
-                            <DropdownItem>冰糖葫芦</DropdownItem>
-                            <DropdownItem>北京烤鸭</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                </div>
-            </Sider>
-            <Layout>
-                <Header :style="{padding: 0}" class="layout-header-bar">
-                    <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '0 20px'}" type="md-menu" size="24"></Icon>
-                    <div class="" style="height: inherit;float: right;">
-                        <Menu mode="horizontal"  active-name="1">
-                            <MenuItem name="2">
-                                <Icon type="ios-people" />
-                                留言列表
-                            </MenuItem>
-                            <Submenu name="3">
-                                <template slot="title">
-                                    <Avatar style="margin-right: 8px" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
-                                    王小明
-                                </template>
-                                <MenuGroup title="使用">
-                                    <MenuItem name="3-1">新增和启动</MenuItem>
-                                    <MenuItem name="3-2">活跃分析</MenuItem>
-                                    <MenuItem name="3-3">时段分析</MenuItem>
-                                </MenuGroup>
-                                <MenuGroup title="留存">
-                                    <MenuItem name="3-4">用户留存</MenuItem>
-                                    <MenuItem name="3-5">流失用户</MenuItem>
-                                </MenuGroup>
-                            </Submenu>
-                        </Menu>
-                    </div>
-                </Header>
-                <div style="margin:10px 20px 0;background-color: #f5f7f9">
-                    <Breadcrumb style="background-color: #f5f7f9">
-                        <BreadcrumbItem to="/">首页</BreadcrumbItem>
-                        <BreadcrumbItem>{{ this.$store.state.pageTitle }}</BreadcrumbItem>
-                    </Breadcrumb>
-                </div>
-                <Content :style="contentContainerStyle">
-                    <slot></slot>
-                </Content>
-            </Layout>
-        </Layout>
-    </div>
-</template>
-
 <script>
     export default {
-        data(){
+        data() {
             return {
-                isCollapsed: false,
+                collapse: false,
+                collapseTransition: false,
+                menuMinHeight:'400px',
                 contentContainerStyle:{
-                    margin: '10px 20px 20px 20px',
                     padding: '20px',
                     background: '#fff',
                     minHeight:'',
                 },
-                placement: 'right-end'
             }
         },
         computed: {
             rotateIcon() {
                 return [
                     'menu-icon',
-                    this.isCollapsed ? 'rotate-icon' : ''
+                    this.collapse ? 'rotate-icon' : ''
                 ];
             },
-            menuitemClasses() {
-                return [
-                    'menu-item',
-                    this.isCollapsed ? 'collapsed-menu' : ''
-                ]
-            },
-            expandStyle() {
-                return this.isCollapsed ? 'display:none' :  ''
-            },
-            collapsedStyle() {
-                return this.isCollapsed ? '' :  'display:none'
-            },
-
         },
         methods: {
-            collapsedSider() {
-                this.$refs.side1.toggleCollapse();
+            handleCollapse() {
+                if(this.collapse) {
+                    this.collapse = false;
+                }else {
+                    this.collapse = true;
+                }
             },
-            setContentContainerHeight() {
-                window.fullHeight = document.documentElement.clientHeight
+            handleContentContainerStyle() {
+                window.fullHeight = document.documentElement.clientHeight;
+                this.menuMinHeight = window.fullHeight + 'px';
                 return this.contentContainerStyle.minHeight = (window.fullHeight - 124) + 'px';
-            },
+            }
         },
         created() {
-            window.addEventListener('resize', this.setContentContainerHeight);
-            this.setContentContainerHeight();
+            window.addEventListener('resize', this.handleContentContainerStyle);
+            this.handleContentContainerStyle();
         },
         destroyed() {
-            window.removeEventListener('resize', this.setContentContainerHeight)
-        }
-    }
+            window.removeEventListener('resize', this.handleContentContainerStyle)
+        },
+    };
 </script>
-
-
-
-

@@ -2,28 +2,33 @@ require('./bootstrap');
 
 import Vue from 'vue';
 import Vuex from 'vuex';
-import iView from 'iview';
-import { MessageBox } from 'element-ui';
-import Test from './components/Test/Test.js';
-import CustomModal from './components/CustomModal/CustomModal.js';
+import ElementUI from 'element-ui';
 import '../iconfont/iconfont.css';
-import '../less/theme.less';
+import '../sass/app.scss';
 
-Vue.use(iView);
+Vue.use(ElementUI, {size:"small"});
 Vue.use(Vuex);
-Vue.use(MessageBox);
 
 
 Vue.component('layout', require('./components/Layout.vue'));
 Vue.component('game-leveling-order', require('./components/GameLevelingOrder.vue'));
 
+
+// this.$store.state.applyConsultVisible 获取
+// this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 const store = new Vuex.Store({
     state: {
-        pageTitle: ''
+        pageTitle: '',
+        applyConsultVisible: false
     },
     mutations: {
-        setPageTitle(state, par){
+        // 页标题
+        handlePageTitle(state, par){
             state.pageTitle = par.pageTitle
+        },
+        // 仲裁窗弹窗
+        handleApplyConsultVisible(state, par) {
+            state.applyConsultVisible = par.visible
         }
     }
 });
