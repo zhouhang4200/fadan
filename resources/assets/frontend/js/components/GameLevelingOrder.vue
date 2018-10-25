@@ -1,7 +1,11 @@
 <template>
 
     <div class="game-leveling-order">
-        <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
+
+        <el-form :inline=true
+                 :model="searchParams"
+                 class="search-form-inline"
+                 size="small">
             <el-row :gutter="16">
 
                 <el-col :span="6">
@@ -38,18 +42,26 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                    <el-form-item label="玩家旺旺">
-                        <el-input v-model="searchParams.trade_no" placeholder="玩家旺旺"></el-input>
+                    <el-form-item label="活动名称" prop="name">
+                        <el-date-picker
+                                v-model="searchParams.created_at"
+                                type="daterange"
+                                align="right"
+                                unlink-panels
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                :picker-options="pickerOptions">
+                        </el-date-picker>
                     </el-form-item>
                 </el-col>
-                <el-form-item>
                     <el-button type="primary" @click="handleSearch">查询</el-button>
-                </el-form-item>
             </el-row>
-
         </el-form>
 
-        <el-tabs  @tab-click="handleParamsStatus" >
+        <el-tabs  @tab-click="handleParamsStatus"
+                  size="small"
+                  class="game-leveling-order-tab">
             <el-tab-pane>
                 <span slot="label" data-status="1">
                     全部
@@ -144,6 +156,8 @@
         </el-tabs>
 
         <el-table
+                class="game-leveling-order-table"
+                v-loading="tableLoading"
                 :height="tableHeight"
                 :data="tableData"
                 border
@@ -330,22 +344,45 @@
             </el-pagination>
         </div>
 
-        <ApplyComplain :visible="visible"></ApplyComplain>
+        <ApplyComplain v-if="applyComplainVisible"
+                       :tradeNo="tradeNo"
+                       @handleApplyComplainVisible="handleApplyComplainVisible">
+        </ApplyComplain>
+
+        <ApplyConsult v-if="applyConsultVisible"
+                      :tradeNo="tradeNo"
+                      @handleApplyConsultVisible="handleApplyConsultVisible">
+        </ApplyConsult>
     </div>
 
 </template>
 
-<style scoped>
-    .el-tabs .el-tabs__item {
+<style >
+    .game-leveling-order-tab .el-tabs__item {
         font-weight: normal;
+    }
+    .game-leveling-order-table .el-button {
+        width: 80px;
+    }
+    .search-form-inline .el-date-editor--daterange.el-input__inner,
+    .search-form-inline .el-form-item {
+        width:100%;
+    }
+    .search-form-inline .el-range-separator {
+        width:10%;
+    }
+    .search-form-inline .el-form-item__content {
+        width:80%;
     }
 </style>
 
 <script>
     import ApplyComplain from './ApplyComplain';
+    import ApplyConsult from './ApplyConsult';
     export default {
         components: {
-            ApplyComplain
+            ApplyComplain,
+            ApplyConsult,
         },
         props: [
             'pageTitle',
@@ -356,6 +393,9 @@
         data() {
             return {
                 visible:false,
+                tradeNo:'',
+                applyConsultVisible:false,
+                applyComplainVisible:false,
                 searchParams:{
                     status:'',
                     order_no:'',
@@ -365,8 +405,35 @@
                     user_id:'',
                     platform_id:'',
                     start_created_at:'',
-                    end_created_at:'',
+                    created_at:'',
                     page:1,
+                },
+                pickerOptions2: {
+                    shortcuts: [{
+                        text: '最近一周',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近一个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近三个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }]
                 },
                 statusMap: {
                     s1: '未接单',
@@ -383,12 +450,21 @@
                     s23: '强制撤销',
                     s24: '已撤单',
                 },
+                tableLoading:false,
                 tableHeight: 0,
                 tableDataTotal:0,
                 tableData: []
             }
         },
         methods: {
+            // 设置仲裁窗口是否显示
+            handleApplyComplainVisible(data) {
+                this.applyComplainVisible = data.visible;
+            },
+            // 设置协商窗口是否显示
+            handleApplyConsultVisible(data) {
+                this.applyConsultVisible = data.visible;
+            },
             // 设置当前页面包屑
             handlePageTitle() {
                 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle})
@@ -399,16 +475,21 @@
             },
             // 加载数据
             handleTableData(){
+                this.tableLoading = true;
                 axios.post(this.gameLevelingOrderApi, this.searchParams).then(res => {
                     this.tableData = res.data.data;
                     this.tableDataTotal = res.data.total;
+                    this.tableLoading = false;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
                         callback: action => {
                         }
                     });
+                    this.tableLoading = false;
                 });
+
+
             },
             // 搜索
             handleSearch(){
@@ -432,13 +513,16 @@
                 })
             },
             // 撤单
-            handleDelete(index) {
+            handleDelete(row) {
                 this.$confirm('您确定要"撤单"吗？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$store.commit('handleApplyConsultVisible',{visible:true});
+                    this.applyConsultVisible = true;
+                    this.tradeNo = row.trade_no;
+
+                    // this.$store.commit('handleApplyConsultVisible',{visible:true});
                 });
             },
             // 上架

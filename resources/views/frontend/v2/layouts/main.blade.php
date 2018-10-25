@@ -11,7 +11,7 @@
 </head>
 <body>
 <div id="app">
-    <layout game-api="s">
+    <layout>
         @yield('content')
     </layout>
 </div>

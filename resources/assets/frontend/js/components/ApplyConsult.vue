@@ -1,28 +1,52 @@
 <template>
     <el-dialog
-            title="申请仲裁"
+            width="40%"
+            title="申请撤销"
             :visible=true
             :before-close="handleVisible"
-            :on-success="handleUploadSuccess"
             :show-close="showClose">
-        <el-form :model="form" ref="form" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="仲裁图片">
-                <el-upload
-                        action="/v2/order/image-base64"
-                        list-type="picture-card"
-                        :on-preview="handleUploadPreview"
-                        :http-request="handleUploadFile"
-                        :on-remove="handleRemove">
-                    <i class="el-icon-plus"></i>
-                </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                </el-dialog>
+        <el-form :model="form" ref="form" label-width="204px" class="demo-ruleForm">
+            <el-alert
+                    title="双方友好协商撤单，若有分歧可以在订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。"
+                    type="success"
+                    style="margin-bottom: 15px"
+                    :closable="false">
+            </el-alert>
+
+            <el-form-item label="我已支付代练费（元）"
+                          :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                <el-input type="input"
+                          v-model="form.reason"></el-input>
             </el-form-item>
-            <el-form-item label="仲裁原因"
+
+            <el-form-item label="需要对方赔付保证金"
+                          :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                <el-input type="input"
+                          v-model="form.tradeNo"></el-input>
+            </el-form-item>
+
+            <el-form-item label="对方已预付安全保证金（元）">
+                <el-input type="input"
+                          :disabled="inputDisabled"
+                          v-model="form.reason"></el-input>
+            </el-form-item>
+
+            <el-form-item label="对方已预付效率保证金（元）">
+                <el-input type="input"
+                          :disabled="inputDisabled"
+                          v-model="form.reason"></el-input>
+            </el-form-item>
+
+            <el-form-item label="我愿意支付代练费（元）"
+                          :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                <el-input type="input"
+                          v-model="form.reason" prop="no"></el-input>
+            </el-form-item>
+
+            <el-form-item label="撤销理由"
                           :rules="[{ required: true, message: '仲裁原因不能为空'}]">
                 <el-input type="textarea"
-                          :rows="8"
+                          :rows="5"
                           v-model="form.reason"></el-input>
             </el-form-item>
             <el-form-item>
@@ -35,13 +59,13 @@
 
 <script>
     export default {
-        name:"ApplyComplain",
+        name:"ApplyConsult",
         props: [
-            'tradeNo'
+            'tradeNo',
         ],
         computed: {
             // getVisible() {
-            //     return this.$store.state.applyComplainVisible;
+            //     return this.$store.state.applyConsultVisible;
             // }
         },
         data() {
@@ -49,6 +73,7 @@
                 fileReader:'',
                 visible: false,
                 showClose: true,
+                inputDisabled:true,
                 dialogImageUrl: '',
                 dialogVisible: false,
                 form: {
@@ -59,14 +84,16 @@
             };
         },
         methods: {
-            // handleVisible() {
-            //     this.$store.commit('handleApplyComplainVisible',{visible:false});
-            // },
+            handleVisible() {
+                // this.$store.commit('handleApplyConsultVisible',{visible:false});
+            },
             handleSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        this.$emit("handleApplyConsultVisible", {"visible":false});
+
                         alert('submit!');
-                        this.$emit("handleApplyComplainVisible", {"visible":false});
+
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -76,36 +103,6 @@
             HandleResetForm(formName) {
                 this.$refs[formName].resetFields();
             },
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
-            },
-            handleUploadPreview(file) {
-                this.dialogImageUrl = file.url;
-                this.dialogVisible = true;
-            },
-            handleUploadSuccess(res, file) {
-                this.imageUrl = URL.createObjectURL(file.raw);
-                console.log(this.imageUrl);
-            },
-            handleUploadFile(options){
-                let file = options.file;
-                if (file) {
-                    this.fileReader.readAsDataURL(file)
-                }
-                this.fileReader.onload = () => {
-                    let base64Str = this.fileReader.result;
-                    // 图片base64
-                    console.log(base64Str);
-                }
-            },
-            HandleBeforeUpload(file) {
-                const isLt2M = file.size / 1024 / 1024 < 2;
-
-                if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
-                }
-                return true;
-            }
         },
         watch: {
             // getVisible(val) {
@@ -113,7 +110,6 @@
             // }
         },
         mounted () {
-            this.fileReader = new FileReader()
         }
     }
 </script>

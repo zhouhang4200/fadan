@@ -64,7 +64,7 @@
     </el-container>
 </template>
 
-<style scoped>
+<style >
     .logo {
         height: 60px;
         background-color: #ff9900;

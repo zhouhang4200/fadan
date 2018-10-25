@@ -95,41 +95,43 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "ApplyComplain",
-    props: {},
+    props: ['tradeNo'],
     computed: {
-        getVisible: function getVisible() {
-            console.log(2);
-            return this.$store.state.applyConsultVisible;
-        }
+        // getVisible() {
+        //     return this.$store.state.applyComplainVisible;
+        // }
     },
     data: function data() {
         return {
+            fileReader: '',
             visible: false,
             showClose: true,
             dialogImageUrl: '',
             dialogVisible: false,
             form: {
-                age: '',
-                desc: ''
+                image1: '',
+                reason: '',
+                tradeNo: this.tradeNo
             }
         };
     },
 
     methods: {
-        handleVisible: function handleVisible() {
-            this.$store.commit('handleApplyConsultVisible', { visible: false });
-        },
+        // handleVisible() {
+        //     this.$store.commit('handleApplyComplainVisible',{visible:false});
+        // },
         handleSubmitForm: function handleSubmitForm(formName) {
             var _this = this;
 
             this.$refs[formName].validate(function (valid) {
                 if (valid) {
-
                     alert('submit!');
-                    _this.$store.commit('handleApplyConsultVisible', { visible: false });
+                    _this.$emit("handleApplyComplainVisible", { "visible": false });
                 } else {
                     console.log('error submit!!');
                     return false;
@@ -146,28 +148,161 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
         },
-        handleUpload: function handleUpload(res, file) {
+        handleUploadSuccess: function handleUploadSuccess(res, file) {
             this.imageUrl = URL.createObjectURL(file.raw);
+            console.log(this.imageUrl);
+        },
+        handleUploadFile: function handleUploadFile(options) {
+            var _this2 = this;
+
+            var file = options.file;
+            if (file) {
+                this.fileReader.readAsDataURL(file);
+            }
+            this.fileReader.onload = function () {
+                var base64Str = _this2.fileReader.result;
+                // 图片base64
+                console.log(base64Str);
+            };
         },
         HandleBeforeUpload: function HandleBeforeUpload(file) {
-            // const isJPG = file.type === 'image/jpeg';
             var isLt2M = file.size / 1024 / 1024 < 2;
-
-            // if (!isJPG) {
-            //     this.$message.error('上传头像图片只能是 JPG 格式!');
-            // }
 
             if (!isLt2M) {
                 this.$message.error('上传头像图片大小不能超过 2MB!');
             }
-            return isLt2M;
+            return true;
         }
     },
     watch: {
-        getVisible: function getVisible(val) {
-            this.visible = val;
-        }
+        // getVisible(val) {
+        //     this.visible = val;
+        // }
+    },
+    mounted: function mounted() {
+        this.fileReader = new FileReader();
     }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/ApplyConsult.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    name: "ApplyConsult",
+    props: ['tradeNo'],
+    computed: {
+        // getVisible() {
+        //     return this.$store.state.applyConsultVisible;
+        // }
+    },
+    data: function data() {
+        return {
+            fileReader: '',
+            visible: false,
+            showClose: true,
+            inputDisabled: true,
+            dialogImageUrl: '',
+            dialogVisible: false,
+            form: {
+                image1: '',
+                reason: '',
+                tradeNo: this.tradeNo
+            }
+        };
+    },
+
+    methods: {
+        handleVisible: function handleVisible() {
+            // this.$store.commit('handleApplyConsultVisible',{visible:false});
+        },
+        handleSubmitForm: function handleSubmitForm(formName) {
+            var _this = this;
+
+            this.$refs[formName].validate(function (valid) {
+                if (valid) {
+                    _this.$emit("handleApplyConsultVisible", { "visible": false });
+
+                    alert('submit!');
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        HandleResetForm: function HandleResetForm(formName) {
+            this.$refs[formName].resetFields();
+        }
+    },
+    watch: {
+        // getVisible(val) {
+        //     this.visible = val;
+        // }
+    },
+    mounted: function mounted() {}
 });
 
 /***/ }),
@@ -179,6 +314,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ApplyComplain__ = __webpack_require__("./resources/assets/frontend/js/components/ApplyComplain.vue");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ApplyComplain___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__ApplyComplain__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ApplyConsult__ = __webpack_require__("./resources/assets/frontend/js/components/ApplyConsult.vue");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__ApplyConsult___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__ApplyConsult__);
 //
 //
 //
@@ -522,16 +659,56 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: {
-        ApplyComplain: __WEBPACK_IMPORTED_MODULE_0__ApplyComplain___default.a
+        ApplyComplain: __WEBPACK_IMPORTED_MODULE_0__ApplyComplain___default.a,
+        ApplyConsult: __WEBPACK_IMPORTED_MODULE_1__ApplyConsult___default.a
     },
     props: ['pageTitle', 'gameLevelingOrderApi', 'gameLevelingImageBase64Api', 'gameLevelingOrderDeleteApi'],
     data: function data() {
         return {
             visible: false,
+            tradeNo: '',
+            applyConsultVisible: false,
+            applyComplainVisible: false,
             searchParams: {
                 status: '',
                 order_no: '',
@@ -541,8 +718,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 user_id: '',
                 platform_id: '',
                 start_created_at: '',
-                end_created_at: '',
+                created_at: '',
                 page: 1
+            },
+            pickerOptions2: {
+                shortcuts: [{
+                    text: '最近一周',
+                    onClick: function onClick(picker) {
+                        var end = new Date();
+                        var start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '最近一个月',
+                    onClick: function onClick(picker) {
+                        var end = new Date();
+                        var start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '最近三个月',
+                    onClick: function onClick(picker) {
+                        var end = new Date();
+                        var start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }]
             },
             statusMap: {
                 s1: '未接单',
@@ -559,6 +763,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 s23: '强制撤销',
                 s24: '已撤单'
             },
+            tableLoading: false,
             tableHeight: 0,
             tableDataTotal: 0,
             tableData: []
@@ -566,6 +771,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
+        // 设置仲裁窗口是否显示
+        handleApplyComplainVisible: function handleApplyComplainVisible(data) {
+            this.applyComplainVisible = data.visible;
+        },
+
+        // 设置协商窗口是否显示
+        handleApplyConsultVisible: function handleApplyConsultVisible(data) {
+            this.applyConsultVisible = data.visible;
+        },
+
         // 设置当前页面包屑
         handlePageTitle: function handlePageTitle() {
             // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle})
@@ -580,14 +795,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         handleTableData: function handleTableData() {
             var _this = this;
 
+            this.tableLoading = true;
             axios.post(this.gameLevelingOrderApi, this.searchParams).then(function (res) {
                 _this.tableData = res.data.data;
                 _this.tableDataTotal = res.data.total;
+                _this.tableLoading = false;
             }).catch(function (err) {
                 _this.$alert('获取数据失败, 请重试!', '提示', {
                     confirmButtonText: '确定',
                     callback: function callback(action) {}
                 });
+                _this.tableLoading = false;
             });
         },
 
@@ -617,7 +835,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
 
         // 撤单
-        handleDelete: function handleDelete(index) {
+        handleDelete: function handleDelete(row) {
             var _this2 = this;
 
             this.$confirm('您确定要"撤单"吗？', '提示', {
@@ -625,7 +843,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function () {
-                _this2.$store.commit('handleApplyConsultVisible', { visible: true });
+                _this2.applyConsultVisible = true;
+                _this2.tradeNo = row.trade_no;
+
+                // this.$store.commit('handleApplyConsultVisible',{visible:true});
             });
         },
 
@@ -2485,7 +2706,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/Layout.vue":
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/Layout.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
@@ -2493,7 +2714,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.logo[data-v-1092c626] {\n    height: 60px;\n    background-color: #ff9900;\n    padding: 14px 0 14px 16px;\n    line-height: 32px;\n}\n.el-header[data-v-1092c626] {\n    color: #333;\n    line-height: 60px;\n}\n.el-aside[data-v-1092c626] {\n    color: #333;\n}\n.el-menu[data-v-1092c626] {\n    border-right:none;\n}\n.el-main[data-v-1092c626] {\n    background-color: #f5f7f9;\n}\n.el-menu-vertical-demo[data-v-1092c626]:not(.el-menu--collapse) {\n    width: 200px;\n    min-height: 400px;\n}\n.rotate-icon[data-v-1092c626] {\n    -webkit-transform: rotate(-90deg);\n    transform: rotate(-90deg);\n}\n.menu-icon[data-v-1092c626] {\n    -webkit-transition: all .3s;\n    transition: all .3s;\n}\n", ""]);
+exports.push([module.i, "\n.logo {\n    height: 60px;\n    background-color: #ff9900;\n    padding: 14px 0 14px 16px;\n    line-height: 32px;\n}\n.el-header {\n    color: #333;\n    line-height: 60px;\n}\n.el-aside {\n    color: #333;\n}\n.el-menu {\n    border-right:none;\n}\n.el-main {\n    background-color: #f5f7f9;\n}\n.el-menu-vertical-demo:not(.el-menu--collapse) {\n    width: 200px;\n    min-height: 400px;\n}\n.rotate-icon {\n    -webkit-transform: rotate(-90deg);\n    transform: rotate(-90deg);\n}\n.menu-icon {\n    -webkit-transition: all .3s;\n    transition: all .3s;\n}\n", ""]);
 
 // exports
 
@@ -2515,7 +2736,7 @@ exports.push([module.i, "\n.avatar-uploader .el-upload[data-v-3c2683ab] {\n    b
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue":
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-438562cc\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/ApplyConsult.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
@@ -2523,7 +2744,22 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.el-tabs .el-tabs__item[data-v-85ed1e1c] {\n    font-weight: normal;\n}\n", ""]);
+exports.push([module.i, "\n.avatar-uploader .el-upload[data-v-438562cc] {\n    border: 1px dashed #d9d9d9;\n    border-radius: 6px;\n    cursor: pointer;\n    position: relative;\n    overflow: hidden;\n}\n.avatar-uploader .el-upload[data-v-438562cc]:hover {\n    border-color: #409EFF;\n}\n.avatar-uploader-icon[data-v-438562cc] {\n    font-size: 28px;\n    color: #8c939d;\n    width: 178px;\n    height: 178px;\n    line-height: 178px;\n    text-align: center;\n}\n.avatar[data-v-438562cc] {\n    width: 178px;\n    height: 178px;\n    display: block;\n}\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.game-leveling-order-tab .el-tabs__item {\n    font-weight: normal;\n}\n.game-leveling-order-table .el-button {\n    width: 80px;\n}\n.search-form-inline .el-date-editor--daterange.el-input__inner,\n.search-form-inline .el-form-item {\n    width:100%;\n}\n.search-form-inline .el-range-separator {\n    width:10%;\n}\n.search-form-inline .el-form-item__content {\n    width:80%;\n}\n", ""]);
 
 // exports
 
@@ -66142,7 +66378,7 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-1092c626\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/Layout.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-1092c626\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/Layout.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -66373,8 +66609,9 @@ var render = function() {
     {
       attrs: {
         title: "申请仲裁",
-        visible: _vm.visible,
+        visible: true,
         "before-close": _vm.handleVisible,
+        "on-success": _vm.handleUploadSuccess,
         "show-close": _vm.showClose
       }
     },
@@ -66395,9 +66632,10 @@ var render = function() {
                 "el-upload",
                 {
                   attrs: {
-                    action: "https://jsonplaceholder.typicode.com/posts/",
+                    action: "/v2/order/image-base64",
                     "list-type": "picture-card",
                     "on-preview": _vm.handleUploadPreview,
+                    "http-request": _vm.handleUploadFile,
                     "on-remove": _vm.handleRemove
                   }
                 },
@@ -66436,11 +66674,11 @@ var render = function() {
               _c("el-input", {
                 attrs: { type: "textarea", rows: 8 },
                 model: {
-                  value: _vm.form.desc,
+                  value: _vm.form.reason,
                   callback: function($$v) {
-                    _vm.$set(_vm.form, "desc", $$v)
+                    _vm.$set(_vm.form, "reason", $$v)
                   },
-                  expression: "form.desc"
+                  expression: "form.reason"
                 }
               })
             ],
@@ -66496,7 +66734,221 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-85ed1e1c\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-438562cc\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/ApplyConsult.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "el-dialog",
+    {
+      attrs: {
+        width: "40%",
+        title: "申请撤销",
+        visible: true,
+        "before-close": _vm.handleVisible,
+        "show-close": _vm.showClose
+      }
+    },
+    [
+      _c(
+        "el-form",
+        {
+          ref: "form",
+          staticClass: "demo-ruleForm",
+          attrs: { model: _vm.form, "label-width": "204px" }
+        },
+        [
+          _c("el-alert", {
+            staticStyle: { "margin-bottom": "15px" },
+            attrs: {
+              title:
+                "双方友好协商撤单，若有分歧可以在订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。",
+              type: "success",
+              closable: false
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            {
+              attrs: {
+                label: "我已支付代练费（元）",
+                rules: [{ required: true, message: "仲裁原因不能为空" }]
+              }
+            },
+            [
+              _c("el-input", {
+                attrs: { type: "input" },
+                model: {
+                  value: _vm.form.reason,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "reason", $$v)
+                  },
+                  expression: "form.reason"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            {
+              attrs: {
+                label: "需要对方赔付保证金",
+                rules: [{ required: true, message: "仲裁原因不能为空" }]
+              }
+            },
+            [
+              _c("el-input", {
+                attrs: { type: "input" },
+                model: {
+                  value: _vm.form.tradeNo,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "tradeNo", $$v)
+                  },
+                  expression: "form.tradeNo"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            { attrs: { label: "对方已预付安全保证金（元）" } },
+            [
+              _c("el-input", {
+                attrs: { type: "input", disabled: _vm.inputDisabled },
+                model: {
+                  value: _vm.form.reason,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "reason", $$v)
+                  },
+                  expression: "form.reason"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            { attrs: { label: "对方已预付效率保证金（元）" } },
+            [
+              _c("el-input", {
+                attrs: { type: "input", disabled: _vm.inputDisabled },
+                model: {
+                  value: _vm.form.reason,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "reason", $$v)
+                  },
+                  expression: "form.reason"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            {
+              attrs: {
+                label: "我愿意支付代练费（元）",
+                rules: [{ required: true, message: "仲裁原因不能为空" }]
+              }
+            },
+            [
+              _c("el-input", {
+                attrs: { type: "input", prop: "no" },
+                model: {
+                  value: _vm.form.reason,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "reason", $$v)
+                  },
+                  expression: "form.reason"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            {
+              attrs: {
+                label: "撤销理由",
+                rules: [{ required: true, message: "仲裁原因不能为空" }]
+              }
+            },
+            [
+              _c("el-input", {
+                attrs: { type: "textarea", rows: 5 },
+                model: {
+                  value: _vm.form.reason,
+                  callback: function($$v) {
+                    _vm.$set(_vm.form, "reason", $$v)
+                  },
+                  expression: "form.reason"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            [
+              _c(
+                "el-button",
+                {
+                  attrs: { type: "primary" },
+                  on: {
+                    click: function($event) {
+                      _vm.handleSubmitForm("form")
+                    }
+                  }
+                },
+                [_vm._v("提交")]
+              ),
+              _vm._v(" "),
+              _c(
+                "el-button",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.handleResetForm("form")
+                    }
+                  }
+                },
+                [_vm._v("重置")]
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-438562cc", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-85ed1e1c\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -66677,16 +67129,24 @@ var render = function() {
                 [
                   _c(
                     "el-form-item",
-                    { attrs: { label: "玩家旺旺" } },
+                    { attrs: { label: "活动名称", prop: "name" } },
                     [
-                      _c("el-input", {
-                        attrs: { placeholder: "玩家旺旺" },
+                      _c("el-date-picker", {
+                        attrs: {
+                          type: "daterange",
+                          align: "right",
+                          "unlink-panels": "",
+                          "range-separator": "至",
+                          "start-placeholder": "开始日期",
+                          "end-placeholder": "结束日期",
+                          "picker-options": _vm.pickerOptions
+                        },
                         model: {
-                          value: _vm.searchParams.trade_no,
+                          value: _vm.searchParams.created_at,
                           callback: function($$v) {
-                            _vm.$set(_vm.searchParams, "trade_no", $$v)
+                            _vm.$set(_vm.searchParams, "created_at", $$v)
                           },
-                          expression: "searchParams.trade_no"
+                          expression: "searchParams.created_at"
                         }
                       })
                     ],
@@ -66697,18 +67157,9 @@ var render = function() {
               ),
               _vm._v(" "),
               _c(
-                "el-form-item",
-                [
-                  _c(
-                    "el-button",
-                    {
-                      attrs: { type: "primary" },
-                      on: { click: _vm.handleSearch }
-                    },
-                    [_vm._v("查询")]
-                  )
-                ],
-                1
+                "el-button",
+                { attrs: { type: "primary" }, on: { click: _vm.handleSearch } },
+                [_vm._v("查询")]
               )
             ],
             1
@@ -66719,7 +67170,11 @@ var render = function() {
       _vm._v(" "),
       _c(
         "el-tabs",
-        { on: { "tab-click": _vm.handleParamsStatus } },
+        {
+          staticClass: "game-leveling-order-tab",
+          attrs: { size: "small" },
+          on: { "tab-click": _vm.handleParamsStatus }
+        },
         [
           _c("el-tab-pane", [
             _c(
@@ -66883,6 +67338,15 @@ var render = function() {
       _c(
         "el-table",
         {
+          directives: [
+            {
+              name: "loading",
+              rawName: "v-loading",
+              value: _vm.tableLoading,
+              expression: "tableLoading"
+            }
+          ],
+          staticClass: "game-leveling-order-table",
           staticStyle: { width: "100%", height: "800px" },
           attrs: { height: _vm.tableHeight, data: _vm.tableData, border: "" }
         },
@@ -67341,7 +67805,19 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c("ApplyComplain", { attrs: { visible: _vm.visible } })
+      _vm.applyComplainVisible
+        ? _c("ApplyComplain", {
+            attrs: { tradeNo: _vm.tradeNo },
+            on: { handleApplyComplainVisible: _vm.handleApplyComplainVisible }
+          })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.applyConsultVisible
+        ? _c("ApplyConsult", {
+            attrs: { tradeNo: _vm.tradeNo },
+            on: { handleApplyConsultVisible: _vm.handleApplyConsultVisible }
+          })
+        : _vm._e()
     ],
     1
   )
@@ -67358,23 +67834,23 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/Layout.vue":
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/Layout.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/Layout.vue");
+var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/Layout.vue");
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("3ff8515d", content, false, {});
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("e76e1bc8", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Layout.vue", function() {
-     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Layout.vue");
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Layout.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Layout.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -67412,23 +67888,50 @@ if(false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue":
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-438562cc\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/ApplyConsult.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue");
+var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-438562cc\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/ApplyConsult.vue");
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("5b479614", content, false, {});
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("55bffa54", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./GameLevelingOrder.vue", function() {
-     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./GameLevelingOrder.vue");
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-438562cc\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./ApplyConsult.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-438562cc\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./ApplyConsult.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue");
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("68a64d0a", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./GameLevelingOrder.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./GameLevelingOrder.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -68763,6 +69266,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('game-leveling-order', __w
 var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     state: {
         pageTitle: '',
+        applyComplainVisible: false,
         applyConsultVisible: false
     },
     mutations: {
@@ -68772,6 +69276,11 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
         },
 
         // 仲裁窗弹窗
+        handleApplyComplainVisible: function handleApplyComplainVisible(state, par) {
+            state.applyComplainVisible = par.visible;
+        },
+
+        // 协商窗弹窗
         handleApplyConsultVisible: function handleApplyConsultVisible(state, par) {
             state.applyConsultVisible = par.visible;
         }
@@ -68884,25 +69393,77 @@ module.exports = Component.exports
 
 /***/ }),
 
+/***/ "./resources/assets/frontend/js/components/ApplyConsult.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-438562cc\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/ApplyConsult.vue")
+}
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/ApplyConsult.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-438562cc\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/ApplyConsult.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-438562cc"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/frontend/js/components/ApplyConsult.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-438562cc", Component.options)
+  } else {
+    hotAPI.reload("data-v-438562cc", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
 /***/ "./resources/assets/frontend/js/components/GameLevelingOrder.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue")
+  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-85ed1e1c\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue")
 }
 var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
 /* script */
 var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue")
 /* template */
-var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-85ed1e1c\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue")
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-85ed1e1c\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue")
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = "data-v-85ed1e1c"
+var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
@@ -68942,19 +69503,19 @@ module.exports = Component.exports
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/Layout.vue")
+  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/Layout.vue")
 }
 var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
 /* script */
 var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/Layout.vue")
 /* template */
-var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-1092c626\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/Layout.vue")
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-1092c626\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/Layout.vue")
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = "data-v-1092c626"
+var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(

@@ -16,7 +16,7 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
 
         // 订单
         Route::prefix('order')->namespace('Order')->group(function () {
-            Route::post('image-base64', 'GameLevelingController@imageBase64')->name('order.game-leveling.image-base64');
+
             // 代练订单
             Route::prefix('game-leveling')->group(function () {
                 // 订单列表视图

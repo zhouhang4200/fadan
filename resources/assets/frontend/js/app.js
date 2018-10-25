@@ -19,7 +19,8 @@ Vue.component('game-leveling-order', require('./components/GameLevelingOrder.vue
 const store = new Vuex.Store({
     state: {
         pageTitle: '',
-        applyConsultVisible: false
+        applyComplainVisible: false,
+        applyConsultVisible: false,
     },
     mutations: {
         // 页标题
@@ -27,6 +28,10 @@ const store = new Vuex.Store({
             state.pageTitle = par.pageTitle
         },
         // 仲裁窗弹窗
+        handleApplyComplainVisible(state, par) {
+            state.applyComplainVisible = par.visible
+        },
+        // 协商窗弹窗
         handleApplyConsultVisible(state, par) {
             state.applyConsultVisible = par.visible
         }
