@@ -15,7 +15,9 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
     Route::middleware(['auth'])->group(function () {
 
         // 获取所有游戏
-        Route::post('games', 'GameController@index')->name('games');
+        Route::any('games', 'GameController@index')->name('games');
+        // 游戏区服数据
+        Route::any('game-region-server', 'GameController@gameRegionServer')->name('game-region-server');
         // 游戏代练类型
         Route::post('game-leveling-types', 'GameLevelingTypeController@index')->name('game-leveling-types');
 
@@ -28,6 +30,10 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 Route::get('/', 'GameLevelingController@index')->name('order.game-leveling.index');
                 // 获取订单列表数据
                 Route::post('data-list', 'GameLevelingController@dataList')->name('order.game-leveling.data-list');
+                // 下单
+                Route::get('create', 'GameLevelingController@create')->name('order.game-leveling.create');
+                Route::post('create', 'GameLevelingController@doCreate');
+
                 // 接单
                 Route::post('take', 'GameLevelingController@take')->name('order.game-leveling.take');
                 // 撤单

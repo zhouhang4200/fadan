@@ -1,5 +1,5 @@
 <template>
-    <div class="game-leveling-order">
+    <div class="main content game-leveling-order">
         <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
             <el-row :gutter="16">
                 <el-col :span="7">

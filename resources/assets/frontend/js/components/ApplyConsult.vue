@@ -1,60 +1,60 @@
 <template>
     <el-dialog
-            width="40%"
-            title="申请撤销"
-            :visible=true
-            :before-close="handleBeforeClose">
-        <el-form :model="form" ref="form" label-width="204px" class="demo-ruleForm">
-            <el-alert
-                    title="双方友好协商撤单，若有分歧可以在订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。"
-                    type="success"
-                    style="margin-bottom: 15px"
-                    :closable="false">
-            </el-alert>
+                width="40%"
+                title="申请撤销"
+                :visible=true
+                :before-close="handleBeforeClose">
+            <el-form :model="form" ref="form" label-width="204px" class="demo-ruleForm">
+                <el-alert
+                        title="双方友好协商撤单，若有分歧可以在订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。"
+                        type="success"
+                        style="margin-bottom: 15px"
+                        :closable="false">
+                </el-alert>
 
-            <el-form-item label="我已支付代练费（元）"
-                          :rules="[{ required: true, message: '仲裁原因不能为空'}]">
-                <el-input type="input"
-                          :disabled="inputDisabled"
-                          v-model="form.amount"></el-input>
-            </el-form-item>
+                <el-form-item label="我已支付代练费（元）"
+                              :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                    <el-input type="input"
+                              :disabled="inputDisabled"
+                              v-model="form.amount"></el-input>
+                </el-form-item>
 
-            <el-form-item label="需要对方赔付保证金"
-                          :rules="[{ required: true, message: '仲裁原因不能为空'}]">
-                <el-input type="input"
-                          v-model="form.paymentDeposit"></el-input>
-            </el-form-item>
+                <el-form-item label="需要对方赔付保证金"
+                              :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                    <el-input type="input"
+                              v-model="form.paymentDeposit"></el-input>
+                </el-form-item>
 
-            <el-form-item label="对方已预付安全保证金（元）">
-                <el-input type="input"
-                          :disabled="inputDisabled"
-                          v-model="form.securityDeposit"></el-input>
-            </el-form-item>
+                <el-form-item label="对方已预付安全保证金（元）">
+                    <el-input type="input"
+                              :disabled="inputDisabled"
+                              v-model="form.securityDeposit"></el-input>
+                </el-form-item>
 
-            <el-form-item label="对方已预付效率保证金（元）">
-                <el-input type="input"
-                          :disabled="inputDisabled"
-                          v-model="form.efficiencyDeposit"></el-input>
-            </el-form-item>
+                <el-form-item label="对方已预付效率保证金（元）">
+                    <el-input type="input"
+                              :disabled="inputDisabled"
+                              v-model="form.efficiencyDeposit"></el-input>
+                </el-form-item>
 
-            <el-form-item label="我愿意支付代练费（元）"
-                          :rules="[{ required: true, message: '仲裁原因不能为空'}]">
-                <el-input type="input"
-                          v-model="form.paymentAmount" prop="no"></el-input>
-            </el-form-item>
+                <el-form-item label="我愿意支付代练费（元）"
+                              :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                    <el-input type="input"
+                              v-model="form.paymentAmount" prop="no"></el-input>
+                </el-form-item>
 
-            <el-form-item label="撤销理由"
-                          :rules="[{ required: true, message: '仲裁原因不能为空'}]">
-                <el-input type="textarea"
-                          :rows="5"
-                          v-model="form.reason"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="handleSubmitForm('form')">提交</el-button>
-                <el-button @click="handleResetForm('form')">重置</el-button>
-            </el-form-item>
-        </el-form>
-    </el-dialog>
+                <el-form-item label="撤销理由"
+                              :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                    <el-input type="textarea"
+                              :rows="5"
+                              v-model="form.reason"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="handleSubmitForm('form')">提交</el-button>
+                    <el-button @click="handleResetForm('form')">重置</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
 </template>
 
 <script>

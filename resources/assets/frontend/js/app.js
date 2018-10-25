@@ -9,9 +9,12 @@ import '../sass/app.scss';
 Vue.use(ElementUI, {size:"small"});
 Vue.use(Vuex);
 
-
+// 布局
 Vue.component('layout', require('./components/Layout.vue'));
+// 代练订单列表
 Vue.component('game-leveling-order', require('./components/GameLevelingOrder.vue'));
+// 代练下单
+Vue.component('game-leveling-order-create', require('./components/GameLevelingOrderCreate.vue'));
 //资金流水
 Vue.component('amount-flow', require('./components/AmountFlow.vue'));
 // 我的资产
