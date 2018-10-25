@@ -436,4 +436,40 @@ class GameLevelingOrder extends Model
             }
         }
     }
+
+    /**
+     * 按传入条件过滤
+     * @param $query
+     * @param $conditions
+     * @return mixed
+     */
+    public static function scopeFilter($query, $conditions)
+    {
+
+        if (isset($conditions['order_no']) && $conditions['order_no']) {
+            $query->where('trade_no', $conditions['order_no'])->orWhere('trade_no', $conditions['order_no']);
+        }
+        if (isset($conditions['buyer_nick']) && $conditions['buyer_nick']) {
+//            $query->where('buyer_nick', $conditions['buyer_nick']);
+        }
+        if (isset($conditions['user_id']) && $conditions['user_id']) {
+            $query->where('user_id', $conditions['user_id']);
+        }
+        if (isset($conditions['game_id']) && $conditions['game_id']) {
+            $query->where('game_id', $conditions['game_id']);
+        }
+        if (isset($conditions['game_leveling_type_id']) && $conditions['game_leveling_type_id']) {
+            $query->where('game_leveling_type_id', $conditions['game_leveling_type_id']);
+        }
+        if (isset($conditions['platform_id']) && $conditions['platform_id']) {
+            $query->where('platform_id', $conditions['platform_id']);
+        }
+        if (isset($conditions['status']) && $conditions['status']) {
+            $query->where('status', $conditions['status']);
+        }
+        if (isset($conditions['created_at']) && $conditions['created_at']) {
+            $query->whereBetween('created_at', $conditions['created_at']);
+        }
+        return $query;
+    }
 }

@@ -96,7 +96,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "ApplyComplain",
@@ -109,8 +108,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             fileReader: '',
-            visible: false,
-            showClose: true,
             dialogImageUrl: '',
             dialogVisible: false,
             form: {
@@ -122,18 +119,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
-        // handleVisible() {
-        //     this.$store.commit('handleApplyComplainVisible',{visible:false});
-        // },
+        handleBeforeClose: function handleBeforeClose() {
+            this.$emit("handleApplyComplainVisible", { "visible": false });
+        },
         handleSubmitForm: function handleSubmitForm(formName) {
             var _this = this;
 
             this.$refs[formName].validate(function (valid) {
                 if (valid) {
-                    alert('submit!');
+                    _this.$message({
+                        type: 'success',
+                        message: '提交表单'
+                    });
+                    // 关闭窗口
                     _this.$emit("handleApplyComplainVisible", { "visible": false });
                 } else {
-                    console.log('error submit!!');
                     return false;
                 }
             });
@@ -253,7 +253,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "ApplyConsult",
-    props: ['tradeNo'],
+    props: ['tradeNo', 'amount', 'securityDeposit', 'efficiencyDeposit'],
     computed: {
         // getVisible() {
         //     return this.$store.state.applyConsultVisible;
@@ -263,21 +263,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             fileReader: '',
             visible: false,
-            showClose: true,
             inputDisabled: true,
             dialogImageUrl: '',
             dialogVisible: false,
             form: {
-                image1: '',
                 reason: '',
-                tradeNo: this.tradeNo
+                paymentAmount: '',
+                paymentDeposit: '',
+                tradeNo: this.tradeNo,
+                amount: this.amount,
+                securityDeposit: this.securityDeposit,
+                efficiencyDeposit: this.efficiencyDeposit
             }
         };
     },
 
     methods: {
-        handleVisible: function handleVisible() {
-            // this.$store.commit('handleApplyConsultVisible',{visible:false});
+        handleBeforeClose: function handleBeforeClose() {
+            this.$emit("handleApplyConsultVisible", { "visible": false });
         },
         handleSubmitForm: function handleSubmitForm(formName) {
             var _this = this;
@@ -694,6 +697,71 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -702,13 +770,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         ApplyComplain: __WEBPACK_IMPORTED_MODULE_0__ApplyComplain___default.a,
         ApplyConsult: __WEBPACK_IMPORTED_MODULE_1__ApplyConsult___default.a
     },
-    props: ['pageTitle', 'gameLevelingOrderApi', 'gameLevelingImageBase64Api', 'gameLevelingOrderDeleteApi'],
+
+    props: ['pageTitle', 'orderApi', 'gameLevelingTypesApi', 'gamesApi', 'deleteApi', 'onSaleApi', 'offSaleApi', 'applyConsultApi', 'cancelConsultApi', 'rejectConsultApi', 'agreeConsultApi', 'completeApi', 'lockApi', 'cancelLockApi', 'anomalyApi', 'cancelAnomalyApi'],
+    computed: {
+        tableDataEmpty: function tableDataEmpty() {
+            return [this.tableData.length === 0 ? ' el-table_empty' : ''];
+        }
+    },
     data: function data() {
         return {
-            visible: false,
             tradeNo: '',
+            amount: 0,
+            securityDeposit: 0,
+            efficiencyDeposit: 0,
             applyConsultVisible: false,
             applyComplainVisible: false,
+            platformOptions: [{ key: 0, value: '所有平台' }, { key: 5, value: '丸子代练' }, { key: 1, value: '91代练' }, { key: 3, value: '蚂蚁代练' }],
+            gameLevelingTypeOptions: [],
+            gameOptions: [],
             searchParams: {
                 status: '',
                 order_no: '',
@@ -716,12 +795,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 game_id: '',
                 game_leveling_type_id: '',
                 user_id: '',
-                platform_id: '',
+                platform_id: 0,
                 start_created_at: '',
                 created_at: '',
                 page: 1
             },
-            pickerOptions2: {
+            pickerOptions: {
                 shortcuts: [{
                     text: '最近一周',
                     onClick: function onClick(picker) {
@@ -788,15 +867,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         // 表格高度计算
         handleTableHeight: function handleTableHeight() {
-            this.tableHeight = window.innerHeight - 380;
+            this.tableHeight = window.innerHeight - 345;
         },
 
-        // 加载数据
+        // 加载订单数据
         handleTableData: function handleTableData() {
             var _this = this;
 
             this.tableLoading = true;
-            axios.post(this.gameLevelingOrderApi, this.searchParams).then(function (res) {
+            axios.post(this.orderApi, this.searchParams).then(function (res) {
                 _this.tableData = res.data.data;
                 _this.tableDataTotal = res.data.total;
                 _this.tableLoading = false;
@@ -807,6 +886,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 });
                 _this.tableLoading = false;
             });
+        },
+
+        // 加载游戏选项
+        handleGameOptions: function handleGameOptions() {
+            var _this2 = this;
+
+            axios.post(this.gamesApi).then(function (res) {
+                _this2.gameOptions = res.data;
+            }).catch(function (err) {});
         },
 
         // 搜索
@@ -821,9 +909,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
 
         // 切换状态tab
-        handleParamsStatus: function handleParamsStatus(tab, event) {
-            this.searchParams.status = event.target.getAttribute('data-status');
+        handleParamsStatus: function handleParamsStatus() {
             this.handleTableData();
+        },
+
+        // 选择游戏后加载代练类型
+        handleSearchParamsGameId: function handleSearchParamsGameId() {
+            var _this3 = this;
+
+            if (this.searchParams.game_id) {
+                axios.post(this.gameLevelingTypesApi, {
+                    'game_id': this.searchParams.game_id
+                }).then(function (res) {
+                    _this3.gameLevelingTypeOptions = res.data;
+                }).catch(function (err) {});
+            } else {
+                this.gameLevelingTypeOptions = [];
+            }
         },
 
         // 查看订单
@@ -836,62 +938,104 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         // 撤单
         handleDelete: function handleDelete(row) {
-            var _this2 = this;
+            var _this4 = this;
 
             this.$confirm('您确定要"撤单"吗？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function () {
-                _this2.applyConsultVisible = true;
-                _this2.tradeNo = row.trade_no;
-
-                // this.$store.commit('handleApplyConsultVisible',{visible:true});
+                axios.post(_this4.deleteApi, {
+                    'trade_no': row.trade_no
+                }).then(function (res) {}).catch(function (err) {
+                    _this4.$message({
+                        message: '操作失败',
+                        type: 'error'
+                    });
+                });
             });
         },
 
         // 上架
-        handleOnSale: function handleOnSale(index) {},
+        handleOnSale: function handleOnSale(row) {
+            var _this5 = this;
+
+            this.$confirm('您确定要"上架"吗？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(function () {
+                axios.post(_this5.onSaleApi, {
+                    'trade_no': row.trade_no
+                }).then(function (res) {
+                    _this5.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    _this5.handleTableData();
+                }).catch(function (err) {
+                    _this5.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
+                });
+            });
+        },
 
         // 下架
-        handleOffSale: function handleOffSale(index) {
-            var _this3 = this;
+        handleOffSale: function handleOffSale(row) {
+            var _this6 = this;
 
             this.$confirm('您确定要"下架"吗？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function () {
-                axios.post(_this3.gameLevelingOrderDeleteApi, {
-                    'trade_no': _this3.tableData[index].trade_no
-                }).then(function (res) {}).catch(function (err) {});
-            }).catch(function () {
-                _this3.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                axios.post(_this6.offSaleApi, {
+                    'trade_no': row.trade_no
+                }).then(function (res) {
+                    _this6.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    _this6.handleTableData();
+                }).catch(function (err) {
+                    _this6.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
                 });
             });
         },
 
         // 申请仲裁
-        handleApplyComplain: function handleApplyComplain(index) {},
+        handleApplyComplain: function handleApplyComplain(row) {
+            this.tradeNo = row.trade_no;
+            this.applyComplainVisible = true;
+        },
 
         // 取消仲裁
         handleCancelComplain: function handleCancelComplain(index) {
-            var _this4 = this;
+            var _this7 = this;
 
-            this.$confirm('您确定要"下架"吗？', '提示', {
+            this.$confirm('您确定要"取消仲裁"吗？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function () {
-                axios.post(_this4.gameLevelingOrderDeleteApi, {
-                    'trade_no': _this4.tableData[index].trade_no
-                }).then(function (res) {}).catch(function (err) {});
-            }).catch(function () {
-                _this4.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                axios.post(_this7.cancelConsultApi, {
+                    'trade_no': _this7.tableData[index].trade_no
+                }).then(function (res) {
+                    _this7.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    _this7.handleTableData();
+                }).catch(function (err) {
+                    _this7.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
                 });
             });
         },
@@ -900,135 +1044,195 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         handleApplyCompleteImage: function handleApplyCompleteImage(index) {},
 
         // 完成验收
-        handleComplete: function handleComplete(index) {
-            var _this5 = this;
+        handleComplete: function handleComplete(row) {
+            var _this8 = this;
 
-            this.$confirm('您确定要"下架"吗？', '提示', {
+            this.$confirm('您确定要"完成验收"吗？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function () {
-                axios.post(_this5.gameLevelingOrderDeleteApi, {
-                    'trade_no': _this5.tableData[index].trade_no
-                }).then(function (res) {}).catch(function (err) {});
-            }).catch(function () {
-                _this5.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                axios.post(_this8.completeApi, {
+                    'trade_no': row.trade_no
+                }).then(function (res) {
+                    _this8.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    _this8.handleTableData();
+                }).catch(function (err) {
+                    _this8.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
                 });
             });
         },
 
         // 申请撤销
-        handleApplyConsult: function handleApplyConsult(index) {},
+        handleApplyConsult: function handleApplyConsult(row) {
+            this.tradeNo = row.trade_no;
+            this.amount = row.amount;
+            this.securityDeposit = row.security_deposit;
+            this.efficiencyDeposit = row.efficiency_eeposit;
+            this.applyConsultVisible = true;
+        },
 
         // 取消撤销
-        handleCancelConsult: function handleCancelConsult(index) {
-            var _this6 = this;
+        handleCancelConsult: function handleCancelConsult(row) {
+            var _this9 = this;
 
-            this.$confirm('您确定要"下架"吗？', '提示', {
+            this.$confirm('您确定要"取消撤销"吗？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function () {
-                axios.post(_this6.gameLevelingOrderDeleteApi, {
-                    'trade_no': _this6.tableData[index].trade_no
-                }).then(function (res) {}).catch(function (err) {});
-            }).catch(function () {
-                _this6.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                axios.post(_this9.cancelConsultApi, {
+                    'trade_no': row.trade_no
+                }).then(function (res) {
+                    _this9.$message({
+                        type: 'success',
+                        message: '操作成功'
+                    });
+                    _this9.handleTableData();
+                }).catch(function (err) {
+                    _this9.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
                 });
             });
         },
 
         // 同意撤销
-        handleAgreeConsult: function handleAgreeConsult(index) {
-            var _this7 = this;
+        handleAgreeConsult: function handleAgreeConsult(row) {
+            var _this10 = this;
 
-            this.$confirm('您确定要"下架"吗？', '提示', {
+            this.$confirm('您确定要"同意撤销"吗？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function () {
-                axios.post(_this7.gameLevelingOrderDeleteApi, {
-                    'trade_no': _this7.tableData[index].trade_no
-                }).then(function (res) {}).catch(function (err) {});
-            }).catch(function () {
-                _this7.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                axios.post(_this10.agreeConsultApi, {
+                    'trade_no': row.trade_no
+                }).then(function (res) {
+                    _this10.$message({
+                        type: 'success',
+                        message: '操作成功'
+                    });
+                    _this10.handleTableData();
+                }).catch(function (err) {
+                    _this10.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
                 });
             });
         },
 
         // 不同意撤销
-        handleRefuseConsult: function handleRefuseConsult(index) {
-            var _this8 = this;
+        handleRejectConsult: function handleRejectConsult(row) {
+            var _this11 = this;
 
-            this.$confirm('您确定要"下架"吗？', '提示', {
+            this.$confirm('您确定"不同意撤销"吗？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function () {
-                axios.post(_this8.gameLevelingOrderDeleteApi, {
-                    'trade_no': _this8.tableData[index].trade_no
-                }).then(function (res) {}).catch(function (err) {});
-            }).catch(function () {
-                _this8.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                axios.post(_this11.rejectConsultApi, {
+                    'trade_no': row.trade_no
+                }).then(function (res) {
+                    _this11.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    _this11.handleTableData();
+                }).catch(function (err) {
+                    _this11.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
                 });
             });
         },
 
         // 锁定
-        handleLock: function handleLock(index) {
-            var _this9 = this;
+        handleLock: function handleLock(row) {
+            var _this12 = this;
 
-            this.$confirm('您确定要"下架"吗？', '提示', {
+            this.$confirm('您确定要"锁定"订单吗？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function () {
-                axios.post(_this9.gameLevelingOrderDeleteApi, {
-                    'trade_no': _this9.tableData[index].trade_no
-                }).then(function (res) {}).catch(function (err) {});
-            }).catch(function () {
-                _this9.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                axios.post(_this12.lockApi, {
+                    'trade_no': row.trade_no
+                }).then(function (res) {
+                    _this12.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    _this12.handleTableData();
+                }).catch(function (err) {
+                    _this12.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
                 });
             });
         },
 
         // 取消锁定
-        handleCancelLock: function handleCancelLock(index) {
-            var _this10 = this;
+        handleCancelLock: function handleCancelLock(row) {
+            var _this13 = this;
 
-            this.$confirm('您确定要"下架"吗？', '提示', {
+            this.$confirm('您确定要"取消锁定"吗？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(function () {
-                axios.post(_this10.gameLevelingOrderDeleteApi, {
-                    'trade_no': _this10.tableData[index].trade_no
-                }).then(function (res) {}).catch(function (err) {});
-            }).catch(function () {
-                _this10.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                axios.post(_this13.cancelLock, {
+                    'trade_no': row.trade_no
+                }).then(function (res) {
+                    _this13.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    _this13.handleTableData();
+                }).catch(function (err) {
+                    _this13.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
                 });
             });
         },
 
         // 重新下单
-        handleRepeatOrder: function handleRepeatOrder(index) {}
+        handleRepeatOrder: function handleRepeatOrder(index) {},
+
+        // 重置表单
+        handleResetForm: function handleResetForm() {
+            this.searchParams = {
+                status: '',
+                order_no: '',
+                buyer_nick: '',
+                game_id: '',
+                game_leveling_type_id: '',
+                user_id: '',
+                platform_id: 0,
+                start_created_at: '',
+                created_at: '',
+                page: 1
+            };
+            this.handleTableData();
+        }
     },
     created: function created() {
         this.handlePageTitle();
         this.handleTableHeight();
         this.handleTableData();
+        this.handleGameOptions();
         window.addEventListener('resize', this.handleTableHeight);
     },
     destroyed: function destroyed() {
@@ -1043,6 +1247,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1174,7 +1384,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         handleContentContainerStyle: function handleContentContainerStyle() {
             window.fullHeight = document.documentElement.clientHeight;
             this.menuMinHeight = window.fullHeight + 'px';
-            return this.contentContainerStyle.minHeight = window.fullHeight - 124 + 'px';
+            return this.contentContainerStyle.minHeight = window.fullHeight - 102 + 'px';
         }
     },
     created: function created() {
@@ -2714,7 +2924,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.logo {\n    height: 60px;\n    background-color: #ff9900;\n    padding: 14px 0 14px 16px;\n    line-height: 32px;\n}\n.el-header {\n    color: #333;\n    line-height: 60px;\n}\n.el-aside {\n    color: #333;\n}\n.el-menu {\n    border-right:none;\n}\n.el-main {\n    background-color: #f5f7f9;\n}\n.el-menu-vertical-demo:not(.el-menu--collapse) {\n    width: 200px;\n    min-height: 400px;\n}\n.rotate-icon {\n    -webkit-transform: rotate(-90deg);\n    transform: rotate(-90deg);\n}\n.menu-icon {\n    -webkit-transition: all .3s;\n    transition: all .3s;\n}\n", ""]);
+exports.push([module.i, "\n.logo {\n    height: 60px;\n    background-color: #ff9900;\n    padding: 14px 0 14px 16px;\n    line-height: 32px;\n}\n.el-header {\n    color: #333;\n    line-height: 60px;\n}\n.el-aside {\n    color: #333;\n}\n.el-menu {\n    border-right:none;\n}\n.el-main {\n    background-color: #f5f7f9;\n}\n.el-menu-vertical-demo:not(.el-menu--collapse) {\n    width: 200px;\n    min-height: 400px;\n}\n.rotate-icon {\n    -webkit-transform: rotate(-90deg);\n    transform: rotate(-90deg);\n}\n.menu-icon {\n    -webkit-transition: all .3s;\n    transition: all .3s;\n}\n.el-message {\n    top:8px;\n}\n", ""]);
 
 // exports
 
@@ -2759,7 +2969,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.game-leveling-order-tab .el-tabs__item {\n    font-weight: normal;\n}\n.game-leveling-order-table .el-button {\n    width: 80px;\n}\n.search-form-inline .el-date-editor--daterange.el-input__inner,\n.search-form-inline .el-form-item {\n    width:100%;\n}\n.search-form-inline .el-range-separator {\n    width:10%;\n}\n.search-form-inline .el-form-item__content {\n    width:80%;\n}\n", ""]);
+exports.push([module.i, "\n.game-leveling-order-tab .el-tabs__item {\n    font-weight: normal;\n}\n.game-leveling-order-table .el-button {\n    width: 80px;\n}\n.el-table_empty .el-table__empty-block {\n    width: auto !important;\n}\n.search-form-inline .el-select,\n.search-form-inline .el-date-editor--daterange.el-input__inner,\n.search-form-inline .el-form-item {\n    width:100%;\n}\n.search-form-inline .el-range-separator {\n    width:10%;\n}\n.search-form-inline .el-form-item__content {\n    width:80%;\n}\n\n", ""]);
 
 // exports
 
@@ -66424,7 +66634,7 @@ var render = function() {
               staticClass: "el-menu-vertical-demo",
               attrs: {
                 "collapse-transition": _vm.collapseTransition,
-                "default-active": "1-4-1",
+                "default-active": "1-3",
                 "background-color": "#515a6e",
                 "min-height": _vm.menuMinHeight,
                 "text-color": "#fff",
@@ -66441,70 +66651,122 @@ var render = function() {
                     _c("i", { staticClass: "el-icon-location" }),
                     _vm._v(" "),
                     _c("span", { attrs: { slot: "title" }, slot: "title" }, [
-                      _vm._v("导航一")
+                      _vm._v("工作台")
                     ])
                   ]),
                   _vm._v(" "),
-                  _c(
-                    "el-menu-item-group",
-                    [
-                      _c(
-                        "a",
-                        { attrs: { href: "http://baidu.com" } },
-                        [
-                          _c(
-                            "el-menu-item",
-                            { attrs: { index: "1-1", href: "baidu.com" } },
-                            [_vm._v("选项1")]
-                          )
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c("el-menu-item", { attrs: { index: "1-2" } }, [
-                        _vm._v("选项2")
-                      ])
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-menu-item-group",
-                    { attrs: { title: "分组2" } },
-                    [
-                      _c("el-menu-item", { attrs: { index: "1-3" } }, [
-                        _vm._v("选项3")
-                      ])
-                    ],
-                    1
-                  )
+                  _c("el-menu-item-group", [
+                    _c(
+                      "a",
+                      { attrs: { href: "http://baidu.com" } },
+                      [
+                        _c(
+                          "el-menu-item",
+                          { attrs: { index: "1-1", href: "baidu.com" } },
+                          [_vm._v("代练待发")]
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      { attrs: { href: "http://baidu.com" } },
+                      [
+                        _c(
+                          "el-menu-item",
+                          { attrs: { index: "1-2", href: "baidu.com" } },
+                          [_vm._v("代练发布")]
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      { attrs: { href: "/v2/order/game-leveling" } },
+                      [
+                        _c(
+                          "el-menu-item",
+                          { attrs: { index: "1-3", href: "baidu.com" } },
+                          [_vm._v("代练订单")]
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      { attrs: { href: "http://baidu.com" } },
+                      [
+                        _c(
+                          "el-menu-item",
+                          { attrs: { index: "1-4", href: "baidu.com" } },
+                          [_vm._v("订单投诉")]
+                        )
+                      ],
+                      1
+                    )
+                  ])
                 ],
                 2
               ),
               _vm._v(" "),
-              _c("el-menu-item", { attrs: { index: "2" } }, [
-                _c("i", { staticClass: "el-icon-menu" }),
-                _vm._v(" "),
-                _c("span", { attrs: { slot: "title" }, slot: "title" }, [
-                  _vm._v("导航二")
-                ])
-              ]),
-              _vm._v(" "),
-              _c("el-menu-item", { attrs: { index: "3" } }, [
-                _c("i", { staticClass: "el-icon-document" }),
-                _vm._v(" "),
-                _c("span", { attrs: { slot: "title" }, slot: "title" }, [
-                  _vm._v("导航三")
-                ])
-              ]),
-              _vm._v(" "),
-              _c("el-menu-item", { attrs: { index: "4" } }, [
-                _c("i", { staticClass: "el-icon-setting" }),
-                _vm._v(" "),
-                _c("span", { attrs: { slot: "title" }, slot: "title" }, [
-                  _vm._v("导航四")
-                ])
-              ])
+              _c(
+                "el-submenu",
+                { attrs: { index: "2" } },
+                [
+                  _c("template", { slot: "title" }, [
+                    _c("i", { staticClass: "el-icon-location" }),
+                    _vm._v(" "),
+                    _c("span", { attrs: { slot: "title" }, slot: "title" }, [
+                      _vm._v("财务")
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("el-menu-item-group", [
+                    _c(
+                      "a",
+                      { attrs: { href: "http://baidu.com" } },
+                      [
+                        _c(
+                          "el-menu-item",
+                          { attrs: { index: "2-1", href: "baidu.com" } },
+                          [_vm._v("代练待发")]
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      { attrs: { href: "http://baidu.com" } },
+                      [
+                        _c(
+                          "el-menu-item",
+                          { attrs: { index: "3-2", href: "baidu.com" } },
+                          [_vm._v("代练发布")]
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      { attrs: { href: "http://baidu.com" } },
+                      [
+                        _c(
+                          "el-menu-item",
+                          { attrs: { index: "2-3", href: "baidu.com" } },
+                          [_vm._v("订单投诉")]
+                        )
+                      ],
+                      1
+                    )
+                  ])
+                ],
+                2
+              )
             ],
             1
           )
@@ -66610,9 +66872,8 @@ var render = function() {
       attrs: {
         title: "申请仲裁",
         visible: true,
-        "before-close": _vm.handleVisible,
         "on-success": _vm.handleUploadSuccess,
-        "show-close": _vm.showClose
+        "before-close": _vm.handleBeforeClose
       }
     },
     [
@@ -66626,13 +66887,13 @@ var render = function() {
         [
           _c(
             "el-form-item",
-            { attrs: { label: "仲裁图片" } },
+            { attrs: { label: "仲裁证据" } },
             [
               _c(
                 "el-upload",
                 {
                   attrs: {
-                    action: "/v2/order/image-base64",
+                    action: "action",
                     "list-type": "picture-card",
                     "on-preview": _vm.handleUploadPreview,
                     "http-request": _vm.handleUploadFile,
@@ -66748,8 +67009,7 @@ var render = function() {
         width: "40%",
         title: "申请撤销",
         visible: true,
-        "before-close": _vm.handleVisible,
-        "show-close": _vm.showClose
+        "before-close": _vm.handleBeforeClose
       }
     },
     [
@@ -66781,13 +67041,13 @@ var render = function() {
             },
             [
               _c("el-input", {
-                attrs: { type: "input" },
+                attrs: { type: "input", disabled: _vm.inputDisabled },
                 model: {
-                  value: _vm.form.reason,
+                  value: _vm.form.amount,
                   callback: function($$v) {
-                    _vm.$set(_vm.form, "reason", $$v)
+                    _vm.$set(_vm.form, "amount", $$v)
                   },
-                  expression: "form.reason"
+                  expression: "form.amount"
                 }
               })
             ],
@@ -66806,11 +67066,11 @@ var render = function() {
               _c("el-input", {
                 attrs: { type: "input" },
                 model: {
-                  value: _vm.form.tradeNo,
+                  value: _vm.form.paymentDeposit,
                   callback: function($$v) {
-                    _vm.$set(_vm.form, "tradeNo", $$v)
+                    _vm.$set(_vm.form, "paymentDeposit", $$v)
                   },
-                  expression: "form.tradeNo"
+                  expression: "form.paymentDeposit"
                 }
               })
             ],
@@ -66824,11 +67084,11 @@ var render = function() {
               _c("el-input", {
                 attrs: { type: "input", disabled: _vm.inputDisabled },
                 model: {
-                  value: _vm.form.reason,
+                  value: _vm.form.securityDeposit,
                   callback: function($$v) {
-                    _vm.$set(_vm.form, "reason", $$v)
+                    _vm.$set(_vm.form, "securityDeposit", $$v)
                   },
-                  expression: "form.reason"
+                  expression: "form.securityDeposit"
                 }
               })
             ],
@@ -66842,11 +67102,11 @@ var render = function() {
               _c("el-input", {
                 attrs: { type: "input", disabled: _vm.inputDisabled },
                 model: {
-                  value: _vm.form.reason,
+                  value: _vm.form.efficiencyDeposit,
                   callback: function($$v) {
-                    _vm.$set(_vm.form, "reason", $$v)
+                    _vm.$set(_vm.form, "efficiencyDeposit", $$v)
                   },
-                  expression: "form.reason"
+                  expression: "form.efficiencyDeposit"
                 }
               })
             ],
@@ -66865,11 +67125,11 @@ var render = function() {
               _c("el-input", {
                 attrs: { type: "input", prop: "no" },
                 model: {
-                  value: _vm.form.reason,
+                  value: _vm.form.paymentAmount,
                   callback: function($$v) {
-                    _vm.$set(_vm.form, "reason", $$v)
+                    _vm.$set(_vm.form, "paymentAmount", $$v)
                   },
-                  expression: "form.reason"
+                  expression: "form.paymentAmount"
                 }
               })
             ],
@@ -66957,7 +67217,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "game-leveling-order" },
+    { staticClass: "game-leveling-order", class: _vm.tableDataEmpty },
     [
       _c(
         "el-form",
@@ -66976,15 +67236,15 @@ var render = function() {
                 [
                   _c(
                     "el-form-item",
-                    { attrs: { label: "活动名称", prop: "name" } },
+                    { attrs: { label: "订单单号", prop: "name" } },
                     [
                       _c("el-input", {
                         model: {
-                          value: _vm.searchParams.trade_no,
+                          value: _vm.searchParams.order_no,
                           callback: function($$v) {
-                            _vm.$set(_vm.searchParams, "trade_no", $$v)
+                            _vm.$set(_vm.searchParams, "order_no", $$v)
                           },
-                          expression: "searchParams.trade_no"
+                          expression: "searchParams.order_no"
                         }
                       })
                     ],
@@ -67000,15 +67260,15 @@ var render = function() {
                 [
                   _c(
                     "el-form-item",
-                    { attrs: { label: "活动名称", prop: "name" } },
+                    { attrs: { label: "玩家旺旺", prop: "name" } },
                     [
                       _c("el-input", {
                         model: {
-                          value: _vm.searchParams.trade_no,
+                          value: _vm.searchParams.buyer_nick,
                           callback: function($$v) {
-                            _vm.$set(_vm.searchParams, "trade_no", $$v)
+                            _vm.$set(_vm.searchParams, "buyer_nick", $$v)
                           },
-                          expression: "searchParams.trade_no"
+                          expression: "searchParams.buyer_nick"
                         }
                       })
                     ],
@@ -67024,17 +67284,36 @@ var render = function() {
                 [
                   _c(
                     "el-form-item",
-                    { attrs: { label: "活动名称", prop: "name" } },
+                    { attrs: { label: "代练游戏", prop: "name" } },
                     [
-                      _c("el-input", {
-                        model: {
-                          value: _vm.searchParams.trade_no,
-                          callback: function($$v) {
-                            _vm.$set(_vm.searchParams, "trade_no", $$v)
-                          },
-                          expression: "searchParams.trade_no"
-                        }
-                      })
+                      _c(
+                        "el-select",
+                        {
+                          attrs: { placeholder: "请选择" },
+                          on: { change: _vm.handleSearchParamsGameId },
+                          model: {
+                            value: _vm.searchParams.game_id,
+                            callback: function($$v) {
+                              _vm.$set(_vm.searchParams, "game_id", $$v)
+                            },
+                            expression: "searchParams.game_id"
+                          }
+                        },
+                        [
+                          _c("el-option", {
+                            key: "0",
+                            attrs: { label: "所有游戏", value: "0" }
+                          }),
+                          _vm._v(" "),
+                          _vm._l(_vm.gameOptions, function(item) {
+                            return _c("el-option", {
+                              key: item.id,
+                              attrs: { label: item.name, value: item.id }
+                            })
+                          })
+                        ],
+                        2
+                      )
                     ],
                     1
                   )
@@ -67048,17 +67327,31 @@ var render = function() {
                 [
                   _c(
                     "el-form-item",
-                    { attrs: { label: "活动名称", prop: "name" } },
+                    { attrs: { label: "代练类型", prop: "name" } },
                     [
-                      _c("el-input", {
-                        model: {
-                          value: _vm.searchParams.trade_no,
-                          callback: function($$v) {
-                            _vm.$set(_vm.searchParams, "trade_no", $$v)
-                          },
-                          expression: "searchParams.trade_no"
-                        }
-                      })
+                      _c(
+                        "el-select",
+                        {
+                          attrs: { placeholder: "请选择" },
+                          model: {
+                            value: _vm.searchParams.game_leveling_type_id,
+                            callback: function($$v) {
+                              _vm.$set(
+                                _vm.searchParams,
+                                "game_leveling_type_id",
+                                $$v
+                              )
+                            },
+                            expression: "searchParams.game_leveling_type_id"
+                          }
+                        },
+                        _vm._l(_vm.gameLevelingTypeOptions, function(item) {
+                          return _c("el-option", {
+                            key: item.id,
+                            attrs: { label: item.name, value: item.id }
+                          })
+                        })
+                      )
                     ],
                     1
                   )
@@ -67079,16 +67372,16 @@ var render = function() {
                 [
                   _c(
                     "el-form-item",
-                    { attrs: { label: "玩家旺旺" } },
+                    { attrs: { label: "发单客服" } },
                     [
                       _c("el-input", {
-                        attrs: { placeholder: "玩家旺旺" },
+                        attrs: { placeholder: "发单客服" },
                         model: {
-                          value: _vm.searchParams.trade_no,
+                          value: _vm.searchParams.user_id,
                           callback: function($$v) {
-                            _vm.$set(_vm.searchParams, "trade_no", $$v)
+                            _vm.$set(_vm.searchParams, "user_id", $$v)
                           },
-                          expression: "searchParams.trade_no"
+                          expression: "searchParams.user_id"
                         }
                       })
                     ],
@@ -67104,18 +67397,27 @@ var render = function() {
                 [
                   _c(
                     "el-form-item",
-                    { attrs: { label: "玩家旺旺" } },
+                    { attrs: { label: "代练平台" } },
                     [
-                      _c("el-input", {
-                        attrs: { placeholder: "玩家旺旺" },
-                        model: {
-                          value: _vm.searchParams.trade_no,
-                          callback: function($$v) {
-                            _vm.$set(_vm.searchParams, "trade_no", $$v)
-                          },
-                          expression: "searchParams.trade_no"
-                        }
-                      })
+                      _c(
+                        "el-select",
+                        {
+                          attrs: { placeholder: "请选择" },
+                          model: {
+                            value: _vm.searchParams.platform_id,
+                            callback: function($$v) {
+                              _vm.$set(_vm.searchParams, "platform_id", $$v)
+                            },
+                            expression: "searchParams.platform_id"
+                          }
+                        },
+                        _vm._l(_vm.platformOptions, function(item) {
+                          return _c("el-option", {
+                            key: item.key,
+                            attrs: { label: item.value, value: item.key }
+                          })
+                        })
+                      )
                     ],
                     1
                   )
@@ -67129,7 +67431,7 @@ var render = function() {
                 [
                   _c(
                     "el-form-item",
-                    { attrs: { label: "活动名称", prop: "name" } },
+                    { attrs: { label: "发布时间", prop: "name" } },
                     [
                       _c("el-date-picker", {
                         attrs: {
@@ -67139,6 +67441,8 @@ var render = function() {
                           "range-separator": "至",
                           "start-placeholder": "开始日期",
                           "end-placeholder": "结束日期",
+                          format: "yyyy 年 MM 月 dd 日",
+                          "value-format": "yyyy-MM-dd",
                           "picker-options": _vm.pickerOptions
                         },
                         model: {
@@ -67160,6 +67464,15 @@ var render = function() {
                 "el-button",
                 { attrs: { type: "primary" }, on: { click: _vm.handleSearch } },
                 [_vm._v("查询")]
+              ),
+              _vm._v(" "),
+              _c(
+                "el-button",
+                {
+                  attrs: { type: "primary" },
+                  on: { click: _vm.handleResetForm }
+                },
+                [_vm._v("重置")]
               )
             ],
             1
@@ -67173,13 +67486,20 @@ var render = function() {
         {
           staticClass: "game-leveling-order-tab",
           attrs: { size: "small" },
-          on: { "tab-click": _vm.handleParamsStatus }
+          on: { "tab-click": _vm.handleParamsStatus },
+          model: {
+            value: _vm.searchParams.status,
+            callback: function($$v) {
+              _vm.$set(_vm.searchParams, "status", $$v)
+            },
+            expression: "searchParams.status"
+          }
         },
         [
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "0" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                全部\n                "),
                 _c("el-badge", { attrs: { value: 0 } })
@@ -67188,10 +67508,10 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "1" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                未接单\n                "),
                 _c("el-badge", { attrs: { value: 1 } })
@@ -67200,10 +67520,10 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "13" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                代练中\n                "),
                 _c("el-badge", { attrs: { value: 13 } })
@@ -67212,46 +67532,46 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "14" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                待验收\n                "),
-                _c("el-badge", { attrs: { value: 12 } })
+                _c("el-badge", { attrs: { value: 14 } })
               ],
               1
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "15" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                撤销中\n                "),
-                _c("el-badge", { attrs: { value: 12 } })
+                _c("el-badge", { attrs: { value: 15 } })
               ],
               1
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "1" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                淘宝退款中\n                "),
-                _c("el-badge", { attrs: { value: 12 } })
+                _c("el-badge", { attrs: { value: 99 } })
               ],
               1
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "17" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                异常\n                "),
                 _c("el-badge", { attrs: { value: 12 } })
@@ -67260,22 +67580,22 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "18" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
-                _vm._v("\n                锁定\n                "),
+                _vm._v("\n                已锁定\n                "),
                 _c("el-badge", { attrs: { value: 12 } })
               ],
               1
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "19" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                已撤销\n                "),
                 _c("el-badge", { attrs: { value: 12 } })
@@ -67284,10 +67604,10 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "20" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                已结算\n                "),
                 _c("el-badge", { attrs: { value: 12 } })
@@ -67296,10 +67616,10 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "21" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                已仲裁\n                "),
                 _c("el-badge", { attrs: { value: 12 } })
@@ -67308,10 +67628,10 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "22" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                已下架\n                "),
                 _c("el-badge", { attrs: { value: 12 } })
@@ -67320,10 +67640,10 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _c("el-tab-pane", [
+          _c("el-tab-pane", { attrs: { name: "24" } }, [
             _c(
               "span",
-              { attrs: { slot: "label", "data-status": "1" }, slot: "label" },
+              { attrs: { slot: "label" }, slot: "label" },
               [
                 _vm._v("\n                已撤单\n                "),
                 _c("el-badge", { attrs: { value: 12 } })
@@ -67407,7 +67727,23 @@ var render = function() {
           }),
           _vm._v(" "),
           _c("el-table-column", {
-            attrs: { prop: "zip", label: "游戏/区/服", width: "120" }
+            attrs: { prop: "zip", label: "游戏/区/服", width: "120" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(scope.row.game_name) +
+                        " / " +
+                        _vm._s(scope.row.take_at) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
           }),
           _vm._v(" "),
           _c("el-table-column", {
@@ -67415,23 +67751,87 @@ var render = function() {
           }),
           _vm._v(" "),
           _c("el-table-column", {
-            attrs: { prop: "game_name", label: "账号/密码", width: "120" }
+            attrs: { prop: "game_name", label: "账号/密码", width: "120" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(scope.row.account) +
+                        " / " +
+                        _vm._s(scope.row.password) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
           }),
           _vm._v(" "),
           _c("el-table-column", {
-            attrs: { prop: "zip", label: "代练价格", width: "120" }
+            attrs: { prop: "amount", label: "代练价格", width: "120" }
           }),
           _vm._v(" "),
           _c("el-table-column", {
-            attrs: { prop: "zip", label: "效率/安全保证金", width: "120" }
+            attrs: { prop: "zip", label: "效率/安全保证金", width: "120" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(scope.row.security_deposit) +
+                        " / " +
+                        _vm._s(scope.row.efficiency_deposit) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
           }),
           _vm._v(" "),
           _c("el-table-column", {
-            attrs: { prop: "zip", label: "发单/接单时间", width: "120" }
+            attrs: { prop: "zip", label: "发单/接单时间", width: "120" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(scope.row.created_at) +
+                        " / " +
+                        _vm._s(scope.row.take_at) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
           }),
           _vm._v(" "),
           _c("el-table-column", {
-            attrs: { prop: "zip", label: "代练时间", width: "120" }
+            attrs: { prop: "zip", label: "代练时间", width: "120" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(scope.row.day) +
+                        " 天 " +
+                        _vm._s(scope.row.hour) +
+                        " 小时\n            "
+                    )
+                  ]
+                }
+              }
+            ])
           }),
           _vm._v(" "),
           _c("el-table-column", {
@@ -67500,7 +67900,7 @@ var render = function() {
                                 attrs: { size: "small", type: "primary" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleOnSale(scope.row)
                                   }
                                 }
                               },
@@ -67521,11 +67921,11 @@ var render = function() {
                                 attrs: { size: "small" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleApplyConsult(scope.row)
                                   }
                                 }
                               },
-                              [_vm._v("撤单")]
+                              [_vm._v("协商撤销")]
                             ),
                             _vm._v(" "),
                             _c(
@@ -67534,7 +67934,7 @@ var render = function() {
                                 attrs: { size: "small", type: "primary" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleApplyComplain(scope.row)
                                   }
                                 }
                               },
@@ -67555,7 +67955,7 @@ var render = function() {
                                 attrs: { size: "small" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleApplyCompleteImage(scope.row)
                                   }
                                 }
                               },
@@ -67568,7 +67968,7 @@ var render = function() {
                                 attrs: { size: "small", type: "primary" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleComplete(scope.row)
                                   }
                                 }
                               },
@@ -67589,7 +67989,7 @@ var render = function() {
                                 attrs: { size: "small" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleCancelConsult(scope.row)
                                   }
                                 }
                               },
@@ -67602,7 +68002,7 @@ var render = function() {
                                 attrs: { size: "small", type: "primary" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleApplyComplain(scope.row)
                                   }
                                 }
                               },
@@ -67623,7 +68023,7 @@ var render = function() {
                                 attrs: { size: "small" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleCancelComplain(scope.row)
                                   }
                                 }
                               },
@@ -67636,7 +68036,7 @@ var render = function() {
                                 attrs: { size: "small", type: "primary" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleAgreeConsult(scope.row)
                                   }
                                 }
                               },
@@ -67657,7 +68057,7 @@ var render = function() {
                                 attrs: { size: "small" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleLock(scope.row)
                                   }
                                 }
                               },
@@ -67670,11 +68070,11 @@ var render = function() {
                                 attrs: { size: "small", type: "primary" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleApplyConsult(scope.row)
                                   }
                                 }
                               },
-                              [_vm._v("撤销")]
+                              [_vm._v("协商撤销")]
                             )
                           ],
                           1
@@ -67691,7 +68091,7 @@ var render = function() {
                                 attrs: { size: "small" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleCancelLock(scope.row)
                                   }
                                 }
                               },
@@ -67704,11 +68104,11 @@ var render = function() {
                                 attrs: { size: "small", type: "primary" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleApplyConsult(scope.row)
                                   }
                                 }
                               },
-                              [_vm._v("撤销")]
+                              [_vm._v("协商撤销")]
                             )
                           ],
                           1
@@ -67725,7 +68125,7 @@ var render = function() {
                                 attrs: { size: "small" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleOnSale(scope.row)
                                   }
                                 }
                               },
@@ -67763,7 +68163,7 @@ var render = function() {
                                 attrs: { size: "small" },
                                 on: {
                                   click: function($event) {
-                                    _vm.handleDelete(scope.row)
+                                    _vm.handleRepeatOrder(scope.row)
                                   }
                                 }
                               },
@@ -67814,7 +68214,12 @@ var render = function() {
       _vm._v(" "),
       _vm.applyConsultVisible
         ? _c("ApplyConsult", {
-            attrs: { tradeNo: _vm.tradeNo },
+            attrs: {
+              tradeNo: _vm.tradeNo,
+              amount: _vm.amount,
+              securityDeposit: _vm.securityDeposit,
+              efficiencyDeposit: _vm.efficiencyDeposit
+            },
             on: { handleApplyConsultVisible: _vm.handleApplyConsultVisible }
           })
         : _vm._e()
@@ -69265,24 +69670,12 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('game-leveling-order', __w
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     state: {
-        pageTitle: '',
-        applyComplainVisible: false,
-        applyConsultVisible: false
+        pageTitle: ''
     },
     mutations: {
         // 页标题
         handlePageTitle: function handlePageTitle(state, par) {
             state.pageTitle = par.pageTitle;
-        },
-
-        // 仲裁窗弹窗
-        handleApplyComplainVisible: function handleApplyComplainVisible(state, par) {
-            state.applyComplainVisible = par.visible;
-        },
-
-        // 协商窗弹窗
-        handleApplyConsultVisible: function handleApplyConsultVisible(state, par) {
-            state.applyConsultVisible = par.visible;
         }
     }
 });

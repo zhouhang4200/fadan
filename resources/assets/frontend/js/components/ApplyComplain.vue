@@ -2,13 +2,12 @@
     <el-dialog
             title="申请仲裁"
             :visible=true
-            :before-close="handleVisible"
             :on-success="handleUploadSuccess"
-            :show-close="showClose">
+            :before-close="handleBeforeClose">
         <el-form :model="form" ref="form" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="仲裁图片">
+            <el-form-item label="仲裁证据">
                 <el-upload
-                        action="/v2/order/image-base64"
+                        action="action"
                         list-type="picture-card"
                         :on-preview="handleUploadPreview"
                         :http-request="handleUploadFile"
@@ -47,8 +46,6 @@
         data() {
             return {
                 fileReader:'',
-                visible: false,
-                showClose: true,
                 dialogImageUrl: '',
                 dialogVisible: false,
                 form: {
@@ -59,16 +56,19 @@
             };
         },
         methods: {
-            // handleVisible() {
-            //     this.$store.commit('handleApplyComplainVisible',{visible:false});
-            // },
+            handleBeforeClose() {
+                this.$emit("handleApplyComplainVisible", {"visible":false});
+            },
             handleSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
+                        this.$message({
+                           type:'success',
+                            message: '提交表单',
+                        });
+                        // 关闭窗口
                         this.$emit("handleApplyComplainVisible", {"visible":false});
                     } else {
-                        console.log('error submit!!');
                         return false;
                     }
                 });
