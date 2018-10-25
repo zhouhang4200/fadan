@@ -170,6 +170,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['AmountFlowApi'],
@@ -66628,11 +66646,11 @@ var render = function() {
             [
               _c(
                 "el-col",
-                { attrs: { span: 6 } },
+                { attrs: { span: 5 } },
                 [
                   _c(
                     "el-form-item",
-                    { attrs: { label: "订单号" } },
+                    { attrs: { label: "订单" } },
                     [
                       _c("el-input", {
                         model: {
@@ -66652,7 +66670,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "el-col",
-                { attrs: { span: 6 } },
+                { attrs: { span: 5 } },
                 [
                   _c(
                     "el-form-item",
@@ -66685,7 +66703,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "el-col",
-                { attrs: { span: 6 } },
+                { attrs: { span: 5 } },
                 [
                   _c(
                     "el-form-item",
@@ -66709,15 +66727,8 @@ var render = function() {
                   )
                 ],
                 1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "el-row",
-            { attrs: { gutter: 16 } },
-            [
+              ),
+              _vm._v(" "),
               _c(
                 "el-col",
                 { attrs: { span: 7 } },

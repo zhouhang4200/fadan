@@ -3,26 +3,23 @@
     <div class="game-leveling-order">
         <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
             <el-row :gutter="16">
-                <el-col :span="6">
-                    <el-form-item label="订单号">
+                <el-col :span="5">
+                    <el-form-item label="订单">
                         <el-input v-model="searchParams.trade_no"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="5">
                     <el-form-item label="类型">
                         <el-select v-model="searchParams.trade_type" placeholder="请选择">
                             <el-option v-for="(value, key) in TradeTypeArr" v-bind:value="key" :label="value"></el-option>
                         </el-select>
                     </el-form-item>
                     </el-col>
-                <el-col :span="6">
+                <el-col :span="5">
                     <el-form-item label="天猫单号">
                         <el-input v-model="searchParams.channel_order_trade_no"></el-input>
                     </el-form-item>
                 </el-col>
-            </el-row>
-
-            <el-row :gutter="16">
                 <el-col :span="7">
                     <el-form-item label="日期">
                         <el-date-picker
