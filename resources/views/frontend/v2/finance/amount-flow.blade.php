@@ -1,6 +1,6 @@
 @extends('frontend.v2.layouts.main')
 
-@section('title', '代练订单')
+@section('title', '资金流水')
 
 @section('content')
     <amount-flow
