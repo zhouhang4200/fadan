@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Frontend\V2\Finance;
 
+use App\Events\Punish;
 use App\Models\UserAsset;
+use App\Models\UserWithdrawOrder;
+use App\Repositories\Frontend\UserWithdrawOrderRepository;
 use Illuminate\Http\Request;
 use App\Models\UserAssetDaily;
 use App\Models\UserAmountFlow;
@@ -105,4 +108,56 @@ class FinanceController extends Controller
         return UserAmountFlow::filter($filter)->with('order')->paginate(15);
     }
 
+    /**
+     * 我的提现
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function myWithdraw()
+    {
+        return view('frontend.v2.finance.my-withdraw');
+    }
+
+    /**
+     * 我的提现接口
+     * @return mixed
+     */
+    public function myWithdrawDataList()
+    {
+        $startDate = request('date')[0];
+        $endDate = request('date')[1];
+        $status = request('status');
+        $filter = compact('startDate', 'endDate', 'status');
+
+        return UserWithdrawOrder::filter($filter)->paginate(15);
+    }
+
+    /**
+     * 可提现金额
+     * @return mixed
+     */
+    public function canWithdraw()
+    {
+        return UserAsset::where('user_id', Auth::user()->getPrimaryUserId())->value('balance');
+    }
+
+    /**
+     * 发送提现申请
+     * @param UserWithdrawOrderRepository $repository
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createWithdraw(UserWithdrawOrderRepository $repository)
+    {
+        $bool = event(new Punish(Auth::user()->getPrimaryUserId()));
+
+        if ($bool) {
+            return response()->json(['status' => 0, 'message' => '您还有罚单没有交清，请先交清罚单哦!']);
+        }
+
+        try {
+            $repository->store(request('fee'), trim(request('remark', '无')) ?: config('withdraw.status')[1]);
+        } catch (\Exception $e) {
+            return response()->ajax(0, $e->getMessage());
+        }
+        return response()->ajax(1, '发送成功!');
+    }
 }

@@ -130,4 +130,25 @@ class UserWithdrawOrder extends Model
     {
         return $this->hasOne(User::class, 'id', 'creator_primary_user_id');
     }
+
+    /**
+     * @param $query
+     * @param array $filter
+     * @return mixed
+     */
+    public static function scopeFilter($query, $filter = [])
+    {
+        if ($filter['startDate']) {
+            $query->where('created_at', '>=', $filter['startDate']);
+        }
+
+        if ($filter['endDate']) {
+            $query->where('created_at', '<=', $filter['endDate']." 23:59:59");
+        }
+
+        if ($filter['status']) {
+            $query->where('status', $filter['status']);
+        }
+        return $query;
+    }
 }

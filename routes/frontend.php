@@ -94,8 +94,13 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             // 资产日报
             Route::get('daily-asset', 'FinanceController@dailyAsset')->name('v2.finance.daily-asset');
             Route::post('daily-asset/data-list', 'FinanceController@dailyAssetDataList')->name('v2.finance.daily-asset.data-list');
+            // 我的提现
+            Route::get('my-withdraw', 'FinanceController@myWithdraw')->name('v2.finance.my-withdraw');
+            Route::post('my-withdraw/data-list', 'FinanceController@myWithdrawDataList')->name('v2.finance.my-withdraw.data-list');
+            Route::post('withdraw', 'FinanceController@withdraw')->name('v2.finance.withdraw');
+            Route::post('can-withdraw', 'FinanceController@canWithdraw')->name('v2.finance.can-withdraw');
+            Route::post('create-withdraw', 'FinanceController@createWithdraw')->name('v2.finance.create-withdraw');
         });
-
     });
 
 //    Route::namespace('Auth')->group(function () {

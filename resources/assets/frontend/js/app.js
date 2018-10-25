@@ -18,7 +18,8 @@ Vue.component('amount-flow', require('./components/AmountFlow.vue'));
 Vue.component('my-asset', require('./components/MyAsset.vue'));
 // 资产日报
 Vue.component('daily-asset', require('./components/DailyAsset.vue'));
-
+// 余额提现
+Vue.component('my-withdraw', require('./components/MyWithdraw.vue'));
 
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
