@@ -2065,7 +2065,7 @@ element-resize-detector@^1.1.14:
 
 element-ui@^2.4.8:
   version "2.4.8"
-  resolved "http://registry.npm.taobao.org/element-ui/download/element-ui-2.4.8.tgz#04c684540f84983ef440b516680b0dc6a4c66eff"
+  resolved "https://registry.yarnpkg.com/element-ui/-/element-ui-2.4.8.tgz#04c684540f84983ef440b516680b0dc6a4c66eff"
   dependencies:
     async-validator "~1.8.1"
     babel-helper-vue-jsx-merge-props "^2.0.0"
