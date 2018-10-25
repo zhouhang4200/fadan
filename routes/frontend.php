@@ -91,6 +91,9 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             // 资金流水
             Route::get('amount-flow', 'FinanceController@amountFlow')->name('v2.finance.amount-flow');
             Route::post('amount-flow/data-list', 'FinanceController@amountFlowDataList')->name('v2.finance.amount-flow.data-list');
+            // 资产日报
+            Route::get('daily-asset', 'FinanceController@dailyAsset')->name('v2.finance.daily-asset');
+            Route::post('daily-asset/data-list', 'FinanceController@dailyAssetDataList')->name('v2.finance.daily-asset.data-list');
         });
 
     });

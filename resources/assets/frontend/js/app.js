@@ -16,6 +16,8 @@ Vue.component('game-leveling-order', require('./components/GameLevelingOrder.vue
 Vue.component('amount-flow', require('./components/AmountFlow.vue'));
 // 我的资产
 Vue.component('my-asset', require('./components/MyAsset.vue'));
+// 资产日报
+Vue.component('daily-asset', require('./components/DailyAsset.vue'));
 
 
 // this.$store.state.applyConsultVisible 获取

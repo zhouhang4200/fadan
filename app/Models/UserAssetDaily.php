@@ -20,4 +20,22 @@ class UserAssetDaily extends Model
     {
         return $this->hasOne(RealNameIdent::class, 'user_id', 'user_id');
     }
+
+    /**
+     * @param $query
+     * @param array $filter
+     * @return mixed
+     */
+    public static function scopeFilter($query, $filter = [])
+    {
+        if ($filter['startDate']) {
+            $query->where('date', '>=', $filter['startDate']);
+        }
+
+        if ($filter['endDate']) {
+            $query->where('date', '<=', $filter['endDate']);
+        }
+
+        return $query;
+    }
 }
