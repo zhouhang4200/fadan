@@ -12,6 +12,8 @@ Vue.use(Vuex);
 
 Vue.component('layout', require('./components/Layout.vue'));
 Vue.component('game-leveling-order', require('./components/GameLevelingOrder.vue'));
+//资金流水
+Vue.component('amount-flow', require('./components/AmountFlow.vue'));
 
 
 // this.$store.state.applyConsultVisible 获取

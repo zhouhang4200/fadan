@@ -82,6 +82,14 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             });
 
         });
+
+        // 财务订单
+        Route::prefix('finance')->namespace('Finance')->group(function () {
+            // 资金流水
+            Route::get('amount-flow', 'AmountFlowController@index')->name('v2.finance.amount-flow');
+            Route::post('amount-flow/data-list', 'AmountFlowController@dataList')->name('v2.finance.amount-flow.data-list');
+        });
+
     });
 
 //    Route::namespace('Auth')->group(function () {

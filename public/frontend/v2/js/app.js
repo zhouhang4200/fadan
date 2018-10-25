@@ -57,6 +57,232 @@ function mergeFn (a, b) {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/AmountFlow.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['AmountFlowApi'],
+    methods: {
+        // 加载数据
+        handleTableData: function handleTableData() {
+            var _this = this;
+
+            axios.post(this.AmountFlowApi, this.searchParams).then(function (res) {
+                console.log(res);
+                _this.tableData = res.data.data;
+                _this.TotalPage = res.data.total;
+            }).catch(function (err) {
+                _this.$alert('获取数据失败, 请重试!', '提示', {
+                    confirmButtonText: '确定',
+                    callback: function callback(action) {}
+                });
+            });
+        },
+        handleSearch: function handleSearch() {
+            console.log(this.searchParams);
+            this.handleTableData();
+        },
+        handleCurrentChange: function handleCurrentChange(page) {
+            console.log('\u5F53\u524D\u9875: ' + page);
+            this.searchParams.page = page;
+            this.handleTableData();
+        }
+    },
+    created: function created() {
+        this.handleTableData();
+    },
+
+    watch: {
+        t: function t(val) {
+            this.weekse = val;
+            console.log(this.weekse);
+            this.getL();
+        }
+    },
+    data: function data() {
+        return {
+            TradeSubTypeArr: {
+                11: '自动加款',
+                12: '手动加款',
+                13: '奖励加款',
+                21: '手动提现',
+                22: '手动减款',
+                23: '自动提现',
+                31: '提现冻结',
+                32: '抢单冻结',
+                33: '减款冻结',
+                41: '提现解冻',
+                42: '抢单解冻',
+                51: '手续费支出',
+                52: '违规扣款',
+                53: '奖励撤销扣款',
+                54: '短信费',
+                55: 'steam手续费扣款',
+                61: '手续费退款',
+                62: '违规退款',
+                63: 'steam手续费退款',
+                71: '订单集市支出',
+                72: '订单售后扣款',
+                73: '代练手续费支出',
+                74: '安全保证金支出',
+                75: '效率保证金支出',
+                76: '代练下单支出',
+                77: '游戏代练加款',
+                78: '支付订单集市押金',
+                79: '订单投诉支出',
+                81: '订单集市收入',
+                82: '发货失败退款',
+                83: '售后退款',
+                84: '取消订单退款',
+                85: '订单售后退款',
+                86: '代练手续费收入',
+                87: '退还代练费',
+                88: '退还安全保证金',
+                89: '退还效率保证金',
+                810: '安全保证金收入',
+                811: '效率保证金收入',
+                812: '代练收入',
+                813: '代练撤消退款',
+                814: '代练改价退款',
+                815: '保证金退款',
+                816: '退还订单集市押金',
+                817: '订单投诉收入'
+            },
+            TradeTypeArr: {
+                1: '加款',
+                2: '减款',
+                3: '冻结',
+                4: '解冻',
+                7: '支出',
+                8: '收入'
+            },
+
+            searchParams: {
+                trade_type: '',
+                trade_no: '',
+                channel_order_trade_no: '',
+                date: '',
+                page: 1
+            },
+            TotalPage: 0,
+            tableData: []
+        };
+    }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/ApplyComplain.vue":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2775,7 +3001,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n@font-face {font-family: \"iconfont\";\n  src: url(" + escape(__webpack_require__("./resources/assets/frontend/iconfont/iconfont.eot?t=1540299672255")) + "); /* IE9*/\n  src: url(" + escape(__webpack_require__("./resources/assets/frontend/iconfont/iconfont.eot?t=1540299672255")) + "#iefix) format('embedded-opentype'), \n  url('data:application/x-font-woff;charset=utf-8;base64,d09GRgABAAAAAAWkAAsAAAAACHwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHU1VCAAABCAAAADMAAABCsP6z7U9TLzIAAAE8AAAARAAAAFY8dklIY21hcAAAAYAAAABVAAABhmmi0M1nbHlmAAAB2AAAAdwAAAJkAvo41GhlYWQAAAO0AAAALwAAADYTCbz5aGhlYQAAA+QAAAAcAAAAJAfeA4RobXR4AAAEAAAAAAwAAAAMDAAAAGxvY2EAAAQMAAAACAAAAAgA+AEybWF4cAAABBQAAAAfAAAAIAESALpuYW1lAAAENAAAAUUAAAJtPlT+fXBvc3QAAAV8AAAAJwAAADhRwE07eJxjYGRgYOBikGPQYWB0cfMJYeBgYGGAAJAMY05meiJQDMoDyrGAaQ4gZoOIAgCKIwNPAHicY2BkYWCcwMDKwMHUyXSGgYGhH0IzvmYwYuRgYGBiYGVmwAoC0lxTGByeMTwPY27438AQw9zA0AAUZgTJAQDjmww6eJztkMERgCAMBPcAeTgW4sN6GF+WL2VgErQLb2ZzyQU+ARYgG4dRQBfCdVqqyDNr5CXeVHORbnobAz43yXbVPPk/VX5tUfd3Sn6tife9TdADWtcOogAAAHicdVFPb9MwHLWd2MZu45A/rtumDUkKyWFL2JomEZ1UTYC0A0iAehoSWiUkxGWnbhJwQPsQfAz4AlzoBXHiS3DgxpHjBg4IiR0mPT//pJ/13rMewAD8+mR8MSxwFzwAz8B78AEAWM0KlBU4K2AWJ4RqCIMKKDUcP0QqxCqeLlCzwM2srpwC3pr2fJKks9oTkGYL2NTpbdionuoRTNKsUdM6q2YpVT6hpZzI9uhXekEzAbVPU/pEhXAPVpOqrCbaqFXRYn/1KkUJrXs0hNTYIEYYdjw56gsxFheHmuyA2dLzOKYY/VuPlYDf7dE44EL6DmeYmOj8bBBF0yh6SPvFITnyO7FxkFXXAxfCb8Fnyyrve+brderYX9frtZCsW+b7ljp68vgaXpomUZwcnwz7QeYnnHmc9cSdnZ0lxuznG4Y6FoqGYjz+E8Xh3IQYIh2Ie560WWC3WZf/57n8D3jMxKN4N4p244uPN7aez/EqTm7C7XnaDbz5i1eIld0D/OOe3CJcirzMn+IuS/2TQS4Tg50yO7GZucpLP4SR30hsmvaQR9uneGBZ3t5LC757CwAwQEtnaAU6QIGJ7jpuayvjtkB6xWyszveF6wq0afmKGUXuyNXYXLq0228VflPPeJxjYGRgYABiC8FvWfH8Nl8ZuFkYQOD6V5sZCPr/fhYGZl4gl4OBCSQKACsJCnYAeJxjYGRgYG7438AQw8IAAkCSkQEVMAMARwkCbAQAAAAEAAAABAAAAAAAAAAA+AEyeJxjYGRgYGBmWMfAygACTEDMBYQMDP/BfAYAGgwBzQB4nGWPTU7DMBCFX/oHpBKqqGCH5AViASj9EatuWFRq911036ZOmyqJI8et1ANwHo7ACTgC3IA78EgnmzaWx9+8eWNPANzgBx6O3y33kT1cMjtyDRe4F65TfxBukF+Em2jjVbhF/U3YxzOmwm10YXmD17hi9oR3YQ8dfAjXcI1P4Tr1L+EG+Vu4iTv8CrfQ8erCPuZeV7iNRy/2x1YvnF6p5UHFockikzm/gple75KFrdLqnGtbxCZTg6BfSVOdaVvdU+zXQ+ciFVmTqgmrOkmMyq3Z6tAFG+fyUa8XiR6EJuVYY/62xgKOcQWFJQ6MMUIYZIjK6Og7VWb0r7FDwl57Vj3N53RbFNT/c4UBAvTPXFO6stJ5Ok+BPV8bUnV0K27LnpQ0kV7NSRKyQl7WtlRC6gE2ZVeOEXpc0Yk/KGdI/wAJWm7IAAAAeJxjYGKAAC4G7ICZkYmRmZGFgbkkMZ8jM79YNzc1r5SBAQApFASYAA==') format('woff'),\n  url(" + escape(__webpack_require__("./resources/assets/frontend/iconfont/iconfont.ttf?t=1540299672255")) + ") format('truetype'), \n  url(" + escape(__webpack_require__("./resources/assets/frontend/iconfont/iconfont.svg?t=1540299672255")) + "#iconfont) format('svg'); /* iOS 4.1- */\n}\n\n.iconfont {\n  font-family:\"iconfont\" !important;\n  font-size:16px;\n  font-style:normal;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n\n[class^=\"icon-\"], [class*=\" icon-\"] {\n  font-family: 'iconfont' !important;\n  speak: none;\n  font-style: normal;\n  font-weight: normal;\n  font-variant: normal;\n  text-transform: none;\n  line-height: 1;\n  vertical-align: baseline;\n  display: inline-block;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n\n.icon-tao:before { content: \"\\E756\"; }\n\n.icon-ios-menu:before { content: \"\\E600\"; }\n\n", ""]);
+exports.push([module.i, "\r\n@font-face {font-family: \"iconfont\";\r\n  src: url(" + escape(__webpack_require__("./resources/assets/frontend/iconfont/iconfont.eot?t=1540299672255")) + "); /* IE9*/\r\n  src: url(" + escape(__webpack_require__("./resources/assets/frontend/iconfont/iconfont.eot?t=1540299672255")) + "#iefix) format('embedded-opentype'), \r\n  url('data:application/x-font-woff;charset=utf-8;base64,d09GRgABAAAAAAWkAAsAAAAACHwAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHU1VCAAABCAAAADMAAABCsP6z7U9TLzIAAAE8AAAARAAAAFY8dklIY21hcAAAAYAAAABVAAABhmmi0M1nbHlmAAAB2AAAAdwAAAJkAvo41GhlYWQAAAO0AAAALwAAADYTCbz5aGhlYQAAA+QAAAAcAAAAJAfeA4RobXR4AAAEAAAAAAwAAAAMDAAAAGxvY2EAAAQMAAAACAAAAAgA+AEybWF4cAAABBQAAAAfAAAAIAESALpuYW1lAAAENAAAAUUAAAJtPlT+fXBvc3QAAAV8AAAAJwAAADhRwE07eJxjYGRgYOBikGPQYWB0cfMJYeBgYGGAAJAMY05meiJQDMoDyrGAaQ4gZoOIAgCKIwNPAHicY2BkYWCcwMDKwMHUyXSGgYGhH0IzvmYwYuRgYGBiYGVmwAoC0lxTGByeMTwPY27438AQw9zA0AAUZgTJAQDjmww6eJztkMERgCAMBPcAeTgW4sN6GF+WL2VgErQLb2ZzyQU+ARYgG4dRQBfCdVqqyDNr5CXeVHORbnobAz43yXbVPPk/VX5tUfd3Sn6tife9TdADWtcOogAAAHicdVFPb9MwHLWd2MZu45A/rtumDUkKyWFL2JomEZ1UTYC0A0iAehoSWiUkxGWnbhJwQPsQfAz4AlzoBXHiS3DgxpHjBg4IiR0mPT//pJ/13rMewAD8+mR8MSxwFzwAz8B78AEAWM0KlBU4K2AWJ4RqCIMKKDUcP0QqxCqeLlCzwM2srpwC3pr2fJKks9oTkGYL2NTpbdionuoRTNKsUdM6q2YpVT6hpZzI9uhXekEzAbVPU/pEhXAPVpOqrCbaqFXRYn/1KkUJrXs0hNTYIEYYdjw56gsxFheHmuyA2dLzOKYY/VuPlYDf7dE44EL6DmeYmOj8bBBF0yh6SPvFITnyO7FxkFXXAxfCb8Fnyyrve+brderYX9frtZCsW+b7ljp68vgaXpomUZwcnwz7QeYnnHmc9cSdnZ0lxuznG4Y6FoqGYjz+E8Xh3IQYIh2Ie560WWC3WZf/57n8D3jMxKN4N4p244uPN7aez/EqTm7C7XnaDbz5i1eIld0D/OOe3CJcirzMn+IuS/2TQS4Tg50yO7GZucpLP4SR30hsmvaQR9uneGBZ3t5LC757CwAwQEtnaAU6QIGJ7jpuayvjtkB6xWyszveF6wq0afmKGUXuyNXYXLq0228VflPPeJxjYGRgYABiC8FvWfH8Nl8ZuFkYQOD6V5sZCPr/fhYGZl4gl4OBCSQKACsJCnYAeJxjYGRgYG7438AQw8IAAkCSkQEVMAMARwkCbAQAAAAEAAAABAAAAAAAAAAA+AEyeJxjYGRgYGBmWMfAygACTEDMBYQMDP/BfAYAGgwBzQB4nGWPTU7DMBCFX/oHpBKqqGCH5AViASj9EatuWFRq911036ZOmyqJI8et1ANwHo7ACTgC3IA78EgnmzaWx9+8eWNPANzgBx6O3y33kT1cMjtyDRe4F65TfxBukF+Em2jjVbhF/U3YxzOmwm10YXmD17hi9oR3YQ8dfAjXcI1P4Tr1L+EG+Vu4iTv8CrfQ8erCPuZeV7iNRy/2x1YvnF6p5UHFockikzm/gple75KFrdLqnGtbxCZTg6BfSVOdaVvdU+zXQ+ciFVmTqgmrOkmMyq3Z6tAFG+fyUa8XiR6EJuVYY/62xgKOcQWFJQ6MMUIYZIjK6Og7VWb0r7FDwl57Vj3N53RbFNT/c4UBAvTPXFO6stJ5Ok+BPV8bUnV0K27LnpQ0kV7NSRKyQl7WtlRC6gE2ZVeOEXpc0Yk/KGdI/wAJWm7IAAAAeJxjYGKAAC4G7ICZkYmRmZGFgbkkMZ8jM79YNzc1r5SBAQApFASYAA==') format('woff'),\r\n  url(" + escape(__webpack_require__("./resources/assets/frontend/iconfont/iconfont.ttf?t=1540299672255")) + ") format('truetype'), \r\n  url(" + escape(__webpack_require__("./resources/assets/frontend/iconfont/iconfont.svg?t=1540299672255")) + "#iconfont) format('svg'); /* iOS 4.1- */\r\n}\r\n\r\n.iconfont {\r\n  font-family:\"iconfont\" !important;\r\n  font-size:16px;\r\n  font-style:normal;\r\n  -webkit-font-smoothing: antialiased;\r\n  -moz-osx-font-smoothing: grayscale;\r\n}\r\n\r\n[class^=\"icon-\"], [class*=\" icon-\"] {\r\n  font-family: 'iconfont' !important;\r\n  speak: none;\r\n  font-style: normal;\r\n  font-weight: normal;\r\n  font-variant: normal;\r\n  text-transform: none;\r\n  line-height: 1;\r\n  vertical-align: baseline;\r\n  display: inline-block;\r\n  -webkit-font-smoothing: antialiased;\r\n  -moz-osx-font-smoothing: grayscale;\r\n}\r\n\r\n.icon-tao:before { content: \"\\E756\"; }\r\n\r\n.icon-ios-menu:before { content: \"\\E600\"; }\r\n\r\n", ""]);
 
 // exports
 
@@ -66378,6 +66604,296 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-025a96bc\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/AmountFlow.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "game-leveling-order" },
+    [
+      _c(
+        "el-form",
+        {
+          staticClass: "search-form-inline",
+          attrs: { inline: true, model: _vm.searchParams, size: "small" }
+        },
+        [
+          _c(
+            "el-row",
+            { attrs: { gutter: 16 } },
+            [
+              _c(
+                "el-col",
+                { attrs: { span: 6 } },
+                [
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "订单号" } },
+                    [
+                      _c("el-input", {
+                        model: {
+                          value: _vm.searchParams.trade_no,
+                          callback: function($$v) {
+                            _vm.$set(_vm.searchParams, "trade_no", $$v)
+                          },
+                          expression: "searchParams.trade_no"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-col",
+                { attrs: { span: 6 } },
+                [
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "类型" } },
+                    [
+                      _c(
+                        "el-select",
+                        {
+                          attrs: { placeholder: "请选择" },
+                          model: {
+                            value: _vm.searchParams.trade_type,
+                            callback: function($$v) {
+                              _vm.$set(_vm.searchParams, "trade_type", $$v)
+                            },
+                            expression: "searchParams.trade_type"
+                          }
+                        },
+                        _vm._l(_vm.TradeTypeArr, function(value, key) {
+                          return _c("el-option", {
+                            attrs: { value: key, label: value }
+                          })
+                        })
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-col",
+                { attrs: { span: 6 } },
+                [
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "天猫单号" } },
+                    [
+                      _c("el-input", {
+                        model: {
+                          value: _vm.searchParams.channel_order_trade_no,
+                          callback: function($$v) {
+                            _vm.$set(
+                              _vm.searchParams,
+                              "channel_order_trade_no",
+                              $$v
+                            )
+                          },
+                          expression: "searchParams.channel_order_trade_no"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-row",
+            { attrs: { gutter: 16 } },
+            [
+              _c(
+                "el-col",
+                { attrs: { span: 7 } },
+                [
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "日期" } },
+                    [
+                      _c("el-date-picker", {
+                        attrs: {
+                          type: "daterange",
+                          align: "right",
+                          "unlink-panels": "",
+                          format: "yyyy-MM-dd",
+                          "value-format": "yyyy-MM-dd",
+                          "range-separator": "至",
+                          "start-placeholder": "开始日期",
+                          "end-placeholder": "结束日期"
+                        },
+                        model: {
+                          value: _vm.searchParams.date,
+                          callback: function($$v) {
+                            _vm.$set(_vm.searchParams, "date", $$v)
+                          },
+                          expression: "searchParams.date"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                [
+                  _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: { click: _vm.handleSearch }
+                    },
+                    [_vm._v("查询")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-table",
+        {
+          staticStyle: { width: "100%" },
+          attrs: { data: _vm.tableData, border: "" }
+        },
+        [
+          _c("el-table-column", {
+            attrs: { prop: "id", label: "流水号", width: "80" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "trade_type", label: "类型", width: "150" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(_vm.TradeTypeArr["" + scope.row.trade_type]) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "trade_subtype", label: "子类型", width: "150" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(
+                          _vm.TradeSubTypeArr["" + scope.row.trade_subtype]
+                        ) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "trade_no", label: "订单号" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "order", label: "天猫单号" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(
+                          scope.row.order
+                            ? scope.row.order.foreign_order_no
+                            : ""
+                        ) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "fee", label: "变动金额", width: "150" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "balance", label: "账户余额", width: "150" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "created_at", label: "时间", width: "150" }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("el-pagination", {
+        staticStyle: { "margin-top": "25px" },
+        attrs: {
+          "current-page": _vm.searchParams.page,
+          "page-size": 20,
+          layout: "prev, pager, next, jumper",
+          total: _vm.TotalPage
+        },
+        on: {
+          "current-change": _vm.handleCurrentChange,
+          "update:currentPage": function($event) {
+            _vm.$set(_vm.searchParams, "page", $event)
+          }
+        }
+      })
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-025a96bc", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-1092c626\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/Layout.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -69222,7 +69738,7 @@ module.exports = "/frontend/fonts/iconfont.eot?150faece4b9f469f31d1363252e11751"
 /***/ "./resources/assets/frontend/iconfont/iconfont.svg?t=1540299672255":
 /***/ (function(module, exports) {
 
-module.exports = "/frontend/fonts/iconfont.svg?36c76d7920c2b20aaba8d1c10d9aea11";
+module.exports = "/frontend/fonts/iconfont.svg?5cf9519d09e66b9d8f1df01d53479837";
 
 /***/ }),
 
@@ -69260,6 +69776,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('layout', __webpack_require__("./resources/assets/frontend/js/components/Layout.vue"));
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('game-leveling-order', __webpack_require__("./resources/assets/frontend/js/components/GameLevelingOrder.vue"));
+//资金流水
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('amount-flow', __webpack_require__("./resources/assets/frontend/js/components/AmountFlow.vue"));
 
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
@@ -69338,6 +69856,54 @@ if (token) {
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key'
 // });
+
+/***/ }),
+
+/***/ "./resources/assets/frontend/js/components/AmountFlow.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/AmountFlow.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-025a96bc\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/AmountFlow.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/frontend/js/components/AmountFlow.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-025a96bc", Component.options)
+  } else {
+    hotAPI.reload("data-v-025a96bc", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
 
 /***/ }),
 
