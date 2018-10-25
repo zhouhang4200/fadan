@@ -37,7 +37,10 @@ class GameLevelingController extends Controller
      */
     public function dataList()
     {
-        return response(GameLevelingOrder::paginate(20));
+        return GameLevelingOrder::filter(request()->all())->with([
+            'gameLevelingOrderDetail',
+            'gameLevelingOrderComplain',
+            'gameLevelingOrderConsult'])->paginate(20);
     }
 
     /**

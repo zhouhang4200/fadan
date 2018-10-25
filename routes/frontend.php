@@ -14,6 +14,11 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
 
     Route::middleware(['auth'])->group(function () {
 
+        // 获取所有游戏
+        Route::post('games', 'GameController@index')->name('games');
+        // 游戏代练类型
+        Route::post('game-leveling-types', 'GameLevelingTypeController@index')->name('game-leveling-types');
+
         // 订单
         Route::prefix('order')->namespace('Order')->group(function () {
 

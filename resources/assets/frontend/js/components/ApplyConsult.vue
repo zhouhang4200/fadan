@@ -3,8 +3,7 @@
             width="40%"
             title="申请撤销"
             :visible=true
-            :before-close="handleVisible"
-            :show-close="showClose">
+            :before-close="handleBeforeClose">
         <el-form :model="form" ref="form" label-width="204px" class="demo-ruleForm">
             <el-alert
                     title="双方友好协商撤单，若有分歧可以在订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。"
@@ -16,31 +15,32 @@
             <el-form-item label="我已支付代练费（元）"
                           :rules="[{ required: true, message: '仲裁原因不能为空'}]">
                 <el-input type="input"
-                          v-model="form.reason"></el-input>
+                          :disabled="inputDisabled"
+                          v-model="form.amount"></el-input>
             </el-form-item>
 
             <el-form-item label="需要对方赔付保证金"
                           :rules="[{ required: true, message: '仲裁原因不能为空'}]">
                 <el-input type="input"
-                          v-model="form.tradeNo"></el-input>
+                          v-model="form.paymentDeposit"></el-input>
             </el-form-item>
 
             <el-form-item label="对方已预付安全保证金（元）">
                 <el-input type="input"
                           :disabled="inputDisabled"
-                          v-model="form.reason"></el-input>
+                          v-model="form.securityDeposit"></el-input>
             </el-form-item>
 
             <el-form-item label="对方已预付效率保证金（元）">
                 <el-input type="input"
                           :disabled="inputDisabled"
-                          v-model="form.reason"></el-input>
+                          v-model="form.efficiencyDeposit"></el-input>
             </el-form-item>
 
             <el-form-item label="我愿意支付代练费（元）"
                           :rules="[{ required: true, message: '仲裁原因不能为空'}]">
                 <el-input type="input"
-                          v-model="form.reason" prop="no"></el-input>
+                          v-model="form.paymentAmount" prop="no"></el-input>
             </el-form-item>
 
             <el-form-item label="撤销理由"
@@ -62,6 +62,9 @@
         name:"ApplyConsult",
         props: [
             'tradeNo',
+            'amount',
+            'securityDeposit',
+            'efficiencyDeposit',
         ],
         computed: {
             // getVisible() {
@@ -72,20 +75,23 @@
             return {
                 fileReader:'',
                 visible: false,
-                showClose: true,
                 inputDisabled:true,
                 dialogImageUrl: '',
                 dialogVisible: false,
                 form: {
-                    image1: '',
                     reason: '',
-                    tradeNo: this.tradeNo
+                    paymentAmount: '',
+                    paymentDeposit: '',
+                    tradeNo: this.tradeNo,
+                    amount: this.amount,
+                    securityDeposit: this.securityDeposit,
+                    efficiencyDeposit: this.efficiencyDeposit,
                 },
             };
         },
         methods: {
-            handleVisible() {
-                // this.$store.commit('handleApplyConsultVisible',{visible:false});
+            handleBeforeClose() {
+                this.$emit("handleApplyConsultVisible", {"visible":false});
             },
             handleSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
