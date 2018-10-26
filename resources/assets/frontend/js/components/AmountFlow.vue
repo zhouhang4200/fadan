@@ -95,7 +95,7 @@
                 style="margin-top: 25px"
                 @current-change="handleCurrentChange"
                 :current-page.sync="searchParams.page"
-                :page-size="20"
+                :page-size="15"
                 layout="prev, pager, next, jumper"
                 :total="TotalPage">
         </el-pagination>

@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Frontend\V2\Finance;
 
 use App\Events\Punish;
 use App\Models\UserAsset;
-use App\Models\UserWithdrawOrder;
-use App\Repositories\Frontend\UserWithdrawOrderRepository;
 use Illuminate\Http\Request;
 use App\Models\UserAssetDaily;
 use App\Models\UserAmountFlow;
+use App\Models\UserWithdrawOrder;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\Frontend\UserWithdrawOrderRepository;
 
 class FinanceController extends Controller
 {
@@ -154,7 +154,7 @@ class FinanceController extends Controller
         }
 
         try {
-            $repository->store(request('fee'), trim(request('remark', '无')) ?: config('withdraw.status')[1]);
+            $repository->store(request('fee', 0), trim(request('remark', '无')) ?: config('withdraw.status')[1]);
         } catch (\Exception $e) {
             return response()->ajax(0, $e->getMessage());
         }

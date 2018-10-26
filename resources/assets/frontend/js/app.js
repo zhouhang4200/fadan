@@ -21,7 +21,14 @@ Vue.component('amount-flow', require('./components/AmountFlow.vue'));
 Vue.component('my-asset', require('./components/MyAsset.vue'));
 // 资产日报
 Vue.component('daily-asset', require('./components/DailyAsset.vue'));
-
+// 员工统计
+Vue.component('statistic-employee', require('./components/StatisticEmployee.vue'));
+// 订单统计
+Vue.component('statistic-order', require('./components/StatisticOrder.vue'));
+// 短信统计
+Vue.component('statistic-message', require('./components/StatisticMessage.vue'));
+// 短信统计详情
+Vue.component('statistic-message-show', require('./components/StatisticMessageShow.vue'));
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 const store = new Vuex.Store({
