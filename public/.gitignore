@@ -1,4 +1,9 @@
 # Created by .ignore support plugin (hsz.mobi)
 resources
 apitest
+frontend/v2/fonts
+frontend/v2/css
+frontend/v2/js
+frontend/v2/mix-manifest.json
 !.gitignore
+
