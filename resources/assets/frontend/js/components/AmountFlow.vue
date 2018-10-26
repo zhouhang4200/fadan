@@ -1,5 +1,5 @@
 <template>
-    <div class="game-leveling-order">
+    <div class="main content amount-flow">
         <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
             <el-row :gutter="16">
                 <el-col :span="5">
@@ -10,7 +10,7 @@
                 <el-col :span="5">
                     <el-form-item label="类型">
                         <el-select v-model="searchParams.trade_type" placeholder="请选择">
-                            <el-option v-for="(value, key) in TradeTypeArr" v-bind:value="key" :label="value"></el-option>
+                            <el-option v-for="(value, key) in TradeTypeArr" :value="key" :label="value"></el-option>
                         </el-select>
                     </el-form-item>
                     </el-col>
@@ -138,8 +138,8 @@
         },
         watch: {
             t: function (val) {
-                this.weekse = val
-                console.log(this.weekse)
+                this.weekse = val;
+                console.log(this.weekse);
                 this.getL()
             }
         },

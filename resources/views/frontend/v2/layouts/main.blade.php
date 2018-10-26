@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{mix('/css/theme.css', 'frontend/v2')}}">
 </head>
 <body>
-<div id="app">
+<div id="app" style="background: #f0f2f5;">
     <layout>
         @yield('content')
     </layout>

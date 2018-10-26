@@ -1,5 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
 resources
-resources/frontend/v2/*
 apitest
 !.gitignore

@@ -1,5 +1,5 @@
 <template>
-    <div class="game-leveling-order" :class="tableDataEmpty">
+    <div class="main content game-leveling-order" :class="tableDataEmpty">
         <el-form :inline=true
                  :model="searchParams"
                  class="search-form-inline"

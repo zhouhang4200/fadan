@@ -74,7 +74,7 @@ class Game extends Model
      *  一对多，区
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function gameLevelingRegions()
+    public function gameRegions()
     {
         return $this->hasMany(GameRegion::class);
     }

@@ -44,6 +44,19 @@ class GameLevelingController extends Controller
     }
 
     /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function create()
+    {
+        return view('frontend.v2.order.game-leveling.create');
+    }
+
+    public function doCreate()
+    {
+//        GameLevelingOrder::placeOrder(request()->user(),)
+    }
+
+    /**
      * 删除
      * @return mixed
      */

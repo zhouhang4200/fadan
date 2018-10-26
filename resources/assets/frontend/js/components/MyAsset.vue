@@ -1,19 +1,21 @@
 <template>
-    <el-table
-            :data="tableData"
-            border
-            style="width: 100%">
-        <el-table-column
-                prop="name"
-                label="名称"
-                width="100">
-        </el-table-column>
-        <el-table-column
-                prop="amount"
-                label="金额"
-                width="200">
-        </el-table-column>
-    </el-table>
+    <div class="main content ">
+        <el-table
+                :data="tableData"
+                border
+                style="width: 100%">
+            <el-table-column
+                    prop="name"
+                    label="名称"
+                    width="100">
+            </el-table-column>
+            <el-table-column
+                    prop="amount"
+                    label="金额"
+                    width="200">
+            </el-table-column>
+        </el-table>
+    </div>
 </template>
 
 <script>

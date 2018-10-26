@@ -1,5 +1,5 @@
 <template>
-    <el-container style="height: auto; border: 1px solid #eee">
+    <el-container>
         <el-aside v-bind:style="{'width': collapse ? '64px':'200px', 'background-color': '#515a6e'}">
             <div class="logo">
                 <i class="icon-tao" style="font-size:32px;color:#fff"></i>
@@ -20,10 +20,10 @@
                         <span slot="title">工作台</span>
                     </template>
                     <el-menu-item-group>
-                        <a href="http://baidu.com"><el-menu-item index="1-1" href="baidu.com">代练待发</el-menu-item></a>
-                        <a href="http://baidu.com"><el-menu-item index="1-2" href="baidu.com">代练发布</el-menu-item></a>
-                        <a href="/v2/order/game-leveling"><el-menu-item index="1-3" href="baidu.com">代练订单</el-menu-item></a>
-                        <a href="http://baidu.com"><el-menu-item index="1-4" href="baidu.com">订单投诉</el-menu-item></a>
+                        <a href="http://baidu.com"><el-menu-item index="1-1">代练待发</el-menu-item></a>
+                        <a href="/v2/order/game-leveling/create"><el-menu-item index="1-2">代练发布</el-menu-item></a>
+                        <a href="/v2/order/game-leveling"><el-menu-item index="1-3">代练订单</el-menu-item></a>
+                        <a href="http://baidu.com"><el-menu-item index="1-4">订单投诉</el-menu-item></a>
                     </el-menu-item-group>
                 </el-submenu>
                 <el-submenu index="2">
@@ -32,9 +32,9 @@
                         <span slot="title">财务</span>
                     </template>
                     <el-menu-item-group>
-                        <a href="http://baidu.com"><el-menu-item index="2-1" href="baidu.com">代练待发</el-menu-item></a>
-                        <a href="http://baidu.com"><el-menu-item index="3-2" href="baidu.com">代练发布</el-menu-item></a>
-                        <a href="http://baidu.com"><el-menu-item index="2-3" href="baidu.com">订单投诉</el-menu-item></a>
+                        <a href="/v2/finance/my-asset"><el-menu-item index="2-1" href="baidu.com">我的资产</el-menu-item></a>
+                        <a href="/v2/finance/amount-flow"><el-menu-item index="3-2" href="baidu.com">资金流水</el-menu-item></a>
+                        <a href="/v2/finance/daily-asset"><el-menu-item index="2-3" href="baidu.com">资产日报</el-menu-item></a>
                     </el-menu-item-group>
                 </el-submenu>
 
@@ -77,15 +77,19 @@
     .el-header {
         color: #333;
         line-height: 60px;
+        background:#fff;
+        box-shadow: 0 1px 4px rgba(0,21,41,.08);
     }
     .el-aside {
         color: #333;
+        box-shadow: 2px 0 6px rgba(0,21,41,.35);
+        -webkit-box-shadow: 2px 0 6px rgba(0,21,41,.35);
     }
     .el-menu {
         border-right:none;
     }
     .el-main {
-        background-color: #f5f7f9;
+        /*background-color: #f5f7f9;*/
     }
     .el-menu-vertical-demo:not(.el-menu--collapse) {
         width: 200px;
@@ -102,6 +106,24 @@
     .el-message {
         top:8px;
     }
+
+
+    /*全局样式*/
+    .main {
+        margin: 20px;
+    }
+    .content {
+        padding: 20px;
+        background: rgb(255, 255, 255);
+    }
+    /*全局重写*/
+    .el-main {
+        padding: 0;
+    }
+    .el-cascader,
+    .el-select {
+        width: 100%;
+    }
 </style>
 
 <script>
@@ -112,8 +134,8 @@
                 collapseTransition: false,
                 menuMinHeight:'400px',
                 contentContainerStyle:{
-                    padding: '20px',
-                    background: '#fff',
+                    // padding: '20px',
+                    // background: '#fff',
                     minHeight:'',
                 },
             }
@@ -137,7 +159,7 @@
             handleContentContainerStyle() {
                 window.fullHeight = document.documentElement.clientHeight;
                 this.menuMinHeight = window.fullHeight + 'px';
-                return this.contentContainerStyle.minHeight = (window.fullHeight - 102) + 'px';
+                return this.contentContainerStyle.minHeight = (window.fullHeight - 100) + 'px';
             }
         },
         created() {

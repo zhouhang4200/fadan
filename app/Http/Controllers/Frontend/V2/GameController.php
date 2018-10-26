@@ -13,8 +13,33 @@ use App\Models\Game;
  */
 class GameController extends Controller
 {
+    /**
+     * @return mixed
+     */
     public function index()
     {
         return Game::get(['id', 'name']);
+    }
+
+    /*
+     * 获取游戏区服所有数据
+     */
+    public function gameRegionServer()
+    {
+        $gameRegionServerGameType = Game::select('id', 'id as value', 'name as label')->with([
+            'gameRegions' => function($query) {
+                $query->select('game_id','id', 'id as value', 'name as label')
+                    ->with(['gameServers' => function($query) {
+                        $query->select('game_region_id', 'id as value', 'name as label');
+                    }]);
+            }
+        ])->get()->toJson();
+
+        // 替换游戏区关联关系名称
+        $replaceRegionNameAfter = str_replace("game_regions", "children", $gameRegionServerGameType);
+        // 替换游戏区关联关系名称
+        $lastData = str_replace("game_servers", "children", $replaceRegionNameAfter);
+
+        return $lastData;
     }
 }
