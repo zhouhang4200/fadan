@@ -124,9 +124,9 @@ class GameLevelingOrder extends Model
         DB::beginTransaction();
         try {
             $game = Game::find($data['game_id']);
-            $region = GameRegion::find($data['region']);
-            $server = GameServer::find($data['serve']);
-            $gameLevelingType = GameLevelingType::find($data['game_leveling_type']);
+            $region = GameRegion::find($data['game_region_id']);
+            $server = GameServer::find($data['game_server_id']);
+            $gameLevelingType = GameLevelingType::find($data['game_leveling_type_id']);
             $parent = $user->getPrimaryInfo();
 
             // 来源淘宝订单是否存在
@@ -167,7 +167,7 @@ class GameLevelingOrder extends Model
                 'parent_user_id' => $parent->id,
                 'take_user_id' => 0,
                 'take_parent_user_id' => 0,
-                'amount' => $data['game_leveling_amount'],
+                'amount' => $data['amount'],
                 'source_price' => $sourcePrice,
                 'security_deposit' => $data['security_deposit'],
                 'efficiency_deposit' => $data['efficiency_deposit'],
@@ -177,17 +177,17 @@ class GameLevelingOrder extends Model
                 'game_region_id' => $region->id,
                 'game_server_id' => $server->id,
                 'game_leveling_type_id' => $gameLevelingType->id,
-                'title' => $data['game_leveling_title'],
-                'day' => $data['game_leveling_day'],
-                'hour' => $data['game_leveling_hour'],
-                'game_account' => $data['account'],
-                'game_password' => $data['password'],
-                'game_role' => $data['role'],
+                'title' => $data['title'],
+                'day' => $data['day'],
+                'hour' => $data['hour'],
+                'game_account' => $data['game_account'],
+                'game_password' => $data['game_password'],
+                'game_role' => $data['game_role'],
                 'customer_service_name' => $user->username ?? '',
                 'seller_nick' => $data['seller_nick'] ?? '',
-                'buyer_nick' => $data['client_wang_wang'] ?? '',
-                'price_increase_step' => $data['markup_range'] ?? '',
-                'price_ceiling' => $data['markup_top_limit'] ?? '',
+                'buyer_nick' => $data['buyer_nick'] ?? '',
+                'price_increase_step' => $data['price_increase_step'] ?? '',
+                'price_ceiling' => $data['price_ceiling'] ?? '',
                 'take_order_password' => '',
                 'pre_sale' => '', // 接单客服
                 'take_at' => null,
@@ -296,7 +296,7 @@ class GameLevelingOrder extends Model
         } catch (Exception $e) {
             DB::rollback();
             myLog('place-order-error', ['trade_no' => $order->trade_no ?? '', 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            throw new Exception('服务器异常，下单失败！');
+            throw new Exception('服务器异常，下单失败！' . $e->getMessage());
         }
         DB::commit();
         return $order;

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use DB;
 use Cache;
 use Redis;
 use Exception;

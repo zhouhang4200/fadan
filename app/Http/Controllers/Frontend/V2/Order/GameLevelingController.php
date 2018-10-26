@@ -51,9 +51,20 @@ class GameLevelingController extends Controller
         return view('frontend.v2.order.game-leveling.create');
     }
 
+    /**
+     * 下单
+     */
     public function doCreate()
     {
-//        GameLevelingOrder::placeOrder(request()->user(),)
+        // 验证前台传入数据
+
+        // 下单
+        try {
+            GameLevelingOrder::placeOrder(request()->user(),request()->all());
+            return response()->json(['status' => 1, 'message' => '下单成功']);
+        } catch (\Exception $exception) {
+            return response()->json(['status' => 0, 'message' => $exception->getMessage()]);
+        }
     }
 
     /**
@@ -71,24 +82,24 @@ class GameLevelingController extends Controller
                     ->get();
 
                 if ($gameLevelingPlatforms->count() < 1) {
-                    return partner(1, '操作成功!');
+                    return response()->ajax(1, '操作成功!');
                 }
                 // 删除下单成功的
                 foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
                     call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('leveling.action')['delete']], [$order]);
                 }
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -106,24 +117,24 @@ class GameLevelingController extends Controller
                     ->get();
 
                 if ($gameLevelingPlatforms->count() < 1) {
-                    return partner(1, '操作成功!');
+                    return response()->ajax(1, '操作成功!');
                 }
                 // 下单成功的接单平台
                 foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
                     call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('leveling.action')['onSale']], [$order]);
                 }
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -141,24 +152,24 @@ class GameLevelingController extends Controller
                     ->get();
 
                 if ($gameLevelingPlatforms->count() < 1) {
-                    return partner(1, '操作成功!');
+                    return response()->ajax(1, '操作成功!');
                 }
                 // 下单成功的接单平台
                 foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
                     call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('leveling.action')['offSale']], [$order]);
                 }
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -173,17 +184,17 @@ class GameLevelingController extends Controller
                 OrderOperateController::init(Auth::user(), $order)->complete();
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['complete']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -198,17 +209,17 @@ class GameLevelingController extends Controller
                 OrderOperateController::init(Auth::user(), $order)->lock();
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['lock']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -223,17 +234,17 @@ class GameLevelingController extends Controller
                 OrderOperateController::init(Auth::user(), $order)->cancelLock();
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['cancelLock']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -248,17 +259,17 @@ class GameLevelingController extends Controller
                 OrderOperateController::init(Auth::user(), $order)->applyConsult(request('amount'), request('deposit'), request('poundage'), request('reason'));
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['applyConsult']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -273,17 +284,17 @@ class GameLevelingController extends Controller
                 OrderOperateController::init(Auth::user(), $order)->cancelConsult();
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['cancelConsult']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -298,17 +309,17 @@ class GameLevelingController extends Controller
                 OrderOperateController::init(Auth::user(), $order)->agreeConsult();
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['agreeConsult']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -323,17 +334,17 @@ class GameLevelingController extends Controller
                 OrderOperateController::init(Auth::user(), $order)->rejectConsult();
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['rejectConsult']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -352,17 +363,17 @@ class GameLevelingController extends Controller
                 OrderOperateController::init(Auth::user(), $order)->applyComplain(request('reason'));
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['applyComplain']], [$order, $pic]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -377,17 +388,17 @@ class GameLevelingController extends Controller
                 OrderOperateController::init(Auth::user(), $order)->cancelComplain();
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['cancelComplain']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
 
@@ -402,17 +413,17 @@ class GameLevelingController extends Controller
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['modifyOrder']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -426,17 +437,17 @@ class GameLevelingController extends Controller
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['addTime']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -450,17 +461,17 @@ class GameLevelingController extends Controller
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['addAmount']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -474,17 +485,17 @@ class GameLevelingController extends Controller
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['orderInfo']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -498,17 +509,17 @@ class GameLevelingController extends Controller
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['getScreenShot']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -522,17 +533,17 @@ class GameLevelingController extends Controller
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['getMessage']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -546,17 +557,17 @@ class GameLevelingController extends Controller
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['replyMessage']], [$order, request('message')]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -570,17 +581,17 @@ class GameLevelingController extends Controller
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['modifyGamePassword']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -594,14 +605,14 @@ class GameLevelingController extends Controller
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 $result = call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['complainInfo']], [$order]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
         return $result;
@@ -620,17 +631,17 @@ class GameLevelingController extends Controller
                 $content = request('content');
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['addComplainDetail']], [$order, $pic, $content]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -645,17 +656,17 @@ class GameLevelingController extends Controller
                 $pic = request('pic');
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['sendImage']], [$order, $pic]);
             } else {
-                return partner(0, '订单不存在!');
+                return response()->ajax(0, '订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            return partner(0, '订单异常！');
+            return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return partner(1, '操作成功!');
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
@@ -765,7 +776,7 @@ class GameLevelingController extends Controller
             $orderBasicData->save();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
-            return partner(0, $e->getMessage());
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $exception) {
             DB::rollBack();
             return response()->ajax(0, '订单异常!');

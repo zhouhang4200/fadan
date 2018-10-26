@@ -5,7 +5,6 @@
                  class="search-form-inline"
                  size="small">
             <el-row :gutter="16">
-
                 <el-col :span="6">
                     <el-form-item label="订单单号" prop="name">
                         <el-input v-model="searchParams.order_no"></el-input>
@@ -195,7 +194,7 @@
                     fixed
                     prop="trade_no"
                     label="订单号"
-                    width="150">
+                    width="230">
                 <template slot-scope="scope">
                     <div style="margin-left: 10px"> 淘宝：{{ scope.row.trade_no }}</div>
                     <div style="margin-left: 10px">渠道：{{ scope.row.trade_no }}</div>
@@ -204,7 +203,7 @@
             <el-table-column
                     prop="status"
                     label="订单状态"
-                    width="120">
+                    width="70">
                 <template slot-scope="scope">
                     {{ statusMap['s' + scope.row.status] }}
                 </template>
@@ -438,7 +437,6 @@
     .search-form-inline .el-form-item__content {
         width:80%;
     }
-
 </style>
 
 <script>

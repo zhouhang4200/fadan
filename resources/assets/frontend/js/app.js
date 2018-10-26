@@ -15,7 +15,7 @@ Vue.component('layout', require('./components/Layout.vue'));
 Vue.component('game-leveling-order', require('./components/GameLevelingOrder.vue'));
 // 代练下单
 Vue.component('game-leveling-order-create', require('./components/GameLevelingOrderCreate.vue'));
-//资金流水
+// 资金流水
 Vue.component('amount-flow', require('./components/AmountFlow.vue'));
 // 我的资产
 Vue.component('my-asset', require('./components/MyAsset.vue'));
