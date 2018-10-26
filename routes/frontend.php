@@ -106,6 +106,19 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('can-withdraw', 'FinanceController@canWithdraw')->name('v2.finance.can-withdraw');
             Route::post('create-withdraw', 'FinanceController@createWithdraw')->name('v2.finance.create-withdraw');
         });
+        // 统计
+        Route::prefix('statistic')->namespace('Statistic')->group(function () {
+            // 订单
+            Route::get('order', 'StatisticController@order')->name('v2.statistic.order');
+            Route::post('order-data-list', 'StatisticController@orderDataList')->name('v2.statistic.order-data-list');
+            // 员工
+            Route::get('employee', 'StatisticController@employee')->name('v2.statistic.employee');
+            Route::post('employee-user', 'StatisticController@employeeUser')->name('v2.statistic.employee-user');
+            Route::post('employee-data-list', 'StatisticController@employeeDataList')->name('v2.statistic.employee-data-list');
+            // 短信
+            Route::get('message', 'StatisticController@message')->name('v2.statistic.message');
+            Route::post('message-data-list', 'StatisticController@messageDataList')->name('v2.statistic.message-data-list');
+        });
     });
 
 //    Route::namespace('Auth')->group(function () {
@@ -122,7 +135,6 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
 //        Route::get('/password/reset/{token}', 'ResetPasswordController@showResetForm')->name('password.reset');
 //        Route::post('/password/reset', 'ResetPasswordController@reset');
 //    });
-
 });
 
 

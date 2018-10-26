@@ -82,7 +82,7 @@
                 style="margin-top: 25px"
                 @current-change="handleCurrentChange"
                 :current-page.sync="searchParams.page"
-                :page-size="20"
+                :page-size="15"
                 layout="prev, pager, next, jumper"
                 :total="TotalPage">
         </el-pagination>
@@ -96,12 +96,13 @@
             'CanWithdrawApi',
             'CreateWithdrawApi',
         ],
+        // 初始化数据
         created () {
             this.handleTableData();
             this.CanWithdraw();
         },
         methods:{
-            // 加载数据
+            // 表格加载数据
             handleTableData(){
                 axios.post(this.MyWithdrawApi, this.searchParams).then(res => {
                     console.log(res);
@@ -123,6 +124,7 @@
             handleSearch() {
                 this.handleTableData();
             },
+            // 我的提现里面input框输入的说明文字
             CanWithdraw() {
                 axios.post(this.CanWithdrawApi).then(res => {
                     this.placeString = '可以提现金额: '+res.data;
@@ -134,9 +136,7 @@
                     });
                 });
             },
-            withdraw() {
-
-            },
+            // 表单提交
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -173,7 +173,7 @@
             }
         },
         data() {
-            // 表单
+            // 表单验证
             var checkFee = (rule, value, callback) => {
                 if (!value) {
                     return callback(new Error('金额不能为空!'));
@@ -187,6 +187,7 @@
                 }, 1000);
             };
             return {
+                // 表单提交规则和数据
                 ruleForm: {
                     fee: '',
                     remark: '',
@@ -197,6 +198,7 @@
                     ]
                 },
                 dialogFormVisible: false,
+                // 表单查找和表单数据
                 tableData: [],
                 StatusArr:{
                     1:'申请中',
@@ -214,6 +216,7 @@
                     page:1,
                 },
                 TotalPage:0,
+                // 申请提现输入框提示语句
                 placeString:'',
             }
         }
