@@ -1595,11 +1595,417 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/GameLevelingOrderCreate.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    name: "GameLevelingCreate",
+    props: ['gameRegionServerApi'],
+    data: function data() {
+        return {
+            form: {
+                age: 0,
+                gameRegionServerOptions: [], // 游戏/区/服数据
+                gameRegionServer: [],
+                dayHour: [], // 代练天小时
+                game_id: 0, // 游戏ID
+                region_id: 0, // 游戏区ID
+                service_id: 0, // 游戏服务器ID
+                game_leveling_type_id: 0, // 代练类型ID
+                amount: '', // 代练金额
+                source_amount: '', // 安全保证金
+                efficiency_deposit: '', // 效率保证金
+                title: '', //代练标题
+                game_role: '', // 游戏角色
+                game_account: '', // 游戏账叼
+                game_password: '', // 游戏密码
+                price_increase_step: '', // 自动加价步长
+                price_ceiling: '', // 自动加价上限
+                explain: '', // 代练说明
+                requirement: '', // 代练要求
+                take_order_password: '', // 接单密码
+                player_phone: '' // 玩家电话
+            },
+            rules: {
+                player_phone: [{ required: true, message: '请输入活动名称', trigger: 'blur' }, { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }],
+                region: [{ required: true, message: '请选择活动区域', trigger: 'change' }],
+                date1: [{ type: 'date', required: true, message: '请选择日期', trigger: 'change' }],
+                date2: [{ type: 'date', required: true, message: '请选择时间', trigger: 'change' }],
+                type: [{ type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }],
+                resource: [{ required: true, message: '请选择活动资源', trigger: 'change' }],
+                desc: [{ required: true, message: '请填写活动形式', trigger: 'blur' }]
+            },
+            tableData: [{
+                date: '2016-05-02',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }, {
+                date: '2016-05-04',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1517 弄'
+            }, {
+                date: '2016-05-01',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1519 弄'
+            }, {
+                date: '2016-05-03',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1516 弄'
+            }]
+        };
+    },
+
+    methods: {
+        handleFromGameRegionServerOptions: function handleFromGameRegionServerOptions() {
+            var _this = this;
+
+            axios.post(this.gameRegionServerApi).then(function (res) {
+                _this.form.gameRegionServerOptions = res.data;
+            }).catch(function (err) {});
+        },
+        handleSubmitForm: function handleSubmitForm(formName) {
+            this.$refs[formName].validate(function (valid) {
+                if (valid) {
+                    alert('submit!');
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        handleResetForm: function handleResetForm(formName) {
+            this.$refs[formName].resetFields();
+        }
+    },
+    created: function created() {
+        this.handleFromGameRegionServerOptions();
+    }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/Layout.vue":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1714,8 +2120,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             collapseTransition: false,
             menuMinHeight: '400px',
             contentContainerStyle: {
-                padding: '20px',
-                background: '#fff',
+                // padding: '20px',
+                // background: '#fff',
                 minHeight: ''
             }
         };
@@ -1737,7 +2143,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         handleContentContainerStyle: function handleContentContainerStyle() {
             window.fullHeight = document.documentElement.clientHeight;
             this.menuMinHeight = window.fullHeight + 'px';
-            return this.contentContainerStyle.minHeight = window.fullHeight - 102 + 'px';
+            return this.contentContainerStyle.minHeight = window.fullHeight - 100 + 'px';
         }
     },
     created: function created() {
@@ -1756,6 +2162,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
 //
 //
 //
@@ -1892,7 +2300,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['StatisticEmployeeDataListApi', 'StatisticEmployeeExportApi', 'StatisticEmployeeUserApi'],
+    props: ['StatisticEmployeeDataListApi', 'StatisticEmployeeUserApi'],
     // 初始化数据
     created: function created() {
         this.handleTableData();
@@ -1960,6 +2368,206 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             searchParams: {
                 date: '',
                 username: '',
+                page: 1
+            },
+            TotalPage: 0
+        };
+    }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/StatisticOrder.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_file_saver__ = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_file_saver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_file_saver__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xlsx__ = __webpack_require__("./node_modules/xlsx/xlsx.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xlsx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_xlsx__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['StatisticOrderDataListApi'],
+    // 初始化数据
+    created: function created() {
+        this.handleTableData();
+    },
+
+    methods: {
+        // 导出
+        exportExcel: function exportExcel() {
+            /* generate workbook object from table */
+            var wb = __WEBPACK_IMPORTED_MODULE_1_xlsx___default.a.utils.table_to_book(document.querySelector('#order'));
+            /* get binary string as output */
+            var wbout = __WEBPACK_IMPORTED_MODULE_1_xlsx___default.a.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' });
+            try {
+                __WEBPACK_IMPORTED_MODULE_0_file_saver___default.a.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '员工统计.xlsx');
+            } catch (e) {
+                if (typeof console !== 'undefined') console.log(e, wbout);
+            }
+            return wbout;
+        },
+
+        // 表格加载数据
+        handleTableData: function handleTableData() {
+            var _this = this;
+
+            axios.post(this.StatisticOrderDataListApi, this.searchParams).then(function (res) {
+                _this.tableData = res.data.data;
+                _this.TotalPage = res.data.total;
+                console.log(res.data.total);
+            }).catch(function (err) {
+                _this.$alert('获取数据失败, 请重试!', '提示', {
+                    confirmButtonText: '确定',
+                    callback: function callback(action) {}
+                });
+            });
+        },
+        handleCurrentChange: function handleCurrentChange(page) {
+            this.searchParams.page = page;
+            this.handleTableData();
+        },
+        handleSearch: function handleSearch() {
+            this.handleTableData();
+        }
+    },
+    data: function data() {
+        return {
+            // 表单查找和表单数据
+            tableData: [],
+            UserArr: [],
+            searchParams: {
+                date: '',
                 page: 1
             },
             TotalPage: 0
@@ -5444,6 +6052,21 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-00ba648e\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrderCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.el-col {\n    border-radius: 4px;\n}\n.bg-purple-dark {\n    background: #99a9bf;\n}\n.bg-purple {\n    background: #d3dce6;\n}\n.bg-purple-light {\n    background: #e5e9f2;\n}\n.grid-content {\n    border-radius: 4px;\n    min-height: 36px;\n}\n.game-leveling-order-create .el-card__body {\n    padding: 20px 20px 10px;\n}\n.game-leveling-order-create .el-card {\n    border-radius: 0;\n    border: 1px solid #ebeef5;\n    background-color: #fff;\n    overflow: hidden;\n    color: #303133;\n    -webkit-transition: none;\n    transition: none;\n}\n.game-leveling-order-create .el-card__header {\n    padding: 10px 20px;\n}\n.game-leveling-order-create .footer {\n    height: 60px;background-color: #fff;\n    position: fixed;bottom: 0;width:100%;\n    /*box-shadow:inset 0px 15px 15px -15px rgba(0, 0, 0, 0.1);*/\n    /*!*-webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*!*/\n    -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);\n            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1092c626\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/Layout.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5452,7 +6075,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.logo {\n    height: 60px;\n    background-color: #ff9900;\n    padding: 14px 0 14px 16px;\n    line-height: 32px;\n}\n.el-header {\n    color: #333;\n    line-height: 60px;\n}\n.el-aside {\n    color: #333;\n}\n.el-menu {\n    border-right:none;\n}\n.el-main {\n    background-color: #f5f7f9;\n}\n.el-menu-vertical-demo:not(.el-menu--collapse) {\n    width: 200px;\n    min-height: 400px;\n}\n.rotate-icon {\n    -webkit-transform: rotate(-90deg);\n    transform: rotate(-90deg);\n}\n.menu-icon {\n    -webkit-transition: all .3s;\n    transition: all .3s;\n}\n.el-message {\n    top:8px;\n}\n", ""]);
+exports.push([module.i, "\n.logo {\n    height: 60px;\n    background-color: #ff9900;\n    padding: 14px 0 14px 16px;\n    line-height: 32px;\n}\n.el-header {\n    color: #333;\n    line-height: 60px;\n    background:#fff;\n    -webkit-box-shadow: 0 1px 4px rgba(0,21,41,.08);\n            box-shadow: 0 1px 4px rgba(0,21,41,.08);\n}\n.el-aside {\n    color: #333;\n    box-shadow: 2px 0 6px rgba(0,21,41,.35);\n    -webkit-box-shadow: 2px 0 6px rgba(0,21,41,.35);\n}\n.el-menu {\n    border-right:none;\n}\n.el-main {\n    /*background-color: #f5f7f9;*/\n}\n.el-menu-vertical-demo:not(.el-menu--collapse) {\n    width: 200px;\n    min-height: 400px;\n}\n.rotate-icon {\n    -webkit-transform: rotate(-90deg);\n    transform: rotate(-90deg);\n}\n.menu-icon {\n    -webkit-transition: all .3s;\n    transition: all .3s;\n}\n.el-message {\n    top:8px;\n}\n\n\n/*全局样式*/\n.main {\n    margin: 20px;\n}\n.content {\n    padding: 20px;\n    background: rgb(255, 255, 255);\n}\n/*全局重写*/\n.el-main {\n    padding: 0;\n}\n.el-cascader,\n.el-select {\n    width: 100%;\n}\n", ""]);
 
 // exports
 
@@ -69232,6 +69855,1396 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-00b81cda\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/StatisticOrder.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "main content" },
+    [
+      _c(
+        "el-form",
+        {
+          staticClass: "search-form-inline",
+          attrs: { inline: true, model: _vm.searchParams, size: "small" }
+        },
+        [
+          _c(
+            "el-row",
+            { attrs: { gutter: 16 } },
+            [
+              _c(
+                "el-col",
+                { attrs: { span: 7 } },
+                [
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "日期" } },
+                    [
+                      _c("el-date-picker", {
+                        attrs: {
+                          type: "daterange",
+                          align: "right",
+                          "unlink-panels": "",
+                          format: "yyyy-MM-dd",
+                          "value-format": "yyyy-MM-dd",
+                          "range-separator": "至",
+                          "start-placeholder": "开始日期",
+                          "end-placeholder": "结束日期"
+                        },
+                        model: {
+                          value: _vm.searchParams.date,
+                          callback: function($$v) {
+                            _vm.$set(_vm.searchParams, "date", $$v)
+                          },
+                          expression: "searchParams.date"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                [
+                  _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: { click: _vm.handleSearch }
+                    },
+                    [_vm._v("查询")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: { click: _vm.exportExcel }
+                    },
+                    [_vm._v("导出")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-table",
+        {
+          staticStyle: { width: "100%" },
+          attrs: { id: "order", data: _vm.tableData, border: "" }
+        },
+        [
+          _c("el-table-column", {
+            attrs: { prop: "date", label: "发布时间", width: "150" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "send_order_count", label: "发布单数", width: "100" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              prop: "receive_order_count",
+              label: "被接单数",
+              width: "100"
+            }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              prop: "complete_order_count",
+              label: "已结算单数",
+              width: "100"
+            }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              prop: "complete_order_rate",
+              label: "已结算占比",
+              width: "100"
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(
+                          scope.row.complete_order_rate == 0
+                            ? 0
+                            : scope.row.complete_order_rate * 100
+                        ) +
+                        "%\n            "
+                    )
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              prop: "revoke_order_count",
+              label: "已撤销单数",
+              width: "100"
+            }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              prop: "arbitrate_order_count",
+              label: "已仲裁单数",
+              width: "100"
+            }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              prop: "three_status_original_amount",
+              label: "已结算/撤销/仲裁来源价格",
+              width: ""
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(
+                          scope.row.three_status_original_amount == 0
+                            ? 0
+                            : scope.row.three_status_original_amount
+                        ) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              prop: "complete_order_amount",
+              label: "已结算单发单金额",
+              width: ""
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(
+                          scope.row.complete_order_amount == 0
+                            ? 0
+                            : scope.row.complete_order_amount
+                        ) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              prop: "two_status_payment",
+              label: "撤销/仲裁支付金额",
+              width: ""
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(
+                          scope.row.two_status_payment == 0
+                            ? 0
+                            : scope.row.two_status_payment
+                        ) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: {
+              prop: "two_status_income",
+              label: "撤销/仲裁获得赔偿",
+              width: ""
+            },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(
+                          scope.row.two_status_income == 0
+                            ? 0
+                            : scope.row.two_status_income
+                        ) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "poundage", label: "手续费", width: "100" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(
+                          scope.row.poundage == 0 ? 0 : scope.row.poundage
+                        ) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "profit", label: "利润", width: "100" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(scope.row.profit == 0 ? 0 : scope.row.profit) +
+                        "\n            "
+                    )
+                  ]
+                }
+              }
+            ])
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("el-pagination", {
+        attrs: {
+          "current-page": _vm.searchParams.page,
+          "page-size": 15,
+          layout: "prev, pager, next, jumper",
+          total: _vm.TotalPage
+        },
+        on: {
+          "current-change": _vm.handleCurrentChange,
+          "update:currentPage": function($event) {
+            _vm.$set(_vm.searchParams, "page", $event)
+          }
+        }
+      })
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-00b81cda", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-00ba648e\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/GameLevelingOrderCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "game-leveling-order-create" }, [
+    _c(
+      "div",
+      { staticClass: "main" },
+      [
+        _c(
+          "el-row",
+          { attrs: { gutter: 10 } },
+          [
+            _c(
+              "el-form",
+              {
+                ref: "form",
+                attrs: { model: _vm.form, "label-width": "100px" }
+              },
+              [
+                _c("el-col", { attrs: { span: 16 } }, [
+                  _c(
+                    "div",
+                    { staticClass: "grid-content bg-purple" },
+                    [
+                      _c("el-card", { staticClass: "box-card" }, [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "clearfix",
+                            attrs: { slot: "header" },
+                            slot: "header"
+                          },
+                          [_c("span", [_vm._v("订单信息")])]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "text item" },
+                          [
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "游戏/区/服",
+                                          prop: "gameRegionServer"
+                                        }
+                                      },
+                                      [
+                                        _c("el-cascader", {
+                                          attrs: {
+                                            options:
+                                              _vm.form.gameRegionServerOptions
+                                          },
+                                          model: {
+                                            value: _vm.form.gameRegionServer,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "gameRegionServer",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "form.gameRegionServer"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "代练类型",
+                                          prop: "game_leveling_type_id"
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "el-select",
+                                          {
+                                            attrs: { placeholder: "请选择" },
+                                            model: {
+                                              value:
+                                                _vm.form.game_leveling_type_id,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "game_leveling_type_id",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "form.game_leveling_type_id"
+                                            }
+                                          },
+                                          _vm._l(_vm.options, function(item) {
+                                            return _c("el-option", {
+                                              key: item.value,
+                                              attrs: {
+                                                label: item.label,
+                                                value: item.value
+                                              }
+                                            })
+                                          })
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "角色名称",
+                                          prop: "game_role"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "input",
+                                            autocomplete: "off"
+                                          },
+                                          model: {
+                                            value: _vm.form.game_role,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "game_role",
+                                                _vm._n($$v)
+                                              )
+                                            },
+                                            expression: "form.game_role"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "游戏账号",
+                                          prop: "game_account"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "input",
+                                            autocomplete: "off"
+                                          },
+                                          model: {
+                                            value: _vm.form.game_account,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "game_account",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "form.game_account"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "游戏密码",
+                                          prop: "game_password"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "input",
+                                            autocomplete: "off"
+                                          },
+                                          model: {
+                                            value: _vm.form.game_password,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "game_password",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "form.game_password"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("el-card", { staticClass: "box-card" }, [
+                        _c(
+                          "div",
+                          { staticClass: "text item" },
+                          [
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "代练标题",
+                                          prop: "title"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "age",
+                                            autocomplete: "off"
+                                          },
+                                          model: {
+                                            value: _vm.form.title,
+                                            callback: function($$v) {
+                                              _vm.$set(_vm.form, "title", $$v)
+                                            },
+                                            expression: "form.title"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c("el-col", { attrs: { span: 12 } })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "代练天/小时",
+                                          prop: "gameRegionServer"
+                                        }
+                                      },
+                                      [
+                                        _c("el-cascader", {
+                                          attrs: {
+                                            options:
+                                              _vm.form.gameRegionServerOptions
+                                          },
+                                          model: {
+                                            value: _vm.form.gameRegionServer,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "gameRegionServer",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "form.gameRegionServer"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "代练要求模版",
+                                          prop: "requirement"
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "el-select",
+                                          {
+                                            attrs: { placeholder: "请选择" },
+                                            model: {
+                                              value: _vm.form.requirement,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "requirement",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "form.requirement"
+                                            }
+                                          },
+                                          _vm._l(_vm.options, function(item) {
+                                            return _c("el-option", {
+                                              key: item.value,
+                                              attrs: {
+                                                label: item.label,
+                                                value: item.value
+                                              }
+                                            })
+                                          })
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "代练说明",
+                                          prop: "explain"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "textarea",
+                                            rows: 3,
+                                            placeholder: "请输入内容"
+                                          },
+                                          model: {
+                                            value: _vm.form.explain,
+                                            callback: function($$v) {
+                                              _vm.$set(_vm.form, "explain", $$v)
+                                            },
+                                            expression: "form.explain"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "代练要求",
+                                          prop: "requirement"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "textarea",
+                                            rows: 3,
+                                            placeholder: "请输入内容"
+                                          },
+                                          model: {
+                                            value: _vm.form.requirement,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "requirement",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "form.requirement"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "代练价格",
+                                          prop: "amount"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "input",
+                                            placeholder: "请输入内容"
+                                          },
+                                          model: {
+                                            value: _vm.form.amount,
+                                            callback: function($$v) {
+                                              _vm.$set(_vm.form, "amount", $$v)
+                                            },
+                                            expression: "form.amount"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "来源价格",
+                                          prop: "source_amount"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "input",
+                                            rows: 2,
+                                            placeholder: "请输入内容"
+                                          },
+                                          model: {
+                                            value: _vm.form.source_amount,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "source_amount",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "form.source_amount"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      { attrs: { label: "安全保证金" } },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "input",
+                                            rows: 2,
+                                            placeholder: "请输入内容"
+                                          },
+                                          model: {
+                                            value: _vm.form,
+                                            callback: function($$v) {
+                                              _vm.form = $$v
+                                            },
+                                            expression: "form"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      { attrs: { label: "效率保证金" } },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "input",
+                                            placeholder: "请输入内容"
+                                          },
+                                          model: {
+                                            value: _vm.textarea,
+                                            callback: function($$v) {
+                                              _vm.textarea = $$v
+                                            },
+                                            expression: "textarea"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "玩家电话",
+                                          prop: "player_phone"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "input",
+                                            rows: 2,
+                                            placeholder: "请输入内容"
+                                          },
+                                          model: {
+                                            value: _vm.form.player_phone,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "player_phone",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "form.player_phone"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "商户QQ",
+                                          prop: "player_phone"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "input",
+                                            placeholder: "请输入内容"
+                                          },
+                                          model: {
+                                            value: _vm.textarea,
+                                            callback: function($$v) {
+                                              _vm.textarea = $$v
+                                            },
+                                            expression: "textarea"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("el-card", { staticClass: "box-card" }, [
+                        _c(
+                          "div",
+                          { staticClass: "text item" },
+                          [
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "加价幅度",
+                                          prop: "price_increase_step"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "age",
+                                            autocomplete: "off"
+                                          },
+                                          model: {
+                                            value: _vm.form.price_increase_step,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "price_increase_step",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "form.price_increase_step"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "加价上限",
+                                          prop: "price_ceiling"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "age",
+                                            autocomplete: "off"
+                                          },
+                                          model: {
+                                            value: _vm.form.price_ceiling,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "price_ceiling",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "form.price_ceiling"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "接单密码",
+                                          prop: "take_order_password"
+                                        }
+                                      },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "input",
+                                            autocomplete: "off"
+                                          },
+                                          model: {
+                                            value: _vm.form.take_order_password,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "take_order_password",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "form.take_order_password"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      {
+                                        attrs: {
+                                          label: "代练类型",
+                                          prop: "game_leveling_type_id"
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "el-select",
+                                          {
+                                            attrs: { placeholder: "请选择" },
+                                            model: {
+                                              value:
+                                                _vm.form.game_leveling_type_id,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.form,
+                                                  "game_leveling_type_id",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "form.game_leveling_type_id"
+                                            }
+                                          },
+                                          _vm._l(_vm.options, function(item) {
+                                            return _c("el-option", {
+                                              key: item.value,
+                                              attrs: {
+                                                label: item.label,
+                                                value: item.value
+                                              }
+                                            })
+                                          })
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "el-row",
+                              [
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      { attrs: { label: "代练说明" } },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "textarea",
+                                            rows: 2,
+                                            placeholder: "请输入内容"
+                                          },
+                                          model: {
+                                            value: _vm.textarea,
+                                            callback: function($$v) {
+                                              _vm.textarea = $$v
+                                            },
+                                            expression: "textarea"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-col",
+                                  { attrs: { span: 12 } },
+                                  [
+                                    _c(
+                                      "el-form-item",
+                                      { attrs: { label: "代练要求" } },
+                                      [
+                                        _c("el-input", {
+                                          attrs: {
+                                            type: "textarea",
+                                            rows: 2,
+                                            placeholder: "请输入内容"
+                                          },
+                                          model: {
+                                            value: _vm.form.requirement,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.form,
+                                                "requirement",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "form.requirement"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ])
+                    ],
+                    1
+                  )
+                ])
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("el-col", { attrs: { span: 8 } }, [
+              _c(
+                "div",
+                { staticClass: "grid-content bg-purple" },
+                [
+                  _c(
+                    "el-card",
+                    { staticClass: "box-card" },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "clearfix",
+                          attrs: { slot: "header" },
+                          slot: "header"
+                        },
+                        [_c("span", [_vm._v("淘宝数据")])]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "el-table",
+                        {
+                          staticStyle: { width: "100%" },
+                          attrs: { data: _vm.tableData, border: "" }
+                        },
+                        [
+                          _c("el-table-column", {
+                            attrs: { prop: "date", label: "日期", width: "180" }
+                          }),
+                          _vm._v(" "),
+                          _c("el-table-column", {
+                            attrs: { prop: "name", label: "姓名", width: "180" }
+                          }),
+                          _vm._v(" "),
+                          _c("el-table-column", {
+                            attrs: { prop: "address", label: "地址" }
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ])
+          ],
+          1
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "footer" },
+      [
+        _c(
+          "el-row",
+          [
+            _c("el-col", { attrs: { span: 16 } }, [
+              _c(
+                "div",
+                {
+                  staticStyle: { "text-align": "center", "line-height": "60px" }
+                },
+                [
+                  _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: {
+                        click: function($event) {
+                          _vm.handleSubmitForm("form")
+                        }
+                      }
+                    },
+                    [_vm._v("确定下单")]
+                  )
+                ],
+                1
+              )
+            ])
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-00ba648e", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-025a96bc\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/AmountFlow.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -69241,7 +71254,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "game-leveling-order" },
+    { staticClass: "main content amount-flow" },
     [
       _c(
         "el-form",
@@ -69524,7 +71537,6 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "el-container",
-    { staticStyle: { height: "auto", border: "1px solid #eee" } },
     [
       _c(
         "el-aside",
@@ -69587,24 +71599,20 @@ var render = function() {
                       "a",
                       { attrs: { href: "http://baidu.com" } },
                       [
-                        _c(
-                          "el-menu-item",
-                          { attrs: { index: "1-1", href: "baidu.com" } },
-                          [_vm._v("代练待发")]
-                        )
+                        _c("el-menu-item", { attrs: { index: "1-1" } }, [
+                          _vm._v("代练待发")
+                        ])
                       ],
                       1
                     ),
                     _vm._v(" "),
                     _c(
                       "a",
-                      { attrs: { href: "http://baidu.com" } },
+                      { attrs: { href: "/v2/order/game-leveling/create" } },
                       [
-                        _c(
-                          "el-menu-item",
-                          { attrs: { index: "1-2", href: "baidu.com" } },
-                          [_vm._v("代练发布")]
-                        )
+                        _c("el-menu-item", { attrs: { index: "1-2" } }, [
+                          _vm._v("代练发布")
+                        ])
                       ],
                       1
                     ),
@@ -69613,11 +71621,9 @@ var render = function() {
                       "a",
                       { attrs: { href: "/v2/order/game-leveling" } },
                       [
-                        _c(
-                          "el-menu-item",
-                          { attrs: { index: "1-3", href: "baidu.com" } },
-                          [_vm._v("代练订单")]
-                        )
+                        _c("el-menu-item", { attrs: { index: "1-3" } }, [
+                          _vm._v("代练订单")
+                        ])
                       ],
                       1
                     ),
@@ -69626,11 +71632,9 @@ var render = function() {
                       "a",
                       { attrs: { href: "http://baidu.com" } },
                       [
-                        _c(
-                          "el-menu-item",
-                          { attrs: { index: "1-4", href: "baidu.com" } },
-                          [_vm._v("订单投诉")]
-                        )
+                        _c("el-menu-item", { attrs: { index: "1-4" } }, [
+                          _vm._v("订单投诉")
+                        ])
                       ],
                       1
                     )
@@ -69654,12 +71658,12 @@ var render = function() {
                   _c("el-menu-item-group", [
                     _c(
                       "a",
-                      { attrs: { href: "http://baidu.com" } },
+                      { attrs: { href: "/v2/finance/my-asset" } },
                       [
                         _c(
                           "el-menu-item",
                           { attrs: { index: "2-1", href: "baidu.com" } },
-                          [_vm._v("代练待发")]
+                          [_vm._v("我的资产")]
                         )
                       ],
                       1
@@ -69667,12 +71671,12 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "a",
-                      { attrs: { href: "http://baidu.com" } },
+                      { attrs: { href: "/v2/finance/amount-flow" } },
                       [
                         _c(
                           "el-menu-item",
                           { attrs: { index: "3-2", href: "baidu.com" } },
-                          [_vm._v("代练发布")]
+                          [_vm._v("资金流水")]
                         )
                       ],
                       1
@@ -69680,12 +71684,12 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "a",
-                      { attrs: { href: "http://baidu.com" } },
+                      { attrs: { href: "/v2/finance/daily-asset" } },
                       [
                         _c(
                           "el-menu-item",
                           { attrs: { index: "2-3", href: "baidu.com" } },
-                          [_vm._v("订单投诉")]
+                          [_vm._v("资产日报")]
                         )
                       ],
                       1
@@ -69795,7 +71799,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "game-leveling-order" },
+    { staticClass: "main content" },
     [
       _c(
         "el-form",
@@ -69977,19 +71981,26 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "el-table",
-    {
-      staticStyle: { width: "100%" },
-      attrs: { data: _vm.tableData, border: "" }
-    },
+    "div",
+    { staticClass: "main content " },
     [
-      _c("el-table-column", {
-        attrs: { prop: "name", label: "名称", width: "100" }
-      }),
-      _vm._v(" "),
-      _c("el-table-column", {
-        attrs: { prop: "amount", label: "金额", width: "200" }
-      })
+      _c(
+        "el-table",
+        {
+          staticStyle: { width: "100%" },
+          attrs: { data: _vm.tableData, border: "" }
+        },
+        [
+          _c("el-table-column", {
+            attrs: { prop: "name", label: "名称", width: "100" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "amount", label: "金额", width: "200" }
+          })
+        ],
+        1
+      )
     ],
     1
   )
@@ -70364,7 +72375,10 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "game-leveling-order", class: _vm.tableDataEmpty },
+    {
+      staticClass: "main content game-leveling-order",
+      class: _vm.tableDataEmpty
+    },
     [
       _c(
         "el-form",
@@ -71395,7 +73409,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "game-leveling-order" },
+    { staticClass: "main content game-leveling-order" },
     [
       _c(
         "el-form",
@@ -71532,6 +73546,33 @@ if (false) {
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-b581c25a", module.exports)
   }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-00ba648e\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrderCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-00ba648e\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrderCreate.vue");
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("37656bdb", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-00ba648e\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./GameLevelingOrderCreate.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-00ba648e\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./GameLevelingOrderCreate.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
 }
 
 /***/ }),
@@ -104465,13 +106506,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__iconfont_iconfont_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__iconfont_iconfont_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__sass_app_scss__ = __webpack_require__("./resources/assets/frontend/sass/app.scss");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__sass_app_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__sass_app_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_file_saver__ = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_file_saver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_file_saver__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_xlsx__ = __webpack_require__("./node_modules/xlsx/xlsx.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_xlsx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_xlsx__);
 __webpack_require__("./resources/assets/frontend/js/bootstrap.js");
-
-
 
 
 
@@ -104482,8 +106517,12 @@ __webpack_require__("./resources/assets/frontend/js/bootstrap.js");
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_2_element_ui___default.a, { size: "small" });
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */]);
 
+// 布局
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('layout', __webpack_require__("./resources/assets/frontend/js/components/Layout.vue"));
+// 代练订单列表
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('game-leveling-order', __webpack_require__("./resources/assets/frontend/js/components/GameLevelingOrder.vue"));
+// 代练下单
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('game-leveling-order-create', __webpack_require__("./resources/assets/frontend/js/components/GameLevelingOrderCreate.vue"));
 //资金流水
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('amount-flow', __webpack_require__("./resources/assets/frontend/js/components/AmountFlow.vue"));
 // 我的资产
@@ -104492,7 +106531,8 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('my-asset', __webpack_requ
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('daily-asset', __webpack_require__("./resources/assets/frontend/js/components/DailyAsset.vue"));
 // 员工统计
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('statistic-employee', __webpack_require__("./resources/assets/frontend/js/components/StatisticEmployee.vue"));
-
+// 订单统计
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('statistic-order', __webpack_require__("./resources/assets/frontend/js/components/StatisticOrder.vue"));
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
@@ -104813,6 +106853,58 @@ module.exports = Component.exports
 
 /***/ }),
 
+/***/ "./resources/assets/frontend/js/components/GameLevelingOrderCreate.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-00ba648e\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/frontend/js/components/GameLevelingOrderCreate.vue")
+}
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/GameLevelingOrderCreate.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-00ba648e\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/GameLevelingOrderCreate.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/frontend/js/components/GameLevelingOrderCreate.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-00ba648e", Component.options)
+  } else {
+    hotAPI.reload("data-v-00ba648e", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
 /***/ "./resources/assets/frontend/js/components/Layout.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -104950,6 +107042,54 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-2722a3d2", Component.options)
   } else {
     hotAPI.reload("data-v-2722a3d2", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/frontend/js/components/StatisticOrder.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/StatisticOrder.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-00b81cda\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/StatisticOrder.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/frontend/js/components/StatisticOrder.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-00b81cda", Component.options)
+  } else {
+    hotAPI.reload("data-v-00b81cda", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true

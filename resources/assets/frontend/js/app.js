@@ -5,8 +5,6 @@ import Vuex from 'vuex';
 import ElementUI from 'element-ui';
 import '../iconfont/iconfont.css';
 import '../sass/app.scss';
-import FileSaver from 'file-saver';
-import XLSX from 'xlsx';
 
 Vue.use(ElementUI, {size:"small"});
 Vue.use(Vuex);
@@ -25,7 +23,8 @@ Vue.component('my-asset', require('./components/MyAsset.vue'));
 Vue.component('daily-asset', require('./components/DailyAsset.vue'));
 // 员工统计
 Vue.component('statistic-employee', require('./components/StatisticEmployee.vue'));
-
+// 订单统计
+Vue.component('statistic-order', require('./components/StatisticOrder.vue'));
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 const store = new Vuex.Store({

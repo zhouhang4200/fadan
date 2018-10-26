@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Frontend\V2\Statistic;
 use DB;
 use Auth;
 use App\Models\User;
-use Maatwebsite\Excel\Excel;
-use Illuminate\Http\Request;
+use App\Models\OrderStatistic;
 use App\Models\EmployeeStatistic;
 use App\Http\Controllers\Controller;
 
@@ -64,5 +63,44 @@ class StatisticController extends Controller
     public function employeeUser()
     {
         return User::whereIn('id', User::where('parent_id', Auth::user()->getPrimaryUserId())->pluck('id')->merge(Auth::user()->getPrimaryUserId())->unique())->get()->toArray();
+    }
+
+    /**
+     * 订单统计
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function order()
+    {
+        return view('frontend.v2.statistic.order');
+    }
+
+    public function orderDataList()
+    {
+        $startDate = request('date')[0];
+        $endDate = request('date')[1];
+        $userIds = User::whereIn('id', User::where('parent_id', Auth::user()->getPrimaryUserId())->pluck('id')->merge(Auth::user()->getPrimaryUserId())->unique())
+            ->pluck('id');
+
+        $filter = compact( 'startDate', 'endDate');
+        return OrderStatistic::whereIn('user_id', $userIds)
+            ->filter($filter)
+            ->select(DB::raw('
+                user_id, date, 
+				sum(send_order_count) as send_order_count,
+			 	sum(receive_order_count) as receive_order_count, 
+			 	sum(complete_order_count) as complete_order_count,
+			 	ifnull(round(sum(complete_order_count)/sum(receive_order_count), 4), 0) as complete_order_rate, 
+			 	sum(revoke_order_count) as revoke_order_count, 
+				sum(arbitrate_order_count) as arbitrate_order_count,
+				sum(three_status_original_amount) as three_status_original_amount,
+				sum(complete_order_amount) as complete_order_amount,
+				sum(two_status_payment) as two_status_payment,
+				sum(two_status_income) as two_status_income,
+				sum(poundage) as poundage,
+				sum(profit) as profit
+			'))
+            ->latest('date')
+            ->groupBy('date')
+            ->paginate(15);
     }
 }
