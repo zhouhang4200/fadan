@@ -123,7 +123,9 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('employee-data-list', 'StatisticController@employeeDataList')->name('v2.statistic.employee-data-list');
             // 短信
             Route::get('message', 'StatisticController@message')->name('v2.statistic.message');
+            Route::get('message-show', 'StatisticController@messageShow')->name('v2.statistic.message-show');
             Route::post('message-data-list', 'StatisticController@messageDataList')->name('v2.statistic.message-data-list');
+            Route::post('message-show-data-list', 'StatisticController@messageShowDataList')->name('v2.statistic.message-show-data-list');
         });
     });
 

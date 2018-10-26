@@ -2377,6 +2377,277 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/StatisticMessage.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_file_saver__ = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_file_saver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_file_saver__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xlsx__ = __webpack_require__("./node_modules/xlsx/xlsx.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xlsx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_xlsx__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['StatisticMessageDataListApi', 'StatisticMessageShowApi'],
+    // 初始化数据
+    created: function created() {
+        this.handleTableData();
+    },
+
+    methods: {
+        // 详情页
+        show: function show(date) {
+            window.location.href = this.StatisticMessageShowApi + '?date=' + date;
+        },
+
+        // 导出
+        exportExcel: function exportExcel() {
+            /* generate workbook object from table */
+            var wb = __WEBPACK_IMPORTED_MODULE_1_xlsx___default.a.utils.table_to_book(document.querySelector('#order'));
+            /* get binary string as output */
+            var wbout = __WEBPACK_IMPORTED_MODULE_1_xlsx___default.a.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' });
+            try {
+                __WEBPACK_IMPORTED_MODULE_0_file_saver___default.a.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '短信统计.xlsx');
+            } catch (e) {
+                if (typeof console !== 'undefined') console.log(e, wbout);
+            }
+            return wbout;
+        },
+
+        // 表格加载数据
+        handleTableData: function handleTableData() {
+            var _this = this;
+
+            axios.post(this.StatisticMessageDataListApi, this.searchParams).then(function (res) {
+                _this.tableData = res.data.data;
+                _this.TotalPage = res.data.total;
+                console.log(res.data.total);
+            }).catch(function (err) {
+                _this.$alert('获取数据失败, 请重试!', '提示', {
+                    confirmButtonText: '确定',
+                    callback: function callback(action) {}
+                });
+            });
+        },
+        handleCurrentChange: function handleCurrentChange(page) {
+            this.searchParams.page = page;
+            this.handleTableData();
+        },
+        handleSearch: function handleSearch() {
+            this.handleTableData();
+        }
+    },
+    data: function data() {
+        return {
+            // 表单查找和表单数据
+            tableData: [],
+            UserArr: [],
+            searchParams: {
+                date: '',
+                page: 1
+            },
+            TotalPage: 0
+        };
+    }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/StatisticMessageShow.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_file_saver__ = __webpack_require__("./node_modules/file-saver/dist/FileSaver.min.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_file_saver___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_file_saver__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xlsx__ = __webpack_require__("./node_modules/xlsx/xlsx.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_xlsx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_xlsx__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['StatisticMessageShowDataListApi', 'DateApi'],
+    // 初始化数据
+    created: function created() {
+        this.handleTableData();
+    },
+
+    methods: {
+        // 导出
+        exportExcel: function exportExcel() {
+            /* generate workbook object from table */
+            var wb = __WEBPACK_IMPORTED_MODULE_1_xlsx___default.a.utils.table_to_book(document.querySelector('#order'));
+            /* get binary string as output */
+            var wbout = __WEBPACK_IMPORTED_MODULE_1_xlsx___default.a.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' });
+            try {
+                __WEBPACK_IMPORTED_MODULE_0_file_saver___default.a.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '短信统计.xlsx');
+            } catch (e) {
+                if (typeof console !== 'undefined') console.log(e, wbout);
+            }
+            return wbout;
+        },
+
+        // 表格加载数据
+        handleTableData: function handleTableData() {
+            var _this = this;
+
+            axios.post(this.StatisticMessageShowDataListApi, this.searchParams).then(function (res) {
+                console.log(_this.searchParams);
+                _this.tableData = res.data.data;
+                _this.TotalPage = res.data.total;
+            }).catch(function (err) {
+                _this.$alert('获取数据失败, 请重试!', '提示', {
+                    confirmButtonText: '确定',
+                    callback: function callback(action) {}
+                });
+            });
+        },
+        handleCurrentChange: function handleCurrentChange(page) {
+            this.searchParams.page = page;
+            this.handleTableData();
+        },
+        handleSearch: function handleSearch() {
+            this.handleTableData();
+        }
+    },
+    data: function data() {
+        return {
+            // 表单查找和表单数据
+            tableData: [],
+            UserArr: [],
+            searchParams: {
+                date: this.DateApi,
+                order_no: '',
+                client_phone: '',
+                page: 1
+            },
+            TotalPage: 0
+        };
+    }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/StatisticOrder.vue":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2531,7 +2802,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             /* get binary string as output */
             var wbout = __WEBPACK_IMPORTED_MODULE_1_xlsx___default.a.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' });
             try {
-                __WEBPACK_IMPORTED_MODULE_0_file_saver___default.a.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '员工统计.xlsx');
+                __WEBPACK_IMPORTED_MODULE_0_file_saver___default.a.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '订单统计.xlsx');
             } catch (e) {
                 if (typeof console !== 'undefined') console.log(e, wbout);
             }
@@ -72366,6 +72637,323 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-4a232730\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/StatisticMessageShow.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "main content" },
+    [
+      _c(
+        "el-form",
+        {
+          staticClass: "search-form-inline",
+          attrs: { inline: true, model: _vm.searchParams, size: "small" }
+        },
+        [
+          _c(
+            "el-row",
+            { attrs: { gutter: 16 } },
+            [
+              _c(
+                "el-col",
+                { attrs: { span: 5 } },
+                [
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "订单号" } },
+                    [
+                      _c("el-input", {
+                        model: {
+                          value: _vm.searchParams.order_no,
+                          callback: function($$v) {
+                            _vm.$set(_vm.searchParams, "order_no", $$v)
+                          },
+                          expression: "searchParams.order_no"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-col",
+                { attrs: { span: 5 } },
+                [
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "发送手机" } },
+                    [
+                      _c("el-input", {
+                        model: {
+                          value: _vm.searchParams.client_phone,
+                          callback: function($$v) {
+                            _vm.$set(_vm.searchParams, "client_phone", $$v)
+                          },
+                          expression: "searchParams.client_phone"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                [
+                  _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: { click: _vm.handleSearch }
+                    },
+                    [_vm._v("查询")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: { click: _vm.exportExcel }
+                    },
+                    [_vm._v("导出")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-table",
+        {
+          staticStyle: { width: "100%" },
+          attrs: { id: "order", data: _vm.tableData, border: "" }
+        },
+        [
+          _c("el-table-column", {
+            attrs: { prop: "foreign_order_no", label: "订单号", width: "200" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "client_phone", label: "发送手机", width: "200" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "content", label: "发送内容", width: "" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "date", label: "发送时间", width: "200" }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("el-pagination", {
+        attrs: {
+          "current-page": _vm.searchParams.page,
+          "page-size": 15,
+          layout: "prev, pager, next, jumper",
+          total: _vm.TotalPage
+        },
+        on: {
+          "current-change": _vm.handleCurrentChange,
+          "update:currentPage": function($event) {
+            _vm.$set(_vm.searchParams, "page", $event)
+          }
+        }
+      })
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4a232730", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5cdde413\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/StatisticMessage.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "main content" },
+    [
+      _c(
+        "el-form",
+        {
+          staticClass: "search-form-inline",
+          attrs: { inline: true, model: _vm.searchParams, size: "small" }
+        },
+        [
+          _c(
+            "el-row",
+            { attrs: { gutter: 16 } },
+            [
+              _c(
+                "el-col",
+                { attrs: { span: 7 } },
+                [
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "日期" } },
+                    [
+                      _c("el-date-picker", {
+                        attrs: {
+                          type: "daterange",
+                          align: "right",
+                          "unlink-panels": "",
+                          format: "yyyy-MM-dd",
+                          "value-format": "yyyy-MM-dd",
+                          "range-separator": "至",
+                          "start-placeholder": "开始日期",
+                          "end-placeholder": "结束日期"
+                        },
+                        model: {
+                          value: _vm.searchParams.date,
+                          callback: function($$v) {
+                            _vm.$set(_vm.searchParams, "date", $$v)
+                          },
+                          expression: "searchParams.date"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                [
+                  _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: { click: _vm.handleSearch }
+                    },
+                    [_vm._v("查询")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: { click: _vm.exportExcel }
+                    },
+                    [_vm._v("导出")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-table",
+        {
+          staticStyle: { width: "100%" },
+          attrs: { id: "order", data: _vm.tableData, border: "" }
+        },
+        [
+          _c("el-table-column", {
+            attrs: { prop: "date", label: "发布时间", width: "150" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "count", label: "发送条数", width: "" }
+          }),
+          _vm._v(" "),
+          _c("el-table-column", {
+            attrs: { prop: "id", label: "操作", width: "150" },
+            scopedSlots: _vm._u([
+              {
+                key: "default",
+                fn: function(scope) {
+                  return [
+                    scope.row.id > 0
+                      ? _c(
+                          "el-button",
+                          {
+                            attrs: { type: "primary", size: "small" },
+                            on: {
+                              click: function($event) {
+                                _vm.show(scope.row.date)
+                              }
+                            }
+                          },
+                          [_vm._v("详情")]
+                        )
+                      : _vm._e()
+                  ]
+                }
+              }
+            ])
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("el-pagination", {
+        attrs: {
+          "current-page": _vm.searchParams.page,
+          "page-size": 15,
+          layout: "prev, pager, next, jumper",
+          total: _vm.TotalPage
+        },
+        on: {
+          "current-change": _vm.handleCurrentChange,
+          "update:currentPage": function($event) {
+            _vm.$set(_vm.searchParams, "page", $event)
+          }
+        }
+      })
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5cdde413", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-85ed1e1c\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/GameLevelingOrder.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -106533,6 +107121,10 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('daily-asset', __webpack_r
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('statistic-employee', __webpack_require__("./resources/assets/frontend/js/components/StatisticEmployee.vue"));
 // 订单统计
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('statistic-order', __webpack_require__("./resources/assets/frontend/js/components/StatisticOrder.vue"));
+// 短信统计
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('statistic-message', __webpack_require__("./resources/assets/frontend/js/components/StatisticMessage.vue"));
+// 短信统计详情
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('statistic-message-show', __webpack_require__("./resources/assets/frontend/js/components/StatisticMessageShow.vue"));
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
@@ -107042,6 +107634,102 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-2722a3d2", Component.options)
   } else {
     hotAPI.reload("data-v-2722a3d2", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/frontend/js/components/StatisticMessage.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/StatisticMessage.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5cdde413\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/StatisticMessage.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/frontend/js/components/StatisticMessage.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5cdde413", Component.options)
+  } else {
+    hotAPI.reload("data-v-5cdde413", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/frontend/js/components/StatisticMessageShow.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/frontend/js/components/StatisticMessageShow.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-4a232730\",\"hasScoped\":false,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/frontend/js/components/StatisticMessageShow.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/frontend/js/components/StatisticMessageShow.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4a232730", Component.options)
+  } else {
+    hotAPI.reload("data-v-4a232730", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true

@@ -144,7 +144,7 @@
                 /* get binary string as output */
                 let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' });
                 try {
-                    FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '员工统计.xlsx');
+                    FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), '订单统计.xlsx');
                 } catch (e)
                 {
                     if (typeof console !== 'undefined')

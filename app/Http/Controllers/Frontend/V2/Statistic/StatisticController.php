@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Frontend\V2\Statistic;
 use DB;
 use Auth;
 use App\Models\User;
+use App\Models\SmsSendRecord;
 use App\Models\OrderStatistic;
 use App\Models\EmployeeStatistic;
 use App\Http\Controllers\Controller;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class StatisticController extends Controller
 {
@@ -74,6 +77,10 @@ class StatisticController extends Controller
         return view('frontend.v2.statistic.order');
     }
 
+    /**
+     * 订单统计接口
+     * @return mixed
+     */
     public function orderDataList()
     {
         $startDate = request('date')[0];
@@ -101,6 +108,76 @@ class StatisticController extends Controller
 			'))
             ->latest('date')
             ->groupBy('date')
+            ->paginate(15);
+    }
+
+    /**
+     * 短信统计
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function message()
+    {
+        return view('frontend.v2.statistic.message');
+    }
+
+    /**
+     * 短信统计接口
+     * @return LengthAwarePaginator
+     */
+    public function messageDataList()
+    {
+        $startDate = request('date')[0];
+        $endDate = request('date')[1];
+
+        $smsSendRecords = SmsSendRecord::select(DB::raw('id, date, user_id, count(1) as count'))->where('user_id', Auth::user()->getPrimaryUserId())
+            ->filter(compact('startDate', 'endDate'))
+            ->orderBy('date', 'desc')
+            ->groupBy('date')
+            ->offset((request('page', 1)-1)*15)
+            ->limit(15)
+            ->get();
+
+        $pageCount = $smsSendRecords->sum('count');
+
+        $count = SmsSendRecord::where('user_id', Auth::user()->getPrimaryUserId())
+            ->filter(compact('startDate', 'endDate'))
+            ->groupBy('date')
+            ->get()
+            ->count();
+
+        $smsSendRecords = $smsSendRecords->toArray();
+
+        array_push($smsSendRecords, ['id' => 0, 'user_id' => 0, 'date' => '总计', 'count' => $pageCount]);
+
+        return new LengthAwarePaginator($smsSendRecords, $count, 15, request('page', 1), [
+            'path'     => Paginator::resolveCurrentPath(),
+            'pageName' => 'page',
+        ]);
+    }
+
+    /**
+     * 短信详情页
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function messageShow()
+    {
+        $date = request('date');
+        return view('frontend.v2.statistic.message-show', compact('date'));
+    }
+
+    /**
+     * 短信详情接口
+     * @return mixed
+     */
+    public function messageShowDataList()
+    {
+        $orderNo = request('order_no');
+        $clientPhone = request('client_phone');
+
+        return SmsSendRecord::where('user_id', Auth::user()->getPrimaryUserId())
+            ->filter(compact('orderNo', 'clientPhone'))
+            ->where('date', request('date'))
+            ->orderBy('id', 'desc')
             ->paginate(15);
     }
 }
