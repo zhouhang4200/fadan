@@ -289,10 +289,10 @@ class GameLevelingOrder extends Model
                 'game_leveling_instructions' => $gameLevelingOrderDetail->explain,
                 'businessman_phone' => $gameLevelingOrderDetail->user_phone,
                 'businessman_qq' => $gameLevelingOrderDetail->user_qq,
-                'order_password' => $order->game_password,
+                'order_password' => $order->take_order_password,
                 'creator_username' => $gameLevelingOrderDetail->username,
             ];
-            $redis->lpush('order:send', json_encode($sendOrder));
+            $redis->lpush('new-order:send', json_encode($sendOrder));
         } catch (Exception $e) {
             DB::rollback();
             myLog('place-order-error', ['trade_no' => $order->trade_no ?? '', 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);

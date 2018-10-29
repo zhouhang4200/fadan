@@ -107,7 +107,7 @@ class FinanceController extends Controller
         $foreignOrderNo = $request->channel_order_trade_no;
         $filter = compact('tradeNo', 'tradeType', 'tradeSubType', 'startDate', 'endDate', 'foreignOrderNo');
 
-        return UserAmountFlow::filter($filter)->with('order')->paginate(15);
+        return UserAmountFlow::filter($filter)->where('user_id', Auth::user()->getPrimaryUserId())->with('order')->paginate(15);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace App\Services\GameLevelingPlatform;
 
+use App\Models\GameLevelingOrderComplain;
+use App\Models\GameLevelingOrderConsult;
 use Exception;
 use GuzzleHttp\Client;
 use App\Models\GameLevelingOrder;
@@ -249,12 +251,16 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     public static function applyConsult(GameLevelingOrder $order)
     {
         try {
+            $gameLevelingOrderConsult = GameLevelingOrderConsult::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('status', 1)
+                ->first();
+
             $options = [
                 'app_id'         => config('gameleveling.wanzi.app_id'),
                 'order_no'       => $order->platform_trade_no,
-                'amount'         => $order->gameLevelingOrderConsult->amount,
-                'double_deposit' => bcadd($order->gameLevelingOrderConsult->security_deposit, $order->gameLevelingOrderConsult->efficiency_deposit),
-                'reason'         => $order->gameLevelingOrderConsult->reason ?? '无',
+                'amount'         => $gameLevelingOrderConsult->amount,
+                'double_deposit' => bcadd($gameLevelingOrderConsult->security_deposit, $gameLevelingOrderConsult->efficiency_deposit),
+                'reason'         => $gameLevelingOrderConsult->reason ?? '无',
                 'timestamp'      => time(),
             ];
 
@@ -353,11 +359,15 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
     public static function applyComplain(GameLevelingOrder $order, $pic)
     {
         try {
+            $gameLevelingOrderComplain = GameLevelingOrderComplain::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('status', 1)
+                ->first();
+
             $options = [
                 'app_id'    => config('gameleveling.wanzi.app_id'),
                 'order_no'  => $order->platform_trade_no,
                 'timestamp' => time(),
-                'reason' => $order->gameLevelingOrderComplain->reason ?? '无',
+                'reason' => $gameLevelingOrderComplain->reason ?? '无',
             ];
 
             $sign = static::getSign($options);
