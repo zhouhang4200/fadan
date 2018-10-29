@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Partner;
 
+use App\Models\GameLevelingPlatform;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -149,17 +150,20 @@ class GameLevelingOrderOperateController
             if (!request('hatchet_man_qq') && !request('hatchet_man_phone')) {
                 return response()->partner(0, '打手电话和打手QQ必须存在一个!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
+
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
 
-            // 询用查询接口
-            $queryResult = call_user_func_array([config('leveling.controller')[$order->platform_id], config('leveling.action')['orderInfo']], $order);
+//            // 询用查询接口
+            $queryResult = call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['orderInfo']], [$order]);
 
             // 同步价格
-            if ($queryResult[config('leveling.third_orders_price')[$order->platform_id]['data']][config('leveling.third_orders_price')[$order->platform_id]['price']] != $order->amount) {
+            if ($queryResult[config('gameleveling.third_orders_price')[$gameLevelingPlatform->platform_id]['data']][config('gameleveling.third_orders_price')[$gameLevelingPlatform->platform_id]['price']] != $order->amount) {
                 AutoMarkupOrderEveryHour::deleteRedisHashKey($order->trade_no);
                 return response()->partner(0, '接单失败, 订单价格不一致!' . $order->trade_no);
             }
@@ -191,9 +195,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
 
@@ -224,9 +230,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
 
@@ -257,9 +265,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no') || !request('api_amount') || !request('api_deposit') || !request('api_service') || !request('content')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
 
@@ -290,9 +300,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
 
@@ -323,9 +335,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
 
@@ -356,9 +370,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no') || !request('api_service')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
             // 开始调用
@@ -388,9 +404,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
             // 开始调用
@@ -420,9 +438,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no') || !request('content', '接口没有传申请仲裁信息')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
 
@@ -453,9 +473,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
             // 开始调用
@@ -485,9 +507,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no') || !request('api_amount') || !request('api_deposit') || !request('api_service')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
             // 开始调用
@@ -517,9 +541,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
             // 开始调用
@@ -549,9 +575,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
             // 开始调用
@@ -613,9 +641,11 @@ class GameLevelingOrderOperateController
             if (!request('order_no')) {
                 return response()->partner(0, '参数缺失!');
             }
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
             // 开始调用
@@ -646,9 +676,11 @@ class GameLevelingOrderOperateController
                 return response()->partner(0, '参数缺失!');
             }
 
-            $order = GameLevelingOrder::where('trade_no', request('order_no'))->first();
+            $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
 
-            if (! $order) {
+            $order = GameLevelingOrder::where('trade_no', $gameLevelingPlatform->game_leveling_order_trade_no)->first();
+
+            if (!$gameLevelingPlatform || !$order) {
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
             // 开始调用

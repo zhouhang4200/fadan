@@ -4,6 +4,7 @@ namespace App\Services;
 
 use DB;
 use Cache;
+use Asset;
 use Redis;
 use Exception;
 use Carbon\Carbon;
@@ -126,29 +127,31 @@ class OrderOperateController
 
     /**
      * 检测发单人和平台余额
+     * @param $order
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public static function checkUserAndPlatformBalance()
+    public static function checkUserAndPlatformBalance($order)
     {
-        if(UserAsset::balance(static::$order->parent_user_id) < 2000) {
+        if(UserAsset::balance($order->parent_user_id) < 2000) {
             // https://oapi.dingtalk.com/robot/send?access_token=b5c71a94ecaba68b9fec8055100324c06b1d98a6cd3447c5d05e224efebe5285 代练小组
             // https://oapi.dingtalk.com/robot/send?access_token=54967c90b771a4b585a26b195a71500a2e974fb9b4c9f955355fe4111324eab8 测试用
-            $userInfo = User::find(static::$order->parent_user_id);
+            $userInfo = User::find($order->parent_user_id);
 
-            $existCache = Cache::get(static::$order->parent_user_id);
-            if (!$existCache && in_array(static::$order->parent_user_id, [8317, 8803, 8790, 8785, 8711, 8523])) {
+            $existCache = Cache::get($order->parent_user_id);
+            if (!$existCache && in_array($order->parent_user_id, [8317, 8803, 8790, 8785, 8711, 8523])) {
                 $now = Carbon::now();
                 $expiresAt = $now->diffInMinutes(Carbon::parse(date('Y-m-d'))->endOfDay());
-                Cache::put(static::$order->parent_user_id, '1', $expiresAt);
+                Cache::put($order->parent_user_id, '1', $expiresAt);
 
                 // 发送通知
                 event((new NotificationEvent('balanceNotice', [
                     'type' => 1, // 1 资金 2 短信
-                    'user_id' => static::$order->parent_user_id,
+                    'user_id' => $order->parent_user_id,
                     'title' => '余额不足',
-                    'message' => '[淘宝发单平台]提醒您，您的账户(ID:' . static::$order->parent_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。'
+                    'message' => '[淘宝发单平台]提醒您，您的账户(ID:' . $order->parent_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。'
                 ])));
 
-//                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . static::$order->parent_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。', '');
+//                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $order->parent_user_id . ')余额已不足2000元，请及时充值，保证业务正常进行。', '');
             }
 
             $client = new Client();
@@ -156,7 +159,7 @@ class OrderOperateController
                 'json' => [
                     'msgtype' => 'text',
                     'text' => [
-                        'content' => '发单商户ID: ' . static::$order->parent_user_id . ', 昵称(' . $userInfo->nickname . ')。账户余额低于2000元, 已发送短信通知, 请运营同事及时跟进。'
+                        'content' => '发单商户ID: ' . $order->parent_user_id . ', 昵称(' . $userInfo->nickname . ')。账户余额低于2000元, 已发送短信通知, 请运营同事及时跟进。'
                     ],
                     'at' => [
                         'isAtAll' => true
@@ -166,17 +169,17 @@ class OrderOperateController
         }
 
         // 发单平台余额检测
-        $platformBalanceAlarm = config('leveling.balance_alarm')[static::$order->take_parent_id];
-        if (UserAsset::balance(static::$order->take_parent_id) < $platformBalanceAlarm) {
-            $userInfo = User::find(static::$order->take_parent_id);
+        $platformBalanceAlarm = config('gameleveling.balance_alarm')[$order->take_parent_user_id];
+        if (UserAsset::balance($order->take_parent_user_id) < $platformBalanceAlarm) {
+            $userInfo = User::find($order->take_parent_user_id);
 
-            $existCache = Cache::get(static::$order->take_parent_id);
+            $existCache = Cache::get($order->take_parent_user_id);
             if (!$existCache) {
                 $now = Carbon::now();
                 $expiresAt = $now->diffInMinutes(Carbon::parse(date('Y-m-d'))->endOfDay());
-                Cache::put(static::$order->take_parent_id, '1', $expiresAt);
+                Cache::put($order->take_parent_user_id, '1', $expiresAt);
 
-//                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . static::$order->take_parent_id . ')余额已不足' . $platformBalanceAlarm . '元，请及时充值，保证业务正常进行。', '');
+//                sendSms(0, $this->order->no, $userInfo->phone, '[淘宝发单平台]提醒您，您的账户(ID:' . $order->take_parent_user_id . ')余额已不足' . $platformBalanceAlarm . '元，请及时充值，保证业务正常进行。', '');
             }
 
             $client = new Client();
@@ -184,7 +187,7 @@ class OrderOperateController
                 'json' => [
                     'msgtype' => 'text',
                     'text' => [
-                        'content' => '接单平台ID: ' . static::$order->take_parent_id . ', 昵称(' . $userInfo->nickname . ')。账户余额低于' . $platformBalanceAlarm . ', 已发送短信通知, 请运营同事及时跟进。'
+                        'content' => '接单平台ID: ' . $order->take_parent_user_id . ', 昵称(' . $userInfo->nickname . ')。账户余额低于' . $platformBalanceAlarm . ', 已发送短信通知, 请运营同事及时跟进。'
                     ],
                     'at' => [
                         'isAtAll' => true
@@ -843,7 +846,7 @@ class OrderOperateController
             $gameLevelingOrderComplain->save();
 
             // 当前操作人是否是该平台
-            if (! config('leveling.third')[static::$user->parentInfo()->id] || config('leveling.third')[static::$user->parentInfo()->id] != static::$order->platform_id) {
+            if (! config('gameleveling.third')[static::$user->parentInfo()->id] || config('gameleveling.third')[static::$user->parentInfo()->id] != static::$order->platform_id) {
                 throw new GameLevelingOrderOperateException('当前操作人不是该订单所有者!');
             }
 
@@ -1179,10 +1182,11 @@ class OrderOperateController
     /**
      * 接单
      * @param $hatchetManName
-     * @param $hatchetManQq
-     * @param $hatchetManPhone
+     * @param string $hatchetManQq
+     * @param string $hatchetManPhone
      * @return mixed
-     * @throws Exception
+     * @throws GameLevelingOrderOperateException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function take($hatchetManName, $hatchetManQq = '', $hatchetManPhone = '')
     {
@@ -1223,7 +1227,7 @@ class OrderOperateController
             static::createOrderHistory(27, $description);
 
             // 检测发单人和平台余额
-            static::checkUserAndPlatformBalance();
+            static::checkUserAndPlatformBalance(static::$order);
 
             // 发单流水
             try {
@@ -1266,8 +1270,8 @@ class OrderOperateController
             // 更新订单详情表数据
             $gameLevelingOrderDetail = GameLevelingOrderDetail::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->first();
-            $gameLevelingOrderDetail->take_user_name = static::$user->username;
-            $gameLevelingOrderDetail->take_parent_user_name = static::$user->parentInfo()->username;
+            $gameLevelingOrderDetail->take_username = static::$user->username;
+            $gameLevelingOrderDetail->take_parent_username = static::$user->parentInfo()->username;
             $gameLevelingOrderDetail->take_user_qq = static::$user->qq;
             $gameLevelingOrderDetail->take_user_phone = static::$user->phone;
             $gameLevelingOrderDetail->take_parent_qq = static::$user->parentInfo()->qq;
@@ -1308,13 +1312,13 @@ class OrderOperateController
         DB::beginTransaction();
         try {
             $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', static::$order->trade_no)
-                ->where('platform_id', config('leveling.third')[static::$user->id])
+                ->where('platform_id', config('gameleveling.third')[static::$user->id])
                 ->first();
 
             if (! $gameLevelingPlatform) {
                 GameLevelingPlatform::create([
                     'game_leveling_order_trade_no' => static::$order->trade_no,
-                    'platform_id' => config('leveling.third')[static::$user->id],
+                    'platform_id' => config('gameleveling.third')[static::$user->id],
                     'platform_trade_no' => $platformTradeNo,
                 ]);
             }
