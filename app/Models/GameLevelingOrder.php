@@ -220,8 +220,8 @@ class GameLevelingOrder extends Model
                 'take_user_phone' => '',
                 'take_parent_phone' => '',
                 'take_parent_qq' => '',
-                'explain' => $data['game_leveling_instructions'] ?? '',
-                'requirement' => $data['game_leveling_requirements'] ?? '',
+                'explain' => $data['explain'] ?? '',
+                'requirement' => $data['requirement'] ?? '',
             ];
 
             $gameLevelingOrderDetail = GameLevelingOrderDetail::create($details);
