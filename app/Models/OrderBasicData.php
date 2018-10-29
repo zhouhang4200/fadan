@@ -133,7 +133,7 @@ class OrderBasicData extends Model
             }
 
             // 来源单号和天猫单号
-            $sourceOrderNos = GameLevelingOrder::where('source_order_no', $order->source_order_no)
+            $sourceOrderNos = GameLevelingOrder::where('channel_order_trade_no', $order->channel_order_trade_no)
                 ->pluck('trade_no')
                 ->unique()
                 ->toArray();
