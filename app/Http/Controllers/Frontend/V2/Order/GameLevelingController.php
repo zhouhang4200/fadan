@@ -87,7 +87,7 @@ class GameLevelingController extends Controller
                 if ($gameLevelingPlatforms->count() > 1) {
                     // 删除下单成功的
                     foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
-                        call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('leveling.action')['delete']], [$order]);
+                        call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['delete']], [$order]);
                     }
                 }
             } else {
@@ -121,7 +121,7 @@ class GameLevelingController extends Controller
                 if ($gameLevelingPlatforms->count() > 1) {
                     // 下单成功的接单平台
                     foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
-                        call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('leveling.action')['onSale']], [$order]);
+                        call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['onSale']], [$order]);
                     }
                 }
             } else {
@@ -155,7 +155,7 @@ class GameLevelingController extends Controller
                 if ($gameLevelingPlatforms->count() > 1) {
                     // 下单成功的接单平台
                     foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
-                        call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('leveling.action')['offSale']], [$order]);
+                        call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['offSale']], [$order]);
                     }
                 }
             } else {
@@ -182,7 +182,7 @@ class GameLevelingController extends Controller
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 OrderOperateController::init(Auth::user(), $order)->complete();
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['complete']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['complete']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -207,7 +207,7 @@ class GameLevelingController extends Controller
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 OrderOperateController::init(Auth::user(), $order)->lock();
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['lock']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['lock']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -232,7 +232,7 @@ class GameLevelingController extends Controller
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 OrderOperateController::init(Auth::user(), $order)->cancelLock();
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['cancelLock']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['cancelLock']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -256,8 +256,8 @@ class GameLevelingController extends Controller
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                OrderOperateController::init(Auth::user(), $order)->applyConsult(request('amount'), request('deposit'), request('poundage'), request('reason'));
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['applyConsult']], [$order]);
+                OrderOperateController::init(Auth::user(), $order)->applyConsult(request('payment_amount'), request('payment_deposit'), request('poundage', 0), request('reason', '无'));
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['applyConsult']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -266,6 +266,7 @@ class GameLevelingController extends Controller
             return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
+            myLog('game-leveling-controller-error', ['原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
             return response()->ajax(0, '订单异常！');
         }
         DB::commit();
@@ -282,7 +283,7 @@ class GameLevelingController extends Controller
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 OrderOperateController::init(Auth::user(), $order)->cancelConsult();
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['cancelConsult']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['cancelConsult']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -307,7 +308,7 @@ class GameLevelingController extends Controller
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 OrderOperateController::init(Auth::user(), $order)->agreeConsult();
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['agreeConsult']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['agreeConsult']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -332,7 +333,7 @@ class GameLevelingController extends Controller
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 OrderOperateController::init(Auth::user(), $order)->rejectConsult();
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['rejectConsult']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['rejectConsult']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -361,7 +362,7 @@ class GameLevelingController extends Controller
                 $pic[]['pic3'] = request('pic3');
 
                 OrderOperateController::init(Auth::user(), $order)->applyComplain(request('reason'));
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['applyComplain']], [$order, $pic]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['applyComplain']], [$order, $pic]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -386,7 +387,7 @@ class GameLevelingController extends Controller
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 OrderOperateController::init(Auth::user(), $order)->cancelComplain();
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['cancelComplain']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['cancelComplain']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -411,7 +412,7 @@ class GameLevelingController extends Controller
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['modifyOrder']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['modifyOrder']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -435,7 +436,7 @@ class GameLevelingController extends Controller
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['addTime']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['addTime']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -459,7 +460,7 @@ class GameLevelingController extends Controller
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['addAmount']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['addAmount']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -483,7 +484,7 @@ class GameLevelingController extends Controller
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['orderInfo']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['orderInfo']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -507,7 +508,7 @@ class GameLevelingController extends Controller
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['getScreenShot']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['getScreenShot']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -531,7 +532,7 @@ class GameLevelingController extends Controller
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['getMessage']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['getMessage']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -555,7 +556,7 @@ class GameLevelingController extends Controller
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['replyMessage']], [$order, request('message')]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['replyMessage']], [$order, request('message')]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -579,7 +580,7 @@ class GameLevelingController extends Controller
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['modifyGamePassword']], [$order]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['modifyGamePassword']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -603,7 +604,7 @@ class GameLevelingController extends Controller
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                $result = call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['complainInfo']], [$order]);
+                $result = call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['complainInfo']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -629,7 +630,7 @@ class GameLevelingController extends Controller
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 $pic = request('pic');
                 $content = request('content');
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['addComplainDetail']], [$order, $pic, $content]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['addComplainDetail']], [$order, $pic, $content]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -654,7 +655,7 @@ class GameLevelingController extends Controller
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 $pic = request('pic');
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('leveling.action')['sendImage']], [$order, $pic]);
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['sendImage']], [$order, $pic]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -719,7 +720,7 @@ class GameLevelingController extends Controller
                     $gameLevelingOrder->amount = $requestData['game_leveling_amount'];
                     $gameLevelingOrder->save();
 
-                    call_user_func_array([config('gameleveling.controller')[$gameLevelingOrder->platform_id], config('leveling.action')['addAmount']], [$gameLevelingOrder]);
+                    call_user_func_array([config('gameleveling.controller')[$gameLevelingOrder->platform_id], config('gameleveling.action')['addAmount']], [$gameLevelingOrder]);
                 } elseif ($gameLevelingOrder->amount > $requestData['game_leveling_amount']) {
                     return response()->ajax(0, '代练价格只可增加!');
                 }
@@ -738,7 +739,7 @@ class GameLevelingController extends Controller
                     $gameLevelingOrder->game_password = $requestData['password'];
                     $gameLevelingOrder->save();
 
-                    call_user_func_array([config('gameleveling.controller')[$gameLevelingOrder->platform_id], config('leveling.action')['modifyGamePassword']], [$gameLevelingOrder]);
+                    call_user_func_array([config('gameleveling.controller')[$gameLevelingOrder->platform_id], config('gameleveling.action')['modifyGamePassword']], [$gameLevelingOrder]);
                 }
             }
 

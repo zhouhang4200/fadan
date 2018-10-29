@@ -474,10 +474,9 @@ class OrderOperateController
             // 将协商数据写入协商表
             $handleDeposit = static::handleDeposit($amount, $deposit);
             $initiator = static::initiator();
-
             GameLevelingOrderConsult::create([
                 'user_id' => static::$user->id,
-                'parent_user_id' => static::$user->parentInfo()->id,
+                'parent_user_id' => static::$user->getPrimaryUserId(),
                 'game_leveling_order_trade_no' => static::$order->trade_no,
                 'amount' => $amount,
                 'security_deposit' => $handleDeposit['security_deposit'],
@@ -490,10 +489,8 @@ class OrderOperateController
 
             // 订单数量角标
             static::orderCount($gameLevelingOrderPreviousStatus->status, 15);
-
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
-
             // 发送短信
             static::sendMessage(4, '代练订单申请协商短信');
         } catch (Exception $e) {
@@ -1219,7 +1216,17 @@ class OrderOperateController
             // 修改订单状态和记录订单日志
             $description = "用户[".static::$user->username."]将订单从[待接单]设置为[代练中]状态！";
 
+            $gameLevelingPlatform = GameLevelingPlatform::where('game_leveling_order_trade_no', static::$order->trade_no)
+                ->where('platform_id', config('gameleveling.third')[static::$user->id])
+                ->first();
+
+            if (! $gameLevelingPlatform) {
+                throw new GameLevelingOrderOperateException('未找到对应的接单平台!');
+            }
+
             static::$order->status = 13;
+            static::$order->platform_id = $gameLevelingPlatform->platform_id;
+            static::$order->platform_trade_no = $gameLevelingPlatform->platform_trade_no;
             static::$order->take_user_id = static::$user->id;
             static::$order->take_parent_user_id = static::$user->parentInfo()->id;
             static::$order->take_at = Carbon::now()->toDateTimeString();
