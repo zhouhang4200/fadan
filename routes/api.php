@@ -53,39 +53,73 @@ Route::prefix('partner')->middleware('api.partner')->namespace('Partner')->group
     // 订单相关接口
     Route::prefix('order')->group(function () {
         // 订单查询
-        Route::post('query', 'OrderController@query');
+        Route::post('query', 'GameLevelingOrderOperateController@query');
         // 接单
-        Route::post('receive', 'OrderController@receive');
+        Route::post('receive', 'GameLevelingOrderOperateController@take');
         // 申请验收
-        Route::post('apply-complete', 'OrderController@applyComplete');
+        Route::post('apply-complete', 'GameLevelingOrderOperateController@applyComplete');
         // 取消验收
-        Route::post('cancel-complete', 'OrderController@cancelComplete');
-        // 撤销
-        Route::post('revoke', 'OrderController@revoke');
+        Route::post('cancel-complete', 'GameLevelingOrderOperateController@cancelComplete');
+        // 申请撤销
+        Route::post('revoke', 'GameLevelingOrderOperateController@applyConsult');
         // 取消撤销
-        Route::post('cancel-revoke', 'OrderController@cancelRevoke');
+        Route::post('cancel-revoke', 'GameLevelingOrderOperateController@cancelConsult');
         // 不同意撤销
-        Route::post('refuse-revoke', 'OrderController@refuseRevoke');
+        Route::post('refuse-revoke', 'GameLevelingOrderOperateController@rejectConsult');
         // 同意撤销
-        Route::post('agree-revoke', 'OrderController@agreeRevoke');
+        Route::post('agree-revoke', 'GameLevelingOrderOperateController@agreeConsult');
         // 强制撤销
-        Route::post('force-revoke', 'OrderController@forceRevoke');
+        Route::post('force-revoke', 'GameLevelingOrderOperateController@forceDelete');
         // 申请仲裁
-        Route::post('apply-arbitration', 'OrderController@applyArbitration');
+        Route::post('apply-arbitration', 'GameLevelingOrderOperateController@applyComplain');
         // 取消仲裁
-        Route::post('cancel-arbitration', 'OrderController@cancelArbitration');
+        Route::post('cancel-arbitration', 'GameLevelingOrderOperateController@cancelComplain');
         // 强制仲裁
-        Route::post('force-arbitration', 'OrderController@forceArbitration');
+        Route::post('force-arbitration', 'GameLevelingOrderOperateController@arbitration');
         // 异常
-        Route::post('abnormal', 'OrderController@abnormal');
+        Route::post('abnormal', 'GameLevelingOrderOperateController@anomaly');
         // 取消异常
-        Route::post('cancel-abnormal', 'OrderController@cancelAbnormal');
+        Route::post('cancel-abnormal', 'GameLevelingOrderOperateController@cancelAnomaly');
         // 回传
-        Route::post('callback', 'OrderController@callback');
+        Route::post('callback', 'GameLevelingOrderOperateController@callback');
         // 完成
-        Route::post('complete', 'OrderController@complete');
+        Route::post('complete', 'GameLevelingOrderOperateController@complete');
         // 新留言通知接口
-        Route::post('new-message', 'OrderController@newMessage');
+        Route::post('new-message', 'GameLevelingOrderOperateController@sendMessage');
+//        // 订单查询
+//        Route::post('query', 'OrderController@query');
+//        // 接单
+//        Route::post('receive', 'OrderController@receive');
+//        // 申请验收
+//        Route::post('apply-complete', 'OrderController@applyComplete');
+//        // 取消验收
+//        Route::post('cancel-complete', 'OrderController@cancelComplete');
+//        // 撤销
+//        Route::post('revoke', 'OrderController@revoke');
+//        // 取消撤销
+//        Route::post('cancel-revoke', 'OrderController@cancelRevoke');
+//        // 不同意撤销
+//        Route::post('refuse-revoke', 'OrderController@refuseRevoke');
+//        // 同意撤销
+//        Route::post('agree-revoke', 'OrderController@agreeRevoke');
+//        // 强制撤销
+//        Route::post('force-revoke', 'OrderController@forceRevoke');
+//        // 申请仲裁
+//        Route::post('apply-arbitration', 'OrderController@applyArbitration');
+//        // 取消仲裁
+//        Route::post('cancel-arbitration', 'OrderController@cancelArbitration');
+//        // 强制仲裁
+//        Route::post('force-arbitration', 'OrderController@forceArbitration');
+//        // 异常
+//        Route::post('abnormal', 'OrderController@abnormal');
+//        // 取消异常
+//        Route::post('cancel-abnormal', 'OrderController@cancelAbnormal');
+//        // 回传
+//        Route::post('callback', 'OrderController@callback');
+//        // 完成
+//        Route::post('complete', 'OrderController@complete');
+//        // 新留言通知接口
+//        Route::post('new-message', 'OrderController@newMessage');
     });
 
     // 查询区服接口
