@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\V2\Finance;
 
 use App\Events\Punish;
+use App\Models\Game;
 use App\Models\UserAsset;
 use Illuminate\Http\Request;
 use App\Models\UserAssetDaily;
@@ -10,6 +11,7 @@ use App\Models\UserAmountFlow;
 use App\Models\UserWithdrawOrder;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\TaobaoTrade;
 use App\Repositories\Frontend\UserWithdrawOrderRepository;
 
 class FinanceController extends Controller
@@ -159,5 +161,63 @@ class FinanceController extends Controller
             return response()->ajax(0, $e->getMessage());
         }
         return response()->ajax(1, '发送成功!');
+    }
+
+    /**
+     * 财务订单
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function order()
+    {
+        $games = Game::get();
+        return view('frontend.v2.finance.order', compact('games'));
+    }
+
+    /**
+     * 财务订单接口
+     * @param OrderRepository $orderRepository
+     * @param GameRepository $gameRepository
+     */
+    public function orderDataList(OrderRepository $orderRepository, GameRepository $gameRepository)
+    {
+        $no = request('no');
+        $customerServiceName = request('customer_service_name', 0);
+        $gameId = request('game_id', 0);
+        $status = request('status', 0);
+        $wangWang = request('wang_wang');
+        $urgentOrder = request('urgent_order', 0);
+        $startDate = request('start_date');
+        $endDate = request('end_date');
+        $pageSize = request('limit', 15);
+
+        $taobaoStatus = request('taobao_status', 0);
+        $platform = request('platform', 0);
+        $sellerNick = request('seller_nick', '');
+
+        $game = $gameRepository->availableByServiceId(4);
+
+        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $sellerNick, $pageSize);
+
+
+        // 处理数据
+        $tid = [];
+        $taobaoTradeData = [];
+        foreach($orders as $item) {
+            $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
+            $tid[] = $detail['source_order_no'];
+            $tid[] = $detail['source_order_no_1'] ?? '';
+            $tid[] = $detail['source_order_no_2'] ?? '';
+        }
+
+        $taobaoTrade = TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_unique(array_filter($tid)))->get();
+
+        if ($taobaoTrade) {
+            foreach ($taobaoTrade as $trade) {
+                $taobaoTradeData[$trade->tid] = [
+                    'payment' => $trade->payment,
+                    'refund' => $trade->trade_status == 7 ? $trade->payment : 0,
+                ];
+            }
+        }
     }
 }

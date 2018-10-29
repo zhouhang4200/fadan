@@ -29,6 +29,8 @@ Vue.component('statistic-order', require('./components/StatisticOrder.vue'));
 Vue.component('statistic-message', require('./components/StatisticMessage.vue'));
 // 短信统计详情
 Vue.component('statistic-message-show', require('./components/StatisticMessageShow.vue'));
+// 财务订单统计
+Vue.component('finance-order', require('./components/FinanceOrder.vue'));
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 const store = new Vuex.Store({
