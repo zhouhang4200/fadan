@@ -50,7 +50,7 @@
                 dialogImageUrl: '',
                 dialogVisible: false,
                 form: {
-                    image1: '',
+                    pic1: '',
                     reason: '',
                     trade_no: this.tradeNo
                 },
@@ -74,6 +74,7 @@
                                 this.$emit("handleApplyComplainVisible", {"visible":false});
                             }
                         }).catch(err => {
+                            console.log(err);
                             this.$message({
                                 type: 'error',
                                 message: '操作失败'
@@ -96,7 +97,7 @@
             },
             handleUploadSuccess(res, file) {
                 this.imageUrl = URL.createObjectURL(file.raw);
-                console.log(this.imageUrl);
+                // console.log(this.imageUrl);
             },
             handleUploadFile(options){
                 let file = options.file;
@@ -104,9 +105,10 @@
                     this.fileReader.readAsDataURL(file)
                 }
                 this.fileReader.onload = () => {
-                    let base64Str = this.fileReader.result;
+                    // let base64Str = ;
                     // 图片base64
-                    console.log(base64Str);
+                    // console.log(base64Str);
+                    this.form.pic1 = this.fileReader.result;
                 }
             },
             HandleBeforeUpload(file) {

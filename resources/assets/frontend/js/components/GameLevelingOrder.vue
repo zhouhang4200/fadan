@@ -403,7 +403,7 @@
 
         <ApplyComplain v-if="applyComplainVisible"
                        :tradeNo="tradeNo"
-                       :applyConsultApi="applyConsultApi"
+                       :applyComplainApi="applyComplainApi"
                        @handleApplyComplainVisible="handleApplyComplainVisible">
         </ApplyComplain>
 
