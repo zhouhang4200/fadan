@@ -125,7 +125,14 @@
                 </span>
             </el-tab-pane>
 
-            <el-tab-pane  name="1">
+            <el-tab-pane  name="16">
+                <span slot="label">
+                    仲裁中
+                    <el-badge  :value="0"></el-badge>
+                </span>
+            </el-tab-pane>
+
+            <el-tab-pane  name="99">
                 <span slot="label">
                     淘宝退款中
                     <el-badge  :value="99"></el-badge>
