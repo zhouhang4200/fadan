@@ -39,8 +39,8 @@
                     <a href="/v2/finance/my-withdraw"><el-menu-item index="2-4">我的提现</el-menu-item></a>
                     <a href="/v2/statistic/employee"><el-menu-item index="2-6">员工统计</el-menu-item></a>
                     <a href="/v2/statistic/order"><el-menu-item index="2-7">订单统计</el-menu-item></a>
-                    <a href="/v2/statistic/message"><el-menu-item index="2-7">短信统计</el-menu-item></a>
-                    <a href="/v2/statistic/message"><el-menu-item index="2-7">短信统计</el-menu-item></a>
+                    <a href="/v2/statistic/message"><el-menu-item index="2-8">短信统计</el-menu-item></a>
+                    <a href="/v2/statistic/message"><el-menu-item index="2-9">短信统计</el-menu-item></a>
                 </el-submenu>
 
                 <!--没有子菜单示例-->

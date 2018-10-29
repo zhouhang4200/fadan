@@ -96,13 +96,22 @@
             handleSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$emit("handleApplyConsultVisible", {"visible":false});
+                        axios.post(this.applyConsultApi, this.form).then(res => {
+                            this.$message({
+                                type: res.data.status == 1 ? 'success' : 'error',
+                                message: res.data.message
+                            });
 
-                        alert('submit!');
-
-                    } else {
-                        console.log('error submit!!');
-                        return false;
+                            if(res.data.status == 1) {
+                                // 关闭窗口
+                                this.$emit("handleApplyConsultVisible", {"visible":false});
+                            }
+                        }).catch(err => {
+                            this.$message({
+                                type: 'error',
+                                message: '操作失败'
+                            });
+                        });
                     }
                 });
             },

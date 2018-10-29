@@ -331,7 +331,7 @@
                         <el-button
                                 size="small"
                                 type="primary"
-                                @click="handleOnSale(scope.row)">下架</el-button>
+                                @click="handleOffSale(scope.row)">下架</el-button>
                     </div>
                     <!--撤销 申请仲裁-->
                     <div v-if="scope.row.status == 13">
@@ -636,7 +636,14 @@
                     axios.post(this.deleteApi, {
                         'trade_no' : row.trade_no
                     }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
 
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
                     }).catch(err => {
                         this.$message({
                             message: '操作失败',
