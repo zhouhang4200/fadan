@@ -412,7 +412,7 @@
                       :amount="amount"
                       :securityDeposit="securityDeposit"
                       :efficiencyDeposit="efficiencyDeposit"
-                      :applyComplainApi="applyComplainApi"
+                      :applyConsultApi="applyConsultApi"
                       @handleApplyConsultVisible="handleApplyConsultVisible">
         </ApplyConsult>
     </div>
