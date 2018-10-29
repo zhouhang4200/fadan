@@ -403,6 +403,7 @@
 
         <ApplyComplain v-if="applyComplainVisible"
                        :tradeNo="tradeNo"
+                       :applyConsultApi="applyConsultApi"
                        @handleApplyComplainVisible="handleApplyComplainVisible">
         </ApplyComplain>
 
@@ -411,6 +412,7 @@
                       :amount="amount"
                       :securityDeposit="securityDeposit"
                       :efficiencyDeposit="efficiencyDeposit"
+                      :applyComplainApi="applyComplainApi"
                       @handleApplyConsultVisible="handleApplyConsultVisible">
         </ApplyConsult>
     </div>
@@ -457,6 +459,7 @@
             'onSaleApi',
             'offSaleApi',
             'applyConsultApi',
+            'applyComplainApi',
             'cancelConsultApi',
             'rejectConsultApi',
             'agreeConsultApi',
@@ -481,6 +484,7 @@
                 efficiencyDeposit:0,
                 applyConsultVisible:false,
                 applyComplainVisible:false,
+                // applyConsultApi: this.applyConsultApi,
                 platformOptions: [
                     { key:0, value:'所有平台'},
                     { key:5, value:'丸子代练'},
@@ -652,10 +656,13 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            message: '操作成功',
-                            type: 'success'
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
                         });
-                        this.handleTableData();
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
                     }).catch(err => {
                         this.$message({
                             type: 'error',
@@ -675,10 +682,13 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            message: '操作成功',
-                            type: 'success'
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
                         });
-                        this.handleTableData();
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
                     }).catch(err => {
                         this.$message({
                             type: 'error',
@@ -703,10 +713,13 @@
                         'trade_no' : this.tableData[index].trade_no
                     }).then(res => {
                         this.$message({
-                            message: '操作成功',
-                            type: 'success'
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
                         });
-                        this.handleTableData();
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
                     }).catch(err => {
                         this.$message({
                             type: 'error',
@@ -730,10 +743,13 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            message: '操作成功',
-                            type: 'success'
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
                         });
-                        this.handleTableData();
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
                     }).catch(err => {
                         this.$message({
                             type: 'error',
@@ -761,10 +777,13 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: 'success',
-                            message: '操作成功'
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
                         });
-                        this.handleTableData();
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
                     }).catch(err => {
                         this.$message({
                             type: 'error',
@@ -784,10 +803,13 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: 'success',
-                            message: '操作成功'
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
                         });
-                        this.handleTableData();
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
                     }).catch(err => {
                         this.$message({
                             type: 'error',
@@ -807,10 +829,13 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            message: '操作成功',
-                            type: 'success'
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
                         });
-                        this.handleTableData();
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
                     }).catch(err => {
                         this.$message({
                             type: 'error',
@@ -830,10 +855,13 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            message: '操作成功',
-                            type: 'success'
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
                         });
-                        this.handleTableData();
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
                     }).catch(err => {
                         this.$message({
                             type: 'error',
@@ -853,10 +881,13 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            message: '操作成功',
-                            type: 'success'
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
                         });
-                        this.handleTableData();
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
                     }).catch(err => {
                         this.$message({
                             type: 'error',

@@ -36,7 +36,8 @@
     export default {
         name:"ApplyComplain",
         props: [
-            'tradeNo'
+            'tradeNo',
+            'applyComplainApi',
         ],
         computed: {
             // getVisible() {
@@ -51,7 +52,7 @@
                 form: {
                     image1: '',
                     reason: '',
-                    tradeNo: this.tradeNo
+                    trade_no: this.tradeNo
                 },
             };
         },
@@ -62,12 +63,22 @@
             handleSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$message({
-                           type:'success',
-                            message: '提交表单',
+                        axios.post(this.applyComplainApi, this.form).then(res => {
+                            this.$message({
+                                type: res.data.status == 1 ? 'success' : 'error',
+                                message: res.data.message
+                            });
+
+                            if(res.data.status == 1) {
+                                // 关闭窗口
+                                this.$emit("handleApplyComplainVisible", {"visible":false});
+                            }
+                        }).catch(err => {
+                            this.$message({
+                                type: 'error',
+                                message: '操作失败'
+                            });
                         });
-                        // 关闭窗口
-                        this.$emit("handleApplyComplainVisible", {"visible":false});
                     } else {
                         return false;
                     }

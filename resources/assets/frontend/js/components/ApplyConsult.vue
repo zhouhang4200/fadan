@@ -15,32 +15,32 @@
                 <el-form-item label="我已支付代练费（元）"
                               :rules="[{ required: true, message: '仲裁原因不能为空'}]">
                     <el-input type="input"
-                              :disabled="inputDisabled"
+                              :disabled=true
                               v-model="form.amount"></el-input>
                 </el-form-item>
 
                 <el-form-item label="需要对方赔付保证金"
                               :rules="[{ required: true, message: '仲裁原因不能为空'}]">
                     <el-input type="input"
-                              v-model="form.paymentDeposit"></el-input>
+                              v-model="form.payment_deposit"></el-input>
                 </el-form-item>
 
                 <el-form-item label="对方已预付安全保证金（元）">
                     <el-input type="input"
-                              :disabled="inputDisabled"
-                              v-model="form.securityDeposit"></el-input>
+                              :disabled=true
+                              v-model="form.security_deposit"></el-input>
                 </el-form-item>
 
                 <el-form-item label="对方已预付效率保证金（元）">
                     <el-input type="input"
-                              :disabled="inputDisabled"
-                              v-model="form.efficiencyDeposit"></el-input>
+                              :disabled=true
+                              v-model="form.efficiency_deposit"></el-input>
                 </el-form-item>
 
                 <el-form-item label="我愿意支付代练费（元）"
                               :rules="[{ required: true, message: '仲裁原因不能为空'}]">
                     <el-input type="input"
-                              v-model="form.paymentAmount" prop="no"></el-input>
+                              v-model="form.payment_amount" prop="no"></el-input>
                 </el-form-item>
 
                 <el-form-item label="撤销理由"
@@ -65,6 +65,7 @@
             'amount',
             'securityDeposit',
             'efficiencyDeposit',
+            'applyConsultApi',
         ],
         computed: {
             // getVisible() {
@@ -75,17 +76,16 @@
             return {
                 fileReader:'',
                 visible: false,
-                inputDisabled:true,
                 dialogImageUrl: '',
                 dialogVisible: false,
                 form: {
                     reason: '',
-                    paymentAmount: '',
-                    paymentDeposit: '',
-                    tradeNo: this.tradeNo,
+                    payment_amount: '',
+                    payment_deposit: '',
+                    trade_no: this.tradeNo,
                     amount: this.amount,
-                    securityDeposit: this.securityDeposit,
-                    efficiencyDeposit: this.efficiencyDeposit,
+                    security_deposit: this.securityDeposit,
+                    efficiency_deposit: this.efficiencyDeposit,
                 },
             };
         },
