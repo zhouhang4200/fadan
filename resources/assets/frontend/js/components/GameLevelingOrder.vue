@@ -731,7 +731,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.cancelComplainApi, {
-                        'trade_no' : this.tableData[index].trade_no
+                        'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
