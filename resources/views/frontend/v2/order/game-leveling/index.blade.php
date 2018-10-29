@@ -8,6 +8,7 @@
             order-api="{{ route('order.game-leveling.data-list') }}"
             games-api="{{ route('games') }}"
             game-leveling-types-api="{{ route('game-leveling-types') }}"
+            show-api="{{ route('order.game-leveling.show') }}"
             delete-api="{{ route('order.game-leveling.delete') }}"
             on-sale-api="{{ route('order.game-leveling.on-sale') }}"
             off-sale-api="{{ route('order.game-leveling.off-sale') }}"

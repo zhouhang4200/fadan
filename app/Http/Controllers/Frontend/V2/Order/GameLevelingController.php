@@ -39,9 +39,9 @@ class GameLevelingController extends Controller
     {
         return GameLevelingOrder::filter(request()->all())
             ->with([
-            'gameLevelingOrderDetail',
-            'gameLevelingOrderComplain',
-            'gameLevelingOrderConsult'])
+                'gameLevelingOrderDetail',
+                'gameLevelingOrderComplain',
+                'gameLevelingOrderConsult'])
             ->orderBy('id', 'desc')
             ->paginate(20);
     }
@@ -68,6 +68,33 @@ class GameLevelingController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['status' => 0, 'message' => $exception->getMessage()]);
         }
+    }
+
+    /**
+     * 查看订单
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function show()
+    {
+        return view('frontend.v2.order.game-leveling.show');
+    }
+
+    /**
+     * 获取要编辑的订单数据
+     */
+    public function edit()
+    {
+        return response(GameLevelingOrder::with([
+            'gameLevelingOrderDetail'
+        ])->filter([
+            'trade_no' => request('trade_no'),
+            'parent_user_id' => request()->user()->getPrimaryUserId(),
+        ])->first());
+    }
+
+    public function update()
+    {
+
     }
 
     /**

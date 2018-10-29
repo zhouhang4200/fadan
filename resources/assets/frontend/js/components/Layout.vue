@@ -133,6 +133,11 @@
     .el-message {
         top:8px;
     }
+    .el-form-item.is-success .el-input__inner,
+    .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner,
+    .el-form-item.is-success .el-textarea__inner:focus {
+        border-color:#DCDFE6;
+    }
 </style>
 
 <script>

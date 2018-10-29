@@ -209,10 +209,10 @@ class GameLevelingOrder extends Model
                 'parent_username' => $parent->username,
                 'take_username' => '',
                 'take_parent_username' => '',
-                'user_phone' => $data['client_phone'] ?? '',
+                'user_phone' => $data['user_phone'] ?? '',
                 'user_qq' => $data['user_qq'] ?? '',
                 'player_name' => '',
-                'player_phone' => '',
+                'player_phone' => $data['player_phone'] ?? '',
                 'player_qq' => '',
                 'parent_user_phone' => $parent->phone ?? '',
                 'parent_user_qq' => $parent->qq ?? '',
@@ -220,8 +220,8 @@ class GameLevelingOrder extends Model
                 'take_user_phone' => '',
                 'take_parent_phone' => '',
                 'take_parent_qq' => '',
-                'explain' => $data['game_leveling_instructions'] ?? '',
-                'requirement' => $data['game_leveling_requirements'] ?? '',
+                'explain' => $data['explain'] ?? '',
+                'requirement' => $data['requirement'] ?? '',
             ];
 
             $gameLevelingOrderDetail = GameLevelingOrderDetail::create($details);
@@ -446,8 +446,8 @@ class GameLevelingOrder extends Model
     public static function scopeFilter($query, $conditions)
     {
 
-        if (isset($conditions['order_no']) && $conditions['order_no']) {
-            $query->where('trade_no', $conditions['order_no'])->orWhere('trade_no', $conditions['order_no']);
+        if (isset($conditions['trade_no']) && $conditions['trade_no']) {
+            $query->where('trade_no', $conditions['trade_no'])->orWhere('trade_no', $conditions['trade_no']);
         }
         if (isset($conditions['buyer_nick']) && $conditions['buyer_nick']) {
 //            $query->where('buyer_nick', $conditions['buyer_nick']);

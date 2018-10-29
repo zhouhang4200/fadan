@@ -196,8 +196,10 @@
                     label="订单号"
                     width="230">
                 <template slot-scope="scope">
-                    <div style="margin-left: 10px"> 淘宝：{{ scope.row.trade_no }}</div>
-                    <div style="margin-left: 10px">渠道：{{ scope.row.trade_no }}</div>
+                    <a :href="showApi + '/' + scope.row.trade_no">
+                        <div style="margin-left: 10px"> 淘宝：{{ scope.row.trade_no }}</div>
+                        <div style="margin-left: 10px">渠道：{{ scope.row.trade_no }}</div>
+                    </a>
                 </template>
             </el-table-column>
             <el-table-column
@@ -347,8 +349,9 @@
                         <el-button size="small" type="primary" @click="handleComplete(scope.row)">完成验收</el-button>
                     </div>
                     <!--取消撤销/同意撤销 申请仲裁-->
-                    <div v-if="scope.row.status == 15">
-                        <el-button size="small" @click="handleCancelConsult(scope.row)">取消撤销</el-button>
+                    <div v-if="scope.row.stefficiencyDepositatus == 15">
+                        <el-button v-if="scope.row.game_leveling_order_consults.initiator == 1" size="small" @click="handleCancelConsult(scope.row)">取消撤销</el-button>
+                        <el-button v-if="scope.row.game_leveling_order_consults.initiator == 2" size="small" @click="handleAgreeConsult(scope.row)">同意撤销</el-button>
                         <el-button size="small" type="primary" @click="handleApplyComplain(scope.row)">申请仲裁</el-button>
                     </div>
                     <!--取消仲裁  同意撤销-->
@@ -449,12 +452,12 @@
             ApplyComplain,
             ApplyConsult,
         },
-
         props: [
             'pageTitle',
             'orderApi',
             'gameLevelingTypesApi',
             'gamesApi',
+            'showApi',
             'deleteApi',
             'onSaleApi',
             'offSaleApi',
@@ -474,6 +477,9 @@
                 return [
                     this.tableData.length === 0 ? ' el-table_empty' : '',
                 ]
+            },
+            showHref(tradeNo) {
+                return this.showApi + '/' + tradeNo
             }
         },
         data() {
@@ -770,7 +776,7 @@
                 this.tradeNo = row.trade_no;
                 this.amount = row.amount;
                 this.securityDeposit = row.security_deposit;
-                this.efficiencyDeposit = row.efficiency_eeposit;
+                this.efficiencyDeposit = row.efficiency_deposit;
                 this.applyConsultVisible = true;
             },
             // 取消撤销

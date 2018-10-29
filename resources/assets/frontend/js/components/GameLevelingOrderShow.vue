@@ -4,266 +4,338 @@
             <el-row :gutter="10">
                 <el-form ref="form" status-icon :rules="rules" :model="form" label-width="120px">
                     <el-col :span="16">
-                        <div class="grid-content bg-purple">
-                            <el-card class="box-card">
-                                <div slot="header" class="clearfix">
-                                    <span>订单信息</span>
-                                </div>
-                                <div  class="text item">
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item
-                                                    label="游戏/区/服"
-                                                    prop="game_region_server">
-                                                <el-cascader
-                                                        @change="handleFromGameLevelingTypeIdOptions"
-                                                        :options="gameRegionServerOptions"
-                                                        v-model="form.game_region_server">
-                                                </el-cascader>
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="12">
-                                            <el-form-item label="代练类型" prop="game_leveling_type_id">
-                                                <el-select v-model="form.game_leveling_type_id" placeholder="请选择">
-                                                    <el-option
-                                                            v-for="item in gameLevelingTypeOptions"
-                                                            :key="item.id"
-                                                            :label="item.name"
-                                                            :value="item.id">
-                                                    </el-option>
-                                                </el-select>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item label="角色名称" prop="game_role">
-                                                <el-input type="input" v-model.number="form.game_role" autocomplete="off"></el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item label="游戏账号" prop="game_account">
-                                                <el-input type="input" v-model="form.game_account" autocomplete="off"></el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="12">
-                                            <el-form-item label="游戏密码" prop="game_password">
-                                                <el-input type="input" v-model="form.game_password" autocomplete="off"></el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </el-card>
+                        <div class="grid-content bg-purple" style="padding: 0 15px;background-color: #fff">
+                            <el-tabs v-model="tabCurrent" @tab-click="handleTab">
+                                <el-tab-pane label="订单信息" name="1">
 
-                            <el-card class="box-card">
-                                <div  class="text item">
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item label="代练标题" prop="title">
-                                                <el-input type="age" v-model="form.title" autocomplete="off">
-                                                    <el-tooltip slot="append" placement="top">
-                                                        <div slot="content">多行信息<br/>第二行信息</div>
-                                                        <el-button><i class="el-icon-question"></i></el-button>
-                                                    </el-tooltip>
-                                                </el-input>
-                                            </el-form-item>
-                                        </el-col>
+                                    <el-card class="box-card">
+                                        <div  class="text item">
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item
+                                                            label="游戏/区/服"
+                                                            prop="game_region_server">
+                                                        <el-cascader
+                                                                :disabled="fieldDisabled"
+                                                                @change="handleFromGameLevelingTypeIdOptions"
+                                                                :options="gameRegionServerOptions"
+                                                                v-model="form.game_region_server">
+                                                        </el-cascader>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="代练类型" prop="game_leveling_type_id">
+                                                        <el-select
+                                                                :disabled="fieldDisabled"
+                                                                v-model="form.game_leveling_type_id"
+                                                                placeholder="请选择">
+                                                            <el-option
+                                                                    v-for="item in gameLevelingTypeOptions"
+                                                                    :key="item.id"
+                                                                    :label="item.name"
+                                                                    :value="item.id">
+                                                            </el-option>
+                                                        </el-select>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="角色名称" prop="game_role">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                v-model.number="form.game_role"
+                                                                autocomplete="off"></el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="游戏账号" prop="game_account">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                v-model="form.game_account"
+                                                                autocomplete="off"></el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="游戏密码" prop="game_password">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                v-model="form.game_password"
+                                                                autocomplete="off"></el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </el-card>
 
-                                        <el-col :span="12">
-                                            <el-form-item label="接单密码" prop="take_order_password">
-                                                <el-input type="input" v-model="form.take_order_password" autocomplete="off"></el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item label="代练天/小时" prop="day_hour">
-                                                <el-cascader
-                                                        :options="dayHourOptions"
-                                                        v-model="form.day_hour"
-                                                ></el-cascader>
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="12">
-                                            <el-form-item label="代练要求模版">
-                                                <el-select v-model="form" placeholder="请选择">
-                                                    <!--<el-option-->
+                                    <el-card class="box-card">
+                                        <div  class="text item">
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="代练标题" prop="title">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                v-model="form.title"
+                                                                autocomplete="off">
+                                                            <el-tooltip slot="append" placement="top">
+                                                                <div slot="content">多行信息<br/>第二行信息</div>
+                                                                <el-button><i class="el-icon-question"></i></el-button>
+                                                            </el-tooltip>
+                                                        </el-input>
+                                                    </el-form-item>
+                                                </el-col>
+
+                                                <el-col :span="12">
+                                                    <el-form-item
+                                                            label="接单密码"
+                                                            prop="take_order_password">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                v-model="form.take_order_password"
+                                                                autocomplete="off"></el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="代练天/小时" prop="day_hour">
+                                                        <el-cascader
+                                                                :disabled="fieldDisabled"
+                                                                :options="dayHourOptions"
+                                                                v-model="form.day_hour"
+                                                        ></el-cascader>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="代练要求模版">
+                                                        <el-select
+                                                                :disabled="fieldDisabled"
+                                                                v-model="form"
+                                                                placeholder="请选择">
+                                                            <!--<el-option-->
                                                             <!--v-for="item in options"-->
                                                             <!--:key="item.value"-->
                                                             <!--:label="item.label"-->
                                                             <!--:value="item.value">-->
-                                                    <!--</el-option>-->
-                                                </el-select>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item  label="代练说明"  prop="explain">
-                                                <el-input
-                                                        type="textarea"
-                                                        :rows="3"
-                                                        placeholder="请输入内容"
-                                                        v-model="form.explain">
-                                                </el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="12">
-                                            <el-form-item label="代练要求"  prop="requirement">
-                                                <el-input
-                                                        type="textarea"
-                                                        :rows="3"
-                                                        placeholder="请输入内容"
-                                                        v-model="form.requirement">
-                                                </el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item label="代练价格"  prop="amount">
-                                                <el-input
-                                                        type="input"
-                                                        placeholder="请输入内容"
-                                                        v-model="form.amount">
-                                                </el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="12">
-                                            <el-form-item label="来源价格"  prop="source_amount">
-                                                <el-input
-                                                        type="input"
-                                                        placeholder="请输入内容"
-                                                        v-model="form.source_amount">
-                                                </el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item label="安全保证金" prop="security_deposit">
-                                                <el-input
-                                                        type="input"
-                                                        :rows="2"
-                                                        placeholder="请输入内容"
-                                                        v-model="form.security_deposit">
-                                                </el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="12">
-                                            <el-form-item label="效率保证金" prop="efficiency_deposit">
-                                                <el-input
-                                                        type="input"
-                                                        placeholder="请输入内容"
-                                                        v-model="form.efficiency_deposit">
-                                                </el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item label="玩家电话" prop="player_phone">
-                                                <el-input
-                                                        type="input"
-                                                        placeholder="请输入内容"
-                                                        v-model="form.player_phone">
-                                                </el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="12">
-                                            <el-form-item label="商户QQ" prop="user_qq">
-                                                <el-input
-                                                        type="input"
-                                                        placeholder="请输入内容"
-                                                        v-model="form.user_qq">
-                                                </el-input>
-                                                <!---->
-                                                <!--<el-autocomplete-->
+                                                            <!--</el-option>-->
+                                                        </el-select>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item  label="代练说明"  prop="explain">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="textarea"
+                                                                :rows="3"
+                                                                placeholder="请输入内容"
+                                                                v-model="form.explain">
+                                                        </el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="代练要求"  prop="requirement">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="textarea"
+                                                                :rows="3"
+                                                                placeholder="请输入内容"
+                                                                v-model="form.requirement">
+                                                        </el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="代练价格"  prop="amount">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                placeholder="请输入内容"
+                                                                v-model="form.amount">
+                                                            <el-button
+                                                                    slot="append"
+                                                                    @click.prevent="handleAddAmount()">
+                                                                <i class="el-icon-circle-plus-outline"></i> 增加代练价格
+                                                            </el-button>
+                                                        </el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="来源价格"  prop="source_amount">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                placeholder="请输入内容"
+                                                                v-model="form.source_amount">
+                                                        </el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="安全保证金" prop="security_deposit">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                placeholder="请输入内容"
+                                                                v-model="form.security_deposit">
+                                                        </el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="效率保证金" prop="efficiency_deposit">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                placeholder="请输入内容"
+                                                                v-model="form.efficiency_deposit">
+                                                        </el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="玩家电话" prop="player_phone">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                placeholder="请输入内容"
+                                                                v-model="form.player_phone">
+                                                        </el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="商户QQ" prop="user_qq">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                placeholder="请输入内容"
+                                                                v-model="form.user_qq">
+                                                        </el-input>
+                                                        <!---->
+                                                        <!--<el-autocomplete-->
                                                         <!--class="inline-input"-->
                                                         <!--v-model="form.user_qq"-->
                                                         <!--:fetch-suggestions="handleUserQQOptions"-->
                                                         <!--placeholder="请输入内容"-->
                                                         <!--@select="handleSelect"-->
-                                                <!--&gt;</el-autocomplete>-->
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </el-card>
+                                                        <!--&gt;</el-autocomplete>-->
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </el-card>
 
-                            <el-card class="box-card" style="margin-bottom: 50px">
-                                <div  class="text item">
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item label="加价幅度"  prop="price_increase_step">
-                                                <el-input
-                                                        type="input"
-                                                        v-model="form.price_increase_step"
-                                                        autocomplete="off">
-                                                </el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="12">
-                                            <el-form-item label="加价上限"  prop="price_ceiling">
-                                                <el-input
-                                                        type="input"
-                                                        v-model="form.price_ceiling"
-                                                        autocomplete="off">
-                                                </el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                    <el-row>
-                                        <el-col :span="12">
+                                    <el-card class="box-card" style="margin-bottom: 50px">
+                                        <div  class="text item">
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="加价幅度"  prop="price_increase_step">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                v-model="form.price_increase_step"
+                                                                autocomplete="off">
+                                                        </el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <el-form-item label="加价上限"  prop="price_ceiling">
+                                                        <el-input
+                                                                :disabled="fieldDisabled"
+                                                                type="input"
+                                                                v-model="form.price_ceiling"
+                                                                autocomplete="off">
+                                                        </el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
 
-                                            <el-form-item label="补款单号"  prop="take_order_password">
-                                                <el-input
-                                                        type="input"
-                                                        v-model="form.take_order_password"
-                                                        autocomplete="off">
-                                                    <el-button
-                                                            slot="append"
-                                                            @click.prevent="addDomain(domain)">
-                                                        <i class="el-icon-circle-plus-outline"></i> 增加补款单号
-                                                    </el-button>
-                                                </el-input>
-                                            </el-form-item>
+                                                    <el-form-item label="补款单号"  prop="take_order_password">
+                                                        <el-input
+                                                                type="input"
+                                                                v-model="form.take_order_password"
+                                                                autocomplete="off">
+                                                            <el-button
+                                                                    slot="append"
+                                                                    @click.prevent="addDomain(domain)">
+                                                                <i class="el-icon-circle-plus-outline"></i> 增加补款单号
+                                                            </el-button>
+                                                        </el-input>
+                                                    </el-form-item>
 
-                                            <el-form-item
-                                                    v-for="(domain, index) in form.domains"
-                                                    :label="'补款单号' + (index +1)"
-                                                    :key="domain.key"
-                                                    :prop="'domains.' + index + '.value'"
-                                                    :rules="{required: true, message: '补款单号不能为空', trigger: 'blur'}">
-                                                <el-input v-model="domain.value">
-                                                    <el-button  slot="append" @click.prevent="removeDomain(domain)">删除</el-button>
-                                                </el-input>
+                                                    <el-form-item
+                                                            v-for="(domain, index) in form.domains"
+                                                            :label="'补款单号' + (index +1)"
+                                                            :key="domain.key"
+                                                            :prop="'domains.' + index + '.value'"
+                                                            :rules="{required: true, message: '补款单号不能为空', trigger: 'blur'}">
+                                                        <el-input v-model="domain.value">
+                                                            <el-button  slot="append" @click.prevent="removeDomain(domain)">删除</el-button>
+                                                        </el-input>
 
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="12">
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
 
-                                        </el-col>
-                                    </el-row>
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item label="客服备注">
-                                                <el-input
-                                                        type="textarea"
-                                                        :rows="2"
-                                                        placeholder="请输入内容"
-                                                        v-model="form.remark">
-                                                </el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="12">
+                                                </el-col>
+                                            </el-row>
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-form-item label="客服备注">
+                                                        <el-input
+                                                                type="textarea"
+                                                                :rows="2"
+                                                                placeholder="请输入内容"
+                                                                v-model="form.remark">
+                                                        </el-input>
+                                                    </el-form-item>
+                                                </el-col>
+                                                <el-col :span="12">
 
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </el-card>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </el-card>
+
+                                </el-tab-pane>
+                                <el-tab-pane label="仲裁证据" name="2">
+
+                                </el-tab-pane>
+                                <el-tab-pane label="操作记录" name="3">
+                                    <el-table
+                                            :data="tableData"
+                                            border
+                                            style="width: 100%;margin-bottom: 15px">
+                                        <el-table-column
+                                                prop="date"
+                                                label="日期"
+                                                width="180">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="name"
+                                                label="姓名"
+                                                width="180">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="address"
+                                                label="地址">
+                                        </el-table-column>
+                                    </el-table>
+
+                                </el-tab-pane>
+                            </el-tabs>
                         </div>
                     </el-col>
                 </el-form>
@@ -311,14 +383,26 @@
 
 <script>
     export default {
-        name: "GameLevelingCreate",
+        name: "GameLevelingShow",
         props:[
-            'orderCreateApi',
+            'tradeNo',
+            'orderEditApi',
+            'orderUpdateApi',
             'gameRegionServerApi',
             'gameLevelingTypesApi',
         ],
+        computed: {
+            fieldDisabled() {
+                if (this.form.status == 1 || this.form.status == 22) {
+                    return  false;
+                } else {
+                    return true;
+                }
+            }
+        },
         data() {
             return {
+                tabCurrent:"1",
                 gameRegionServerOptions: [], // 游戏/区/服 选项
                 dayHourOptions: [  // 天数/小时  选项
                     {
@@ -3324,6 +3408,8 @@
                 ],
                 gameLevelingTypeOptions:[], // 游戏代练类型 选项
                 form: {
+                    trade_no:this.tradeNo,
+                    status:0,
                     game_region_server: [], // 选择的 游戏/区/服
                     day_hour:[], // 选择的代练天/小时
                     game_id: 0, // 游戏ID
@@ -3344,7 +3430,6 @@
                     requirement:'', // 代练要求
                     take_order_password:'', // 接单密码
                     player_phone:'', // 玩家电话
-                    user_qq:'', // 商家QQ
                     domains: [],
                     remark: '',
                 },
@@ -3356,14 +3441,14 @@
                         { required: true, message: '请输入游戏角色', trigger: 'blur' },
                     ],
                     game_account:[
-                        { required: true, message: '请输入游戏账号', trigger: 'blur' },
+                        { required: true, message: '请输入游戏账号', trigger: 'change' },
                     ],
                     game_password:[
-                        { required: true, message: '请输入游戏密码', trigger: 'blur' },
+                        { required: true, message: '请输入游戏密码', trigger: 'change' },
                     ],
                     title:[
-                        { required: true, message: '请输入代练标题', trigger: 'blur' },
-                        { min: 3, max: 35, message: '长度在 3 到 35 个字符', trigger: 'blur' }
+                        { required: true, message: '请输入代练标题', trigger: 'change' },
+                        { min: 3, max: 35, message: '长度在 3 到 35 个字符', trigger: 'change' }
                     ],
                     day_hour:[
                         {type: 'array', required: true, message: '请选择代练天/小时',  trigger: 'change'},
@@ -3372,10 +3457,10 @@
                         {type: 'array', required: true, message: '请选择游戏/区/服', trigger: 'change' },
                     ],
                     explain:[
-                        { required: true, message: '请输入代练说明', trigger: 'blur' },
+                        { required: true, message: '请输入代练说明', trigger: 'change' },
                     ],
                     requirement:[
-                        { required: true, message: '请输入代练要求', trigger: 'blur' },
+                        { required: true, message: '请输入代练要求', trigger: 'change' },
                     ],
                     amount: [
                         { required: true, message: '请输入代练价格', trigger: 'change' }
@@ -3398,6 +3483,9 @@
                     ],
                     efficiency_deposit: [
                         { required: true, message: '请输入效率保证金', trigger: 'change' }
+                    ],
+                    security_deposit: [
+                        { required: true, message: '请输入安全保证金', trigger: 'change' }
                     ],
                     player_phone: [
                         { required: true, message: '请输入无家电话', trigger: 'blur' },
@@ -3460,6 +3548,48 @@
             };
         },
         methods: {
+            handleFromStatus() {
+                return (this.form.status == 1 || this.form.status == 22) ? false : false;
+            },
+            handleFromData() {
+                axios.post(this.orderEditApi, {trade_no: this.tradeNo}).then(res => {
+                        this.form.status = res.data.status;
+                        this.form.game_region_server =  [  // 选择的 游戏/区/服
+                            res.data.game_id,
+                            res.data.game_region_id,
+                            res.data.game_server_id,
+                        ];
+                        this.handleFromGameLevelingTypeIdOptions();
+                        this.form.day_hour = [   // 选择的代练天/小时
+                            res.data.day,
+                            res.data.hour,
+                        ];
+                        this.form.game_id = res.data.game_id; // 游戏ID
+                        this.form.game_region_id =  res.data.game_region_id; // 游戏区ID
+                        this.form.game_server_id =  res.data.game_server_id;// 游戏服务器ID
+                        this.form.game_leveling_type_id =  res.data.game_leveling_type_id; // 代练类型ID
+                        this.form.amount = res.data.amount; // 代练金额
+                        this.form.source_amount = res.data.source_amount; // 来源价格
+                        this.form.security_deposit = res.data.security_deposit; // 安全保证金
+                        this.form.efficiency_deposit = res.data.efficiency_deposit; // 效率保证金
+                        this.form.title = res.data.title; //代练标题
+                        this.form.game_role = res.data.game_role; // 游戏角色
+                        this.form.game_account = res.data.game_account; // 游戏账号
+                        this.form.game_password = res.data.game_password; // 游戏密码
+                        this.form.price_increase_step = res.data.price_increase_step != '0.0000' ? res.data.price_increase_step : ''; // 自动加价步长
+                        this.form.price_ceiling = res.data.price_ceiling != '0.0000' ? res.data.price_ceiling : ''; // 自动加价上限
+                        this.form.explain = res.data.game_leveling_order_detail.explain; // 代练说明
+                        this.form.requirement = res.data.game_leveling_order_detail.requirement; // 代练要求
+                        this.form.take_order_password = res.data.take_order_password; // 接单密码
+                        this.form.player_phone = res.data.game_leveling_order_detail.player_phone; // 玩家电话
+                        this.form.user_qq = res.data.game_leveling_order_detail.user_qq; // 商家电话
+                        this.form.remark =  res.data.remark;
+                        this.form.domains = [];
+
+                }).catch(err => {
+                    
+                });
+            },
             handleFromGameRegionServerOptions() {
                 axios.post(this.gameRegionServerApi).then(res => {
                     this.gameRegionServerOptions = res.data;
@@ -3493,7 +3623,7 @@
                         }).catch(err => {
                             this.$message({
                                'type': 'error',
-                               'message': '下单失败，服务器错误！',
+                               'message': '修改订单失败，服务器错误！',
                             });
                         });
                     }
@@ -3502,7 +3632,20 @@
             handleResetForm(formName) {
                 this.$refs[formName].resetFields();
             },
+            handleAddAmount() {
+                this.$prompt('请输入需要加增加的价格', '增加代练价格', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /^[0-9]+.?[0-9]*$/,
+                    inputErrorMessage: '代练价格只能为数字'
+                }).then(({ value }) => {
+                    // 发送加价请求 value 为写入的值
 
+                });
+            },
+            handleTab() {
+
+            },
             // 删除补款单号
             removeDomain(item) {
                 let index = this.form.domains.indexOf(item);
@@ -3520,6 +3663,7 @@
         },
         created() {
             this.handleFromGameRegionServerOptions();
+            this.handleFromData();
         }
     }
 </script>
@@ -3528,15 +3672,15 @@
     .el-col {
         border-radius: 4px;
     }
-    .bg-purple-dark {
-        background: #99a9bf;
-    }
-    .bg-purple {
-        background: #d3dce6;
-    }
-    .bg-purple-light {
-        background: #e5e9f2;
-    }
+    /*.bg-purple-dark {*/
+        /*background: #99a9bf;*/
+    /*}*/
+    /*.bg-purple {*/
+        /*background: #d3dce6;*/
+    /*}*/
+    /*.bg-purple-light {*/
+        /*background: #e5e9f2;*/
+    /*}*/
     .grid-content {
         border-radius: 4px;
         min-height: 36px;

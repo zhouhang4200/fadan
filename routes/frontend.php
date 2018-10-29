@@ -30,10 +30,15 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 Route::get('/', 'GameLevelingController@index')->name('order.game-leveling.index');
                 // 获取订单列表数据
                 Route::post('data-list', 'GameLevelingController@dataList')->name('order.game-leveling.data-list');
+                // 订单详情视图
+                Route::get('show/{trade_no?}', 'GameLevelingController@show')->name('order.game-leveling.show');
+                // 获取待编辑数据
+                Route::post('edit', 'GameLevelingController@edit')->name('order.game-leveling.edit');
+                // 更新
+                Route::post('update', 'GameLevelingController@update')->name('order.game-leveling.update');
                 // 下单
                 Route::get('create', 'GameLevelingController@create')->name('order.game-leveling.create');
                 Route::post('create', 'GameLevelingController@doCreate');
-
                 // 接单
                 Route::post('take', 'GameLevelingController@take')->name('order.game-leveling.take');
                 // 撤单
