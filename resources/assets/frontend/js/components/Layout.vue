@@ -5,10 +5,9 @@
                 <i class="icon-tao" style="font-size:32px;color:#fff"></i>
                 <img src="/frontend/v2/images/logo.png" style="vertical-align: top" v-show="!collapse">
             </div>
-            <!--background-color="#515a6e"-->
             <el-menu
                     :default-openeds="['1']"
-                    unique-opened=true
+                    :unique-opened=true
                     :collapse-transition="collapseTransition"
                     default-active="1-3"
                     class="side-menu"
