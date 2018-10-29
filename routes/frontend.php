@@ -111,7 +111,11 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('withdraw', 'FinanceController@withdraw')->name('v2.finance.withdraw');
             Route::post('can-withdraw', 'FinanceController@canWithdraw')->name('v2.finance.can-withdraw');
             Route::post('create-withdraw', 'FinanceController@createWithdraw')->name('v2.finance.create-withdraw');
+            // 财务订单
+            Route::get('order', 'FinanceController@order')->name('v2.finance.order');
+            Route::get('order-data-list', 'FinanceController@orderDataList')->name('v2.finance.order-data-list');
         });
+
         // 统计
         Route::prefix('statistic')->namespace('Statistic')->group(function () {
             // 订单
