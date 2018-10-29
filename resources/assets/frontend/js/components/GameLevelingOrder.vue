@@ -724,7 +724,7 @@
                 this.applyComplainVisible = true;
             },
             // 取消仲裁
-            handleCancelComplain(index) {
+            handleCancelComplain(row) {
                 this.$confirm('您确定要"取消仲裁"吗？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
