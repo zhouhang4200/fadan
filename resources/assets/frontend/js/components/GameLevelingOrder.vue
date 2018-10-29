@@ -364,7 +364,7 @@
                     <!--取消仲裁  同意撤销-->
                     <div v-if="scope.row.status == 16">
                         <el-button size="small" @click="handleCancelComplain(scope.row)">取消仲裁</el-button>
-                        <el-button size="small" type="primary" @click="handleAgreeConsult(scope.row)">同意撤销</el-button>
+                        <el-button v-if="scope.row.game_leveling_order_complain.initiator == 2" size="small" type="primary" @click="handleAgreeConsult(scope.row)">同意撤销</el-button>
                     </div>
                     <!--锁定  撤销-->
                     <div v-if="scope.row.status == 17">
@@ -470,6 +470,7 @@
             'offSaleApi',
             'applyConsultApi',
             'applyComplainApi',
+            'cancelComplainApi',
             'cancelConsultApi',
             'rejectConsultApi',
             'agreeConsultApi',
@@ -729,7 +730,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.cancelConsultApi, {
+                    axios.post(this.cancelComplainApi, {
                         'trade_no' : this.tableData[index].trade_no
                     }).then(res => {
                         this.$message({
