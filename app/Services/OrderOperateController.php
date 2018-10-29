@@ -335,7 +335,6 @@ class OrderOperateController
             static::$order->status = 24;
             static::$order->save();
             static::createOrderHistory(23, $description);
-
             // 从自动下架任务中删除
             autoUnShelveDel(static::$order->trade_no);
 
