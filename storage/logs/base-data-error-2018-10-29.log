@@ -1,1 +1,0 @@
-[2018-10-29 09:59:09] base-data-error.INFO: base-data-error ["SQLSTATE[42S22]: Column not found: 1054 Unknown column 'source_order_no' in 'where clause' (SQL: select `trade_no` from `game_leveling_orders` where `source_order_no` is null)","/home/tm/vendor/laravel/framework/src/Illuminate/Database/Connection.php",664] []
