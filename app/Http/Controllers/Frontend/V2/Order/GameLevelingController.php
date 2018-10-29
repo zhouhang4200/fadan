@@ -356,12 +356,13 @@ class GameLevelingController extends Controller
     {
         DB::beginTransaction();
         try {
+            myLog('all', [request('pic1')]);
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                $pic[]['pic1'] = request('pic1');
-                $pic[]['pic2'] = request('pic2');
-                $pic[]['pic3'] = request('pic3');
+                $pic['pic1'] = request('pic1');
+                $pic['pic2'] = request('pic2');
+                $pic['pic3'] = request('pic3');
 
-                OrderOperateController::init(Auth::user(), $order)->applyComplain(request('reason'));
+                OrderOperateController::init(Auth::user(), $order)->applyComplain(request('reason', '无'));
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['applyComplain']], [$order, $pic]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');

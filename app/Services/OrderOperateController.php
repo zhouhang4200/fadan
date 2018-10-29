@@ -614,7 +614,6 @@ class OrderOperateController
             static::$order->complete_at = Carbon::now()->toDateTimeString();
             static::$order->save();
             static::createOrderHistory(24, $description);
-
             // 更改协商表状态和手续费
             $gameLevelingOrderConsult = GameLevelingOrderConsult::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->where('status', 1)
@@ -637,7 +636,8 @@ class OrderOperateController
             }
 
             //（发单剩余代练费收入，支出手续费，收入双金)
-            if ($userAmount = bcsub(static::$order->amount, $gameLevelingOrderConsult->amount) > 0) {
+            $userAmount = bcsub(static::$order->amount, $gameLevelingOrderConsult->amount);
+            if ($userAmount > 0) {
                 Asset::handle(new Income($userAmount, 7, static::$order->trade_no, '退回协商代练费', static::$order->parent_user_id));
             }
 
@@ -655,19 +655,21 @@ class OrderOperateController
 
             // (接单收入代练费，收入退回双金，收入手续费)
             if ($gameLevelingOrderConsult->amount > 0) {
-                Asset::handle(new Income($gameLevelingOrderConsult->amount, 12, static::$order->trade_no, '协商代练费收入', static::$order->parent_take_user_id));
+                Asset::handle(new Income($gameLevelingOrderConsult->amount, 12, static::$order->trade_no, '协商代练费收入', static::$order->take_parent_user_id));
             }
 
-            if ($backSecurityDeposit = bcsub(static::$order->security_deposit, $gameLevelingOrderConsult->security_deposit) > 0) {
-                Asset::handle(new Income($backSecurityDeposit, 8, static::$order->trade_no, '协商安全保证金退回', static::$order->parent_take_user_id));
+            $backSecurityDeposit = bcsub(static::$order->security_deposit, $gameLevelingOrderConsult->security_deposit);
+            if ($backSecurityDeposit > 0) {
+                Asset::handle(new Income($backSecurityDeposit, 8, static::$order->trade_no, '协商安全保证金退回', static::$order->take_parent_user_id));
             }
 
-            if ($backEfficiencyDeposit = bcsub(static::$order->efficiency_deposit, $gameLevelingOrderConsult->efficiency_deposit) > 0) {
-                Asset::handle(new Income($backEfficiencyDeposit, 9, static::$order->trade_no, '协商效率保证金退回', static::$order->parent_take_user_id));
+            $backEfficiencyDeposit = bcsub(static::$order->efficiency_deposit, $gameLevelingOrderConsult->efficiency_deposit);
+            if ($backEfficiencyDeposit > 0) {
+                Asset::handle(new Income($backEfficiencyDeposit, 9, static::$order->trade_no, '协商效率保证金退回', static::$order->take_parent_user_id));
             }
 
             if ($gameLevelingOrderConsult->poundage > 0) {
-                Asset::handle(new Income($gameLevelingOrderConsult->poundage, 6, static::$order->trade_no, '协商手续费收入', static::$order->parent_take_user_id));
+                Asset::handle(new Income($gameLevelingOrderConsult->poundage, 6, static::$order->trade_no, '协商手续费收入', static::$order->take_parent_user_id));
             }
 
             // 获取订单前一个状态
@@ -853,7 +855,8 @@ class OrderOperateController
             }
 
             //（发单剩余代练费收入，支出手续费，收入双金)
-            if ($userAmount = bcsub(static::$order->amount, $gameLevelingOrderComplain->amount) > 0) {
+            $userAmount = bcsub(static::$order->amount, $gameLevelingOrderComplain->amount);
+            if ($userAmount > 0) {
                 Asset::handle(new Income($userAmount, 7, static::$order->trade_no, '退回仲裁代练费', static::$order->parent_user_id));
             }
 
@@ -871,19 +874,21 @@ class OrderOperateController
 
             // (接单收入代练费，收入退回双金，收入手续费)
             if ($gameLevelingOrderComplain->amount > 0) {
-                Asset::handle(new Income($gameLevelingOrderComplain->amount, 12, static::$order->trade_no, '仲裁代练费收入', static::$order->parent_take_user_id));
+                Asset::handle(new Income($gameLevelingOrderComplain->amount, 12, static::$order->trade_no, '仲裁代练费收入', static::$order->take_parent_user_id));
             }
 
-            if ($backSecurityDeposit = bcsub(static::$order->security_deposit, $gameLevelingOrderComplain->security_deposit) > 0) {
-                Asset::handle(new Income($backSecurityDeposit, 8, static::$order->trade_no, '仲裁安全保证金退回', static::$order->parent_take_user_id));
+            $backSecurityDeposit = bcsub(static::$order->security_deposit, $gameLevelingOrderComplain->security_deposit);
+            if ($backSecurityDeposit > 0) {
+                Asset::handle(new Income($backSecurityDeposit, 8, static::$order->trade_no, '仲裁安全保证金退回', static::$order->take_parent_user_id));
             }
 
-            if ($backEfficiencyDeposit = bcsub(static::$order->efficiency_deposit, $gameLevelingOrderComplain->efficiency_deposit) > 0) {
-                Asset::handle(new Income($backEfficiencyDeposit, 9, static::$order->trade_no, '仲裁效率保证金退回', static::$order->parent_take_user_id));
+            $backEfficiencyDeposit = bcsub(static::$order->efficiency_deposit, $gameLevelingOrderComplain->efficiency_deposit);
+            if ($backEfficiencyDeposit > 0) {
+                Asset::handle(new Income($backEfficiencyDeposit, 9, static::$order->trade_no, '仲裁效率保证金退回', static::$order->take_parent_user_id));
             }
 
             if ($gameLevelingOrderComplain->poundage > 0) {
-                Asset::handle(new Income($gameLevelingOrderComplain->poundage, 6, static::$order->trade_no, '仲裁手续费收入', static::$order->parent_take_user_id));
+                Asset::handle(new Income($gameLevelingOrderComplain->poundage, 6, static::$order->trade_no, '仲裁手续费收入', static::$order->take_parent_user_id));
             }
 
             // 订单数量角标
