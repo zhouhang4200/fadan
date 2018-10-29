@@ -261,7 +261,7 @@ class OrderOperateController
                 throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
             // 修改订单状态和记录订单日志
-            static::$order->status = 13;
+            static::$order->status = 1;
             static::$order->save();
 
             $description = "用户[".static::$user->username."]将订单从[已下架]设置为[待接单]状态！";
