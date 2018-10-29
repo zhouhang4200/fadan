@@ -486,9 +486,6 @@
                     this.tableData.length === 0 ? ' el-table_empty' : '',
                 ]
             },
-            showHref(tradeNo) {
-                return this.showApi + '/' + tradeNo
-            }
         },
         data() {
             return {
