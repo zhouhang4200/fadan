@@ -262,7 +262,7 @@ class GameLevelingOrderOperateController
     {
         DB::beginTransaction();
         try {
-            if (!request('order_no') || !request('api_amount') || !request('api_deposit') || !request('api_service') || !request('content')) {
+            if (!request('order_no') || is_null(request('api_amount')) || is_null(request('api_deposit')) || is_null(request('api_service')) || is_null(request('content'))) {
                 return response()->partner(0, '参数缺失!');
             }
             $gameLevelingPlatform = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first();
