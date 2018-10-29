@@ -356,15 +356,15 @@
                         <el-button size="small" type="primary" @click="handleComplete(scope.row)">完成验收</el-button>
                     </div>
                     <!--取消撤销/同意撤销 申请仲裁-->
-                    <div v-if="scope.row.stefficiencyDepositatus == 15">
-                        <el-button v-if="scope.row.game_leveling_order_consults.initiator == 1" size="small" @click="handleCancelConsult(scope.row)">取消撤销</el-button>
-                        <el-button v-if="scope.row.game_leveling_order_consults.initiator == 2" size="small" @click="handleAgreeConsult(scope.row)">同意撤销</el-button>
+                    <div v-if="scope.row.status == 15">
+                        <el-button v-if="scope.row.game_leveling_order_consult.initiator == 1 && scope.row.game_leveling_order_consult.status == 1" size="small" @click="handleCancelConsult(scope.row)">取消撤销</el-button>
+                        <el-button v-if="scope.row.game_leveling_order_consult.initiator == 2 && scope.row.game_leveling_order_consult.status == 1" size="small" @click="handleAgreeConsult(scope.row)">同意撤销</el-button>
                         <el-button size="small" type="primary" @click="handleApplyComplain(scope.row)">申请仲裁</el-button>
                     </div>
                     <!--取消仲裁  同意撤销-->
                     <div v-if="scope.row.status == 16">
-                        <el-button size="small" @click="handleCancelComplain(scope.row)">取消仲裁</el-button>
-                        <el-button v-if="scope.row.game_leveling_order_complain.initiator == 2" size="small" type="primary" @click="handleAgreeConsult(scope.row)">同意撤销</el-button>
+                        <el-button size="small" v-if="scope.row.game_leveling_order_complain.initiator == 1 && scope.row.game_leveling_order_complain.status == 1" @click="handleCancelComplain(scope.row)">取消仲裁</el-button>
+                        <el-button v-if="scope.row.game_leveling_order_consult && scope.row.game_leveling_order_consult.initiator == 2 && scope.row.game_leveling_order_consult.status == 1" size="small" type="primary" @click="handleAgreeConsult(scope.row)">同意撤销</el-button>
                     </div>
                     <!--锁定  撤销-->
                     <div v-if="scope.row.status == 17">

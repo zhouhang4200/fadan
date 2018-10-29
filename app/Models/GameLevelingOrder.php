@@ -104,12 +104,12 @@ class GameLevelingOrder extends Model
 
     public function gameLevelingOrderConsult()
     {
-        return $this->hasMany(GameLevelingOrderConsult::class, 'game_leveling_order_trade_no', 'trade_no');
+        return $this->hasOne(GameLevelingOrderConsult::class, 'game_leveling_order_trade_no', 'trade_no');
     }
 
     public function gameLevelingOrderComplain()
     {
-        return $this->hasMany(GameLevelingOrderComplain::class, 'game_leveling_order_trade_no', 'trade_no');
+        return $this->hasOne(GameLevelingOrderComplain::class, 'game_leveling_order_trade_no', 'trade_no');
     }
 
     /**

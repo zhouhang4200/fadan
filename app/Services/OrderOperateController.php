@@ -474,7 +474,9 @@ class OrderOperateController
             // 将协商数据写入协商表
             $handleDeposit = static::handleDeposit($amount, $deposit);
             $initiator = static::initiator();
-            GameLevelingOrderConsult::create([
+            GameLevelingOrderConsult::updateOrCreate([
+                'game_leveling_order_trade_no' => static::$order->trade_no,
+            ], [
                 'user_id' => static::$user->id,
                 'parent_user_id' => static::$user->getPrimaryUserId(),
                 'game_leveling_order_trade_no' => static::$order->trade_no,
@@ -726,7 +728,9 @@ class OrderOperateController
             // 将仲裁数据写入仲裁表
             $initiator = static::initiator();
 
-            GameLevelingOrderComplain::create([
+            GameLevelingOrderComplain::updateOrCreate([
+                'game_leveling_order_trade_no' => static::$order->trade_no,
+            ], [
                 'user_id' => static::$user->id,
                 'parent_user_id' => static::$user->parentInfo()->id,
                 'game_leveling_order_trade_no' => static::$order->trade_no,
