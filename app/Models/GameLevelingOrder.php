@@ -452,6 +452,9 @@ class GameLevelingOrder extends Model
         if (isset($conditions['buyer_nick']) && $conditions['buyer_nick']) {
 //            $query->where('buyer_nick', $conditions['buyer_nick']);
         }
+        if (isset($conditions['parent_user_id']) && $conditions['parent_user_id']) {
+            $query->where('parent_user_id', $conditions['parent_user_id']);
+        }
         if (isset($conditions['user_id']) && $conditions['user_id']) {
             $query->where('user_id', $conditions['user_id']);
         }

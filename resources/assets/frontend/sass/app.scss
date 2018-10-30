@@ -8,7 +8,12 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 body {
   background: #f0f2f5;
+  margin: 0;
 }
+a:link {color: #ff9900; text-decoration:none;} //未访问：橙色、无下划线
+a:active {color:  #ff9900; } //激活：红色
+a:visited {color: #ff9900;text-decoration:none;} //已访问：橙色、无下划线
+a:hover {color:  #ff9900; text-decoration:none;} //鼠标移近：橙色、下划线
 
 // #f5f7f9
 

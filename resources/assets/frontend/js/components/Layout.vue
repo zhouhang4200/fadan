@@ -81,10 +81,10 @@
         background: rgb(255, 255, 255);
     }
     .logo {
-        height: 60px;
+        /*height: 60px;*/
         background-color: #ff9900;
         padding: 14px 0 14px 16px;
-        line-height: 32px;
+        /*line-height: 32px;*/
     }
     .el-header {
         color: #333;
