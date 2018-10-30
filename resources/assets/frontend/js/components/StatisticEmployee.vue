@@ -5,7 +5,7 @@
                 <el-col :span="5">
                     <el-form-item label="员工姓名">
                         <el-select v-model="searchParams.username" placeholder="请选择">
-                            <el-option v-for="result in UserArr" v-bind:value="result.id" :label="result.username"></el-option>
+                            <el-option v-for="result of UserArr" v-bind:value="result.id" :key="result.id" :label="result.username"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
@@ -62,6 +62,7 @@
             </el-table-column>
         </el-table>
         <el-pagination
+                style="margin-top: 20px"
                 @current-change="handleCurrentChange"
                 :current-page.sync="searchParams.page"
                 :page-size="15"

@@ -10,7 +10,7 @@
                 <el-col :span="5">
                     <el-form-item label="类型">
                         <el-select v-model="searchParams.trade_type" placeholder="请选择">
-                            <el-option v-for="(value, key) in TradeTypeArr" :value="key" :label="value"></el-option>
+                            <el-option v-for="(value, key) of TradeTypeArr" :value="key" :key="key"  :label="value"></el-option>
                         </el-select>
                     </el-form-item>
                     </el-col>
@@ -53,7 +53,7 @@
                     label="类型"
                     width="150">
                 <template slot-scope="scope">
-                    {{ TradeTypeArr["" + scope.row.trade_type] }}
+                    {{ TradeTypeArr[scope.row.trade_type] }}
                 </template>
             </el-table-column>
             <el-table-column
@@ -61,7 +61,7 @@
                     label="子类型"
                     width="150">
                 <template slot-scope="scope">
-                    {{ TradeSubTypeArr["" + scope.row.trade_subtype] }}
+                    {{ TradeSubTypeArr[scope.row.trade_subtype] }}
                 </template>
             </el-table-column>
             <el-table-column

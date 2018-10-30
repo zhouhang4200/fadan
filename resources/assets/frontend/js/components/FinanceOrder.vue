@@ -10,7 +10,7 @@
                 <el-col :span="5">
                     <el-form-item label="游戏">
                         <el-select v-model="searchParams.game_id" placeholder="请选择">
-                            <el-option v-for="(value, key) in GameArr" :value="key" :label="value"></el-option>
+                            <el-option v-for="(value, key) of GameArr" :value="key" :key="key" :label="value"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
@@ -27,7 +27,7 @@
                 <el-col :span="5">
                     <el-form-item label="订单状态">
                         <el-select v-model="searchParams.status" placeholder="请选择">
-                            <el-option v-for="(value, key) in StatusArr" :value="key" :label="value"></el-option>
+                            <el-option v-for="(value, key) of StatusArr" :value="key" :key="key" :label="value"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
