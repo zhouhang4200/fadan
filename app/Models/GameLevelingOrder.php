@@ -480,21 +480,21 @@ class GameLevelingOrder extends Model
     public function payAmount()
     {
         // 发单
-        if (request()->user()->getParentId() == $this->parent_user_id) {
+        if (request()->user()->getPrimaryUserId() == $this->parent_user_id) {
             if ($this->status == 19) {
-                return $this->gameLevelingOrderConsult->amount;
+                return $this->gameLevelingOrderConsult->amount + 0;
             } elseif ($this->status == 20) {
-                return $this->amount;
+                return $this->amount + 0;
             } elseif ($this->status == 21) {
-                return $this->gameLevelingOrderComplain->amount;
+                return $this->gameLevelingOrderComplain->amount + 0;
             } else {
                 return 0;
             }
-        } elseif (request()->user()->getParentId() == $this->take_parent_user_id) { // 接单
+        } elseif (request()->user()->getPrimaryUserId() == $this->take_parent_user_id) { // 接单
             if ($this->status == 19) {
-                return bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit);
+                return bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit) + 0;
             } elseif ($this->status == 21) {
-                return bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit);
+                return bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit) + 0;
             } else {
                 return 0;
             }
@@ -508,21 +508,21 @@ class GameLevelingOrder extends Model
     public function getAmount()
     {
         // 发单
-        if (request()->user()->getParentId() == $this->parent_user_id) {
+        if (request()->user()->getPrimaryUserId() == $this->parent_user_id) {
             if ($this->status == 19) {
-                return bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit);
+                return bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit) + 0;
             } elseif ($this->status == 21) {
-                return bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit);
+                return bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit) + 0;
             } else {
                 return 0;
             }
-        } elseif (request()->user()->getParentId() == $this->take_parent_user_id) { // 接单
+        } elseif (request()->user()->getPrimaryUserId() == $this->take_parent_user_id) { // 接单
             if ($this->status == 19) {
-                return $this->gameLevelingOrderConsult->amount;
+                return $this->gameLevelingOrderConsult->amount + 0;
             } elseif ($this->status == 20) {
                 return $this->amount;
             } elseif ($this->status == 21) {
-                return $this->gameLevelingOrderComplain->amount;
+                return $this->gameLevelingOrderComplain->amount + 0;
             } else {
                 return 0;
             }
@@ -536,9 +536,9 @@ class GameLevelingOrder extends Model
     public function getPoundage()
     {
         if ($this->status == 19) {
-            return $this->gameLevelingOrderConsult->poundage;
+            return $this->gameLevelingOrderConsult->poundage + 0;
         } elseif ($this->status == 21) {
-            return $this->gameLevelingOrderComplain->poundage;
+            return $this->gameLevelingOrderComplain->poundage + 0;
         } else {
             return 0;
         }
@@ -550,7 +550,7 @@ class GameLevelingOrder extends Model
      */
     public function getProfit()
     {
-        return $this->getAmount() - $this->payAmount() - $this->getPoundage();
+        return $this->getAmount() - $this->payAmount() - $this->getPoundage() + $this->complainAmount() + 0;
     }
 
     /**
@@ -571,4 +571,76 @@ class GameLevelingOrder extends Model
         return (int) optional($this->gameLevelingOrderComplain)->initiator;
     }
 
+    /**
+     * 剩余时间
+     */
+    public function leftTime()
+    {
+        // 如果存在接单时间
+        if (isset($this->take_at) && !empty($this->take_at)) {
+            // 计算到期的时间戳
+            $expirationTimestamp = strtotime($this->take_at) + $this->day * 86400 + $this->hour * 3600;
+            // 计算剩余时间
+            $leftSecond = $expirationTimestamp - time();
+            $leftTime = Sec2Time($leftSecond); // 剩余时间
+        } else {
+            $leftTime = '';
+        }
+    }
+
+    /**
+     * @return int|string
+     */
+    public function complainAmount()
+    {
+        $complaintAmount = 0;
+        $complaint = BusinessmanComplaint::where('order_no', $this->trade_no)->first();
+        if (isset($complaint) && ! empty($complaint)) {
+            if ($complaint->complaint_primary_user_id == $this->creator_primary_user_id) {
+                $complaintAmount = $complaint->amount+0;
+            } elseif ($complaint->be_complaint_primary_user_id == $this->creator_primary_user_id) {
+                $complaintAmount = bcmul(-1, $complaint->amount)+0;
+            }
+        }
+        return $complaintAmount;
+    }
+
+    /**
+     * 财务订单搜索
+     * @param $query
+     * @param array $filter
+     * @return mixed
+     */
+    public static function scopeFinanceOrderFilter($query, $filter = [])
+    {
+        if ($filter['tradeNo']) {
+            $query->where('trade_no', $filter['tradeNo']);
+        }
+
+        if ($filter['gameId']) {
+            $query->where('game_id', $filter['gameId']);
+        }
+
+        if ($filter['sellerNick']) {
+            $query->where('seller_nick', $filter['sellerNick']);
+        }
+
+        if ($filter['platformId']) {
+            $query->where('platform_id', $filter['platformId']);
+        }
+
+        if ($filter['status']) {
+            $query->where('status', $filter['status']);
+        }
+
+        if ($filter['startDate']) {
+            $query->where('created_at', '>=', $filter['startDate']);
+        }
+
+        if ($filter['endDate']) {
+            $query->where('created_at', '<=', $filter['endDate']);
+        }
+
+        return $query;
+    }
 }

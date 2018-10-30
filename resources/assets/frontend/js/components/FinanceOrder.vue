@@ -4,7 +4,7 @@
             <el-row :gutter="16">
                 <el-col :span="5">
                     <el-form-item label="订单号">
-                        <el-input v-model="searchParams.no"></el-input>
+                        <el-input v-model="searchParams.trade_no"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="5">
@@ -21,7 +21,7 @@
                 </el-col>
                 <el-col :span="5">
                     <el-form-item label="接单平台">
-                        <el-input v-model="searchParams.platform"></el-input>
+                        <el-input v-model="searchParams.platform_id"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="5">
@@ -58,99 +58,118 @@
                 border
                 style="width: 100%">
             <el-table-column
-                    prop="no"
+                    prop="trade_no"
                     label="内部单号"
                     width="180">
             </el-table-column>
             <el-table-column
-                    prop="source_order_no"
+                    prop="channel_order_trade_no"
                     label="淘宝单号"
                     width="180">
+                <template slot-scope="scope">
+                    {{ scope.row.channel_order_trade_no ? scope.row.channel_order_trade_no : '--' }}
+                </template>
             </el-table-column>
             <el-table-column
-                    prop="source_order_no_1"
+                    prop="source_order_no"
                     label="补款单号"
                     width="180">
+                <template slot-scope="scope">
+                    {{ scope.row.source_order_no[1] ? scope.row.source_order_no[1] : '--' }}
+                    {{ scope.row.source_order_no[2] ? scope.row.source_order_no[2] : '--' }}
+                </template>
             </el-table-column>
             <el-table-column
                     prop="game_name"
                     label="游戏"
-                    width="70">
+                    width="80">
             </el-table-column>
             <el-table-column
                     prop="status"
                     label="订单状态"
-                    width="70">
+                    width="60">
                 <template slot-scope="scope">
-                    {{ scope.row.status ? scope.row.status : '' }}
+                    {{ StatusArr[scope.row.status] }}
                 </template>
             </el-table-column>
             <el-table-column
                     prop="seller_nick"
                     label="店铺名称"
-                    width="70">
+                    width="60">
+                <template slot-scope="scope">
+                    {{ scope.row.seller_nick ? scope.row.seller_nick : '--'}}
+                </template>
             </el-table-column>
             <el-table-column
                     prop="platform_id"
                     label="接单平台"
-                    width="70">
+                    width="60">
+                <template slot-scope="scope">
+                    {{ scope.row.platform_id ? PlatformArr[scope.row.platform_id] : '--' }}
+                </template>
             </el-table-column>
             <el-table-column
                     prop="taobao_amount"
                     label="淘宝金额"
-                    width="70">
+                    width="60">
             </el-table-column>
             <el-table-column
                     prop="taobao_refund"
                     label="淘宝退款"
-                    width="70">
+                    width="60">
             </el-table-column>
             <el-table-column
                     prop="pay_amount"
                     label="支付代练费用"
-                    width="70">
+                    width="60">
             </el-table-column>
             <el-table-column
                     prop="get_amount"
                     label="获得赔偿金额"
-                    width="70">
+                    width="60">
             </el-table-column>
             <el-table-column
                     prop="get_complain_amount"
                     label="获得投诉金额"
-                    width="70">
+                    width="60">
             </el-table-column>
             <el-table-column
                     prop="poundage"
                     label="手续费"
-                    width="70">
+                    width="60">
             </el-table-column>
             <el-table-column
                     prop="profit"
                     label="最终支付金额"
-                    width="70">
+                    width="60">
             </el-table-column>
             <el-table-column
                     prop="customer_service_name"
                     label="发单客服"
-                    width="70">
+                    width="60">
             </el-table-column>
             <el-table-column
                     prop="taobao_created_at"
                     label="淘宝下单时间"
                     width="">
+                <template slot-scope="scope">
+                    {{ scope.row.taobao_created_at ? scope.row.taobao_created_at : '--' }}
+                </template>
             </el-table-column>
             <el-table-column
                     prop="complete_at"
                     label="代练结算时间"
                     width="">
+                <template slot-scope="scope">
+                    {{ scope.row.complete_at ? scope.row.complete_at : '--' }}
+                </template>
             </el-table-column>
         </el-table>
         <el-pagination
                 style="margin-top: 25px"
                 @current-change="handleCurrentChange"
                 :current-page.sync="searchParams.page"
-                :page-size="15"
+                :page-size="10"
                 layout="prev, pager, next, jumper"
                 :total="TotalPage">
         </el-pagination>
@@ -204,16 +223,15 @@
             this.handleTableData();
             this.handleGame();
         },
-        watch: {
-            t: function (val) {
-                this.weekse = val;
-                console.log(this.weekse);
-                this.getL()
-            }
-        },
         data() {
             return {
                 GameArr:{},
+                PlatformArr:{
+                    1:'show91',
+                    3:'蚂蚁',
+                    4:'dd373',
+                    5:'丸子',
+                },
                 StatusArr:{
                     1:'未接单',
                     13:'代练中',
@@ -230,9 +248,11 @@
                     24:'已撤单',
                 },
                 searchParams:{
-                    trade_type:'',
+                    status:'',
+                    game_id:'',
                     trade_no:'',
-                    channel_order_trade_no:'',
+                    platform_id:'',
+                    seller_nick:'',
                     date:'',
                     page:1,
                 },

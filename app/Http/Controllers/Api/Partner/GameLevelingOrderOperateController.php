@@ -31,17 +31,6 @@ class GameLevelingOrderOperateController
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
 
-            // 如果存在接单时间
-            if (isset($order->take_at) && !empty($order->take_at)) {
-                // 计算到期的时间戳
-                $expirationTimestamp = strtotime($order->take_at) + $order->day * 86400 + $order->hour * 3600;
-                // 计算剩余时间
-                $leftSecond = $expirationTimestamp - time();
-                $leftTime = Sec2Time($leftSecond); // 剩余时间
-            } else {
-                $leftTime = '';
-            }
-
             $orderInfo = [
                 'order_no'                         => $order->trade_no,
                 'status'                           => $order->status,
@@ -69,7 +58,7 @@ class GameLevelingOrderOperateController
                 'hatchet_man_name'                 => $order->gameLevelingOrderDetail->hatchet_man_name ?? '',
                 'hatchet_man_phone'                => $order->gameLevelingOrderDetail->hatchet_man_phone ?? '',
                 'hatchet_man_qq'                   => $order->gameLevelingOrderDetail->hatchet_man_qq ?? '',
-                'left_time'                        => $leftTime,
+                'left_time'                        => $order->leftTime(),
                 'created_at'                       => $order->created_at ?? '',
                 'receiving_time'                   => $order->take_at ?? '',
                 'check_time'                       => $order->apply_complete_at ?? '',

@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Frontend\V2\Finance;
 
 use App\Events\Punish;
 use App\Models\Game;
+use App\Models\GameLevelingChannelOrder;
+use App\Models\GameLevelingOrder;
+use App\Models\GameLevelingOrderRelationChannel;
 use App\Models\UserAsset;
 use App\Repositories\Frontend\GameRepository;
 use App\Repositories\Frontend\OrderRepository;
@@ -174,6 +177,10 @@ class FinanceController extends Controller
         return view('frontend.v2.finance.order');
     }
 
+    /**
+     * 游戏接口
+     * @return mixed
+     */
     public function game()
     {
         return Game::where('status', 1)->pluck('name', 'id');
@@ -181,49 +188,37 @@ class FinanceController extends Controller
 
     /**
      * 财务订单接口
-     * @param OrderRepository $orderRepository
-     * @param GameRepository $gameRepository
+     * @return mixed
      */
-    public function orderDataList(OrderRepository $orderRepository, GameRepository $gameRepository)
+    public function orderDataList()
     {
-        $no = request('no');
-        $customerServiceName = request('customer_service_name', 0);
+        $tradeNo = request('trade_no');
         $gameId = request('game_id', 0);
         $status = request('status', 0);
-        $wangWang = request('wang_wang');
-        $urgentOrder = request('urgent_order', 0);
-        $startDate = request('start_date');
-        $endDate = request('end_date');
-        $pageSize = request('limit', 15);
-
-        $taobaoStatus = request('taobao_status', 0);
-        $platform = request('platform', 0);
+        $startDate = request('date')[0];
+        $endDate = request('date')[1];
+        $platformId = request('platform_id', 0);
         $sellerNick = request('seller_nick', '');
 
-        $game = $gameRepository->availableByServiceId(4);
+        $orders = GameLevelingOrder::financeOrderFilter(compact('tradeNo', 'gameId', 'status', 'startDate', 'endDate', 'platformId', 'sellerNick'))
+            ->with('gameLevelingOrderDetail')
+            ->paginate(10);
 
-        $orders = $orderRepository->levelingDataList($status, $no, $taobaoStatus, $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $sellerNick, $pageSize);
-
-
-        // 处理数据
-        $tid = [];
-        $taobaoTradeData = [];
-        foreach($orders as $item) {
-            $detail = $item->detail->pluck('field_value', 'field_name')->toArray();
-            $tid[] = $detail['source_order_no'];
-            $tid[] = $detail['source_order_no_1'] ?? '';
-            $tid[] = $detail['source_order_no_2'] ?? '';
-        }
-
-        $taobaoTrade = TaobaoTrade::select('tid', 'payment', 'trade_status')->whereIn('tid', array_unique(array_filter($tid)))->get();
-
-        if ($taobaoTrade) {
-            foreach ($taobaoTrade as $trade) {
-                $taobaoTradeData[$trade->tid] = [
-                    'payment' => $trade->payment,
-                    'refund' => $trade->trade_status == 7 ? $trade->payment : 0,
-                ];
-            }
+        foreach ($orders as $order) {
+            $order->game_name = $order->gameLevelingOrderDetail->game_name;
+            $sourceOrders = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('game_leveling_channel_order_trade_no', '!=', $order->channel_order_trade_no)
+                ->pluck('game_leveling_channel_order_trade_no')
+                ->unique();
+            $order->source_order_no = $sourceOrders->count() > 0 ? $sourceOrders : '';
+            $order->taobao_amount = GameLevelingChannelOrder::where('trade_no', $order->trade_no)->sum('payment_amount');
+            $order->taobao_refund = GameLevelingChannelOrder::where('trade_no', $order->trade_no)->sum('refund_amount');
+            $order->taobao_created_at = GameLevelingChannelOrder::where('trade_no', $order->trade_no)->value('created_at');
+            $order->pay_amount = $order->payAmount();
+            $order->get_amount = $order->getAmount();
+            $order->get_complain_amount = $order->complainAmount();
+            $order->poundage = $order->getPoundage();
+            $order->profit = $order->getProfit();
         }
 
         return $orders;
