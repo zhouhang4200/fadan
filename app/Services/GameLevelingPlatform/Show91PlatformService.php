@@ -228,13 +228,17 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
     public static function applyConsult(GameLevelingOrder $order)
     {
         try {
+            $gameLevelingOrderConsult = GameLevelingOrderConsult::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('status', 1)
+                ->first();
+
             $options = [
                 'account'              => config('gameleveling.show91.account'),
                 'sign'                 => config('gameleveling.show91.sign'),
                 'oid'                  => $order->platform_trade_no,
-                'selfCancel.pay_price' => $order->gameLevelingOrderConsult->amount,
-                'selfCancel.pay_bond'  => bcadd($order->gameLevelingOrderConsult->security_deposit, $order->gameLevelingOrderConsult->efficiency_deposit),
-                'selfCancel.content'   => $order->gameLevelingOrderConsult->reason ?? '无',
+                'selfCancel.pay_price' => $gameLevelingOrderConsult->amount,
+                'selfCancel.pay_bond'  => bcadd($gameLevelingOrderConsult->security_deposit, $gameLevelingOrderConsult->efficiency_deposit),
+                'selfCancel.content'   => $gameLevelingOrderConsult->reason ?? '无',
             ];
             // 发送
             static::normalRequest($options, config('gameleveling.show91.url')['applyConsult'], 'applyConsult', $order);
@@ -324,15 +328,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
     public static function applyComplain(GameLevelingOrder $order, $pic = [])
     {
         try {
+            $gameLevelingOrderComplain = GameLevelingOrderComplain::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('status', 1)
+                ->first();
+
             $options = [
                 'account'        => config('gameleveling.show91.account'),
                 'sign'           => config('gameleveling.show91.sign'),
                 'oid'            => $order->platform_trade_no,
                 'appeal.title'   => '申请仲裁',
-                'appeal.content' => $order->gameLevelingOrderComplain->reason ?? '无',
-                'pic1'           => $pic['pic1'],
-                'pic2'           => $pic['pic2'],
-                'pic3'           => $pic['pic3'],
+                'appeal.content' => $gameLevelingOrderComplain->reason ?? '无',
+                'pic1'           => $pic['pic1'] ? base64ToBlob($pic['pic1']) : '',
+                'pic2'           => $pic['pic2'] ? base64ToBlob($pic['pic2']) : '',
+                'pic3'           => $pic['pic3'] ? base64ToBlob($pic['pic3']) : '',
             ];
             // 发送
             static::formDataRequest($options, config('gameleveling.show91.url')['applyComplain'], 'applyComplain', $order);

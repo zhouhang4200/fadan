@@ -372,9 +372,9 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
 
             $sign = static::getSign($options);
             $options['sign'] = $sign;
-            $options['pic1'] = $pic['pic1'] ?? null;
-            $options['pic2'] = $pic['pic2'] ?? null;
-            $options['pic3'] = $pic['pic3'] ?? null;
+            $options['pic1'] = $pic['pic1'] ? base64ToBlob($pic['pic1']) : '';
+            $options['pic2'] = $pic['pic2'] ? base64ToBlob($pic['pic2']) : '';
+            $options['pic3'] = $pic['pic3'] ? base64ToBlob($pic['pic3']) : '';
 
             // 发送
             static::formDataRequest($options, config('gameleveling.wanzi.url')['applyComplain'], 'applyComplain', $order);

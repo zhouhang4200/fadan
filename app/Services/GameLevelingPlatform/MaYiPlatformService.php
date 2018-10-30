@@ -296,13 +296,17 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
     public static function applyConsult(GameLevelingOrder $order)
     {
         try {
+            $gameLevelingOrderConsult = GameLevelingOrderConsult::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('status', 1)
+                ->first();
+
             $time = time();
             $options = [
                 'method' => 'dlOrderTs',
                 'nid' => $order->platform_trade_no,
-                'bzmoney' => bcadd($order->gameLevelingOrderConsult->security_deposit, $order->gameLevelingOrderConsult->efficiency_deposit),
-                'needsMoney' => $order->gameLevelingOrderConsult->amount,
-                'tsContent' => $order->gameLevelingOrderConsult->reason ?? '无',
+                'bzmoney' => bcadd($gameLevelingOrderConsult->security_deposit, $gameLevelingOrderConsult->efficiency_deposit),
+                'needsMoney' => $gameLevelingOrderConsult->amount,
+                'tsContent' => $gameLevelingOrderConsult->reason ?? '无',
                 'appid' => config('gameleveling.mayi.appid'),
                 'appsecret' => config('gameleveling.mayi.appsecret'),
                 'TimeStamp' => $time,
@@ -380,6 +384,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
     public static function applyComplain(GameLevelingOrder $order, $pic)
     {
         try {
+            $gameLevelingOrderComplain = GameLevelingOrderComplain::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('status', 1)
+                ->first();
+
             $time = time();
             $options = [
                 'method'    => 'dlOrdertsPub',
@@ -389,7 +397,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
                 'TimeStamp' => $time,
                 'Ver'       => config('gameleveling.mayi.Ver'),
                 'sign'      => static::getSign('dlOrdertsPub', $time),
-                'bz'        => $order->gameLevelingOrderComplain->reason ?? '无',
+                'bz'        => $gameLevelingOrderComplain->reason ?? '无',
                 'img1'      => $pic['pic1'],
                 'img2'      => $pic['pic2'],
                 'img3'      => $pic['pic3'],
@@ -953,4 +961,5 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     public static function sendImage(GameLevelingOrder $order, $pic){}
     public static function forceDelete(GameLevelingOrder $order){}
+    public static function rejectConsult(GameLevelingOrder $order) {}
 }

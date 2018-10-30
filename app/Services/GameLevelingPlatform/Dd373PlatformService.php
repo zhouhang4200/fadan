@@ -256,13 +256,17 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
     public static function applyConsult(GameLevelingOrder $order)
     {
         try {
+            $gameLevelingOrderConsult = GameLevelingOrderConsult::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('status', 1)
+                ->first();
+
             $options = [
                 'platformOrderNo' => $order->platform_trade_no,
-                'payAmount' => $order->gameLevelingOrderConsult->amount,
-                'guarantyAQFee' => $order->gameLevelingOrderConsult->security_deposit,
-                'guarantyXLFee' => $order->gameLevelingOrderConsult->efficiency_deposit,
+                'payAmount' => $gameLevelingOrderConsult->amount,
+                'guarantyAQFee' => $gameLevelingOrderConsult->security_deposit,
+                'guarantyXLFee' => $gameLevelingOrderConsult->efficiency_deposit,
                 'PayUserType' => 1,
-                'reason' => $order->gameLevelingOrderConsult->reason ?? '无',
+                'reason' => $gameLevelingOrderConsult->reason ?? '无',
                 'timestamp' => time(),
             ];
 
@@ -361,9 +365,13 @@ class Dd373PlatformService implements GameLevelingPlatformServiceInterface
     public static function applyComplain(GameLevelingOrder $order, $pic = [])
     {
         try {
+            $gameLevelingOrderComplain = GameLevelingOrderComplain::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('status', 1)
+                ->first();
+
             $options = [
                 'platformOrderNo' => $order->platform_trade_no,
-                'reason' => $order->gameLevelingOrderComplain->reason ?? '无',
+                'reason' => $gameLevelingOrderComplain->reason ?? '无',
                 'timestamp' => time(),
             ];
             // 对图片进行处理
