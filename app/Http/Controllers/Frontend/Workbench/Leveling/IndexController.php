@@ -1012,7 +1012,7 @@ class IndexController extends Controller
                 }
             } else {
                 // 下架 没有接单 更新所有信息
-                if (in_array($order->status, [1, 23])) {
+                if (in_array($order->status, [1, 22])) {
                     $changeValue = '';
                     // 加价 修改主单信息
                     if ($order->price != $requestData['game_leveling_amount']) {

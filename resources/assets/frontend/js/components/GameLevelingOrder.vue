@@ -630,13 +630,6 @@
                     this.gameLevelingTypeOptions = [];
                 }
             },
-            // 查看订单
-            handleShow(index) {
-                this.$Modal.info({
-                    title: 'User Info',
-                    content: `Name：${this.tableData[index].status}<br>Age：${this.tableData[index].title}<br>Address：${this.tableData[index].amount}`
-                })
-            },
             // 撤单
             handleDelete(row) {
                 this.$confirm('您确定要"撤单"吗？', '提示', {
@@ -895,7 +888,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.cancelLock, {
+                    axios.post(this.cancelLockApi, {
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({

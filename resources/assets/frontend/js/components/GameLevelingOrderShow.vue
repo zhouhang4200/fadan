@@ -2,7 +2,7 @@
     <div class="game-leveling-order-create">
         <div class="main">
             <el-row :gutter="10">
-                <el-form ref="form" status-icon :rules="rules" :model="form" label-width="120px">
+                <el-form ref="form"  :rules="rules" :model="form" label-width="120px">
                     <el-col :span="16">
                         <div class="grid-content bg-purple" style="padding: 0 15px;background-color: #fff">
                             <el-tabs v-model="tabCurrent" @tab-click="handleTab">
@@ -213,22 +213,15 @@
                                                         </el-input>
                                                     </el-form-item>
                                                 </el-col>
+                                                <!--:disabled="fieldDisabled"-->
                                                 <el-col :span="12">
                                                     <el-form-item label="商户QQ" prop="user_qq">
                                                         <el-input
-                                                                :disabled="fieldDisabled"
                                                                 type="input"
                                                                 placeholder="请输入内容"
                                                                 v-model="form.user_qq">
                                                         </el-input>
-                                                        <!---->
-                                                        <!--<el-autocomplete-->
-                                                        <!--class="inline-input"-->
-                                                        <!--v-model="form.user_qq"-->
-                                                        <!--:fetch-suggestions="handleUserQQOptions"-->
-                                                        <!--placeholder="请输入内容"-->
-                                                        <!--@select="handleSelect"-->
-                                                        <!--&gt;</el-autocomplete>-->
+
                                                     </el-form-item>
                                                 </el-col>
                                             </el-row>
@@ -314,26 +307,30 @@
 
                                 </el-tab-pane>
                                 <el-tab-pane label="操作记录" name="3">
+
                                     <el-table
-                                            :data="tableData"
+                                            :data="logData"
                                             border
                                             style="width: 100%;margin-bottom: 15px">
                                         <el-table-column
-                                                prop="date"
-                                                label="日期"
+                                                prop="username"
+                                                label="操作人"
                                                 width="180">
                                         </el-table-column>
                                         <el-table-column
                                                 prop="name"
-                                                label="姓名"
+                                                label="操作名"
                                                 width="180">
                                         </el-table-column>
                                         <el-table-column
-                                                prop="address"
-                                                label="地址">
+                                                prop="description"
+                                                label="描述">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="created_at"
+                                                label="时间">
                                         </el-table-column>
                                     </el-table>
-
                                 </el-tab-pane>
                             </el-tabs>
                         </div>
@@ -369,27 +366,142 @@
                 </el-col>
             </el-row>
         </div>
-        <div class="footer">
+        <div class="footer" v-if="(tabCurrent == 1)">
             <el-row>
                 <el-col :span="16">
                     <div style="text-align: center;line-height: 60px;">
-                        <el-button type="primary" @click="handleSubmitForm('form')">确定下单</el-button>
+
+                        <!--未接单 1 -->
+                        <div v-if="form.status == 1">
+                            <el-button
+                                    size="small"
+                                    @click="handleDelete()">撤单</el-button>
+                            <el-button
+                                    size="small"
+                                    type="primary" @click="handleOffSale()">下架</el-button>
+                        </div>
+
+                        <!--代练中 13 -->
+                        <div v-if="form.status == 13">
+                            <el-button
+                                    size="small"
+                                    @click="handleApplyConsult()">撤销</el-button>
+                            <el-button
+                                    size="small"
+                                    type="primary" @click="handleApplyComplain()">仲裁</el-button>
+                        </div>
+
+                        <!--待验收 14 -->
+                        <div v-if="form.status == 14">
+                            <el-button
+                                    size="small"
+                                    @click="handleComplete()">完成</el-button>
+                            <el-button
+                                    size="small"
+                                    @click="handleApplyConsult()">撤销</el-button>
+                            <el-button
+                                    size="small"
+                                    type="primary" @click="handleApplyComplain()">仲裁</el-button>
+                            <el-button
+                                    size="small"
+                                    @click="handleLock(scope.row)">锁定</el-button>
+                        </div>
+
+                        <!--撤销中 15 -->
+                        <div v-if="form.status == 15">
+                            <el-button
+                                    size="small"
+                                    @click="handleCancelConsult()">取消撤销</el-button>
+                            <el-button
+                                    size="small"
+                                    @click="handleAgreeConsult()">同意撤销</el-button>
+                            <el-button
+                                    size="small"
+                                    type="primary" @click="handleApplyComplain()">仲裁</el-button>
+                        </div>
+
+                        <!--仲裁中 16 -->
+                        <div v-if="form.status == 16">
+                            <el-button
+                                    size="small"
+                                    type="primary" @click="handleCancelComplain()">取消仲裁</el-button>
+                        </div>
+
+                        <!--异常 17 -->
+                        <div v-if="form.status == 17">
+                            <el-button
+                                    size="small"
+                                    type="primary" @click="handleApplyConsult()">撤销</el-button>
+                            <el-button
+                                    size="small"
+                                    @click="handleLock()">锁定</el-button>
+                        </div>
+
+                        <!--已锁定 18 -->
+                        <div v-if="form.status == 18">
+                            <el-button
+                                    size="small"
+                                    @click="handleCancelLock()">取消锁定</el-button>
+                            <el-button
+                                    size="small"
+                                    type="primary" @click="handleApplyConsult()">撤销</el-button>
+                        </div>
+
+                        <el-button type="primary" @click="handleSubmitForm('form')">锁定</el-button>
                     </div>
                 </el-col>
             </el-row>
         </div>
+
+        <ApplyComplain v-if="applyComplainVisible"
+                       :tradeNo="tradeNo"
+                       :applyComplainApi="applyComplainApi"
+                       @handleApplyComplainVisible="handleApplyComplainVisible">
+        </ApplyComplain>
+
+        <ApplyConsult v-if="applyConsultVisible"
+                      :tradeNo="tradeNo"
+                      :amount="amount"
+                      :securityDeposit="securityDeposit"
+                      :efficiencyDeposit="efficiencyDeposit"
+                      :applyConsultApi="applyConsultApi"
+                      @handleApplyConsultVisible="handleApplyConsultVisible">
+        </ApplyConsult>
     </div>
 </template>
 
 <script>
+    import ApplyComplain from './ApplyComplain';
+    import ApplyConsult from './ApplyConsult';
     export default {
         name: "GameLevelingShow",
+        components: {
+            ApplyComplain,
+            ApplyConsult,
+        },
         props:[
             'tradeNo',
             'orderEditApi',
             'orderUpdateApi',
+            'orderLogApi',
+            'orderAddAmountApi',
+            'orderAddDayHourApi',
             'gameRegionServerApi',
             'gameLevelingTypesApi',
+            'deleteApi',
+            'onSaleApi',
+            'offSaleApi',
+            'applyConsultApi',
+            'applyComplainApi',
+            'cancelComplainApi',
+            'cancelConsultApi',
+            'rejectConsultApi',
+            'agreeConsultApi',
+            'completeApi',
+            'lockApi',
+            'cancelLockApi',
+            'anomalyApi',
+            'cancelAnomalyApi',
         ],
         computed: {
             fieldDisabled() {
@@ -402,6 +514,11 @@
         },
         data() {
             return {
+                amount:0,
+                securityDeposit:0,
+                efficiencyDeposit:0,
+                applyConsultVisible:false,
+                applyComplainVisible:false,
                 tabCurrent:"1",
                 gameRegionServerOptions: [], // 游戏/区/服 选项
                 dayHourOptions: [  // 天数/小时  选项
@@ -3430,6 +3547,7 @@
                     requirement:'', // 代练要求
                     take_order_password:'', // 接单密码
                     player_phone:'', // 玩家电话
+                    user_qq:'', // 商户qq
                     domains: [],
                     remark: '',
                 },
@@ -3468,7 +3586,7 @@
                     source_amount: [
                         {
                             validator:(rule, value, callback)=>{
-                                if(value != ""){
+                                if(value != "" && value != undefined){
                                     if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
                                         callback(new Error("加价幅度必须为数字值"));
                                     }else{
@@ -3487,17 +3605,20 @@
                     security_deposit: [
                         { required: true, message: '请输入安全保证金', trigger: 'change' }
                     ],
+                    user_qq: [
+                        { required: true, message: '请输入商户QQ号', trigger: 'change' }
+                    ],
                     player_phone: [
                         { required: true, message: '请输入无家电话', trigger: 'blur' },
                         { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
                     ],
-                    user_qq: [
-                        { required: true, message: '请选择商户QQ', trigger: 'blur' },
-                    ],
+                    // user_qq: [
+                    //     { required: true, message: '请输入商家QQ', trigger: 'blur' },
+                    // ],
                     price_increase_step: [
                         {
                             validator:(rule, value, callback)=>{
-                                if(value != ""){
+                                if(value != "" && value != undefined){
                                     if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
                                         callback(new Error("加价幅度必须为数字值"));
                                     }else{
@@ -3513,7 +3634,7 @@
                     price_ceiling: [
                         {
                             validator:(rule,value,callback)=>{
-                                if(value != ""){
+                                if(value != "" && value != undefined){
                                     if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
                                         callback(new Error("加价上限必须为数字值"));
                                     }else{
@@ -3528,6 +3649,7 @@
                     ],
 
                 },
+                logData:[],
                 tableData: [{
                     date: '2016-05-02',
                     name: '王小虎',
@@ -3582,12 +3704,11 @@
                         this.form.requirement = res.data.game_leveling_order_detail.requirement; // 代练要求
                         this.form.take_order_password = res.data.take_order_password; // 接单密码
                         this.form.player_phone = res.data.game_leveling_order_detail.player_phone; // 玩家电话
-                        this.form.user_qq = res.data.game_leveling_order_detail.user_qq; // 商家电话
+                        this.form.user_qq = res.data.game_leveling_order_detail.user_qq; // 商家qq
                         this.form.remark =  res.data.remark;
                         this.form.domains = [];
 
                 }).catch(err => {
-                    
                 });
             },
             handleFromGameRegionServerOptions() {
@@ -3615,7 +3736,7 @@
                         this.form.game_server_id = this.form.game_region_server[2];
                         this.form.day = this.form.day_hour[0];
                         this.form.hour = this.form.day_hour[1];
-                        axios.post(this.orderCreateApi, this.form).then(res => {
+                        axios.post(this.orderUpdateApi, this.form).then(res => {
                             this.$message({
                                 'type': res.data.status == 1 ? 'success' : 'error',
                                 'message': res.data.message,
@@ -3640,11 +3761,29 @@
                     inputErrorMessage: '代练价格只能为数字'
                 }).then(({ value }) => {
                     // 发送加价请求 value 为写入的值
-
+                    axios.post(this.orderAddAmountApi, {amount:value}).then(res => {
+                        this.$message({
+                            'type': res.data.status == 1 ? 'success' : 'error',
+                            'message': res.data.message,
+                        });
+                    }).catch(err => {
+                        this.$message({
+                            'type': 'error',
+                            'message': '加价失败，服务器错误！',
+                        });
+                    });
                 });
             },
-            handleTab() {
+            handleTab(tab, event) {
+                if (tab.name == 2) {
 
+                }
+                // 订单操作日志
+                if (tab.name == 3) {
+                    axios.post(this.orderLogApi, {trade_no:this.tradeNo}).then(res => {
+                        this.logData = res.data;
+                    });
+                }
             },
             // 删除补款单号
             removeDomain(item) {
@@ -3659,7 +3798,284 @@
                     value: '',
                     key: Date.now()
                 });
-            }
+            },
+            // 撤单
+            handleDelete(row) {
+                this.$confirm('您确定要"撤单"吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post(this.deleteApi, {
+                        'trade_no' : form.trade_no
+                    }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
+                    }).catch(err => {
+                        this.$message({
+                            message: '操作失败',
+                            type: 'error',
+                        });
+                    });
+                });
+            },
+            // 上架
+            handleOnSale(row) {
+                this.$confirm('您确定要"上架"吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post(this.onSaleApi, {
+                        'trade_no' : form.trade_no
+                    }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
+                    });
+                });
+            },
+            // 下架
+            handleOffSale(row) {
+                this.$confirm('您确定要"下架"吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post(this.offSaleApi, {
+                        'trade_no' : form.trade_no
+                    }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
+                    });
+                });
+            },
+            // 申请仲裁
+            handleApplyComplain(row) {
+                this.tradeNo = form.trade_no;
+                this.applyComplainVisible = true;
+            },
+            // 取消仲裁
+            handleCancelComplain(row) {
+                this.$confirm('您确定要"取消仲裁"吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post(this.cancelComplainApi, {
+                        'trade_no' : form.trade_no
+                    }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
+                    });
+                });
+            },
+            // 查看图片
+            handleApplyCompleteImage(index) {
+
+            },
+            // 完成验收
+            handleComplete(row) {
+                this.$confirm('您确定要"完成验收"吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post(this.completeApi, {
+                        'trade_no' : form.trade_no
+                    }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
+                    });
+                });
+            },
+            // 申请撤销
+            handleApplyConsult(row) {
+                this.tradeNo = form.trade_no;
+                this.amount = row.amount;
+                this.securityDeposit = row.security_deposit;
+                this.efficiencyDeposit = row.efficiency_deposit;
+                this.applyConsultVisible = true;
+            },
+            // 取消撤销
+            handleCancelConsult(row) {
+                this.$confirm('您确定要"取消撤销"吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post(this.cancelConsultApi, {
+                        'trade_no' : form.trade_no
+                    }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
+                    });
+                });
+            },
+            // 同意撤销
+            handleAgreeConsult(row) {
+                this.$confirm('您确定要"同意撤销"吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post(this.agreeConsultApi, {
+                        'trade_no' : form.trade_no
+                    }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
+                    });
+                });
+            },
+            // 不同意撤销
+            handleRejectConsult(row) {
+                this.$confirm('您确定"不同意撤销"吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post(this.rejectConsultApi, {
+                        'trade_no' : form.trade_no
+                    }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
+                    });
+                });
+            },
+            // 锁定
+            handleLock(row) {
+                this.$confirm('您确定要"锁定"订单吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post(this.lockApi, {
+                        'trade_no' : form.trade_no
+                    }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
+                    });
+                });
+            },
+            // 取消锁定
+            handleCancelLock(row) {
+                this.$confirm('您确定要"取消锁定"吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post(this.cancelLock, {
+                        'trade_no' : form.trade_no
+                    }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
+
+                        if(res.data.status == 1) {
+                            this.handleTableData();
+                        }
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
+                    });
+                });
+            },
         },
         created() {
             this.handleFromGameRegionServerOptions();
