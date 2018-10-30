@@ -5,7 +5,7 @@
 @section('content')
     <finance-order
             finance-order-data-list-api="{{ route('v2.finance.order-data-list') }}"
-            game-arr-api="{{ $games }}"
+            finance-game-api="{{ route('v2.finance.game') }}"
     >
     </finance-order>
 @endsection

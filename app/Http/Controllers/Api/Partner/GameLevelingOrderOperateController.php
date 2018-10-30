@@ -31,10 +31,6 @@ class GameLevelingOrderOperateController
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
 
-            // 协商/仲裁信息
-            $consult = GameLevelingOrderConsult::where('game_leveling_order_trade_no', $order->trade_no)->latest('id')->first();
-            $complain = GameLevelingOrderComplain::where('game_leveling_order_trade_no', $order->trade_no)->latest('id')->first();
-
             // 如果存在接单时间
             if (isset($order->take_at) && !empty($order->take_at)) {
                 // 计算到期的时间戳
@@ -44,31 +40,6 @@ class GameLevelingOrderOperateController
                 $leftTime = Sec2Time($leftSecond); // 剩余时间
             } else {
                 $leftTime = '';
-            }
-
-            // 计算利润、手续费、获得金额等
-            if (!in_array($order->status, [19, 20, 21])) {
-                $paymentAmount = '';
-                $getAmount = '';
-                $poundage = '';
-                $profit = '';
-            } else {
-                // 支付金额
-                if ($order->status == 19) {
-                    $amount = $consult->amount;
-                } elseif ($order->status == 21) {
-                    $amount = $complain->amount;
-                } else {
-                    $amount = $order->amount;
-                }
-                // 支付金额
-                $paymentAmount = $amount !=0 ?  $amount + 0:  $amount;
-
-                $getAmount = (float)0 + 0;
-                $poundage = (float)0 + 0;
-
-                // 利润
-                $profit = ((float)$order->source_price - $paymentAmount + $getAmount - $poundage) + 0;
             }
 
             $orderInfo = [
@@ -105,12 +76,12 @@ class GameLevelingOrderOperateController
                 'checkout_time'                    => $order->complete_at ?? '',
                 'pre_sale'                         => $order->pre_sale ?? '',
                 'customer_service_name'            => $order->customer_service_name ?? '',
-                'consult_desc'                     => $consult->reason,
-                'complain_desc'                    => $complain->reason,
-                'payment_amount'                   => $paymentAmount,
-                'get_amount'                       => $getAmount,
-                'poundage'                         => $poundage,
-                'profit'                           => $profit,
+                'consult_desc'                     => $order->gameLevelingOrderConsult ? $order->gameLevelingOrderConsult->reason : '',
+                'complain_desc'                    => $order->gameLevelingOrderComplain ? $order->gameLevelingOrderComplain->reason : '',
+                'payment_amount'                   => $order->payAmount(),
+                'get_amount'                       => $order->getAmount(),
+                'poundage'                         => $order->getPoundage(),
+                'profit'                           => $order->getProfit(),
                 'tm_status'                        => $order->channel_order_status ?? '',
             ];
 

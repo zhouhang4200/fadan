@@ -472,4 +472,103 @@ class GameLevelingOrder extends Model
         }
         return $query;
     }
+
+    /**
+     * 支出金额
+     * @return int|mixed|string
+     */
+    public function payAmount()
+    {
+        // 发单
+        if (request()->user()->getParentId() == $this->parent_user_id) {
+            if ($this->status == 19) {
+                return $this->gameLevelingOrderConsult->amount;
+            } elseif ($this->status == 20) {
+                return $this->amount;
+            } elseif ($this->status == 21) {
+                return $this->gameLevelingOrderComplain->amount;
+            } else {
+                return 0;
+            }
+        } elseif (request()->user()->getParentId() == $this->take_parent_user_id) { // 接单
+            if ($this->status == 19) {
+                return bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit);
+            } elseif ($this->status == 21) {
+                return bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit);
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    /**
+     * 获得金额
+     * @return int|mixed|string
+     */
+    public function getAmount()
+    {
+        // 发单
+        if (request()->user()->getParentId() == $this->parent_user_id) {
+            if ($this->status == 19) {
+                return bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit);
+            } elseif ($this->status == 21) {
+                return bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit);
+            } else {
+                return 0;
+            }
+        } elseif (request()->user()->getParentId() == $this->take_parent_user_id) { // 接单
+            if ($this->status == 19) {
+                return $this->gameLevelingOrderConsult->amount;
+            } elseif ($this->status == 20) {
+                return $this->amount;
+            } elseif ($this->status == 21) {
+                return $this->gameLevelingOrderComplain->amount;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    /**
+     * 获取订单手续费
+     * @return int|mixed
+     */
+    public function getPoundage()
+    {
+        if ($this->status == 19) {
+            return $this->gameLevelingOrderConsult->poundage;
+        } elseif ($this->status == 21) {
+            return $this->gameLevelingOrderComplain->poundage;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 获取订单利润
+     * @return int|string
+     */
+    public function getProfit()
+    {
+        return $this->getAmount() - $this->payAmount() - $this->getPoundage();
+    }
+
+    /**
+     * 获取撤销发起人
+     * @return int 0 不存在撤销 1 撤销发起人为 发单方
+     */
+    public function getConsultInitiator()
+    {
+        return (int) optional($this->gameLevelingOrderConsult)->initiator;
+    }
+
+    /**
+     * 获取仲裁发起人
+     * @return int 0 不存在仲裁 1 仲裁发起人为 发单方
+     */
+    public function getComplainInitiator()
+    {
+        return (int) optional($this->gameLevelingOrderComplain)->initiator;
+    }
+
 }

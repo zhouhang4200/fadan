@@ -118,7 +118,8 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('create-withdraw', 'FinanceController@createWithdraw')->name('v2.finance.create-withdraw');
             // 财务订单
             Route::get('order', 'FinanceController@order')->name('v2.finance.order');
-            Route::get('order-data-list', 'FinanceController@orderDataList')->name('v2.finance.order-data-list');
+            Route::post('game', 'FinanceController@game')->name('v2.finance.game');
+            Route::post('order-data-list', 'FinanceController@orderDataList')->name('v2.finance.order-data-list');
         });
 
         // 统计

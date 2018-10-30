@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Frontend\V2\Finance;
 use App\Events\Punish;
 use App\Models\Game;
 use App\Models\UserAsset;
+use App\Repositories\Frontend\GameRepository;
+use App\Repositories\Frontend\OrderRepository;
 use Illuminate\Http\Request;
 use App\Models\UserAssetDaily;
 use App\Models\UserAmountFlow;
@@ -169,8 +171,12 @@ class FinanceController extends Controller
      */
     public function order()
     {
-        $games = Game::get();
-        return view('frontend.v2.finance.order', compact('games'));
+        return view('frontend.v2.finance.order');
+    }
+
+    public function game()
+    {
+        return Game::where('status', 1)->pluck('name', 'id');
     }
 
     /**
@@ -196,7 +202,7 @@ class FinanceController extends Controller
 
         $game = $gameRepository->availableByServiceId(4);
 
-        $orders = $orderRepository->levelingDataList($status, $no,  $taobaoStatus,  $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $sellerNick, $pageSize);
+        $orders = $orderRepository->levelingDataList($status, $no, $taobaoStatus, $gameId, $wangWang, $customerServiceName, $platform, $startDate, $endDate, $sellerNick, $pageSize);
 
 
         // 处理数据
@@ -219,5 +225,7 @@ class FinanceController extends Controller
                 ];
             }
         }
+
+        return $orders;
     }
 }
