@@ -3677,6 +3677,9 @@
             },
             handleFromData() {
                 axios.post(this.orderEditApi, {trade_no: this.tradeNo}).then(res => {
+                        this.amount = res.data.amount;
+                        this.securityDeposit = res.data.security_deposit;
+                        this.efficiencyDeposit = res.data.efficiency_deposit;
                         this.form.status = res.data.status;
                         this.form.game_region_server =  [  // 选择的 游戏/区/服
                             res.data.game_id,
