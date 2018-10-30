@@ -7,17 +7,17 @@
             <el-table-column
                     prop="id"
                     label="用户ID"
-                    width="80">
+                    width="180">
             </el-table-column>
             <el-table-column
                     prop="name"
                     label="用户名"
-                    width="150">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="email"
                     label="邮箱"
-                    width="150">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="created_at"
@@ -25,7 +25,8 @@
             </el-table-column>
             <el-table-column
                     prop="order"
-                    label="操作">
+                    label="操作"
+                    width="180">
                 <template slot-scope="scope">
                     <el-button v-if="scope.row.id > 0"
                                type="primary"
@@ -45,8 +46,7 @@
         methods: {
             // 加载数据
             handleTableData(){
-                axios.post(this.AccountMineDataListApi, this.searchParams).then(res => {
-                    console.log(res);
+                axios.post(this.AccountMineDataListApi, {}).then(res => {
                     this.tableData = res.data;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
@@ -63,7 +63,6 @@
         data() {
             return {
                 tableData: [],
-                searchParams:[]
             }
         }
     }

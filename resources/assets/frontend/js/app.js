@@ -33,6 +33,8 @@ Vue.component('statistic-message', resolve => void(require(['./components/Statis
 Vue.component('statistic-message-show', resolve => void(require(['./components/StatisticMessageShow.vue'], resolve)));
 // 财务订单统计
 Vue.component('finance-order', resolve => void(require(['./components/FinanceOrder.vue'], resolve)));
+// 我的账号
+Vue.component('account-mine', resolve => void(require(['./components/AccountMine.vue'], resolve)));
 
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改

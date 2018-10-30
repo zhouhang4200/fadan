@@ -23,7 +23,9 @@ class AccountController extends Controller
      */
     public function mineDataList()
     {
-        return response()->json(['1', 2]);
+        $user = Auth::user();
+//        return $user;
+        return response()->json([['id' => $user->id, 'name' => $user->name, 'email' => $user->email, 'created_at' => $user->created_at->toDateTimeString()]]);
     }
 
     /**
