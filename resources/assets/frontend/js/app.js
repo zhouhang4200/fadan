@@ -9,32 +9,30 @@ import '../sass/app.scss';
 Vue.use(ElementUI, {size:"small"});
 Vue.use(Vuex);
 
-
-// Vue.component('layout', resolve => void(require(['./components/Layout.vue'], resolve)));
 // 布局
 Vue.component('layout', require('./components/Layout.vue'));
 // 代练订单列表
-Vue.component('game-leveling-order', require('./components/GameLevelingOrder.vue'));
+Vue.component('game-leveling-order', resolve => void(require(['./components/GameLevelingOrder.vue'], resolve)));
 // 代练下单
-Vue.component('game-leveling-order-create', require('./components/GameLevelingOrderCreate.vue'));
+Vue.component('game-leveling-order-create', resolve => void(require(['./components/GameLevelingOrderCreate.vue'], resolve)));
 // 代练订单编辑
-Vue.component('game-leveling-order-show', require('./components/GameLevelingOrderShow.vue'));
+Vue.component('game-leveling-order-show', resolve => void(require(['./components/GameLevelingOrderShow.vue'], resolve)));
 // 资金流水
-Vue.component('amount-flow', require('./components/AmountFlow.vue'));
+Vue.component('amount-flow', resolve => void(require(['./components/AmountFlow.vue'], resolve)));
 // 我的资产
-Vue.component('my-asset', require('./components/MyAsset.vue'));
+Vue.component('my-asset', resolve => void(require(['./components/MyAsset.vue'], resolve)));
 // 资产日报
-Vue.component('daily-asset', require('./components/DailyAsset.vue'));
+Vue.component('daily-asset', resolve => void(require(['./components/DailyAsset.vue'], resolve)));
 // 员工统计
-Vue.component('statistic-employee', require('./components/StatisticEmployee.vue'));
+Vue.component('statistic-employee', resolve => void(require(['./components/StatisticEmployee.vue'], resolve)));
 // 订单统计
-Vue.component('statistic-order', require('./components/StatisticOrder.vue'));
+Vue.component('statistic-order', resolve => void(require(['./components/StatisticOrder.vue'], resolve)));
 // 短信统计
-Vue.component('statistic-message', require('./components/StatisticMessage.vue'));
+Vue.component('statistic-message', resolve => void(require(['./components/StatisticMessage.vue'], resolve)));
 // 短信统计详情
-Vue.component('statistic-message-show', require('./components/StatisticMessageShow.vue'));
+Vue.component('statistic-message-show', resolve => void(require(['./components/StatisticMessageShow.vue'], resolve)));
 // 财务订单统计
-Vue.component('finance-order', require('./components/FinanceOrder.vue'));
+Vue.component('finance-order', resolve => void(require(['./components/FinanceOrder.vue'], resolve)));
 
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改

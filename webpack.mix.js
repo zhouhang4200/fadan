@@ -11,7 +11,7 @@ if (env && env.admin) {
 
 mix.webpackConfig({
     output: {
-        publicPath: '/frontend/', // 设置默认打包目录
+        publicPath: '/frontend/v2/', // 设置默认打包目录
         chunkFilename: `js/[name].${mix.inProduction() ? '[chunkhash].' : ''}js` // 路由懒加载的时候打包出来的js文件
     }
 });
