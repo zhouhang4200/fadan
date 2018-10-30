@@ -265,7 +265,8 @@ class OrderOperateController
             static::$order->save();
 
             $description = "用户[".static::$user->username."]将订单从[已下架]设置为[待接单]状态！";
-            static::createOrderHistory(14, $description);
+
+            GameLevelingOrderLog::createOrderHistory(static::$order, 14, $description);
 
             // 订单数量角标
             static::orderCount(22, 13);
@@ -298,7 +299,7 @@ class OrderOperateController
             static::$order->save();
 
             $description = "用户[".static::$user->username."]将订单从[待接单]设置为[已下架]状态！";
-            static::createOrderHistory(15, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 15, $description);
 
             // 从自动下架任务中删除
             autoUnShelveDel(static::$order->trade_no);
@@ -334,7 +335,7 @@ class OrderOperateController
 
             static::$order->status = 24;
             static::$order->save();
-            static::createOrderHistory(23, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 23, $description);
             // 从自动下架任务中删除
             autoUnShelveDel(static::$order->trade_no);
 
@@ -378,7 +379,7 @@ class OrderOperateController
 
             static::$order->status = 18;
             static::$order->save();
-            static::createOrderHistory(16, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 16, $description);
 
             // 订单数量角标
             static::orderCount($gameLevelingOrderPreviousStatus->status, 18);
@@ -416,7 +417,7 @@ class OrderOperateController
 
             static::$order->status = $gameLevelingOrderPreviousStatus->status;
             static::$order->save();
-            static::createOrderHistory(17, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 17, $description);
 
             // 删除最后一条状态数据
             $gameLevelingOrderPreviousStatus->delete();
@@ -466,7 +467,7 @@ class OrderOperateController
 
             static::$order->status = 15;
             static::$order->save();
-            static::createOrderHistory(18, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 18, $description);
 
             // 将协商数据写入协商表
             $handleDeposit = static::handleDeposit($amount, $deposit);
@@ -523,7 +524,7 @@ class OrderOperateController
 
             static::$order->status = $gameLevelingOrderPreviousStatus->status;
             static::$order->save();
-            static::createOrderHistory(19, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 19, $description);
 
             // 删除最后一条状态数据
             $gameLevelingOrderPreviousStatus->delete();
@@ -569,7 +570,7 @@ class OrderOperateController
 
             static::$order->status = $gameLevelingOrderPreviousStatus->status;
             static::$order->save();
-            static::createOrderHistory(33, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 33, $description);
 
             // 删除最后一条状态数据
             $gameLevelingOrderPreviousStatus->delete();
@@ -612,7 +613,7 @@ class OrderOperateController
             static::$order->status = 19;
             static::$order->complete_at = Carbon::now()->toDateTimeString();
             static::$order->save();
-            static::createOrderHistory(24, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 24, $description);
             // 更改协商表状态和手续费
             $gameLevelingOrderConsult = GameLevelingOrderConsult::where('game_leveling_order_trade_no', static::$order->trade_no)
                 ->where('status', 1)
@@ -720,7 +721,7 @@ class OrderOperateController
 
             static::$order->status = 16;
             static::$order->save();
-            static::createOrderHistory(20, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 20, $description);
 
             // 将仲裁数据写入仲裁表
             $initiator = static::initiator();
@@ -781,7 +782,7 @@ class OrderOperateController
 
             static::$order->status = $gameLevelingOrderPreviousStatus->status;
             static::$order->save();
-            static::createOrderHistory(21, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 21, $description);
 
             // 删除最后一条状态数据
             $gameLevelingOrderPreviousStatus->delete();
@@ -830,7 +831,7 @@ class OrderOperateController
             static::$order->status = 21;
             static::$order->complete_at = Carbon::now()->toDateTimeString();
             static::$order->save();
-            static::createOrderHistory(26, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 26, $description);
 
             // 更改仲裁表状态和手续费等数据
             $handleDeposit = static::handleDeposit($amount, $deposit);
@@ -936,7 +937,7 @@ class OrderOperateController
             static::$order->status = 14;
             static::$order->apply_complete_at = Carbon::now()->toDateTimeString();
             static::$order->save();
-            static::createOrderHistory(28, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 28, $description);
 
             // 写入 redis 24H自动验收
             $now = Carbon::now()->toDateTimeString();
@@ -982,7 +983,7 @@ class OrderOperateController
 
             static::$order->status = $gameLevelingOrderPreviousStatus->status;
             static::$order->save();
-            static::createOrderHistory(29, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 29, $description);
 
             // 删除最后一条状态数据
             $gameLevelingOrderPreviousStatus->delete();
@@ -1022,7 +1023,7 @@ class OrderOperateController
             static::$order->status = 20;
             static::$order->complete_at = Carbon::now()->toDateTimeString();
             static::$order->save();
-            static::createOrderHistory(12, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 12, $description);
 
             // 流水
             if (static::$order->amount > 0) {
@@ -1077,7 +1078,7 @@ class OrderOperateController
 
             static::$order->status = 17;
             static::$order->save();
-            static::createOrderHistory(30, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 30, $description);
 
             // 订单数量角标
             static::orderCount(13, 17);
@@ -1110,7 +1111,7 @@ class OrderOperateController
 
             static::$order->status = 13;
             static::$order->save();
-            static::createOrderHistory(31, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 31, $description);
 
             // 订单数量角标
             static::orderCount(17, 13);
@@ -1143,7 +1144,7 @@ class OrderOperateController
 
             static::$order->status = 23;
             static::$order->save();
-            static::createOrderHistory(25, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 25, $description);
 
             // 流水
             if (static::$order->amount > 0) {
@@ -1237,7 +1238,7 @@ class OrderOperateController
             static::$order->take_parent_user_id = static::$user->parentInfo()->id;
             static::$order->take_at = Carbon::now()->toDateTimeString();
             static::$order->save();
-            static::createOrderHistory(27, $description);
+            GameLevelingOrderLog::createOrderHistory(static::$order, 27, $description);
 
             // 检测发单人和平台余额
             static::checkUserAndPlatformBalance(static::$order);

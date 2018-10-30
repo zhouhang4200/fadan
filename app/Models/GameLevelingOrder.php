@@ -230,20 +230,7 @@ class GameLevelingOrder extends Model
             static::changeSameOriginOrderSourcePrice($order, $data);
 
             /************写入订单操作记录***********/
-            $historyData = [
-                'order_no' => $order->trade_no,
-                'user_id' => $order->user_id,
-                'admin_user_id' => '',
-                'type' => 1,
-                'name' => '创建',
-                'description' => "用户[{$order->user_id}]从[".config('order.source')[$order->source]."]渠道创建了订单",
-                'before' => '',
-                'after' => '',
-                'created_at' => Carbon::now()->toDateTimeString(),
-                'creator_primary_user_id' => $order->parent_user_id,
-            ];
-
-            OrderHistory::create($historyData);
+            GameLevelingOrderLog::createOrderHistory($order, 1, "用户[{$order->user_id}]从[".config('order.source')[$order->source]."]渠道创建了订单");
 
             /************* 如果设置了接单人则直接变为接单*************************/
             if (isset($data['gainer_user_id']) && $data['gainer_user_id']) {
