@@ -9,6 +9,8 @@ import '../sass/app.scss';
 Vue.use(ElementUI, {size:"small"});
 Vue.use(Vuex);
 
+
+// Vue.component('layout', resolve => void(require(['./components/Layout.vue'], resolve)));
 // 布局
 Vue.component('layout', require('./components/Layout.vue'));
 // 代练订单列表

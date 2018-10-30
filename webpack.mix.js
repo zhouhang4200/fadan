@@ -21,7 +21,7 @@ mix.js('resources/assets/frontend/js/app.js', 'public/frontend/v2/js')
     .less('resources/assets/frontend/less/theme.less', 'public/frontend/v2/css', {
         javascriptEnabled: true
     })
-    .extract(['vue', 'axios'])
+    .extract(['vue', 'axios', 'element-ui'])
     .setResourceRoot('/frontend/') // 设置资源目录
     .setPublicPath('public/frontend/v2/') // 设置 mix-manifest.json 目录
     .version(); // 生成的文件加上版本号

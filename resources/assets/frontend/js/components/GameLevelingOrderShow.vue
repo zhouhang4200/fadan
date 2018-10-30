@@ -447,7 +447,7 @@
                                     type="primary" @click="handleApplyConsult()">撤销</el-button>
                         </div>
 
-                        <el-button type="primary" @click="handleSubmitForm('form')">锁定</el-button>
+                        <el-button type="primary" @click="handleSubmitForm('form')">确认修改</el-button>
                     </div>
                 </el-col>
             </el-row>
