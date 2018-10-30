@@ -371,28 +371,30 @@
                 <el-col :span="16">
                     <div style="text-align: center;line-height: 60px;">
 
+                        <el-button type="primary" @click="handleSubmitForm('form')" style="margin-right: 8px">确认修改</el-button>
+
                         <!--未接单 1 -->
-                        <div v-if="form.status == 1">
+                        <span v-if="form.status == 1">
                             <el-button
                                     size="small"
                                     @click="handleDelete()">撤单</el-button>
                             <el-button
                                     size="small"
                                     type="primary" @click="handleOffSale()">下架</el-button>
-                        </div>
+                        </span>
 
                         <!--代练中 13 -->
-                        <div v-if="form.status == 13">
+                        <span v-if="form.status == 13">
                             <el-button
                                     size="small"
                                     @click="handleApplyConsult()">撤销</el-button>
                             <el-button
                                     size="small"
                                     type="primary" @click="handleApplyComplain()">仲裁</el-button>
-                        </div>
+                        </span>
 
                         <!--待验收 14 -->
-                        <div v-if="form.status == 14">
+                        <span v-if="form.status == 14">
                             <el-button
                                     size="small"
                                     @click="handleComplete()">完成</el-button>
@@ -405,10 +407,10 @@
                             <el-button
                                     size="small"
                                     @click="handleLock(scope.row)">锁定</el-button>
-                        </div>
+                        </span>
 
                         <!--撤销中 15 -->
-                        <div v-if="form.status == 15">
+                        <span v-if="form.status == 15">
                             <el-button
                                     size="small"
                                     @click="handleCancelConsult()">取消撤销</el-button>
@@ -418,36 +420,36 @@
                             <el-button
                                     size="small"
                                     type="primary" @click="handleApplyComplain()">仲裁</el-button>
-                        </div>
+                        </span>
 
                         <!--仲裁中 16 -->
-                        <div v-if="form.status == 16">
+                        <span v-if="form.status == 16">
                             <el-button
                                     size="small"
                                     type="primary" @click="handleCancelComplain()">取消仲裁</el-button>
-                        </div>
+                        </span>
 
                         <!--异常 17 -->
-                        <div v-if="form.status == 17">
+                        <span v-if="form.status == 17">
                             <el-button
                                     size="small"
                                     type="primary" @click="handleApplyConsult()">撤销</el-button>
                             <el-button
                                     size="small"
                                     @click="handleLock()">锁定</el-button>
-                        </div>
+                        </span>
 
                         <!--已锁定 18 -->
-                        <div v-if="form.status == 18">
+                        <span v-if="form.status == 18">
                             <el-button
                                     size="small"
                                     @click="handleCancelLock()">取消锁定</el-button>
                             <el-button
                                     size="small"
                                     type="primary" @click="handleApplyConsult()">撤销</el-button>
-                        </div>
+                        </span>
 
-                        <el-button type="primary" @click="handleSubmitForm('form')">确认修改</el-button>
+
                     </div>
                 </el-col>
             </el-row>
