@@ -141,6 +141,15 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('message-data-list', 'StatisticController@messageDataList')->name('v2.statistic.message-data-list');
             Route::post('message-show-data-list', 'StatisticController@messageShowDataList')->name('v2.statistic.message-show-data-list');
         });
+
+        // 账号
+        Route::prefix('account')->namespace('Account')->group(function () {
+            // 我的账号
+            Route::get('mine', 'AccountController@mine')->name('v2.account.mine');
+            Route::post('mine-data-list', 'AccountController@mineDataList')->name('v2.account.mine-data-list');
+            Route::get('mine-edit', 'AccountController@mineEdit')->name('v2.account.mine-edit');
+            Route::post('mine-update', 'AccountController@mineUpdate')->name('v2.account.mine-update');
+        });
     });
 
 //    Route::namespace('Auth')->group(function () {
