@@ -46,9 +46,11 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
+                <el-col :span="5">
                 <el-form-item>
                     <el-button type="primary" @click="handleSearch">查询</el-button>
                 </el-form-item>
+                </el-col>
             </el-row>
         </el-form>
         <el-table
@@ -56,51 +58,92 @@
                 border
                 style="width: 100%">
             <el-table-column
-                    prop="id"
-                    label="流水号"
-                    width="80">
+                    prop="no"
+                    label="内部单号"
+                    width="180">
             </el-table-column>
             <el-table-column
-                    prop="trade_type"
-                    label="类型"
-                    width="150">
+                    prop="source_order_no"
+                    label="淘宝单号"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="source_order_no_1"
+                    label="补款单号"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="game_name"
+                    label="游戏"
+                    width="70">
+            </el-table-column>
+            <el-table-column
+                    prop="status"
+                    label="订单状态"
+                    width="70">
                 <template slot-scope="scope">
-                    {{ TradeTypeArr["" + scope.row.trade_type] }}
+                    {{ scope.row.status ? scope.row.status : '' }}
                 </template>
             </el-table-column>
             <el-table-column
-                    prop="trade_subtype"
-                    label="子类型"
-                    width="150">
-                <template slot-scope="scope">
-                    {{ TradeSubTypeArr["" + scope.row.trade_subtype] }}
-                </template>
+                    prop="seller_nick"
+                    label="店铺名称"
+                    width="70">
             </el-table-column>
             <el-table-column
-                    prop="trade_no"
-                    label="订单号">
+                    prop="platform_id"
+                    label="接单平台"
+                    width="70">
             </el-table-column>
             <el-table-column
-                    prop="order"
-                    label="天猫单号">
-                <template slot-scope="scope">
-                    {{ scope.row.order ? scope.row.order.foreign_order_no : '' }}
-                </template>
+                    prop="taobao_amount"
+                    label="淘宝金额"
+                    width="70">
             </el-table-column>
             <el-table-column
-                    prop="fee"
-                    label="变动金额"
-                    width="150">
+                    prop="taobao_refund"
+                    label="淘宝退款"
+                    width="70">
             </el-table-column>
             <el-table-column
-                    prop="balance"
-                    label="账户余额"
-                    width="150">
+                    prop="pay_amount"
+                    label="支付代练费用"
+                    width="70">
             </el-table-column>
             <el-table-column
-                    prop="created_at"
-                    label="时间"
-                    width="150">
+                    prop="get_amount"
+                    label="获得赔偿金额"
+                    width="70">
+            </el-table-column>
+            <el-table-column
+                    prop="get_complain_amount"
+                    label="获得投诉金额"
+                    width="70">
+            </el-table-column>
+            <el-table-column
+                    prop="poundage"
+                    label="手续费"
+                    width="70">
+            </el-table-column>
+            <el-table-column
+                    prop="profit"
+                    label="最终支付金额"
+                    width="70">
+            </el-table-column>
+            <el-table-column
+                    prop="customer_service_name"
+                    label="发单客服"
+                    width="70">
+            </el-table-column>
+            <el-table-column
+                    prop="taobao_created_at"
+                    label="淘宝下单时间"
+                    width="">
+            </el-table-column>
+            <el-table-column
+                    prop="complete_at"
+                    label="代练结算时间"
+                    width="">
             </el-table-column>
         </el-table>
         <el-pagination
@@ -117,16 +160,27 @@
 <script>
     export default {
         props: [
-            'AmountFlowApi',
-            'GameArrApi',
+            'FinanceOrderDataListApi',
+            'FinanceGameApi',
         ],
         methods: {
             // 加载数据
             handleTableData(){
-                axios.post(this.AmountFlowApi, this.searchParams).then(res => {
+                axios.post(this.FinanceOrderDataListApi, this.searchParams).then(res => {
                     console.log(res);
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
+                }).catch(err => {
+                    this.$alert('获取数据失败, 请重试!', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                });
+            },
+            handleGame(){
+                axios.post(this.FinanceGameApi, this.searchParams).then(res => {
+                    this.GameArr = res.data;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -148,6 +202,7 @@
         },
         created () {
             this.handleTableData();
+            this.handleGame();
         },
         watch: {
             t: function (val) {
@@ -158,7 +213,7 @@
         },
         data() {
             return {
-                GameArr:this.GameArrApi,
+                GameArr:{},
                 StatusArr:{
                     1:'未接单',
                     13:'代练中',
