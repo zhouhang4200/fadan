@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\GameLevelingOrderLog;
 use DB;
 use Cache;
 use Asset;
@@ -63,20 +64,16 @@ class OrderOperateController
      */
     private static function createOrderHistory($type, $description = '')
     {
-        $data = [
-            'order_no' => static::$order->trade_no,
+        GameLevelingOrderLog::create([
+            'game_leveling_order_trade_no' => static::$order->trade_no,
             'user_id' => static::$order->user_id,
-            'admin_user_id' => static::$adminUser ?? null,
+//            'username' => static::$order->user_id,
+            'parent_user_id' => static::$order->parent_user_id,
+            'admin_user_id' => static::$adminUser ?? 0,
             'type' => $type,
             'name' => config('order.operation_type')[$type],
             'description' => $description,
-            'before' => '',
-            'after' => '',
-            'created_at' => Carbon::now()->toDateTimeString(),
-            'creator_primary_user_id' => static::$order->parent_user_id,
-        ];
-
-        OrderHistory::create($data);
+        ]);
     }
 
     /**

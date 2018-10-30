@@ -36,6 +36,10 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 Route::post('edit', 'GameLevelingController@edit')->name('order.game-leveling.edit');
                 // 更新
                 Route::post('update', 'GameLevelingController@update')->name('order.game-leveling.update');
+                // 加价
+                Route::post('add-amount', 'GameLevelingController@addAmount')->name('order.game-leveling.add-amount');
+                // 加代练天与小时
+                Route::post('add-day-hour', 'GameLevelingController@addDayHour')->name('order.game-leveling.add-day-hour');
                 // 下单
                 Route::get('create', 'GameLevelingController@create')->name('order.game-leveling.create');
                 Route::post('create', 'GameLevelingController@doCreate');
@@ -80,7 +84,7 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 // 申请验收图片
                 Route::get('apply-complete-image/{trade_no}', 'GameLevelingController@applyCompleteImage')->name('order.game-leveling.apply-complete-image');
                 // 订单操作日志
-                Route::get('log/{trade_no}', 'GameLevelingController@log')->name('order.game-leveling.log');
+                Route::post('log', 'GameLevelingController@log')->name('order.game-leveling.log');
                 // 仲裁信息
                 Route::get('complain-info/{trade_no}', 'GameLevelingController@complainInfo')->name('order.game-leveling.complain-info');
                 // 发送仲裁留言
