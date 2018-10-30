@@ -3942,11 +3942,19 @@
             },
             // 申请撤销
             handleApplyConsult(row) {
-                this.tradeNo = form.trade_no;
-                this.amount = row.amount;
-                this.securityDeposit = row.security_deposit;
-                this.efficiencyDeposit = row.efficiency_deposit;
+                this.tradeNo = this.form.trade_no;
+                this.amount = this.amount;
+                this.securityDeposit = this.securityDeposit;
+                this.efficiencyDeposit = this.efficiencyDeposit;
                 this.applyConsultVisible = true;
+            },
+            // 设置仲裁窗口是否显示
+            handleApplyComplainVisible(data) {
+                this.applyComplainVisible = data.visible;
+            },
+            // 设置协商窗口是否显示
+            handleApplyConsultVisible(data) {
+                this.applyConsultVisible = data.visible;
             },
             // 取消撤销
             handleCancelConsult(row) {

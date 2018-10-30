@@ -556,7 +556,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
                 'game_leveling_instructions'       => $order->gameLevelingOrderDetail->explain,
                 'businessman_phone'                => $order->gameLevelingOrderDetail->user_phone,
                 'businessman_qq'                   => $order->gameLevelingOrderDetail->user_qq,
-                'order_password' 				   => $order->take_order_password,
+                'order_password' 				   => $order->take_order_password ?? '',
                 'game_role'						   => $order->game_role,
             ];
 
