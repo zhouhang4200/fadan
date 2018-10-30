@@ -9,6 +9,16 @@ if (env && env.admin) {
     return
 }
 
+externals = {
+    'element-ui': 'Element',
+    'axios': 'axios',
+    'vue': 'Vue',
+    'vuex': 'Vuex',
+    'vue-router': 'VueRouter',
+    'vue-chartjs': 'VueChartJs',
+    'lodash': '_',
+};
+
 mix.webpackConfig({
     output: {
         publicPath: '/frontend/v2/', // 设置默认打包目录

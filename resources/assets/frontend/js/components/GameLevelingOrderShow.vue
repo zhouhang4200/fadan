@@ -3763,7 +3763,7 @@
                     inputErrorMessage: '代练价格只能为数字'
                 }).then(({ value }) => {
                     // 发送加价请求 value 为写入的值
-                    axios.post(this.orderAddAmountApi, {amount:value}).then(res => {
+                    axios.post(this.orderAddAmountApi, {trade_no:this.form.trade_no, amount:value}).then(res => {
                         this.$message({
                             'type': res.data.status == 1 ? 'success' : 'error',
                             'message': res.data.message,
@@ -3809,7 +3809,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.deleteApi, {
-                        'trade_no' : form.trade_no
+                        'trade_no' : this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
@@ -3835,7 +3835,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.onSaleApi, {
-                        'trade_no' : form.trade_no
+                        'trade_no' : this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
@@ -3861,7 +3861,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.offSaleApi, {
-                        'trade_no' : form.trade_no
+                        'trade_no' : this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
@@ -3892,7 +3892,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.cancelComplainApi, {
-                        'trade_no' : form.trade_no
+                        'trade_no' : this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
@@ -3922,7 +3922,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.completeApi, {
-                        'trade_no' : form.trade_no
+                        'trade_no' : this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
@@ -3956,7 +3956,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.cancelConsultApi, {
-                        'trade_no' : form.trade_no
+                        'trade_no' : this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
@@ -3982,7 +3982,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.agreeConsultApi, {
-                        'trade_no' : form.trade_no
+                        'trade_no' : this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
@@ -4008,7 +4008,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.rejectConsultApi, {
-                        'trade_no' : form.trade_no
+                        'trade_no' : this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
@@ -4034,7 +4034,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.lockApi, {
-                        'trade_no' : form.trade_no
+                        'trade_no' : this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
@@ -4060,7 +4060,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.cancelLock, {
-                        'trade_no' : form.trade_no
+                        'trade_no' : this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
