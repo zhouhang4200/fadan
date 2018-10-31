@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\V2\Account;
 
+use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -21,19 +22,29 @@ class AccountController extends Controller
      * 我的账号接口
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
-    public function mineDataList()
+    public function mineForm()
     {
-        $user = Auth::user();
-//        return $user;
-        return response()->json([['id' => $user->id, 'name' => $user->name, 'email' => $user->email, 'created_at' => $user->created_at->toDateTimeString()]]);
+        return Auth::user();
     }
 
     /**
      * 我的账号修改
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function mineEdit()
+    public function mineUpdate()
     {
-        return view('frontend.v2.account.mine-edit');
+        try {
+            $user = Auth::user();
+
+            if (request('password')) {
+                $user->password = bcrypt(request('password'));
+            }
+            $user->type = request('type');
+            $user->leveling_type = request('type');
+            $user->save();
+        } catch (Exception $e) {
+            return response()->ajax(0, '服务器异常!');
+        }
+        return response()->ajax(1, '修改成功!');
     }
 }

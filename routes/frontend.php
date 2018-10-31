@@ -146,8 +146,7 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
         Route::prefix('account')->namespace('Account')->group(function () {
             // 我的账号
             Route::get('mine', 'AccountController@mine')->name('v2.account.mine');
-            Route::post('mine-data-list', 'AccountController@mineDataList')->name('v2.account.mine-data-list');
-            Route::get('mine-edit', 'AccountController@mineEdit')->name('v2.account.mine-edit');
+            Route::post('mine-form', 'AccountController@mineForm')->name('v2.account.mine-form');
             Route::post('mine-update', 'AccountController@mineUpdate')->name('v2.account.mine-update');
         });
     });

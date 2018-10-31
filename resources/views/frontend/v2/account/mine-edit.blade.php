@@ -3,8 +3,8 @@
 @section('title', '我的账号修改')
 
 @section('content')
-    <my-asset
+    <account-mine-edit
             account-mine-edit-api="{{ route('v2.account.mine-edit') }}"
     >
-    </my-asset>
+    </account-mine-edit>
 @endsection

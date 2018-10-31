@@ -42,6 +42,13 @@
                     <a href="/v2/finance/order"><el-menu-item index="2-9">财务订单列表</el-menu-item></a>
                 </el-submenu>
 
+                <el-submenu index="3">
+                    <template slot="title">
+                        <i class="el-icon-location"></i>
+                        <span slot="title">账号</span>
+                    </template>
+                    <a href="/v2/account/mine"><el-menu-item index="3-1">我的账号</el-menu-item></a>
+                </el-submenu>
                 <!--没有子菜单示例-->
                 <!--<el-menu-item index="4">-->
                     <!--<i class="el-icon-setting"></i>-->

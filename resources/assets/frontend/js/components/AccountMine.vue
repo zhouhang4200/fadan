@@ -1,53 +1,42 @@
 <template>
     <div class="main content amount-flow">
-        <el-table
-                :data="tableData"
-                border
-                style="width: 100%">
-            <el-table-column
-                    prop="id"
-                    label="用户ID"
-                    width="180">
-            </el-table-column>
-            <el-table-column
-                    prop="name"
-                    label="用户名"
-                    width="">
-            </el-table-column>
-            <el-table-column
-                    prop="email"
-                    label="邮箱"
-                    width="">
-            </el-table-column>
-            <el-table-column
-                    prop="created_at"
-                    label="注册时间">
-            </el-table-column>
-            <el-table-column
-                    prop="order"
-                    label="操作"
-                    width="180">
-                <template slot-scope="scope">
-                    <el-button v-if="scope.row.id > 0"
-                               type="primary"
-                               size="small"
-                               @click="edit(scope.row.id)">编辑</el-button>
+        <el-form ref="editForm" :model="editForm" label-width="80px">
+            <el-form-item label="账号">
+                <el-input v-model="editForm.name" :disabled="true"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱">
+                <el-input v-model="editForm.email" :disabled="true" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="密码">
+                <el-input v-model="editForm.password" placeholder="不填写则为原密码"></el-input>
+            </el-form-item>
+            <el-form-item label="代练">
+                <template scope="scope">
+                    <el-radio v-model="editForm.type" label="1">接单</el-radio>
+                    <el-radio v-model="editForm.type" label="2">发单</el-radio>
                 </template>
-            </el-table-column>
-        </el-table>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="handleUpdate()">修改</el-button>
+            </el-form-item>
+        </el-form>
     </div>
 </template>
 
 <script>
     export default {
         props: [
-            'AccountMineDataListApi',
+            'AccountMineFormApi',
+            'AccountMineUpdateApi',
         ],
         methods: {
-            // 加载数据
-            handleTableData(){
-                axios.post(this.AccountMineDataListApi, {}).then(res => {
-                    this.tableData = res.data;
+            handleUpdate() {
+                axios.post(this.AccountMineUpdateApi, this.editForm).then(res => {
+                    this.$message({
+                        showClose: true,
+                        type: res.data.status == 1 ? 'success' : 'error',
+                        message: res.data.message
+                    });
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -55,14 +44,31 @@
                         }
                     });
                 });
-            }
+            },
+            handleForm(){
+                axios.post(this.AccountMineFormApi).then(res => {
+                    this.editForm = res.data;
+                }).catch(err => {
+                    this.$alert('获取数据失败, 请重试!', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                });
+            },
         },
         created () {
-            this.handleTableData();
+            this.handleForm();
         },
         data() {
             return {
-                tableData: [],
+                dialogFormVisible: false,
+                editForm: {
+                    'name':'',
+                    'email':'',
+                    'type':'',
+                    'password':'',
+                }
             }
         }
     }
