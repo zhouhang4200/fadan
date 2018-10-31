@@ -37,6 +37,8 @@ Vue.component('finance-order', resolve => void(require(['./components/FinanceOrd
 Vue.component('account-mine', resolve => void(require(['./components/AccountMine.vue'], resolve)));
 // 登录记录
 Vue.component('account-login-history', resolve => void(require(['./components/AccountLoginHistory.vue'], resolve)));
+// 岗位管理
+Vue.component('account-employee', resolve => void(require(['./components/AccountEmployee.vue'], resolve)));
 
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改

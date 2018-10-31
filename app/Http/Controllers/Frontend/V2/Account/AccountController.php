@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\V2\Account;
 
+use App\Models\NewRole;
 use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -60,15 +61,6 @@ class AccountController extends Controller
     }
 
     /**
-     * 登录记录子账号
-     * @return mixed
-     */
-    public function LoginHistoryUser()
-    {
-        return User::where('parent_id', Auth::user()->getPrimaryUserId())->pluck('username', 'id');
-    }
-
-    /**
      * 登录记录接口
      * @return mixed
      */
@@ -83,6 +75,50 @@ class AccountController extends Controller
             ->newfilter($filter)
             ->with(['user', 'city'])
             ->latest('id')
+            ->paginate(15);
+    }
+
+    /**
+     * 员工管理
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function employee()
+    {
+        return view('frontend.v2.account.employee');
+    }
+
+    /**
+     * 子员工
+     * @return mixed
+     */
+    public function employeeUser()
+    {
+        return User::where('parent_id', Auth::user()->getPrimaryUserId())->pluck('username', 'id');
+    }
+
+    /**
+     * 岗位
+     * @return mixed
+     */
+    public function employeeStation()
+    {
+        return NewRole::where('user_id', Auth::user()->getPrimaryUserId())->pluck('name', 'id');
+    }
+
+    /**
+     * 员工管理接口
+     * @return mixed
+     */
+    public function employeeDataList()
+    {
+        $userName = request('username');
+        $name = request('name');
+        $station = request('station');
+
+        $filter = compact( 'userName', 'name', 'station');
+
+        return User::staffManagementFilter($filter)
+            ->with('newRoles')
             ->paginate(15);
     }
 }
