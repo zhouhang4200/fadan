@@ -91,14 +91,22 @@
                     label="状态"
                     width="150">
                 <template slot-scope="scope">
-                    <el-switch v-model="Switch" active-text="启用" inactive-text="禁用" active-value="1" inactive-value="0"></el-switch>
+                    <el-switch v-model=scope.row.status @change="handleSwitch($event, scope.row)" active-text="启用" inactive-text="禁用" :active-value=0 :inactive-value=1></el-switch>
                 </template>
             </el-table-column>
             <el-table-column
                     label="操作"
-                    width="150">
-                <el-button type="primary" @click="handleEdit()">编辑</el-button>
-                <el-button type="primary" @click="handleDelete()">删除</el-button>
+                    width="250">
+                <template slot-scope="scope">
+                    <el-button v-if="scope.row.id > 0"
+                               type="primary"
+                               size="small"
+                               @click="employeeEdit(scope.row.id)">编辑</el-button>
+                    <el-button v-if="scope.row.id > 0"
+                               type="primary"
+                               size="small"
+                               @click="employeeDelete(scope.row.id)">删除</el-button>
+                </template>
             </el-table-column>
         </el-table>
         <el-pagination
@@ -118,6 +126,7 @@
             'AccountEmployeeUserApi',
             'AccountEmployeeStationApi',
             'AccountEmployeeDataListApi',
+            'AccountEmployeeSwitchApi',
         ],
         methods: {
             // 加载数据
@@ -166,6 +175,27 @@
                 this.searchParams.page = page;
                 this.handleTableData();
             },
+            handleSwitch(value, row) {
+                axios.post(this.AccountEmployeeSwitchApi, {status:value, user_id:row.id}).then(res => {
+                    this.$message({
+                        showClose: true,
+                        type: res.data.status == 1 ? 'success' : 'error',
+                        message: res.data.message
+                    });
+                }).catch(err => {
+                    this.$alert('获取数据失败, 请重试!', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                });
+            },
+            employeeEdit() {
+
+            },
+            employeeDelete () {
+
+            }
         },
         created () {
             this.handleTableData();
@@ -174,7 +204,6 @@
         },
         data() {
             return {
-                Switch:'false',
                 AccountEmployeeUser:{},
                 AccountEmployeeStation:{},
                 searchParams:{

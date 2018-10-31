@@ -121,4 +121,20 @@ class AccountController extends Controller
             ->with('newRoles')
             ->paginate(15);
     }
+
+    /**
+     * 员工管理开关
+     * @return mixed
+     */
+    public function employeeSwitch()
+    {
+        try {
+            $user = User::find(request('user_id'));
+            $user->status = request('status');
+            $user->save();
+        } catch (Exception $e) {
+            return response()->ajax(0, '服务器异常!');
+        }
+        return response()->ajax(1, '修改成功!');
+    }
 }
