@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order;
 
-
 use DB;
 use Auth;
 use Exception;
@@ -51,6 +50,18 @@ class GameLevelingController extends Controller
     }
 
     /**
+     * 对应订单状态的数量
+     */
+    public function statusQuantity()
+    {
+        return GameLevelingOrder::selectRaw('status, count(1) as quantity')
+            ->where('parent_user_id', request()->user()->getPrimaryUserId())
+            ->groupBy('status')
+            ->pluck('quantity', 'status')
+            ->toArray();
+    }
+
+    /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
@@ -88,12 +99,23 @@ class GameLevelingController extends Controller
      */
     public function edit()
     {
-        return response(GameLevelingOrder::with([
-            'gameLevelingOrderDetail'
+        $order = GameLevelingOrder::with([
+            'gameLevelingOrderDetail',
+            'gameLevelingOrderConsult',
+            'gameLevelingOrderComplain',
         ])->filter([
             'trade_no' => request('trade_no'),
             'parent_user_id' => request()->user()->getPrimaryUserId(),
-        ])->first());
+        ])->first();
+
+        $order->left_time = $order->leftTime();
+        $order->pay_amount = $order->payAmount();
+        $order->get_amount = $order->getAmount();
+        $order->get_poundage = $order->getPoundage();
+        $order->complain_amount = $order->complainAmount();
+        $order->consult_describe = $order->getConsultDescribe();
+        $order->complain_describe = $order->getComplainDescribe();
+        return response($order);
     }
 
     /**
@@ -604,6 +626,7 @@ class GameLevelingController extends Controller
             DB::rollback();
             return response()->ajax(0, '订单异常！' . $e->getMessage());
         }
+        // TODO 扣款
         DB::commit();
         // TODO 写操作日志
         return response()->ajax(1, '加价成功!');

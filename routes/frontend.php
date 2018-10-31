@@ -30,6 +30,8 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 Route::get('/', 'GameLevelingController@index')->name('order.game-leveling.index');
                 // 获取订单列表数据
                 Route::post('data-list', 'GameLevelingController@dataList')->name('order.game-leveling.data-list');
+                // 订单状态数量
+                Route::post('status-quantity', 'GameLevelingController@statusQuantity')->name('order.game-leveling.status-quantity');
                 // 订单详情视图
                 Route::get('show/{trade_no?}', 'GameLevelingController@show')->name('order.game-leveling.show');
                 // 获取待编辑数据

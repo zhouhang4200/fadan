@@ -313,7 +313,6 @@ class GameLevelingOrder extends Model
         }
     }
 
-
     /**
      * 更新相同淘宝单号的所有订单来源价格
      * @param $order
@@ -540,7 +539,7 @@ class GameLevelingOrder extends Model
      */
     public function getProfit()
     {
-        return $this->getAmount() - $this->payAmount() - $this->getPoundage() + $this->complainAmount() + 0;
+        return $this->getAmount() - $this->payAmount() - $this->getPoundage() + $this->gameLevelingOrderComplainAmount() + 0;
     }
 
     /**
@@ -579,6 +578,7 @@ class GameLevelingOrder extends Model
     }
 
     /**
+     * 最终支付金额
      * @return int|string
      */
     public function complainAmount()
@@ -593,6 +593,120 @@ class GameLevelingOrder extends Model
             }
         }
         return $complaintAmount;
+    }
+
+    /**
+     * 获取订单撤销 描述
+     * @return string
+     */
+    public function getConsultDescribe()
+    {
+        if (! is_null($this->gameLevelingOrderConsult) && optional($this->gameLevelingOrderConsult)->status != 3) {
+
+            if ($this->gameLevelingOrderConsult->initiator == 1) { // 如果发起人为发单方
+
+                // 当前用户父Id 等于撤销发起人
+                if ($this->gameLevelingOrderConsult->parent_user_id == request()->user()->parent_id) {
+                    return sprintf("您发起撤销, <br/> 你支付代练费用 %.2f 元, 对方支付保证金 %.2f, <br/> 原因: %s",
+                        $this->gameLevelingOrderConsult->amount,
+                        bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
+                        $this->gameLevelingOrderConsult->reason
+                    );
+                } else {
+                    return sprintf("对方发起撤销, <br/> 对方支付代练费用 %.2f 元, 你方支付保证金 %.2f, <br/> 原因: %s",
+                        $this->gameLevelingOrderConsult->amount,
+                        bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
+                        $this->gameLevelingOrderConsult->reason
+                    );
+                }
+            } else if ($this->gameLevelingOrderConsult->initiator == 2) {  // 如果发起人为接单方
+
+                if ($this->gameLevelingOrderConsult->parent_user_id == request()->user()->parent_id) {
+                    return sprintf("您发起撤销, <br/> 对方支付代练费用 %.2f 元, 你支付保证金 %.2f, <br/> 原因: %s",
+                        $this->gameLevelingOrderConsult->amount,
+                        bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
+                        $this->gameLevelingOrderConsult->reason
+                    );
+                } else {
+                    return sprintf("对方发起撤销, <br/> 对方支付代练费用 %.2f 元, 您支付保证金 %.2f, <br/> 原因: %s",
+                        $this->gameLevelingOrderConsult->amount,
+                        bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
+                        $this->gameLevelingOrderConsult->reason
+                    );
+                }
+            }
+
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * 获取订单仲裁 描述
+     * @return string
+     */
+    public function getComplainDescribe()
+    {
+        if (! is_null($this->gameLevelingOrderComplain) && $this->gameLevelingOrderComplain->status != 3) {
+            // 当前用户父Id 等于仲裁发起人
+            if ($this->gameLevelingOrderComplain->parent_user_id == request()->user()->parent_id) {
+                return sprintf("你发起仲裁 <br/> 原因: %s",
+                    $this->gameLevelingOrderComplain->reason
+                );
+            } else {
+                return sprintf("对方发起仲裁 <br/> 原因: %s",
+                    $this->gameLevelingOrderComplain->reason
+                );
+            }
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * 仲裁结果
+     * @return string
+     */
+    public function getComplainResult()
+    {
+        if (! is_null($this->gameLevelingOrderComplain) && $this->gameLevelingOrderComplain->status == 2) {
+
+            if ($this->gameLevelingOrderComplain->initiator == 1) { // 如果发起人为发单方
+
+                // 当前用户父Id 等于仲裁发起人
+                if ($this->gameLevelingOrderComplain->parent_user_id == request()->user()->parent_id) {
+                    return sprintf("客服进行了【仲裁】  <br/> 你支付代练费用 %.2f 元, 对方支付保证金 %.2f <br/> 仲裁说明： %s",
+                        $this->gameLevelingOrderComplain->amount,
+                        bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit),
+                        $this->gameLevelingOrderComplain->reason
+                    );
+                } else {
+
+                    return sprintf("客服进行了【仲裁】  <br/> 你支付代练费用 %.2f 元, 对方支付保证金 %.2f <br/> 仲裁说明： %s",
+                        $this->gameLevelingOrderComplain->amount,
+                        bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit),
+                        $this->gameLevelingOrderComplain->reason
+                    );
+                }
+            } else if ($this->gameLevelingOrderComplain->initiator == 2) {  // 如果发起人为接单方
+                // 客服进行了【仲裁】【你（对方）支出代练费1.0元，对方（你）支出保证金0.0元。仲裁说明：经查证，双方协商退单，已判定】
+                if ($this->gameLevelingOrderComplain->parent_user_id == request()->user()->parent_id) {
+                    return sprintf("客服进行了【仲裁】 <br/> 对方支付代练费用 %.2f 元, 你支付保证金 %.2f <br/> 仲裁说明： %s",
+                        $this->gameLevelingOrderComplain->amount,
+                        bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit),
+                        $this->gameLevelingOrderComplain->reason
+                    );
+                } else {
+                    return sprintf("客服进行了【仲裁】 <br/> 你支付代练费用 %.2f 元, 对方支付保证金 %.2f <br/> 仲裁说明： %s",
+                        $this->gameLevelingOrderComplain->amount,
+                        bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit),
+                        $this->gameLevelingOrderComplain->reason
+                    );
+                }
+            }
+        } else {
+            return '';
+        }
     }
 
     /**

@@ -93,98 +93,92 @@
             <el-tab-pane name="0">
                 <span slot="label">
                     全部
-                    <el-badge  :value="0"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane name="1">
                 <span slot="label">
                     未接单
-                    <el-badge  :value="1"></el-badge>
+                    <el-badge v-if="(this.statusQuantity[1] != undefined)"  :value="this.statusQuantity[1]"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane  name="13">
                 <span slot="label">
                     代练中
-                    <el-badge  :value="13"></el-badge>
+                    <el-badge v-if="(this.statusQuantity[13] != undefined)"  :value="this.statusQuantity[13]"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane  name="14">
                 <span slot="label">
                     待验收
-                    <el-badge  :value="14"></el-badge>
+                    <el-badge v-if="(this.statusQuantity[14] != undefined)"  :value="this.statusQuantity[14]"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane  name="15">
                 <span slot="label">
                     撤销中
-                    <el-badge  :value="15"></el-badge>
+                    <el-badge v-if="(this.statusQuantity[15] != undefined)"  :value="this.statusQuantity[15]"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane  name="16">
                 <span slot="label">
                     仲裁中
-                    <el-badge  :value="0"></el-badge>
+                    <el-badge v-if="(this.statusQuantity[16] != undefined)"  :value="this.statusQuantity[16]"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane  name="99">
                 <span slot="label">
                     淘宝退款中
-                    <el-badge  :value="99"></el-badge>
+                    <el-badge v-if="(this.statusQuantity[99] != undefined)"  :value="this.statusQuantity[99]"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane  name="17">
                 <span slot="label">
                     异常
-                    <el-badge  :value="12"></el-badge>
+                    <el-badge v-if="(this.statusQuantity[17] != undefined)"  :value="this.statusQuantity[17]"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane  name="18">
                 <span slot="label">
                     已锁定
-                    <el-badge  :value="12"></el-badge>
+                    <el-badge v-if="(this.statusQuantity[18] != undefined)"  :value="this.statusQuantity[18]"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane  name="19">
                 <span slot="label">
                     已撤销
-                    <el-badge  :value="12"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane name="20">
                 <span slot="label" >
                     已结算
-                    <el-badge  :value="12"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane  name="21">
                 <span slot="label">
                     已仲裁
-                    <el-badge  :value="12"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane name="22">
                 <span slot="label" >
                     已下架
-                    <el-badge  :value="12"></el-badge>
                 </span>
             </el-tab-pane>
 
             <el-tab-pane name="24">
                 <span slot="label">
                     已撤单
-                    <el-badge  :value="12"></el-badge>
                 </span>
             </el-tab-pane>
 
@@ -462,6 +456,7 @@
         props: [
             'pageTitle',
             'orderApi',
+            'statusQuantityApi',
             'gameLevelingTypesApi',
             'gamesApi',
             'showApi',
@@ -495,7 +490,7 @@
                 efficiencyDeposit:0,
                 applyConsultVisible:false,
                 applyComplainVisible:false,
-                // applyConsultApi: this.applyConsultApi,
+                statusQuantity:[],
                 platformOptions: [
                     { key:0, value:'所有平台'},
                     { key:5, value:'丸子代练'},
@@ -580,6 +575,13 @@
             // 表格高度计算
             handleTableHeight() {
                 this.tableHeight = window.innerHeight - 345;
+            },
+            // 获取订单状态数量
+            handleStatusQuantity() {
+                axios.post(this.statusQuantityApi, this.searchParams).then(res => {
+                    this.statusQuantity = res.data;
+                }).catch(err => {
+                });
             },
             // 加载订单数据
             handleTableData(){
@@ -931,6 +933,7 @@
             this.handlePageTitle();
             this.handleTableHeight();
             this.handleTableData();
+            this.handleStatusQuantity();
             this.handleGameOptions();
             window.addEventListener('resize', this.handleTableHeight);
         },
