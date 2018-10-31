@@ -217,6 +217,7 @@
                                                 <el-col :span="12">
                                                     <el-form-item label="商户QQ" prop="user_qq">
                                                         <el-input
+                                                                :disabled="fieldDisabled"
                                                                 type="input"
                                                                 placeholder="请输入内容"
                                                                 v-model="form.user_qq">
@@ -371,7 +372,10 @@
                 <el-col :span="16">
                     <div style="text-align: center;line-height: 60px;">
 
-                        <el-button type="primary" @click="handleSubmitForm('form')" style="margin-right: 8px">确认修改</el-button>
+                        <el-button v-if="(form.status == 1 && form.status == 22)"
+                                   type="primary"
+                                   @click="handleSubmitForm('form')"
+                                   style="margin-right: 8px">确认修改</el-button>
 
                         <!--未接单 1 -->
                         <span v-if="form.status == 1">
@@ -406,15 +410,17 @@
                                     type="primary" @click="handleApplyComplain()">仲裁</el-button>
                             <el-button
                                     size="small"
-                                    @click="handleLock(scope.row)">锁定</el-button>
+                                    @click="handleLock()">锁定</el-button>
                         </span>
 
                         <!--撤销中 15 -->
                         <span v-if="form.status == 15">
                             <el-button
+                                    v-if="(this.form.game_leveling_order_consult.initiator == 1 && this.form.game_leveling_order_consult.status == 1)"
                                     size="small"
                                     @click="handleCancelConsult()">取消撤销</el-button>
                             <el-button
+                                    v-if="(this.form.game_leveling_order_consult.initiator == 2 && this.form.game_leveling_order_consult.status == 1)"
                                     size="small"
                                     @click="handleAgreeConsult()">同意撤销</el-button>
                             <el-button
@@ -446,7 +452,16 @@
                                     @click="handleCancelLock()">取消锁定</el-button>
                             <el-button
                                     size="small"
-                                    type="primary" @click="handleApplyConsult()">撤销</el-button>
+                                    type="primary"
+                                    @click="handleApplyConsult()">撤销</el-button>
+                        </span>
+
+                        <!--已下架 22 -->
+                        <span v-if="form.status == 22">
+                            <el-button
+                                    size="small"
+                                    type="primary"
+                                    @click="handleOnSale()">上架</el-button>
                         </span>
 
 
@@ -3529,6 +3544,8 @@
                 form: {
                     trade_no:this.tradeNo,
                     status:0,
+                    game_leveling_order_consult:[],
+                    game_leveling_order_complain:[],
                     game_region_server: [], // 选择的 游戏/区/服
                     day_hour:[], // 选择的代练天/小时
                     game_id: 0, // 游戏ID
@@ -3681,6 +3698,8 @@
                         this.securityDeposit = res.data.security_deposit;
                         this.efficiencyDeposit = res.data.efficiency_deposit;
                         this.form.status = res.data.status;
+                        this.form.game_leveling_order_consult = res.data.game_leveling_order_consult;
+                        this.form.game_leveling_order_complain = res.data.game_leveling_order_complain;
                         this.form.game_region_server =  [  // 选择的 游戏/区/服
                             res.data.game_id,
                             res.data.game_region_id,
@@ -3820,7 +3839,7 @@
                         });
 
                         if(res.data.status == 1) {
-                            this.handleTableData();
+                            this.handleFromData();
                         }
                     }).catch(err => {
                         this.$message({
@@ -3846,7 +3865,7 @@
                         });
 
                         if(res.data.status == 1) {
-                            this.handleTableData();
+                            this.handleFromData();
                         }
                     }).catch(err => {
                         this.$message({
@@ -3872,7 +3891,7 @@
                         });
 
                         if(res.data.status == 1) {
-                            this.handleTableData();
+                            this.handleFromData();
                         }
                     }).catch(err => {
                         this.$message({
@@ -3884,7 +3903,7 @@
             },
             // 申请仲裁
             handleApplyComplain(row) {
-                this.tradeNo = form.trade_no;
+                this.tradeNo = this.form.trade_no;
                 this.applyComplainVisible = true;
             },
             // 取消仲裁
@@ -3903,7 +3922,7 @@
                         });
 
                         if(res.data.status == 1) {
-                            this.handleTableData();
+                            this.handleFromData();
                         }
                     }).catch(err => {
                         this.$message({
@@ -3933,7 +3952,7 @@
                         });
 
                         if(res.data.status == 1) {
-                            this.handleTableData();
+                            this.handleFromData();
                         }
                     }).catch(err => {
                         this.$message({
@@ -3954,13 +3973,19 @@
             // 设置仲裁窗口是否显示
             handleApplyComplainVisible(data) {
                 this.applyComplainVisible = data.visible;
+                if (data.visible == false) {
+                    this.handleFromData();
+                }
             },
             // 设置协商窗口是否显示
             handleApplyConsultVisible(data) {
                 this.applyConsultVisible = data.visible;
+                if (data.visible == false) {
+                    this.handleFromData();
+                }
             },
             // 取消撤销
-            handleCancelConsult(row) {
+            handleCancelConsult() {
                 this.$confirm('您确定要"取消撤销"吗？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -3975,7 +4000,7 @@
                         });
 
                         if(res.data.status == 1) {
-                            this.handleTableData();
+                            this.handleFromData();
                         }
                     }).catch(err => {
                         this.$message({
@@ -4001,9 +4026,10 @@
                         });
 
                         if(res.data.status == 1) {
-                            this.handleTableData();
+                            this.handleFromData();
                         }
                     }).catch(err => {
+                        console.log(err);
                         this.$message({
                             type: 'error',
                             message: '操作失败'
@@ -4027,7 +4053,7 @@
                         });
 
                         if(res.data.status == 1) {
-                            this.handleTableData();
+                            this.handleFromData();
                         }
                     }).catch(err => {
                         this.$message({
@@ -4038,7 +4064,7 @@
                 });
             },
             // 锁定
-            handleLock(row) {
+            handleLock() {
                 this.$confirm('您确定要"锁定"订单吗？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -4053,7 +4079,7 @@
                         });
 
                         if(res.data.status == 1) {
-                            this.handleTableData();
+                            this.handleFromData();
                         }
                     }).catch(err => {
                         this.$message({
@@ -4070,7 +4096,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.cancelLock, {
+                    axios.post(this.cancelLockApi, {
                         'trade_no' : this.form.trade_no
                     }).then(res => {
                         this.$message({
@@ -4079,7 +4105,7 @@
                         });
 
                         if(res.data.status == 1) {
-                            this.handleTableData();
+                            this.handleFromData();
                         }
                     }).catch(err => {
                         this.$message({
@@ -4093,7 +4119,10 @@
         created() {
             this.handleFromGameRegionServerOptions();
             this.handleFromData();
+        },
+        watch: {
         }
+
     }
 </script>
 
