@@ -6,6 +6,7 @@
     <game-leveling-order-show
             page-title="代练订单-订单详情"
             trade-no="{{ request('trade_no') }}"
+            order-repeat-api="{{ route('order.game-leveling.repeat') }}"
             order-edit-api="{{ route('order.game-leveling.edit') }}"
             order-update-api="{{ route('order.game-leveling.update') }}"
             order-add-amount-api="{{ route('order.game-leveling.add-amount') }}"

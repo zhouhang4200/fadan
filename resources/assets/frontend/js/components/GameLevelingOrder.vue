@@ -381,15 +381,11 @@
                         <el-button size="small" @click="handleOnSale(scope.row)">上架</el-button>
                         <el-button size="small" type="primary" @click="handleDelete(scope.row)">撤单</el-button>
                     </div>
+
                     <!--重发-->
-                    <div v-if="(scope.row.status == 19
-                    || scope.row.status == 20
-                    || scope.row.status == 21
-                    || scope.row.status ==23
-                    || scope.row.status == 24)">
+                    <div v-if="([19, 20, 21, 22, 23, 24].indexOf(scope.row.status)) != -1">
                         <el-button size="small" @click="handleRepeatOrder(scope.row)">重发</el-button>
                     </div>
-
                 </template>
             </el-table-column>
         </el-table>
@@ -456,6 +452,7 @@
         props: [
             'pageTitle',
             'orderApi',
+            'orderRepeatApi',
             'statusQuantityApi',
             'gameLevelingTypesApi',
             'gamesApi',
@@ -910,7 +907,8 @@
                 });
             },
             // 重新下单
-            handleRepeatOrder(index) {
+            handleRepeatOrder(row) {
+                location.href= this.orderRepeatApi + '/' + row.trade_no;
             },
             // 重置表单
             handleResetForm() {

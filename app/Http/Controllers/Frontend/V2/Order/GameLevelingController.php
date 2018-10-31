@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order;
 
+use App\Models\TaobaoTrade;
 use DB;
 use Auth;
 use Exception;
@@ -70,6 +71,14 @@ class GameLevelingController extends Controller
     }
 
     /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function repeat()
+    {
+        return view('frontend.v2.order.game-leveling.repeat');
+    }
+
+    /**
      * 下单
      */
     public function doCreate()
@@ -115,7 +124,42 @@ class GameLevelingController extends Controller
         $order->complain_amount = $order->complainAmount();
         $order->consult_describe = $order->getConsultDescribe();
         $order->complain_describe = $order->getComplainDescribe();
+        // 获取淘宝订单数据
+        $order->taobao_data = TaobaoTrade::select([
+            'tid',
+            'seller_nick',
+            'num',
+            'buyer_nick',
+            'buyer_message',
+            'price',
+            'payment',
+            'trade_status',
+            'created'
+        ])
+            ->where('tid', $order->channel_order_trade_no)->first();
         return response($order);
+    }
+
+    /**
+     * 获取淘宝订单数据
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function taobaoOrder()
+    {
+        // 获取淘宝订单数据
+        $taobaoOrder = TaobaoTrade::select([
+            'tid',
+            'seller_nick',
+            'num',
+            'buyer_nick',
+            'buyer_message',
+            'price',
+            'payment',
+            'trade_status',
+            'created'
+        ])
+            ->where('tid', request('tid'))->first();
+        return response($taobaoOrder);
     }
 
     /**

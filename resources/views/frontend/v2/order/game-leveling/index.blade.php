@@ -6,6 +6,7 @@
     <game-leveling-order
             page-title="代练订单"
             order-api="{{ route('order.game-leveling.data-list') }}"
+            order-repeat-api="{{ route('order.game-leveling.repeat') }}"
             status-quantity-api="{{ route('order.game-leveling.status-quantity') }}"
             games-api="{{ route('games') }}"
             game-leveling-types-api="{{ route('game-leveling-types') }}"

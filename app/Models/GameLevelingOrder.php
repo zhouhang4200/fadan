@@ -135,15 +135,14 @@ class GameLevelingOrder extends Model
             $source = 1; // 人工
             $taobaoStatus = '';
             /****************存在来源单号则订单的来源单号和来源价格为淘宝相应单号与价格***********************/
-            if (isset($data['source_order_no']) && ! empty($data['source_order_no'])) {
+            if (isset($data['channel_order_trade_no']) && ! empty($data['channel_order_trade_no'])) {
                 $source = 2; // 淘宝
-                $sourceOrderNo = $data['source_order_no'];
+                $sourceOrderNo = $data['channel_order_trade_no'];
                 $taobaoTrade = TaobaoTrade::where('tid', $sourceOrderNo)->first();
                 $sourcePrice = $taobaoTrade->payment;
 
                 /*************查询是否有进行中的淘宝单号*******************/
-                $existOrder = GameLevelingOrderRelationChannel::where('game_leveling_channel_order_trade_no', $sourceOrderNo)
-                    ->first();
+                $existOrder = GameLevelingOrder::where('channel_order_trade_no', $sourceOrderNo)->first();
 
                 if ($existOrder && ! in_array($existOrder->status, [15, 16, 19, 20, 21, 22, 23, 24])) {
                     throw new Exception('该订单已经发布，请勿重发');
@@ -227,7 +226,8 @@ class GameLevelingOrder extends Model
             $gameLevelingOrderDetail = GameLevelingOrderDetail::create($details);
 
             /***存在来源订单号（淘宝主订单号）, 写入关联淘宝订单表***/
-            static::changeSameOriginOrderSourcePrice($order, $data);
+            // TODO 需要重写
+//            static::changeSameOriginOrderSourcePrice($order, $data);
 
             /************写入订单操作记录***********/
             GameLevelingOrderLog::createOrderHistory($order, 1, "用户[{$order->user_id}]从[".config('order.source')[$order->source]."]渠道创建了订单");
@@ -432,8 +432,13 @@ class GameLevelingOrder extends Model
     public static function scopeFilter($query, $conditions)
     {
 
+        if (isset($conditions['order_no']) && $conditions['order_no']) {
+            $query->where('trade_no', $conditions['order_no'])
+                ->orWhere('platform_trade_no', $conditions['order_no'])
+                ->orWhere('channel_order_trade_no', $conditions['order_no']);
+        }
         if (isset($conditions['trade_no']) && $conditions['trade_no']) {
-            $query->where('trade_no', $conditions['trade_no'])->orWhere('trade_no', $conditions['trade_no']);
+            $query->where('trade_no', $conditions['trade_no']);
         }
         if (isset($conditions['buyer_nick']) && $conditions['buyer_nick']) {
 //            $query->where('buyer_nick', $conditions['buyer_nick']);

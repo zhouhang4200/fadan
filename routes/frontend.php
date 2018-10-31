@@ -38,12 +38,16 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 Route::post('edit', 'GameLevelingController@edit')->name('order.game-leveling.edit');
                 // 更新
                 Route::post('update', 'GameLevelingController@update')->name('order.game-leveling.update');
+                // 获取淘宝订单
+                Route::post('taobao-order', 'GameLevelingController@taobaoOrder')->name('order.game-leveling.taobao-order');
+
                 // 加价
                 Route::post('add-amount', 'GameLevelingController@addAmount')->name('order.game-leveling.add-amount');
                 // 加代练天与小时
                 Route::post('add-day-hour', 'GameLevelingController@addDayHour')->name('order.game-leveling.add-day-hour');
-                // 下单
+                // 下单  重新下单
                 Route::get('create', 'GameLevelingController@create')->name('order.game-leveling.create');
+                Route::get('repeat/{trade_no?}', 'GameLevelingController@repeat')->name('order.game-leveling.repeat');
                 Route::post('create', 'GameLevelingController@doCreate');
                 // 接单
                 Route::post('take', 'GameLevelingController@take')->name('order.game-leveling.take');
