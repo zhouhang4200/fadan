@@ -152,9 +152,17 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
         Route::prefix('account')->namespace('Account')->group(function () {
             // 我的账号
             Route::get('mine', 'AccountController@mine')->name('v2.account.mine');
-            Route::post('mine-data-list', 'AccountController@mineDataList')->name('v2.account.mine-data-list');
-            Route::get('mine-edit', 'AccountController@mineEdit')->name('v2.account.mine-edit');
+            Route::post('mine-form', 'AccountController@mineForm')->name('v2.account.mine-form');
             Route::post('mine-update', 'AccountController@mineUpdate')->name('v2.account.mine-update');
+            // 登录记录
+            Route::get('login-history', 'AccountController@loginHistory')->name('v2.account.login-history');
+            Route::post('login-history-data-list', 'AccountController@loginHistoryDataList')->name('v2.account.login-history-data-list');
+            Route::post('login-history-user', 'AccountController@loginHistoryUser')->name('v2.account.login-history-user');
+            // 员工管理
+            Route::get('employee', 'AccountController@employee')->name('v2.account.employee');
+            Route::post('employee-user', 'AccountController@employeeUser')->name('v2.account.employee-user');
+            Route::post('employee-station', 'AccountController@employeeStation')->name('v2.account.employee-station');
+            Route::post('employee-data-list', 'AccountController@employeeDataList')->name('v2.account.employee-data-list');
         });
     });
 

@@ -108,4 +108,23 @@ class LoginHistory extends Model
             $query->where('parent_id', $filters['pid']);
         })->latest('created_at');
     }
+
+    /**
+     * 新的登录记录查询
+     * @param $query
+     * @param array $filter
+     * @return mixed
+     */
+    public static function scopeNewFilter($query, $filter = [])
+    {
+        if ($filter['startDate']) {
+            $query->where('created_at', '>=', $filter['startDate']);
+        }
+
+        if ($filter['endDate']) {
+            $query->where('created_at', "<=", $filter['endDate'].' 23:59:59');
+        }
+
+        return $query;
+    }
 }

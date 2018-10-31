@@ -4,7 +4,8 @@
 
 @section('content')
     <account-mine
-            account-mine-data-list-api="{{ route('v2.account.mine-data-list') }}"
+            account-mine-form-api="{{ route('v2.account.mine-form') }}"
+            account-mine-update-api="{{ route('v2.account.mine-update') }}"
     >
     </account-mine>
 @endsection
