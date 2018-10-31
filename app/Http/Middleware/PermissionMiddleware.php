@@ -10,7 +10,7 @@ class PermissionMiddleware
 {
     public function handle($request, Closure $next, $permission)
     {
-        if (Auth::guest()) {
+        if (auth()->guard('admin')->guest()) {
             abort(403);
         }
 
@@ -20,7 +20,7 @@ class PermissionMiddleware
 
         foreach ($permissions as $permission) {
 
-            if (Auth::user()->can($permission)) {
+            if (auth()->guard('admin')->user()->can($permission)) {
 
                 return $next($request);
             }
