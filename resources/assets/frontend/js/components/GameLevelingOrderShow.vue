@@ -341,25 +341,24 @@
                     <div class="grid-content bg-purple">
                         <el-card class="box-card">
                             <div slot="header" class="clearfix">
-                                <span>淘宝数据</span>
+                                <span>平台数据</span>
                             </div>
                             <el-table
                                     :data="tableData"
+                                    :show-header=false
                                     border
                                     style="width: 100%">
                                 <el-table-column
-                                        prop="date"
-                                        label="日期"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
                                         prop="name"
-                                        label="姓名"
-                                        width="180">
+                                        label=""
+                                        width="120">
                                 </el-table-column>
                                 <el-table-column
-                                        prop="address"
-                                        label="地址">
+                                        prop="value"
+                                        label="">
+                                    <template slot-scope="scope">
+                                        <span v-html="scope.row.value"></span>
+                                    </template>
                                 </el-table-column>
                             </el-table>
                         </el-card>
@@ -3668,24 +3667,28 @@
                     ],
 
                 },
+                status:{
+                    1: '未接单',
+                    13: '代练中',
+                    14: '待验收',
+                    15: '撤销中',
+                    16: '仲裁中',
+                    17: '异常',
+                    18: '已锁定',
+                    19: '已撤销',
+                    20: '已结算',
+                    21: '已仲裁',
+                    22: '已下架',
+                    23: '强制撤销',
+                    24: '已撤单',
+                },
+                platform:{
+                    5:'丸子代练',
+                    1:'91代练',
+                    3:'蚂蚁代练',
+                },
                 logData:[],
-                tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1517 弄'
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1519 弄'
-                }, {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                }]
+                tableData: []
             };
         },
         methods: {
@@ -3731,6 +3734,81 @@
                         this.form.user_qq = res.data.game_leveling_order_detail.user_qq; // 商家qq
                         this.form.remark =  res.data.remark;
                         this.form.domains = [];
+                        // 平台数据
+                        this.tableData = [
+                        {
+                            name: '平台单号',
+                            value: res.data.trade_no,
+                        },
+                        {
+                            name: '订单状态',
+                            value: this.status[res.data.status]
+                        },
+                        {
+                            name: '接单平台',
+                            value: this.platform[res.data.platform_id]
+                        },
+                        {
+                            name: '打手呢称',
+                            value: res.data.game_leveling_order_detail.hatchet_man_name
+                        },
+                        {
+                            name: '打手电话',
+                            value: res.data.game_leveling_order_detail.hatchet_man_phone
+                        },
+                        {
+                            name: '打手QQ',
+                            value: res.data.game_leveling_order_detail.hatchet_man_qq
+                        },
+                        {
+                            name: '剩余代练时间',
+                            value: res.data.left_time
+                        },
+                        {
+                            name: '发布时间',
+                            value: res.data.created_at
+                        },
+                        {
+                            name: '接单时间',
+                            value: res.data.take_at
+                        },
+                        {
+                            name: '提验时间',
+                            value: res.data.apply_complete_at
+                        },
+                        {
+                            name: '结算时间',
+                            value: res.data.complete_at
+                        },
+                        {
+                            name: '发单客服',
+                            value: res.data.game_leveling_order_detail.username
+                        },
+                        {
+                            name: '撤销说明',
+                            value: res.data.consult_describe
+                        },
+                        {
+                            name: '仲裁说明',
+                            value: res.data.complain_describe
+                        },
+                        {
+                            name: '支付代练费用',
+                            value: res.data.pay_amount
+                        },
+                        {
+                            name: '获得赔偿金额',
+                            value: res.data.get_amount
+                        },
+                        {
+                            name: '手续费',
+                            value: res.data.get_poundage
+                        },
+                        {
+                            name: '最终支付金额',
+                            value: res.data.complain_amount
+                        },
+                    ];
 
                 }).catch(err => {
                 });

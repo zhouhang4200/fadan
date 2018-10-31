@@ -99,14 +99,23 @@ class GameLevelingController extends Controller
      */
     public function edit()
     {
-        return response(GameLevelingOrder::with([
+        $order = GameLevelingOrder::with([
             'gameLevelingOrderDetail',
             'gameLevelingOrderConsult',
             'gameLevelingOrderComplain',
         ])->filter([
             'trade_no' => request('trade_no'),
             'parent_user_id' => request()->user()->getPrimaryUserId(),
-        ])->first());
+        ])->first();
+
+        $order->left_time = $order->leftTime();
+        $order->pay_amount = $order->payAmount();
+        $order->get_amount = $order->getAmount();
+        $order->get_poundage = $order->getPoundage();
+        $order->complain_amount = $order->complainAmount();
+        $order->consult_describe = $order->getConsultDescribe();
+        $order->complain_describe = $order->getComplainDescribe();
+        return response($order);
     }
 
     /**
