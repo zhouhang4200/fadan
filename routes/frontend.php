@@ -150,6 +150,10 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::get('mine', 'AccountController@mine')->name('v2.account.mine');
             Route::post('mine-form', 'AccountController@mineForm')->name('v2.account.mine-form');
             Route::post('mine-update', 'AccountController@mineUpdate')->name('v2.account.mine-update');
+            // 登录记录
+            Route::get('login-history', 'AccountController@loginHistory')->name('v2.account.login-history');
+            Route::post('login-history-data-list', 'AccountController@loginHistoryDataList')->name('v2.account.login-history-data-list');
+            Route::post('login-history-user', 'AccountController@loginHistoryUser')->name('v2.account.login-history-user');
         });
     });
 

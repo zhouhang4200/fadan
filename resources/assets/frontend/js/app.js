@@ -35,6 +35,8 @@ Vue.component('statistic-message-show', resolve => void(require(['./components/S
 Vue.component('finance-order', resolve => void(require(['./components/FinanceOrder.vue'], resolve)));
 // 我的账号
 Vue.component('account-mine', resolve => void(require(['./components/AccountMine.vue'], resolve)));
+// 登录记录
+Vue.component('account-login-history', resolve => void(require(['./components/AccountLoginHistory.vue'], resolve)));
 
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
