@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\V2\Account;
 
+use App\Models\HatchetManBlacklist;
 use App\Models\NewRole;
 use Exception;
 use App\Models\User;
@@ -247,5 +248,107 @@ class AccountController extends Controller
         }
         DB::commit();
         return response()->ajax(1, '修改成功!');
+    }
+
+    /**
+     * 黑名单
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function blackList()
+    {
+        return view('frontend.v2.account.black-list');
+    }
+
+    /**
+     * 打手昵称
+     * @return mixed
+     */
+    public function blackListName()
+    {
+        return HatchetManBlacklist::where('user_id', Auth::user()->getPrimaryUserId())->pluck('hatchet_man_name', 'id');
+    }
+
+    /**
+     * 打手黑名单新增
+     * @return mixed
+     */
+    public function blackListAdd()
+    {
+        try {
+            if (is_null(request('hatchet_man_name')) || is_null(request('hatchet_man_qq')) || is_null(request('hatchet_man_phone'))) {
+                return response()->ajax(0, '带*为必填内容');
+            }
+            $data['user_id'] = Auth::user()->getPrimaryUserId();
+            $data['hatchet_man_name'] = request('hatchet_man_name');
+            $data['hatchet_man_phone'] = request('hatchet_man_phone');
+            $data['hatchet_man_qq'] = request('hatchet_man_qq');
+            $data['content'] = request('content', '无');
+
+            HatchetManBlacklist::create($data);
+        } catch (Exception $e) {
+            return response()->ajax(0, '添加失败');
+        }
+        return response()->ajax(1, '添加成功');
+    }
+
+    /**
+     * 打手黑名单修改
+     * @return mixed
+     */
+    public function blackListUpdate()
+    {
+        try {
+            if (is_null(request('hatchet_man_name')) || is_null(request('hatchet_man_qq')) || is_null(request('hatchet_man_phone'))) {
+                return response()->ajax(0, '带*为必填内容');
+            }
+
+            $blackList = HatchetManBlacklist::find(request('id'));
+
+            $blackList->hatchet_man_name = request('hatchet_man_name');
+            $blackList->hatchet_man_phone = request('hatchet_man_phone');
+            $blackList->hatchet_man_qq = request('hatchet_man_qq');
+            $blackList->content = request('content', '无');
+
+            $blackList->save();
+        } catch (Exception $e) {
+            return response()->ajax(0, '修改失败!');
+        }
+        return response()->ajax(1, '修改成功!');
+    }
+
+    /**
+     * 打手黑名单接口
+     * @return mixed
+     */
+    public function blackListDataList()
+    {
+        $hatchetManName = request('hatchet_man_name');
+        $hatchetManPhone = request('hatchet_man_phone');
+        $hatchetManQq = request('hatchet_man_qq');
+
+        // 筛选
+        $filters = compact('hatchetManName', 'hatchetManPhone', 'hatchetManQq');
+
+        return HatchetManBlacklist::where('user_id', Auth::user()->getPrimaryUserId())
+            ->filter($filters)
+            ->paginate(15);
+    }
+
+    /**
+     * 打手黑名单删除
+     * @return mixed
+     */
+    public function blackListDelete()
+    {
+        if (! request('id')) {
+            return response()->ajax(0, '该条记录未找到');
+        }
+        $del = HatchetManBlacklist::destroy(request('id'));
+
+        if (! $del) {
+            return response()->ajax(0, '删除失败');
+        }
+
+        return response()->ajax(1, '删除成功');
     }
 }

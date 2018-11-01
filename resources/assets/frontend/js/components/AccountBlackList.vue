@@ -1,0 +1,303 @@
+<template>
+    <div class="main content amount-flow">
+        <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
+            <el-row :gutter="16">
+                <el-col :span="5">
+                    <el-form-item label="打手昵称">
+                        <el-select v-model="searchParams.hatchet_man_name" placeholder="请选择">
+                            <el-option v-for="(value, key) of AccountBlackListName" :value="value" :key="key" :label="value">{{ value }}</el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item label="电话">
+                        <el-input v-model="searchParams.hatchet_man_phone"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="5">
+                    <el-form-item label="QQ">
+                        <el-input v-model="searchParams.hatchet_man_qq"></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-form-item>
+                    <el-button type="primary" @click="handleSearch">查询</el-button>
+                    <el-button
+                            type="primary"
+                            size="small"
+                            @click="blackListAdd()">新增</el-button>
+                </el-form-item>
+            </el-row>
+        </el-form>
+        <el-table
+                :data="tableData"
+                border
+                style="width: 100%">
+            <el-table-column
+                    prop="hatchet_man_name"
+                    label="打手昵称"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="hatchet_man_phone"
+                    label="电话"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="hatchet_man_qq"
+                    label="QQ"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="content"
+                    label="备注"
+                    width="">
+            </el-table-column>
+            <el-table-column
+                    label="操作"
+                    width="250">
+                <template slot-scope="scope">
+                    <el-button
+                            type="primary"
+                            size="small"
+                            @click="updateForm(scope.row)">编辑</el-button>
+                    <el-button
+                            type="primary"
+                            size="small"
+                            @click="blackListDelete(scope.row.id)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination
+                style="margin-top: 25px"
+                @current-change="handleCurrentChange"
+                :current-page.sync="searchParams.page"
+                :page-size="15"
+                layout="prev, pager, next, jumper"
+                :total="TotalPage">
+        </el-pagination>
+
+        <el-dialog title="新增打手黑名单" :visible.sync="dialogFormVisible">
+            <el-form :model="form" ref="form" :rules="rules" label-width="80px">
+                <el-form-item label="*打手昵称" prop="hatchet_man_name">
+                    <el-input v-model="form.hatchet_man_name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="*打手电话" prop="hatchet_man_phone">
+                    <el-input v-model.number="form.hatchet_man_phone" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="*打手QQ" prop="hatchet_man_qq">
+                    <el-input v-model.number="form.hatchet_man_qq" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="content">
+                    <el-input type="textarea" v-model="form.content" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('form')">确认</el-button>
+                    <el-button @click="dialogFormVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
+        <el-dialog title="编辑打手黑名单" :visible.sync="dialogUpdateFormVisible">
+            <el-form :model="form" ref="form" :rules="rules" label-width="80px">
+                <el-input v-model="form.id" autocomplete="off" type="hidden"></el-input>
+                <el-form-item label="*打手昵称" prop="hatchet_man_name">
+                    <el-input v-model="form.hatchet_man_name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="*打手电话" prop="hatchet_man_phone">
+                    <el-input v-model.number="form.hatchet_man_phone" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="*打手QQ" prop="hatchet_man_qq">
+                    <el-input v-model.number="form.hatchet_man_qq" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="content">
+                    <el-input type="textarea" v-model="form.content" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitUpdateForm('form')">确认</el-button>
+                    <el-button @click="dialogUpdateFormVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+    </div>
+</template>
+
+<script>
+    export default {
+        props: [
+            'AccountBlackListNameApi',
+            'AccountBlackListDataListApi',
+            'AccountBlackListUpdateApi',
+            'AccountBlackListDeleteApi',
+            'AccountBlackListAddApi',
+        ],
+        methods: {
+            blackListAdd(){
+                this.dialogFormVisible = true;
+            },
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        axios.post(this.AccountBlackListAddApi, this.form).then(res => {
+                            this.$message({
+                                showClose: true,
+                                type: res.data.status == 1 ? 'success' : 'error',
+                                message: res.data.message
+                            });
+                        }).catch(err => {
+                            this.$alert('获取数据失败, 请重试!', '提示', {
+                                confirmButtonText: '确定',
+                                callback: action => {
+                                }
+                            });
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+                this.handleTableData();
+            },
+            updateForm(row) {
+                this.dialogUpdateFormVisible = true;
+                this.form = row;
+            },
+            submitUpdateForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        axios.post(this.AccountBlackListUpdateApi, this.form).then(res => {
+                            this.$message({
+                                showClose: true,
+                                type: res.data.status == 1 ? 'success' : 'error',
+                                message: res.data.message
+                            });
+                        }).catch(err => {
+                            this.$alert('获取数据失败, 请重试!', '提示', {
+                                confirmButtonText: '确定',
+                                callback: action => {
+                                }
+                            });
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+                this.handleTableData();
+            },
+            // 加载数据
+            handleTableData(){
+                axios.post(this.AccountBlackListDataListApi, this.searchParams).then(res => {
+                    console.log(res);
+                    this.tableData = res.data.data;
+                    this.TotalPage = res.data.total;
+                }).catch(err => {
+                    this.$alert('获取数据失败, 请重试!', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                });
+            },
+            handleName(){
+                axios.post(this.AccountBlackListNameApi, this.searchParams).then(res => {
+                    this.AccountBlackListName = res.data;
+                }).catch(err => {
+                    this.$alert('获取数据失败, 请重试!', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                });
+            },
+            handleSearch() {
+                console.log(this.searchParams);
+                this.handleTableData();
+            },
+
+            handleCurrentChange(page) {
+                console.log(`当前页: ${page}`);
+                this.searchParams.page = page;
+                this.handleTableData();
+            },
+            blackListDelete (id) {
+                axios.post(this.AccountBlackListDeleteApi, {id:id}).then(res => {
+                    this.$message({
+                        showClose: true,
+                        type: res.data.status == 1 ? 'success' : 'error',
+                        message: res.data.message
+                    });
+                    this.handleTableData();
+                }).catch(err => {
+                    this.$alert('获取数据失败, 请重试!', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                });
+            },
+        },
+        created () {
+            this.handleTableData();
+            this.handleName();
+        },
+        data() {
+            var checkHas = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('必填项不能为空!'));
+                }
+                callback();
+            };
+            var checkPhone = (rule, value, callback) => {
+                if (!value) {
+                    return callback(new Error('必填项不能为空!'));
+                }
+
+                if (!Number.isInteger(parseInt(value))) {
+                    callback(new Error('请输入数字值！'));
+                } else {
+                    const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+                    if (reg.test(value)) {
+                        callback();
+                    } else {
+                        callback(new Error('请输入正确的手机号！'));
+                    }
+                    callback();
+                }
+                callback();
+            };
+            var checkQq = (rule, value, callback) => {
+                if (!value) {
+                    return callback(new Error('必填项不能为空!'));
+                }
+
+                if (!Number.isInteger(parseInt(value))) {
+                    callback(new Error('请输入数字值！'));
+                }
+                callback();
+            };
+            return {
+                url:'',
+                dialogFormVisible:false,
+                dialogUpdateFormVisible:false,
+                AccountBlackListName:{},
+                searchParams:{
+                    hatchet_man_name:'',
+                    hatchet_man_phone:'',
+                    hatchet_man_qq:'',
+                    page:1,
+                },
+                TotalPage:0,
+                tableData: [],
+                rules:{
+                    hatchet_man_qq:[{ validator: checkQq, trigger: 'blur' }],
+                    hatchet_man_name:[{ validator: checkHas, trigger: 'blur' }],
+                    hatchet_man_phone:[{ validator: checkPhone, trigger: 'blur' }],
+                },
+                form: {
+                    hatchet_man_name: '',
+                    hatchet_man_phone: '',
+                    hatchet_man_qq: '',
+                    content: '',
+                }
+            }
+        }
+    }
+</script>

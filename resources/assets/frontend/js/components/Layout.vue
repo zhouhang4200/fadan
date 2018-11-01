@@ -49,6 +49,7 @@
                     </template>
                     <a href="/v2/account/mine"><el-menu-item index="3-1">我的账号</el-menu-item></a>
                     <a href="/v2/account/employee"><el-menu-item index="3-2">岗位管理</el-menu-item></a>
+                    <a href="/v2/account/black-list"><el-menu-item index="3-3">打手黑名单</el-menu-item></a>
                 </el-submenu>
                 <!--没有子菜单示例-->
                 <!--<el-menu-item index="4">-->
