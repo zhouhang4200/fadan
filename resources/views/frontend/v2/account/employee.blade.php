@@ -8,6 +8,7 @@
             account-employee-user-api="{{ route('v2.account.employee-user') }}"
             account-employee-station-api="{{ route('v2.account.employee-station') }}"
             account-employee-switch-api="{{ route('v2.account.employee-switch') }}"
+            account-employee-delete-api="{{ route('v2.account.employee-delete') }}"
     >
     </account-employee>
 @endsection
