@@ -161,8 +161,12 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             // 员工管理
             Route::get('employee', 'AccountController@employee')->name('v2.account.employee');
             Route::post('employee-user', 'AccountController@employeeUser')->name('v2.account.employee-user');
+            Route::post('employee-switch', 'AccountController@employeeSwitch')->name('v2.account.employee-switch');
             Route::post('employee-station', 'AccountController@employeeStation')->name('v2.account.employee-station');
             Route::post('employee-data-list', 'AccountController@employeeDataList')->name('v2.account.employee-data-list');
+            Route::get('employee-edit', 'AccountController@employeeEdit')->name('v2.account.employee-edit');
+            Route::post('employee-update', 'AccountController@employeeUpdate')->name('v2.account.employee-update');
+            Route::post('employee-delete', 'AccountController@employeeDelete')->name('v2.account.employee-delete');
         });
     });
 

@@ -12,8 +12,8 @@
             </el-form-item>
             <el-form-item label="代练">
                 <template slot-scope="scope">
-                    <el-radio v-model="editForm.type" label="1">接单</el-radio>
-                    <el-radio v-model="editForm.type" label="2">发单</el-radio>
+                    <el-radio v-model=editForm.type :label=1>接单</el-radio>
+                    <el-radio v-model=editForm.type :label=2>发单</el-radio>
                 </template>
             </el-form-item>
             <el-form-item>

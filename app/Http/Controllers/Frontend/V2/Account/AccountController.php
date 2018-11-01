@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\LoginHistory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class AccountController extends Controller
 {
@@ -120,5 +121,42 @@ class AccountController extends Controller
         return User::staffManagementFilter($filter)
             ->with('newRoles')
             ->paginate(15);
+    }
+
+    /**
+     * 员工管理开关
+     * @return mixed
+     */
+    public function employeeSwitch()
+    {
+        try {
+            $user = User::find(request('user_id'));
+            $user->status = request('status');
+            $user->save();
+        } catch (Exception $e) {
+            return response()->ajax(0, '服务器异常!');
+        }
+        return response()->ajax(1, '修改成功!');
+    }
+
+    /**
+     * 员工岗位删除
+     * @return mixed
+     */
+    public function employeeDelete()
+    {
+        try {
+            $user = User::find(request('user_id'));
+            // 删除该员工下面的角色和权限
+            $user->newRoles()->detach();
+            $user->newPermissions()->detach();
+            // 删除该角色并清空缓存
+            $user->delete();
+            // 清除缓存
+            Cache::forget('newPermissions:user:'.$user->id);
+        } catch (Exception $e) {
+            return response()->ajax(0, '服务器异常!');
+        }
+        return response()->ajax(1, '删除成功');
     }
 }
