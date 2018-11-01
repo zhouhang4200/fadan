@@ -605,13 +605,12 @@ class GameLevelingController extends Controller
         $order = GameLevelingOrder::filter([
             'trade_no' => request('trade_no'),
             'parent_user_id' => request()->user()->getPrimaryUserId(),
-        ])->lockUpdate()->first();
+        ])->lockForUpdate()->first();
 
         if (in_array($order->status, [13, 14, 17])) {
-            $order->update([
-               'day' => bcadd($order->day, request('day'), 0),
-               'hour' => bcadd($order->hour, request('hour'), 0),
-            ]);
+            $order->day = bcadd($order->day, request('day'), 0);
+            $order->hour = bcadd($order->hour, request('hour'), 0);
+            $order->save();
         } else {
             return response()->ajax(0, '当前状态不支付增加代练时间!');
         }
@@ -701,10 +700,10 @@ class GameLevelingController extends Controller
     }
 
     /**
-     * 获取截图
+     * 获取申请验收图片
      * @return mixed
      */
-    public function getScreenShot()
+    public function applyCompleteImage()
     {
         DB::beginTransaction();
         try {
@@ -722,6 +721,12 @@ class GameLevelingController extends Controller
         }
         DB::commit();
         return response()->ajax(1, '操作成功!');
+//        获取到图片返回数组
+//        return response()->ajax(1, '获取成功', [
+//            ['img' => 'http://tm.test/frontend/v2/images/logo.png'],
+//            ['img' => 'http://tm.test/frontend/v2/images/logo.png'],
+//            ['img' => 'http://baidu.com'],
+//        ]);
     }
 
     /**

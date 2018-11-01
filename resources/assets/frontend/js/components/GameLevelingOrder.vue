@@ -208,7 +208,7 @@
                     label="订单状态"
                     width="70">
                 <template slot-scope="scope">
-                    {{ statusMap['s' + scope.row.status] }}
+                    {{ statusMap[scope.row.status] }}
                 </template>
             </el-table-column>
             <el-table-column
@@ -471,6 +471,7 @@
             'cancelLockApi',
             'anomalyApi',
             'cancelAnomalyApi',
+            'applyCompleteImageApi',
         ],
         computed: {
             tableDataEmpty() {
@@ -536,19 +537,19 @@
                     }]
                 },
                 statusMap: {
-                    s1: '未接单',
-                    s13: '代练中',
-                    s14: '待验收',
-                    s15: '撤销中',
-                    s16: '仲裁中',
-                    s17: '异常',
-                    s18: '已锁定',
-                    s19: '已撤销',
-                    s20: '已结算',
-                    s21: '已仲裁',
-                    s22: '已下架',
-                    s23: '强制撤销',
-                    s24: '已撤单',
+                    1: '未接单',
+                    13: '代练中',
+                    14: '待验收',
+                    15: '撤销中',
+                    16: '仲裁中',
+                    17: '异常',
+                    18: '已锁定',
+                    19: '已撤销',
+                    20: '已结算',
+                    21: '已仲裁',
+                    22: '已下架',
+                    23: '强制撤销',
+                    24: '已撤单',
                 },
                 tableLoading:false,
                 tableHeight: 0,
@@ -595,6 +596,7 @@
                     });
                     this.tableLoading = false;
                 });
+                this.handleStatusQuantity();
             },
             // 加载游戏选项
             handleGameOptions() {
@@ -739,8 +741,43 @@
                 });
             },
             // 查看图片
-            handleApplyCompleteImage(index) {
+            handleApplyCompleteImage(row) {
+                // 请求图片
+                axios.post(this.applyCompleteImageApi, {
+                    'trade_no' : row.trade_no
+                }).then(res => {
+                    if(res.data.status == 1) {
+                        const h = this.$createElement;
+                        let item = [];
+                        res.data.content.forEach(function (val) {
+                            item.push(h('el-carousel-item', null, [
+                                h('img', {
+                                    attrs:{
+                                        src:val['img']
+                                    }
+                                }, '')
+                            ]))
+                        });
 
+                        this.$msgbox({
+                            title: '查看验收图片',
+                            message: h('el-carousel', null, item),
+                            showCancelButton: true,
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                        });
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: res.data.message
+                        });
+                    }
+                }).catch(err => {
+                    this.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
+                });
             },
             // 完成验收
             handleComplete(row) {
@@ -931,7 +968,6 @@
             this.handlePageTitle();
             this.handleTableHeight();
             this.handleTableData();
-            this.handleStatusQuantity();
             this.handleGameOptions();
             window.addEventListener('resize', this.handleTableHeight);
         },

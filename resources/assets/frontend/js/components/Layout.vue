@@ -146,6 +146,12 @@
     .el-form-item.is-success .el-textarea__inner:focus {
         border-color:#DCDFE6;
     }
+    /*创建订单、查看订单、重发订单输入框左侧菜单样式*/
+    .icon-button {
+        line-height: 32px;
+        font-size: 22px;
+        height: 32px;
+    }
 </style>
 
 <script>

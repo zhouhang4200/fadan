@@ -88,7 +88,7 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 // 客服仲裁
                 Route::post('arbitration', 'GameLevelingController@arbitration')->name('order.game-leveling.arbitration');
                 // 申请验收图片
-                Route::get('apply-complete-image/{trade_no}', 'GameLevelingController@applyCompleteImage')->name('order.game-leveling.apply-complete-image');
+                Route::post('apply-complete-image', 'GameLevelingController@applyCompleteImage')->name('order.game-leveling.apply-complete-image');
                 // 订单操作日志
                 Route::post('log', 'GameLevelingController@log')->name('order.game-leveling.log');
                 // 仲裁信息
