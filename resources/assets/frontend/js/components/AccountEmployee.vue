@@ -23,6 +23,10 @@
                 </el-col>
                 <el-form-item>
                     <el-button type="primary" @click="handleSearch">查询</el-button>
+                    <el-button
+                               type="primary"
+                               size="small"
+                               @click="employeeAdd()">新增</el-button>
                 </el-form-item>
             </el-row>
         </el-form>
@@ -94,20 +98,20 @@
                     <el-switch v-model=scope.row.status @change="handleSwitch($event, scope.row)" active-text="启用" inactive-text="禁用" :active-value=0 :inactive-value=1></el-switch>
                 </template>
             </el-table-column>
-                <el-table-column
-                    label="操作"
-                    width="250">
-                    <template slot-scope="scope">
-                        <el-button v-if="scope.row.id > 0"
-                                   type="primary"
-                                   size="small"
-                                   @click="employeeEdit(scope.row.id)">编辑</el-button>
-                        <el-button v-if="scope.row.id > 0"
-                                   type="primary"
-                                   size="small"
-                                   @click="employeeDelete(scope.row.id)">删除</el-button>
-                    </template>
-                </el-table-column>
+            <el-table-column
+                label="操作"
+                width="250">
+                <template slot-scope="scope">
+                    <el-button v-if="scope.row.id > 0"
+                               type="primary"
+                               size="small"
+                               @click="employeeEdit(scope.row.id)">编辑</el-button>
+                    <el-button v-if="scope.row.id > 0"
+                               type="primary"
+                               size="small"
+                               @click="employeeDelete(scope.row.id)">删除</el-button>
+                </template>
+            </el-table-column>
         </el-table>
         <el-pagination
                 style="margin-top: 25px"
@@ -129,6 +133,7 @@
             'AccountEmployeeSwitchApi',
             'AccountEmployeeEditApi',
             'AccountEmployeeDeleteApi',
+            'AccountEmployeeCreateApi',
         ],
         methods: {
             // 加载数据
@@ -210,6 +215,9 @@
                         }
                     });
                 });
+            },
+            employeeAdd() {
+                window.location.href=this.AccountEmployeeCreateApi;
             }
         },
         created () {

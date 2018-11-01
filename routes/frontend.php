@@ -167,6 +167,8 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::get('employee-edit', 'AccountController@employeeEdit')->name('v2.account.employee-edit');
             Route::post('employee-update', 'AccountController@employeeUpdate')->name('v2.account.employee-update');
             Route::post('employee-delete', 'AccountController@employeeDelete')->name('v2.account.employee-delete');
+            Route::get('employee-create', 'AccountController@employeeCreate')->name('v2.account.employee-create');
+            Route::post('employee-add', 'AccountController@employeeAdd')->name('v2.account.employee-add');
         });
     });
 

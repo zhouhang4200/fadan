@@ -41,7 +41,10 @@ Vue.component('account-mine', resolve => void(require(['./components/AccountMine
 Vue.component('account-login-history', resolve => void(require(['./components/AccountLoginHistory.vue'], resolve)));
 // 岗位管理
 Vue.component('account-employee', resolve => void(require(['./components/AccountEmployee.vue'], resolve)));
-
+// 岗位新增
+Vue.component('account-employee-create', resolve => void(require(['./components/AccountEmployeeCreate.vue'], resolve)));
+// 岗位编辑
+Vue.component('account-employee-edit', resolve => void(require(['./components/AccountEmployeeEdit.vue'], resolve)));
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 const store = new Vuex.Store({

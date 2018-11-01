@@ -10,6 +10,7 @@ use App\Models\LoginHistory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class AccountController extends Controller
 {
@@ -158,5 +159,69 @@ class AccountController extends Controller
             return response()->ajax(0, '服务器异常!');
         }
         return response()->ajax(1, '删除成功');
+    }
+
+    /**
+     * 新增岗位
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function employeeCreate()
+    {
+        return view('frontend.v2.account.employee-create');
+    }
+
+    /**
+     * 编辑岗位
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function employeeEdit()
+    {
+        return view('frontend.v2.account.employee-edit');
+    }
+
+    /**
+     * 岗位新增接口
+     * @return mixed
+     */
+    public function employeeAdd()
+    {
+        try{
+            // 判断账号是否唯一
+            $isSingle = User::where('name', request('name'))->withTrashed()->first();
+
+            if ($isSingle) {
+                return response()->ajax(0, '账号名已存在!');
+            }
+            // 数据
+            $data['api_token'] = Str::random(25);
+            $data['username'] = request('username');
+            $data['name'] = request('name');
+            $data['phone'] = request('phone');
+            $data['qq'] = request('qq');
+            $data['wechat'] = request('wechat');
+            $data['remark'] = request('remark');
+            $data['leveling_type'] = request('leveling_type');
+            $data['password'] = bcrypt(request('password'));
+            $data['parent_id'] = Auth::user()->getPrimaryUserId();
+            $data['email'] = mt_rand()."@qq.com";
+            $data['app_id'] = str_random(60);
+            $data['app_secret'] = str_random(60);
+            $data['voucher'] = "/frontend/v1/images/default-avatar.png";
+            $roleIds = request('station', []);
+            // 添加子账号同时添加角色
+            $user = User::create($data);
+            $user->newRoles()->sync($roleIds);
+            // 清除缓存
+            Cache::forget('newPermissions:user:'.$user->id);
+        } catch (Exception $e) {
+            myLog('test', [$e->getMessage()]);
+            return response()->ajax(0, '请重新提交数据!');
+        }
+        return response()->ajax(1, '添加成功');
+    }
+
+    public function employeeUpdate()
+    {
+
     }
 }

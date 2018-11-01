@@ -140,7 +140,7 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.CreateWithdrawApi).then(res => {
+                        axios.post(this.CreateWithdrawApi, this.ruleForm).then(res => {
                             if (res.data.status > 0) {
                                 this.$message({
                                     showClose: true,
