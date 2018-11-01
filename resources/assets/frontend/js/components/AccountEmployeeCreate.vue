@@ -1,11 +1,11 @@
 <template>
     <div class="main content amount-flow">
         <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-            <el-form-item label="*昵称" prop="username">
-                <el-input v-model="form.username" name="username"  autocomplete="off"></el-input>
-            </el-form-item>
             <el-form-item label="*账号" prop="name">
                 <el-input v-model="form.name" name="name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="*昵称" prop="username">
+                <el-input v-model="form.username" name="username"  autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="*密码" prop="password">
                 <el-input v-model="form.password" name="password" autocomplete="off"></el-input>
@@ -18,7 +18,7 @@
             </el-form-item>
             <el-form-item label="*岗位" prop="station">
                 <el-checkbox-group v-model="form.station">
-                    <el-checkbox v-for="(value, key) of AccountEmployeeStation" :value="key" :key="key"  :label="value"></el-checkbox>
+                    <el-checkbox v-for="(value, key) of AccountEmployeeStation" :value="key" :key="key"  :label="key">{{ value }}</el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
             <el-form-item label="*电话" prop="phone">
@@ -51,19 +51,19 @@
                 if (!value) {
                     return callback(new Error('必填项不能为空!'));
                 }
-                setTimeout(() => {
-                    if (!Number.isInteger(value)) {
-                        callback(new Error('请输入数字值！'));
-                    } else {
-                        const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
-                        if (reg.test(value)) {
-                            callback();
-                        } else {
-                            callback(new Error('请输入正确的手机号！'));
-                        }
+
+                if (!Number.isInteger(value)) {
+                    callback(new Error('请输入数字值！'));
+                } else {
+                    const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+                    if (reg.test(value)) {
                         callback();
+                    } else {
+                        callback(new Error('请输入正确的手机号！'));
                     }
-                }, 1000);
+                    callback();
+                }
+
                 callback();
             };
             var validatePass = (rule, value, callback) => {
