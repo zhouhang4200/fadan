@@ -23,11 +23,13 @@
             apply-complain-api="{{ route('order.game-leveling.apply-complain') }}"
             cancel-complain-api="{{ route('order.game-leveling.cancel-complain') }}"
             arbitration-api="{{ route('order.game-leveling.arbitration') }}"
+            complain-info-api="{{ route('order.game-leveling.complain-info') }}"
+            add-complain-info-api="{{ route('order.game-leveling.add-complain-info') }}"
             complete-api="{{ route('order.game-leveling.complete') }}"
             lock-api="{{ route('order.game-leveling.lock') }}"
             cancel-lock-api="{{ route('order.game-leveling.cancel-lock') }}"
             anomaly-api="{{ route('order.game-leveling.anomaly') }}"
-            cancel-anomaly-api="{{ route('order.game-leveling.cancel-anomaly') }}">
+            cancel-anomaly-api="{{ route('order.game-leveling.cancel-anomaly') }}"
             game-region-server-api="{{ route('game-region-server') }}">
     </game-leveling-order-show>
 @endsection

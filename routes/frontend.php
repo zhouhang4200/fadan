@@ -88,13 +88,13 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 // 客服仲裁
                 Route::post('arbitration', 'GameLevelingController@arbitration')->name('order.game-leveling.arbitration');
                 // 申请验收图片
-                Route::post('apply-complete-image', 'GameLevelingController@applyCompleteImage')->name('order.game-leveling.apply-complete-image');
+                Route::post('apply-complete-image?', 'GameLevelingController@applyCompleteImage')->name('order.game-leveling.apply-complete-image');
                 // 订单操作日志
                 Route::post('log', 'GameLevelingController@log')->name('order.game-leveling.log');
                 // 仲裁信息
-                Route::get('complain-info/{trade_no}', 'GameLevelingController@complainInfo')->name('order.game-leveling.complain-info');
+                Route::post('complain-info', 'GameLevelingController@complainInfo')->name('order.game-leveling.complain-info');
                 // 发送仲裁留言
-                Route::post('send-complain-message', 'GameLevelingController@sendComplainMessage')->name('order.game-leveling.send-complain-message');
+                Route::post('add-complain-info', 'GameLevelingController@addComplainInfo')->name('order.game-leveling.add-complain-info');
                 // 获取订单留言
                 Route::get('message/{trade_no}', 'GameLevelingController@message')->name('order.game-leveling.message');
                 // 发送订单留言
