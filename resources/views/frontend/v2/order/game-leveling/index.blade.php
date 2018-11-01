@@ -25,6 +25,7 @@
             lock-api="{{ route('order.game-leveling.lock') }}"
             cancel-lock-api="{{ route('order.game-leveling.cancel-lock') }}"
             anomaly-api="{{ route('order.game-leveling.anomaly') }}"
+            apply-complete-image-api="{{ route('order.game-leveling.apply-complete-image') }}"
             cancel-anomaly-api="{{ route('order.game-leveling.cancel-anomaly') }}">
     </game-leveling-order>
 @endsection

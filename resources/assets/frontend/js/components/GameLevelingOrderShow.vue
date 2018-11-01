@@ -4081,52 +4081,52 @@
             },
             // 增加天数与小时
             handleAddDayHour() {
-                    const h = this.$createElement;
-                    const currentThis = this;
-                    this.$msgbox({
-                        title: '选择增加的天数与小时',
-                        message: h('div', null, [
-                            h('el-cascader', {
-                                props: {
-                                    options:this.dayHourOptions,
-                                },
-                                on:{
-                                    'change' (addDayHour) {
-                                        currentThis.addDay = addDayHour[0];
-                                        currentThis.addHour = addDayHour[1];
-                                    }
+                const h = this.$createElement;
+                const currentThis = this;
+                this.$msgbox({
+                    title: '选择增加的天数与小时',
+                    message: h('div', null, [
+                        h('el-cascader', {
+                            props: {
+                                options:this.dayHourOptions,
+                            },
+                            on:{
+                                'change' (addDayHour) {
+                                    currentThis.addDay = addDayHour[0];
+                                    currentThis.addHour = addDayHour[1];
                                 }
-                            }, ''),
-                        ]),
-                        showCancelButton: true,
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        beforeClose: (action, instance, done) => {
-                            if (action == 'confirm') {
-                                // 发送加天与小时请求
-                                axios.post(this.orderAddDayHourApi, {
-                                    trade_no:this.form.trade_no,
-                                    day:this.addDay,
-                                    hour:this.addHour
-                                }).then(res => {
-                                    this.$message({
-                                        'type': res.data.status == 1 ? 'success' : 'error',
-                                        'message': res.data.message,
-                                    });
-                                    if (res.data.status == 1) {
-                                        done();
-                                    }
-                                }).catch(err => {
-                                    this.$message({
-                                        'type': 'error',
-                                        'message': '加时失败，服务器错误！',
-                                    });
-                                });
-                            } else {
-                                done();
                             }
+                        }, ''),
+                    ]),
+                    showCancelButton: true,
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    beforeClose: (action, instance, done) => {
+                        if (action == 'confirm') {
+                            // 发送加天与小时请求
+                            axios.post(this.orderAddDayHourApi, {
+                                trade_no:this.form.trade_no,
+                                day:this.addDay,
+                                hour:this.addHour
+                            }).then(res => {
+                                this.$message({
+                                    'type': res.data.status == 1 ? 'success' : 'error',
+                                    'message': res.data.message,
+                                });
+                                if (res.data.status == 1) {
+                                    done();
+                                }
+                            }).catch(err => {
+                                this.$message({
+                                    'type': 'error',
+                                    'message': '加时失败，服务器错误！',
+                                });
+                            });
+                        } else {
+                            done();
                         }
-                    });
+                    }
+                });
             },
             handleOrderTab(tab, event) {
                 if (tab.name == 2) {
@@ -4263,8 +4263,45 @@
                 });
             },
             // 查看图片
-            handleApplyCompleteImage(index) {
-
+            handleApplyCompleteImage() {
+                const h = this.$createElement;
+                const currentThis = this;
+                this.$msgbox({
+                    title: '查看验收图片',
+                    message: h('el-carousel', {
+                            // props: {
+                            //     options:this.dayHourOptions,
+                            // },
+                    }, '<h3>3</h3>'),
+                    showCancelButton: true,
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    beforeClose: (action, instance, done) => {
+                        if (action == 'confirm') {
+                            // 发送加天与小时请求
+                            axios.post(this.orderAddDayHourApi, {
+                                trade_no:this.form.trade_no,
+                                day:this.addDay,
+                                hour:this.addHour
+                            }).then(res => {
+                                this.$message({
+                                    'type': res.data.status == 1 ? 'success' : 'error',
+                                    'message': res.data.message,
+                                });
+                                if (res.data.status == 1) {
+                                    done();
+                                }
+                            }).catch(err => {
+                                this.$message({
+                                    'type': 'error',
+                                    'message': '加时失败，服务器错误！',
+                                });
+                            });
+                        } else {
+                            done();
+                        }
+                    }
+                });
             },
             // 完成验收
             handleComplete(row) {

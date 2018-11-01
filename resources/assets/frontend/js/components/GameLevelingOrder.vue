@@ -471,6 +471,7 @@
             'cancelLockApi',
             'anomalyApi',
             'cancelAnomalyApi',
+            'applyCompleteImageApi',
         ],
         computed: {
             tableDataEmpty() {
@@ -740,8 +741,43 @@
                 });
             },
             // 查看图片
-            handleApplyCompleteImage(index) {
+            handleApplyCompleteImage(row) {
+                // 请求图片
+                axios.post(this.applyCompleteImageApi, {
+                    'trade_no' : row.trade_no
+                }).then(res => {
+                    if(res.data.status == 1) {
+                        const h = this.$createElement;
+                        let item = [];
+                        res.data.content.forEach(function (val) {
+                            item.push(h('el-carousel-item', null, [
+                                h('img', {
+                                    attrs:{
+                                        src:val['img']
+                                    }
+                                }, '')
+                            ]))
+                        });
 
+                        this.$msgbox({
+                            title: '查看验收图片',
+                            message: h('el-carousel', null, item),
+                            showCancelButton: true,
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                        });
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: res.data.message
+                        });
+                    }
+                }).catch(err => {
+                    this.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
+                });
             },
             // 完成验收
             handleComplete(row) {

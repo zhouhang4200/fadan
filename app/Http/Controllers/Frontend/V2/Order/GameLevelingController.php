@@ -700,10 +700,10 @@ class GameLevelingController extends Controller
     }
 
     /**
-     * 获取截图
+     * 获取申请验收图片
      * @return mixed
      */
-    public function getScreenShot()
+    public function applyCompleteImage()
     {
         DB::beginTransaction();
         try {
@@ -721,6 +721,12 @@ class GameLevelingController extends Controller
         }
         DB::commit();
         return response()->ajax(1, '操作成功!');
+//        获取到图片返回数组
+//        return response()->ajax(1, '获取成功', [
+//            ['img' => 'http://tm.test/frontend/v2/images/logo.png'],
+//            ['img' => 'http://tm.test/frontend/v2/images/logo.png'],
+//            ['img' => 'http://baidu.com'],
+//        ]);
     }
 
     /**
