@@ -802,7 +802,7 @@ class GameLevelingController extends Controller
     }
 
     /**
-     * 获取仲裁详情
+     * 获取仲裁信息
      * @return mixed
      */
     public function complainInfo()
@@ -826,16 +826,16 @@ class GameLevelingController extends Controller
     }
 
     /**
-     * 获取仲裁详情
+     * 添加仲裁详情
      * @return mixed
      */
-    public function addComplainDetail()
+    public function addComplainInfo()
     {
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 $pic = request('pic');
-                $content = request('content');
+                $content = request('reason');
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['addComplainDetail']], [$order, $pic, $content]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');

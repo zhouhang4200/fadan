@@ -428,7 +428,121 @@
                                 </el-tab-pane>
                                 <el-tab-pane label="仲裁证据" name="2">
 
+                                    <el-table
+                                            :data="complainDesData"
+                                            :stripe=true
+                                            :border=true
+                                            style="width: 100%">
+                                        <el-table-column
+                                                prop="who"
+                                                label="申请仲裁"
+                                                width="180">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="created_at"
+                                                label="申请时间"
+                                                width="180">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="content"
+                                                label="仲裁理由">
+                                        </el-table-column>
+                                    </el-table>
+                                    <p></p>
+                                    <el-row :gutter="12" v-if="complainDesData.length" >
+                                        <el-col :span="8">
+                                            <el-card
+                                                    v-if="complainDesData[0].pic1"
+                                                    :style="{
+                                                        backgroundImage:'url(' + complainDesData[0].pic1 + ')',
+                                                        height:'150px',
+                                                        backgroundSize: 'cover',
+                                                        width: '100%',
+                                                        display:'block',
+                                                      }" @click.native="handleOpenImage(complainDesData[0].pic1)">
+                                            </el-card>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <el-card
+                                                    v-if="complainDesData[0].pic2"
+                                                    :style="{
+                                                        backgroundImage:'url(' + complainDesData[0].pic2 + ')',
+                                                        height:'150px',
+                                                        backgroundSize: 'cover',
+                                                        width: '100%',
+                                                    }"
+                                                    @click.native="handleOpenImage(complainDesData[0].pic2)">
+                                            </el-card>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <el-card
+                                                    v-if="complainDesData[0].pic3"
+                                                    :style="{
+                                                        backgroundImage:'url(' + complainDesData[0].pic3 + ')',
+                                                        height:'150px',
+                                                        backgroundSize: 'cover',
+                                                        width: '100%',
+                                                    }"
+                                                    @click.native="handleOpenImage(complainDesData[0].pic3)">
+                                            </el-card>
+                                        </el-col>
+                                    </el-row>
+                                    <p></p>
+                                    <el-table
+                                            :data="complainMessageData"
+                                            :stripe=true
+                                            :border=true
+                                            style="width: 100%">
+                                        <el-table-column
+                                                prop="who"
+                                                label="留言方">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="content"
+                                                label="留言说明">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="created_at"
+                                                label="留言时间">
+                                        </el-table-column>
+                                        <el-table-column
+                                                prop="address"
+                                                label="留言证据"
+                                                width="80">
+                                            <template slot-scope="scope">
+                                                <el-button icon="el-icon-search" v-if="scope.row.pic" @click.native="handleOpenImage(scope.row.pic)"></el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
+                                    <p></p>
+                                    <el-form :model="complainMessageForm" ref="complainMessageForm" label-width="100px" class="demo-ruleForm">
+                                        <el-form-item
+                                                label="留言内容"
+                                                :rules="[{ required: true, message: '留言内容不能为空'}]">
+                                            <el-input
+                                                    type="textarea"
+                                                      :rows="6"
+                                                      v-model="complainMessageForm.reason">
+                                            </el-input>
+                                        </el-form-item>
+                                        <el-form-item label="上传证据">
+                                            <el-upload
+                                                    ref="complainMessageUpload"
+                                                    action="action"
+                                                    list-type="picture-card"
+                                                    :http-request="handleUploadFile">
+                                                <i class="el-icon-plus"></i>
+                                            </el-upload>
+                                            <el-dialog :visible="complainMessageForm.dialogVisible">
+                                                <img width="100%" :src="complainMessageForm.dialogImageUrl" alt="">
+                                            </el-dialog>
+                                        </el-form-item>
+                                        <el-form-item>
+                                            <el-button type="primary" @click="handleAddComplainMessageForm()">提交</el-button>
+                                        </el-form-item>
+                                    </el-form>
                                 </el-tab-pane>
+
                                 <el-tab-pane label="操作记录" name="3">
 
                                     <el-table
@@ -667,6 +781,8 @@
             'cancelLockApi',
             'anomalyApi',
             'cancelAnomalyApi',
+            'complainInfoApi',
+            'addComplainInfoApi',
         ],
         computed: {
             fieldDisabled() {
@@ -686,6 +802,7 @@
         },
         data() {
             return {
+                fileReader:'',
                 amount:0,
                 securityDeposit:0,
                 efficiencyDeposit:0,
@@ -3699,6 +3816,13 @@
                 gameLevelingTypeOptions:[], // 游戏代练类型 选项
                 addDay:0, // 增加的天数
                 addHour:0, // 增加的小时
+                complainMessageForm:{
+                    trade_no:this.tradeNo,
+                    reason:'',
+                    pic:'',
+                    dialogVisible:false,
+                    dialogImageUrl:'',
+                },
                 form: {
                     trade_no:this.tradeNo,
                     status:0,
@@ -3845,7 +3969,9 @@
                 },
                 platformData: [],
                 taobaoData:[],
-                logData:[]
+                logData:[],
+                complainDesData: [],
+                complainMessageData: []
             };
         },
         methods: {
@@ -4130,7 +4256,7 @@
             },
             handleOrderTab(tab, event) {
                 if (tab.name == 2) {
-
+                   this.handleComplainData();
                 }
                 // 订单操作日志
                 if (tab.name == 3) {
@@ -4485,15 +4611,71 @@
             handleRepeatOrder() {
                 location.href= this.orderRepeatApi + '/' + this.tradeNo;
             },
+            // 打开图片大图
+            handleOpenImage(src){
+                console.log(src);
+                const h = this.$createElement;
+                this.$msgbox({
+                    center: true,
+                    showConfirmButton:false,
+                    customClass:'img-box',
+                    message: h('img', {attrs:{src:src}}, '')
+                });
+            },
+            // 获取仲裁数据
+            handleComplainData() {
+                axios.post(this.complainInfoApi, {trade_no:this.tradeNo}).then(res => {
+                    this.complainDesData = [res.data.detail];
+                    this.complainMessageData = res.data.info;
+                });
+            },
+            // 添加仲裁留言
+            handleAddComplainMessageForm() {
+                axios.post(this.addComplainInfoApi, this.complainMessageForm).then(res => {
+                    if (res.data.status == 1) {
+                        this.$message.success('发送成功');
+                        this.complainMessageForm.reason = '';
+                        this.$refs.complainMessageUpload.clearFiles();
+                        this.handleComplainData();
+                    }
+                });
+            },
+            handleUploadFile(options){
+                let file = options.file;
+                if (file) {
+                    this.fileReader.readAsDataURL(file)
+                }
+                this.fileReader.onload = () => {
+                    this.complainMessageForm.pic = this.fileReader.result;
+                }
+            },
+            HandleBeforeUpload(file) {
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return true;
+            }
         },
         created() {
             this.handleFromGameRegionServerOptions();
             this.handleFromData();
+        },
+        mounted () {
+            this.fileReader = new FileReader()
         }
     }
 </script>
 
 <style lang="less">
+    .img-box{
+        width: auto;
+        padding:0;
+        background-color:transparent;
+        border: none;
+        box-shadow:none;
+    }
     .el-col {
         border-radius: 4px;
     }

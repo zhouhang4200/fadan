@@ -10,8 +10,7 @@
                         action="action"
                         list-type="picture-card"
                         :on-preview="handleUploadPreview"
-                        :http-request="handleUploadFile"
-                        :on-remove="handleRemove">
+                        :http-request="handleUploadFile">
                     <i class="el-icon-plus"></i>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible">
@@ -87,9 +86,6 @@
             },
             HandleResetForm(formName) {
                 this.$refs[formName].resetFields();
-            },
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
             },
             handleUploadPreview(file) {
                 this.dialogImageUrl = file.url;
