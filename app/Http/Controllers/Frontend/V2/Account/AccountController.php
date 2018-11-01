@@ -10,6 +10,7 @@ use App\Models\LoginHistory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class AccountController extends Controller
@@ -171,15 +172,6 @@ class AccountController extends Controller
     }
 
     /**
-     * 编辑岗位
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function employeeEdit()
-    {
-        return view('frontend.v2.account.employee-edit');
-    }
-
-    /**
      * 岗位新增接口
      * @return mixed
      */
@@ -192,6 +184,7 @@ class AccountController extends Controller
             if ($isSingle) {
                 return response()->ajax(0, '账号名已存在!');
             }
+            myLog('test', [request('station')]);
             // 数据
             $data['api_token'] = Str::random(25);
             $data['username'] = request('username');
@@ -220,8 +213,39 @@ class AccountController extends Controller
         return response()->ajax(1, '添加成功');
     }
 
+    /**
+     * 员工岗位修改
+     * @return mixed
+     */
     public function employeeUpdate()
     {
+        DB::beginTransaction();
 
+        try {
+            // 子账号
+            $user = User::find(request('id'));
+            // 如果存在密码则修改密码
+            if (request('password')) {
+                $user->password = bcrypt(request('password'));
+            }
+            // 关联到管理员-角色表
+            $roleIds = request('station', []);
+            $user->newRoles()->sync($roleIds);
+            // 更新账号
+            $user->username = request('username');
+            $user->phone = request('phone');
+            $user->qq = request('qq');
+            $user->wechat = request('wechat');
+            $user->leveling_type = request('leveling_type');
+            $user->remark = request('remark');
+            $user->save();
+            // 清除缓存
+            Cache::forget('newPermissions:user:'.$user->id);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->ajax(0, '修改失败！');
+        }
+        DB::commit();
+        return response()->ajax(1, '修改成功!');
     }
 }

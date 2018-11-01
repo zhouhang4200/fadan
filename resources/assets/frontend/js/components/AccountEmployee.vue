@@ -102,11 +102,11 @@
                 label="操作"
                 width="250">
                 <template slot-scope="scope">
-                    <el-button v-if="scope.row.id > 0"
+                    <el-button
                                type="primary"
                                size="small"
-                               @click="employeeEdit(scope.row.id)">编辑</el-button>
-                    <el-button v-if="scope.row.id > 0"
+                               @click="ShowEditForm(scope.row)">编辑</el-button>
+                    <el-button
                                type="primary"
                                size="small"
                                @click="employeeDelete(scope.row.id)">删除</el-button>
@@ -121,6 +121,47 @@
                 layout="prev, pager, next, jumper"
                 :total="TotalPage">
         </el-pagination>
+
+        <el-dialog title="岗位编辑" :visible.sync="dialogFormVisible">
+            <el-form :model="form" ref="form" :rules="rules" label-width="80px">
+                <el-form-item label="*账号" prop="name">
+                    <el-input v-model="form.name" name="name" autocomplete="off" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="*昵称" prop="username">
+                    <el-input v-model="form.username" name="username" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="*密码" prop="password">
+                    <el-input v-model="form.password" autocomplete="off" placeholder="不填写则为原密码"></el-input>
+                </el-form-item>
+                <el-form-item label="*类型" prop="leveling_type">
+                    <el-radio-group v-model="form.leveling_type">
+                        <el-radio :label="1" name="leveling_type" autocomplete="off">接单</el-radio>
+                        <el-radio :label="2" name="leveling_type" autocomplete="off">发单</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="*岗位" prop="station">
+                    <el-checkbox-group v-model="form.station">
+                        <el-checkbox v-for="(value, key) of AccountEmployeeStation" :value="key" :key="key"  :label="key">{{ value }}</el-checkbox>
+                    </el-checkbox-group>
+                </el-form-item>
+                <el-form-item label="*电话" prop="phone">
+                    <el-input v-model.number="form.phone" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="QQ" prop="qq">
+                    <el-input v-model="form.qq" name="qq" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="微信" prop="wechat">
+                    <el-input v-model="form.wechat" name="wechat" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="remark">
+                    <el-input type="textarea" v-model="form.remark" name="remark" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('form')">确认修改</el-button>
+                    <el-button @click="dialogFormVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 
@@ -131,11 +172,46 @@
             'AccountEmployeeStationApi',
             'AccountEmployeeDataListApi',
             'AccountEmployeeSwitchApi',
-            'AccountEmployeeEditApi',
+            'AccountEmployeeUpdateApi',
             'AccountEmployeeDeleteApi',
             'AccountEmployeeCreateApi',
         ],
         methods: {
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        axios.post(this.AccountEmployeeUpdateApi, this.form).then(res => {
+                            this.$message({
+                                showClose: true,
+                                type: res.data.status == 1 ? 'success' : 'error',
+                                message: res.data.message
+                            });
+                        }).catch(err => {
+                            this.$alert('获取数据失败, 请重试!', '提示', {
+                                confirmButtonText: '确定',
+                                callback: action => {
+                                }
+                            });
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+            },
+            ShowEditForm(row) {
+                this.dialogFormVisible = true;
+                this.form = row;
+                let arr=[];
+                row.new_roles.forEach(function(v){
+                    arr.push(v.id+'');
+                });
+                console.log(arr);
+                this.form.station = arr;
+                console.log(this.form.station);
+            },
+            EmployeeUpdate () {
+
+            },
             // 加载数据
             handleTableData(){
                 axios.post(this.AccountEmployeeDataListApi, this.searchParams).then(res => {
@@ -164,6 +240,7 @@
             handleStation(){
                 axios.post(this.AccountEmployeeStationApi, this.searchParams).then(res => {
                    this.AccountEmployeeStation = res.data;
+                   this.form.station = res.data;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -197,9 +274,6 @@
                     });
                 });
             },
-            employeeEdit(id) {
-                window.location.gref=this.AccountEmployeeEditApi+"?user_id="+id;
-            },
             employeeDelete (id) {
                 axios.post(this.AccountEmployeeDeleteApi, {user_id:id}).then(res => {
                     this.$message({
@@ -218,7 +292,10 @@
             },
             employeeAdd() {
                 window.location.href=this.AccountEmployeeCreateApi;
-            }
+            },
+            employeeEdit(id) {
+                window.location.href=this.AccountEmployeeCreateApi+"?user_id="+id;
+            },
         },
         created () {
             this.handleTableData();
@@ -226,7 +303,38 @@
             this.handleStation();
         },
         data() {
+            var checkPhone = (rule, value, callback) => {
+                if (!value) {
+                    return callback(new Error('必填项不能为空!'));
+                }
+
+                if (!Number.isInteger(value)) {
+                    callback(new Error('请输入数字值！'));
+                } else {
+                    const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+                    if (reg.test(value)) {
+                        callback();
+                    } else {
+                        callback(new Error('请输入正确的手机号！'));
+                    }
+                    callback();
+                }
+                callback();
+            };
+            var validatePass = (rule, value, callback) => {
+                if (value && (value.length < 6 || value.length > 22)) {
+                    callback(new Error('请填写6-22位长度的密码！'));
+                }
+                callback();
+            };
+            var checkHas = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('必填项不能为空!'));
+                }
+                callback();
+            };
             return {
+                dialogFormVisible:false,
                 AccountEmployeeUser:{},
                 AccountEmployeeStation:{},
                 searchParams:{
@@ -236,7 +344,25 @@
                     page:1,
                 },
                 TotalPage:0,
-                tableData: []
+                tableData: [],
+                rules:{
+                    password: [{ validator: validatePass, trigger: 'blur' }],
+                    phone: [{ validator: checkPhone, trigger: 'blur' }],
+                    username:[{ validator: checkHas, trigger: 'blur' }],
+                    name:[{ validator: checkHas, trigger: 'blur' }],
+                    leveling_type:[{ validator: checkHas, trigger: 'blur' }],
+                },
+                form: {
+                    username: '',
+                    name: '',
+                    phone: '',
+                    password: '',
+                    leveling_type: '',
+                    station: [],
+                    qq: '',
+                    wechat: '',
+                    remark: ''
+                }
             }
         }
     }
