@@ -41,7 +41,7 @@
             </el-table-column>
             <el-table-column
                     prop="username"
-                    label="员工姓名"
+                    label="员工昵称"
                     width="150">
             </el-table-column>
             <el-table-column
@@ -209,9 +209,6 @@
                 this.form.station = arr;
                 console.log(this.form.station);
             },
-            EmployeeUpdate () {
-
-            },
             // 加载数据
             handleTableData(){
                 axios.post(this.AccountEmployeeDataListApi, this.searchParams).then(res => {
@@ -292,9 +289,6 @@
             },
             employeeAdd() {
                 window.location.href=this.AccountEmployeeCreateApi;
-            },
-            employeeEdit(id) {
-                window.location.href=this.AccountEmployeeCreateApi+"?user_id="+id;
             },
         },
         created () {

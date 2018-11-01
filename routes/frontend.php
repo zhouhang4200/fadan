@@ -169,6 +169,13 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::get('employee-create', 'AccountController@employeeCreate')->name('v2.account.employee-create');
             Route::post('employee-add', 'AccountController@employeeAdd')->name('v2.account.employee-add');
             Route::post('employee-form', 'AccountController@employeeForm')->name('v2.account.employee-form');
+            // 打手黑名单
+            Route::get('black-list', 'AccountController@blackList')->name('v2.account.black-list');
+            Route::post('black-list-data-list', 'AccountController@blackListDataList')->name('v2.account.black-list-data-list');
+            Route::post('black-list-add', 'AccountController@blackListAdd')->name('v2.account.black-list-add');
+            Route::post('black-list-update', 'AccountController@blackListUpdate')->name('v2.account.black-list-update');
+            Route::post('black-list-delete', 'AccountController@blackListDelete')->name('v2.account.black-list-delete');
+            Route::post('black-list-name', 'AccountController@blackListName')->name('v2.account.black-list-name');
         });
     });
 
