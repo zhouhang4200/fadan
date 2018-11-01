@@ -605,13 +605,12 @@ class GameLevelingController extends Controller
         $order = GameLevelingOrder::filter([
             'trade_no' => request('trade_no'),
             'parent_user_id' => request()->user()->getPrimaryUserId(),
-        ])->lockUpdate()->first();
+        ])->lockForUpdate()->first();
 
         if (in_array($order->status, [13, 14, 17])) {
-            $order->update([
-               'day' => bcadd($order->day, request('day'), 0),
-               'hour' => bcadd($order->hour, request('hour'), 0),
-            ]);
+            $order->day = bcadd($order->day, request('day'), 0);
+            $order->hour = bcadd($order->hour, request('hour'), 0);
+            $order->save();
         } else {
             return response()->ajax(0, '当前状态不支付增加代练时间!');
         }
