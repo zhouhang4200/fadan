@@ -877,6 +877,54 @@ class GameLevelingController extends Controller
     }
 
     /**
+     * @return mixed
+     */
+    public function message()
+    {
+        DB::beginTransaction();
+        try {
+            if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
+                $message = call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['getMessage']], [$order]);
+            } else {
+                throw new GameLevelingOrderOperateException('订单不存在!');
+            }
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            return response()->ajax(0, $e->getMessage());
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->ajax(0, '订单异常！');
+        }
+        DB::commit();
+        return response()->ajax(1, '操作成功!', $message);
+    }
+
+    /**
+     * 发送订单留言
+     * @return mixed
+     */
+    public function sendMessage()
+    {
+        DB::beginTransaction();
+        try {
+            if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
+                $content = request('content');
+                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['replyMessage']], [$order, $content]);
+            } else {
+                throw new GameLevelingOrderOperateException('订单不存在!');
+            }
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            return response()->ajax(0, $e->getMessage());
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->ajax(0, '订单异常！');
+        }
+        DB::commit();
+        return response()->ajax(1, '操作成功!');
+    }
+
+    /**
      * 修改订单
      * @return mixed
      */

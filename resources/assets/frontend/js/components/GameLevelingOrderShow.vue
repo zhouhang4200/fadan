@@ -2,15 +2,16 @@
     <div class="game-leveling-order-create">
         <div class="main">
             <el-row :gutter="10">
-                <el-form ref="form"  :rules="rules" :model="form" label-width="120px">
+                <el-form ref="form" :rules="rules" :model="form" label-width="120px">
                     <el-col :span="16" :style="{'margin-bottom': displayFooter ? '60px' : '15px'}">
-                        <div class="grid-content bg-purple" style="padding: 15px;background-color: #fff" >
+                        <div class="grid-content bg-purple"
+                             style="padding: 15px;background-color: #fff;position: relative">
                             <el-tabs v-model="orderTab" @tab-click="handleOrderTab">
                                 <el-tab-pane label="订单信息" name="1">
 
                                     <el-card class="box-card">
-                                        <div  class="text item">
-                                            <el-row >
+                                        <div class="text item">
+                                            <el-row>
                                                 <el-col :span="12">
                                                     <el-form-item
                                                             label="游戏/区/服"
@@ -51,7 +52,7 @@
 
                                                 </el-col>
                                             </el-row>
-                                            <el-row >
+                                            <el-row>
                                                 <el-col :span="12">
                                                     <el-form-item label="角色名称" prop="game_role">
                                                         <el-row :gutter="10">
@@ -68,7 +69,7 @@
                                                     </el-form-item>
                                                 </el-col>
                                             </el-row>
-                                            <el-row >
+                                            <el-row>
                                                 <el-col :span="12">
                                                     <el-form-item label="游戏账号" prop="game_account">
 
@@ -107,7 +108,7 @@
                                     </el-card>
 
                                     <el-card class="box-card">
-                                        <div  class="text item">
+                                        <div class="text item">
                                             <el-row>
                                                 <el-col :span="12">
                                                     <el-form-item
@@ -122,7 +123,8 @@
                                                                         autocomplete="off">
                                                                     <el-tooltip slot="append" placement="top">
                                                                         <div slot="content">多行信息<br/>第二行信息</div>
-                                                                        <el-button><i class="el-icon-question"></i></el-button>
+                                                                        <el-button><i class="el-icon-question"></i>
+                                                                        </el-button>
                                                                     </el-tooltip>
                                                                 </el-input>
                                                             </el-col>
@@ -186,7 +188,7 @@
                                             </el-row>
                                             <el-row>
                                                 <el-col :span="12">
-                                                    <el-form-item  label="代练说明"  prop="explain">
+                                                    <el-form-item label="代练说明" prop="explain">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
@@ -202,7 +204,7 @@
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="12">
-                                                    <el-form-item label="代练要求"  prop="requirement">
+                                                    <el-form-item label="代练要求" prop="requirement">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
@@ -220,7 +222,7 @@
                                             </el-row>
                                             <el-row>
                                                 <el-col :span="12">
-                                                    <el-form-item label="代练价格"  prop="amount">
+                                                    <el-form-item label="代练价格" prop="amount">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
@@ -239,7 +241,7 @@
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="12">
-                                                    <el-form-item label="来源价格"  prop="source_amount">
+                                                    <el-form-item label="来源价格" prop="source_amount">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
@@ -325,10 +327,10 @@
                                     </el-card>
 
                                     <el-card class="box-card">
-                                        <div  class="text item">
+                                        <div class="text item">
                                             <el-row>
                                                 <el-col :span="12">
-                                                    <el-form-item label="加价幅度"  prop="price_increase_step">
+                                                    <el-form-item label="加价幅度" prop="price_increase_step">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
@@ -343,7 +345,7 @@
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="12">
-                                                    <el-form-item label="加价上限"  prop="price_ceiling">
+                                                    <el-form-item label="加价上限" prop="price_ceiling">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
@@ -361,7 +363,7 @@
                                             <el-row>
                                                 <el-col :span="12">
 
-                                                    <el-form-item label="补款单号"  prop="take_order_password">
+                                                    <el-form-item label="补款单号" prop="take_order_password">
 
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
@@ -386,16 +388,16 @@
                                                             :key="domain.key"
                                                             :prop="'domains.' + index + '.value'"
                                                             :rules="{required: true, message: '补款单号不能为空', trigger: 'blur'}">
-                                                            <el-row :gutter="10">
-                                                                <el-col :span="22">
-                                                                    <el-input v-model="domain.value"></el-input>
-                                                                </el-col>
-                                                                <el-col :span="1" class="icon-button">
-                                                                    <i class="el-icon-remove-outline"
-                                                                       @click.prevent="removeDomain(domain)">
-                                                                    </i>
-                                                                </el-col>
-                                                            </el-row>
+                                                        <el-row :gutter="10">
+                                                            <el-col :span="22">
+                                                                <el-input v-model="domain.value"></el-input>
+                                                            </el-col>
+                                                            <el-col :span="1" class="icon-button">
+                                                                <i class="el-icon-remove-outline"
+                                                                   @click.prevent="removeDomain(domain)">
+                                                                </i>
+                                                            </el-col>
+                                                        </el-row>
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="12">
@@ -449,28 +451,28 @@
                                         </el-table-column>
                                     </el-table>
                                     <p></p>
-                                    <el-row :gutter="12" v-if="complainDesData.length" >
+                                    <el-row :gutter="12" v-if="complainDesData.length">
                                         <el-col :span="8">
                                             <el-card
                                                     v-if="complainDesData[0].pic1"
                                                     :style="{
-                                                        backgroundImage:'url(' + complainDesData[0].pic1 + ')',
-                                                        height:'150px',
-                                                        backgroundSize: 'cover',
-                                                        width: '100%',
-                                                        display:'block',
-                                                      }" @click.native="handleOpenImage(complainDesData[0].pic1)">
+                                                backgroundImage:'url(' + complainDesData[0].pic1 + ')',
+                                                height:'150px',
+                                                backgroundSize: 'cover',
+                                                width: '100%',
+                                                display:'block',
+                                              }" @click.native="handleOpenImage(complainDesData[0].pic1)">
                                             </el-card>
                                         </el-col>
                                         <el-col :span="8">
                                             <el-card
                                                     v-if="complainDesData[0].pic2"
                                                     :style="{
-                                                        backgroundImage:'url(' + complainDesData[0].pic2 + ')',
-                                                        height:'150px',
-                                                        backgroundSize: 'cover',
-                                                        width: '100%',
-                                                    }"
+                                                backgroundImage:'url(' + complainDesData[0].pic2 + ')',
+                                                height:'150px',
+                                                backgroundSize: 'cover',
+                                                width: '100%',
+                                            }"
                                                     @click.native="handleOpenImage(complainDesData[0].pic2)">
                                             </el-card>
                                         </el-col>
@@ -478,11 +480,11 @@
                                             <el-card
                                                     v-if="complainDesData[0].pic3"
                                                     :style="{
-                                                        backgroundImage:'url(' + complainDesData[0].pic3 + ')',
-                                                        height:'150px',
-                                                        backgroundSize: 'cover',
-                                                        width: '100%',
-                                                    }"
+                                                backgroundImage:'url(' + complainDesData[0].pic3 + ')',
+                                                height:'150px',
+                                                backgroundSize: 'cover',
+                                                width: '100%',
+                                            }"
                                                     @click.native="handleOpenImage(complainDesData[0].pic3)">
                                             </el-card>
                                         </el-col>
@@ -510,19 +512,21 @@
                                                 label="留言证据"
                                                 width="80">
                                             <template slot-scope="scope">
-                                                <el-button icon="el-icon-search" v-if="scope.row.pic" @click.native="handleOpenImage(scope.row.pic)"></el-button>
+                                                <el-button icon="el-icon-search" v-if="scope.row.pic"
+                                                           @click.native="handleOpenImage(scope.row.pic)"></el-button>
                                             </template>
                                         </el-table-column>
                                     </el-table>
                                     <p></p>
-                                    <el-form :model="complainMessageForm" ref="complainMessageForm" label-width="100px" class="demo-ruleForm">
+                                    <el-form :model="complainMessageForm" ref="complainMessageForm" label-width="100px"
+                                             class="demo-ruleForm">
                                         <el-form-item
                                                 label="留言内容"
                                                 :rules="[{ required: true, message: '留言内容不能为空'}]">
                                             <el-input
                                                     type="textarea"
-                                                      :rows="6"
-                                                      v-model="complainMessageForm.reason">
+                                                    :rows="6"
+                                                    v-model="complainMessageForm.reason">
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item label="上传证据">
@@ -538,7 +542,8 @@
                                             </el-dialog>
                                         </el-form-item>
                                         <el-form-item>
-                                            <el-button type="primary" @click="handleAddComplainMessageForm()">提交</el-button>
+                                            <el-button type="primary" @click="handleAddComplainMessageForm()">提交
+                                            </el-button>
                                         </el-form-item>
                                     </el-form>
                                 </el-tab-pane>
@@ -570,31 +575,39 @@
                                     </el-table>
                                 </el-tab-pane>
                             </el-tabs>
+                            <el-button type="primary" icon="el-icon-document"
+                                       style="position: absolute; right: 15px; top:15px"
+                                       @click="handleOpenChat">
+                                订单留言
+                            </el-button>
+                            <el-button type="primary" icon="el-icon-search"
+                                       style="position: absolute; right: 125px; top:15px">查看图片
+                            </el-button>
                         </div>
                     </el-col>
                 </el-form>
                 <el-col :span="8">
-                    <div class="grid-content bg-purple" style="padding: 15px;background-color: #fff" >
+                    <div class="grid-content bg-purple" style="padding: 15px;background-color: #fff">
                         <el-tabs v-model="dataTab">
                             <el-tab-pane label="平台数据" name="1">
                                 <el-table
-                                            :data="platformData"
-                                            :show-header=false
-                                            border
-                                            style="width: 100%">
-                                        <el-table-column
-                                                prop="name"
-                                                label=""
-                                                width="120">
-                                        </el-table-column>
-                                        <el-table-column
-                                                prop="value"
-                                                label="">
-                                            <template slot-scope="scope">
-                                                <span v-html="scope.row.value"></span>
-                                            </template>
-                                        </el-table-column>
-                                    </el-table>
+                                        :data="platformData"
+                                        :show-header=false
+                                        border
+                                        style="width: 100%">
+                                    <el-table-column
+                                            prop="name"
+                                            label=""
+                                            width="120">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="value"
+                                            label="">
+                                        <template slot-scope="scope">
+                                            <span v-html="scope.row.value"></span>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
                             </el-tab-pane>
                             <el-tab-pane label="淘宝数据" name="2">
                                 <el-table
@@ -629,7 +642,8 @@
                         <el-button v-if="(form.status == 1 || form.status == 22)"
                                    type="primary"
                                    @click="handleSubmitForm('form')"
-                                   style="margin-right: 8px">确认修改</el-button>
+                                   style="margin-right: 8px">确认修改
+                        </el-button>
 
                         <!--未接单 1 -->
                         <span v-if="form.status == 1">
@@ -730,6 +744,36 @@
                 </el-col>
             </el-row>
         </div>
+        <div id="chat">
+            <el-dialog
+                    title="订单留言"
+                    :visible="chatVisible" :before-close="handleCloseChat">
+                <div class="chat-main">
+                    <ul style="padding: 0">
+                        <li v-for="item in chatData" :class="[item.sender == '您' ? 'chat-mine' : 'chat-user']">
+                            <div class="chat-user">
+                                <img src="/frontend/v2/images/message_avatar.jpg">
+                                <cite>
+                                    <i>{{ item.send_time }} </i> {{ item.sender}}
+                                </cite>
+                            </div>
+                            <div class="chat-text">{{ item.send_content}}</div>
+                        </li>
+                    </ul>
+                </div>
+                <el-form :model="form">
+                    <el-input
+                            type="textarea"
+                            :rows="5"
+                            v-model="chatForm.content">
+                    </el-input>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="handleChatForm">发送留言</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
 
         <ApplyComplain v-if="applyComplainVisible"
                        :tradeNo="tradeNo"
@@ -751,13 +795,14 @@
 <script>
     import ApplyComplain from './ApplyComplain';
     import ApplyConsult from './ApplyConsult';
+
     export default {
         name: "GameLevelingShow",
         components: {
             ApplyComplain,
             ApplyConsult,
         },
-        props:[
+        props: [
             'tradeNo',
             'orderEditApi',
             'orderUpdateApi',
@@ -783,11 +828,13 @@
             'cancelAnomalyApi',
             'complainInfoApi',
             'addComplainInfoApi',
+            'messageApi',
+            'sendMessageApi',
         ],
         computed: {
             fieldDisabled() {
                 if (this.form.status == 1 || this.form.status == 22) {
-                    return  false;
+                    return false;
                 } else {
                     return true;
                 }
@@ -802,14 +849,15 @@
         },
         data() {
             return {
-                fileReader:'',
-                amount:0,
-                securityDeposit:0,
-                efficiencyDeposit:0,
-                applyConsultVisible:false,
-                applyComplainVisible:false,
-                orderTab:"1",
-                dataTab:"1",
+                fileReader: '',
+                amount: 0,
+                securityDeposit: 0,
+                efficiencyDeposit: 0,
+                chatVisible: false,
+                applyConsultVisible: false,
+                applyComplainVisible: false,
+                orderTab: "1",
+                dataTab: "1",
                 gameRegionServerOptions: [], // 游戏/区/服 选项
                 dayHourOptions: [  // 天数/小时  选项
                     {
@@ -3813,141 +3861,146 @@
                         ]
                     },
                 ],
-                gameLevelingTypeOptions:[], // 游戏代练类型 选项
-                addDay:0, // 增加的天数
-                addHour:0, // 增加的小时
-                complainMessageForm:{
-                    trade_no:this.tradeNo,
-                    reason:'',
-                    pic:'',
-                    dialogVisible:false,
-                    dialogImageUrl:'',
+                gameLevelingTypeOptions: [], // 游戏代练类型 选项
+                addDay: 0, // 增加的天数
+                addHour: 0, // 增加的小时
+                chatData:[],
+                complainMessageForm: {
+                    trade_no: this.tradeNo,
+                    reason: '',
+                    pic: '',
+                    dialogVisible: false,
+                    dialogImageUrl: '',
+                },
+                chatForm: {
+                    trade_no: this.tradeNo,
+                    content: '',
                 },
                 form: {
-                    trade_no:this.tradeNo,
-                    status:0,
-                    game_leveling_order_consult:[],
-                    game_leveling_order_complain:[],
+                    trade_no: this.tradeNo,
+                    status: 0,
+                    game_leveling_order_consult: [],
+                    game_leveling_order_complain: [],
                     game_region_server: [], // 选择的 游戏/区/服
-                    day_hour:[], // 选择的代练天/小时
+                    day_hour: [], // 选择的代练天/小时
                     game_id: 0, // 游戏ID
                     game_region_id: 0, // 游戏区ID
                     game_server_id: 0, // 游戏服务器ID
                     game_leveling_type_id: '', // 代练类型ID
-                    amount:'', // 代练金额
-                    source_amount:'', // 来源价格
-                    security_deposit:'', // 安全保证金
-                    efficiency_deposit:'', // 效率保证金
-                    title:'', //代练标题
-                    game_role:'', // 游戏角色
-                    game_account:'', // 游戏账号
-                    game_password:'', // 游戏密码
-                    price_increase_step:'', // 自动加价步长
-                    price_ceiling:'', // 自动加价上限
-                    explain:'', // 代练说明
-                    requirement:'', // 代练要求
-                    take_order_password:'', // 接单密码
-                    player_phone:'', // 玩家电话
-                    user_qq:'', // 商户qq
+                    amount: '', // 代练金额
+                    source_amount: '', // 来源价格
+                    security_deposit: '', // 安全保证金
+                    efficiency_deposit: '', // 效率保证金
+                    title: '', //代练标题
+                    game_role: '', // 游戏角色
+                    game_account: '', // 游戏账号
+                    game_password: '', // 游戏密码
+                    price_increase_step: '', // 自动加价步长
+                    price_ceiling: '', // 自动加价上限
+                    explain: '', // 代练说明
+                    requirement: '', // 代练要求
+                    take_order_password: '', // 接单密码
+                    player_phone: '', // 玩家电话
+                    user_qq: '', // 商户qq
                     domains: [],
                     remark: '',
                 },
                 rules: {
-                    game_leveling_type_id:[
-                        { required: true, message: '请选择代练类型', trigger: 'change' },
+                    game_leveling_type_id: [
+                        {required: true, message: '请选择代练类型', trigger: 'change'},
                     ],
-                    game_role:[
-                        { required: true, message: '请输入游戏角色', trigger: 'blur' },
+                    game_role: [
+                        {required: true, message: '请输入游戏角色', trigger: 'blur'},
                     ],
-                    game_account:[
-                        { required: true, message: '请输入游戏账号', trigger: 'change' },
+                    game_account: [
+                        {required: true, message: '请输入游戏账号', trigger: 'change'},
                     ],
-                    game_password:[
-                        { required: true, message: '请输入游戏密码', trigger: 'change' },
+                    game_password: [
+                        {required: true, message: '请输入游戏密码', trigger: 'change'},
                     ],
-                    title:[
-                        { required: true, message: '请输入代练标题', trigger: 'change' },
-                        { min: 3, max: 35, message: '长度在 3 到 35 个字符', trigger: 'change' }
+                    title: [
+                        {required: true, message: '请输入代练标题', trigger: 'change'},
+                        {min: 3, max: 35, message: '长度在 3 到 35 个字符', trigger: 'change'}
                     ],
-                    day_hour:[
-                        {type: 'array', required: true, message: '请选择代练天/小时',  trigger: 'change'},
+                    day_hour: [
+                        {type: 'array', required: true, message: '请选择代练天/小时', trigger: 'change'},
                     ],
-                    game_region_server:[
-                        {type: 'array', required: true, message: '请选择游戏/区/服', trigger: 'change' },
+                    game_region_server: [
+                        {type: 'array', required: true, message: '请选择游戏/区/服', trigger: 'change'},
                     ],
-                    explain:[
-                        { required: true, message: '请输入代练说明', trigger: 'change' },
+                    explain: [
+                        {required: true, message: '请输入代练说明', trigger: 'change'},
                     ],
-                    requirement:[
-                        { required: true, message: '请输入代练要求', trigger: 'change' },
+                    requirement: [
+                        {required: true, message: '请输入代练要求', trigger: 'change'},
                     ],
                     amount: [
-                        { required: true, message: '请输入代练价格', trigger: 'change' }
+                        {required: true, message: '请输入代练价格', trigger: 'change'}
                     ],
                     source_amount: [
                         {
-                            validator:(rule, value, callback)=>{
-                                if(value != "" && value != undefined){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
+                            validator: (rule, value, callback) => {
+                                if (value != "" && value != undefined) {
+                                    if ((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false) {
                                         callback(new Error("加价幅度必须为数字值"));
-                                    }else{
+                                    } else {
                                         callback();
                                     }
-                                }else{
+                                } else {
                                     callback();
                                 }
                             },
-                            trigger:'blur'
+                            trigger: 'blur'
                         },
                     ],
                     efficiency_deposit: [
-                        { required: true, message: '请输入效率保证金', trigger: 'change' }
+                        {required: true, message: '请输入效率保证金', trigger: 'change'}
                     ],
                     security_deposit: [
-                        { required: true, message: '请输入安全保证金', trigger: 'change' }
+                        {required: true, message: '请输入安全保证金', trigger: 'change'}
                     ],
                     user_qq: [
-                        { required: true, message: '请输入商户QQ号', trigger: 'change' }
+                        {required: true, message: '请输入商户QQ号', trigger: 'change'}
                     ],
                     player_phone: [
-                        { required: true, message: '请输入无家电话', trigger: 'blur' },
-                        { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                        {required: true, message: '请输入无家电话', trigger: 'blur'},
+                        {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
                     ],
                     price_increase_step: [
                         {
-                            validator:(rule, value, callback)=>{
-                                if(value != "" && value != undefined){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
+                            validator: (rule, value, callback) => {
+                                if (value != "" && value != undefined) {
+                                    if ((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false) {
                                         callback(new Error("加价幅度必须为数字值"));
-                                    }else{
+                                    } else {
                                         callback();
                                     }
-                                }else{
+                                } else {
                                     callback();
                                 }
                             },
-                            trigger:'blur'
+                            trigger: 'blur'
                         },
                     ],
                     price_ceiling: [
                         {
-                            validator:(rule,value,callback)=>{
-                                if(value != "" && value != undefined){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
+                            validator: (rule, value, callback) => {
+                                if (value != "" && value != undefined) {
+                                    if ((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false) {
                                         callback(new Error("加价上限必须为数字值"));
-                                    }else{
+                                    } else {
                                         callback();
                                     }
-                                }else{
+                                } else {
                                     callback();
                                 }
                             },
-                            trigger:'blur'
+                            trigger: 'blur'
                         },
                     ],
 
                 },
-                status:{
+                status: {
                     1: '未接单',
                     13: '代练中',
                     14: '待验收',
@@ -3962,14 +4015,14 @@
                     23: '强制撤销',
                     24: '已撤单',
                 },
-                platform:{
-                    5:'丸子代练',
-                    1:'91代练',
-                    3:'蚂蚁代练',
+                platform: {
+                    5: '丸子代练',
+                    1: '91代练',
+                    3: '蚂蚁代练',
                 },
                 platformData: [],
-                taobaoData:[],
-                logData:[],
+                taobaoData: [],
+                logData: [],
                 complainDesData: [],
                 complainMessageData: []
             };
@@ -3980,163 +4033,163 @@
             },
             handleFromData() {
                 axios.post(this.orderEditApi, {trade_no: this.tradeNo}).then(res => {
-                        this.amount = res.data.amount;
-                        this.securityDeposit = res.data.security_deposit;
-                        this.efficiencyDeposit = res.data.efficiency_deposit;
-                        this.form.status = res.data.status;
-                        this.form.game_leveling_order_consult = res.data.game_leveling_order_consult;
-                        this.form.game_leveling_order_complain = res.data.game_leveling_order_complain;
-                        this.form.game_region_server =  [  // 选择的 游戏/区/服
-                            res.data.game_id,
-                            res.data.game_region_id,
-                            res.data.game_server_id,
-                        ];
-                        this.handleFromGameLevelingTypeIdOptions();
-                        this.form.day_hour = [   // 选择的代练天/小时
-                            res.data.day,
-                            res.data.hour,
-                        ];
-                        this.form.game_id = res.data.game_id; // 游戏ID
-                        this.form.game_region_id =  res.data.game_region_id; // 游戏区ID
-                        this.form.game_server_id =  res.data.game_server_id;// 游戏服务器ID
-                        this.form.game_leveling_type_id =  res.data.game_leveling_type_id; // 代练类型ID
-                        this.form.amount = res.data.amount; // 代练金额
-                        this.form.source_amount = res.data.source_amount; // 来源价格
-                        this.form.security_deposit = res.data.security_deposit; // 安全保证金
-                        this.form.efficiency_deposit = res.data.efficiency_deposit; // 效率保证金
-                        this.form.title = res.data.title; //代练标题
-                        this.form.game_role = res.data.game_role; // 游戏角色
-                        this.form.game_account = res.data.game_account; // 游戏账号
-                        this.form.game_password = res.data.game_password; // 游戏密码
-                        this.form.price_increase_step = res.data.price_increase_step != '0.0000' ? res.data.price_increase_step : ''; // 自动加价步长
-                        this.form.price_ceiling = res.data.price_ceiling != '0.0000' ? res.data.price_ceiling : ''; // 自动加价上限
-                        this.form.explain = res.data.game_leveling_order_detail.explain; // 代练说明
-                        this.form.requirement = res.data.game_leveling_order_detail.requirement; // 代练要求
-                        this.form.take_order_password = res.data.take_order_password; // 接单密码
-                        this.form.player_phone = res.data.game_leveling_order_detail.player_phone; // 玩家电话
-                        this.form.user_qq = res.data.game_leveling_order_detail.user_qq; // 商家qq
-                        this.form.remark =  res.data.remark;
-                        this.form.domains = [];
-                        // 平台数据
-                        this.platformData = [
-                            {
-                                name: '平台单号',
-                                value: res.data.trade_no,
-                            },
-                            {
-                                name: '订单状态',
-                                value: this.status[res.data.status]
-                            },
-                            {
-                                name: '接单平台',
-                                value: this.platform[res.data.platform_id]
-                            },
-                            {
-                                name: '打手呢称',
-                                value: res.data.game_leveling_order_detail.hatchet_man_name
-                            },
-                            {
-                                name: '打手电话',
-                                value: res.data.game_leveling_order_detail.hatchet_man_phone
-                            },
-                            {
-                                name: '打手QQ',
-                                value: res.data.game_leveling_order_detail.hatchet_man_qq
-                            },
-                            {
-                                name: '剩余代练时间',
-                                value: res.data.left_time
-                            },
-                            {
-                                name: '发布时间',
-                                value: res.data.created_at
-                            },
-                            {
-                                name: '接单时间',
-                                value: res.data.take_at
-                            },
-                            {
-                                name: '提验时间',
-                                value: res.data.apply_complete_at
-                            },
-                            {
-                                name: '结算时间',
-                                value: res.data.complete_at
-                            },
-                            {
-                                name: '发单客服',
-                                value: res.data.game_leveling_order_detail.username
-                            },
-                            {
-                                name: '撤销说明',
-                                value: res.data.consult_describe
-                            },
-                            {
-                                name: '仲裁说明',
-                                value: res.data.complain_describe
-                            },
-                            {
-                                name: '支付代练费用',
-                                value: res.data.pay_amount
-                            },
-                            {
-                                name: '获得赔偿金额',
-                                value: res.data.get_amount
-                            },
-                            {
-                                name: '手续费',
-                                value: res.data.get_poundage
-                            },
-                            {
-                                name: '最终支付金额',
-                                value: res.data.complain_amount
-                            },
-                        ];
-                        this.taobaoData = [
-                            {
-                                name: '店铺名',
-                                value: res.data.taobao_data.seller_nick,
-                            },
-                            {
-                                name: '天猫单号',
-                                value: res.data.taobao_data.tid,
-                            },
-                            {
-                                name: '订单状态',
-                                value: res.data.taobao_data.trade_status,
-                            },
-                            {
-                                name: '买家旺旺',
-                                value: res.data.taobao_data.buyer_nick,
-                            }, {
-                                name: '购买单价',
-                                value: res.data.taobao_data.price,
-                            },
-                            {
-                                name: '购买数量',
-                                value: res.data.taobao_data.num,
-                            },
-                            {
-                                name: '实付金额',
-                                value: res.data.taobao_data.payment,
-                            },
-                            {
-                                name: '所在区/服',
-                                value: res.data.taobao_data.region_server,
-                            },
-                            {
-                                name: '角色名称',
-                                value: res.data.taobao_data.role,
-                            },
-                            {
-                                name: '买家留言',
-                                value: res.data.taobao_data.buyer_message,
-                            },
-                            {
-                                name: '下单时间',
-                                value: res.data.taobao_data.created,
-                            }
-                        ];
+                    this.amount = res.data.amount;
+                    this.securityDeposit = res.data.security_deposit;
+                    this.efficiencyDeposit = res.data.efficiency_deposit;
+                    this.form.status = res.data.status;
+                    this.form.game_leveling_order_consult = res.data.game_leveling_order_consult;
+                    this.form.game_leveling_order_complain = res.data.game_leveling_order_complain;
+                    this.form.game_region_server = [  // 选择的 游戏/区/服
+                        res.data.game_id,
+                        res.data.game_region_id,
+                        res.data.game_server_id,
+                    ];
+                    this.handleFromGameLevelingTypeIdOptions();
+                    this.form.day_hour = [   // 选择的代练天/小时
+                        res.data.day,
+                        res.data.hour,
+                    ];
+                    this.form.game_id = res.data.game_id; // 游戏ID
+                    this.form.game_region_id = res.data.game_region_id; // 游戏区ID
+                    this.form.game_server_id = res.data.game_server_id;// 游戏服务器ID
+                    this.form.game_leveling_type_id = res.data.game_leveling_type_id; // 代练类型ID
+                    this.form.amount = res.data.amount; // 代练金额
+                    this.form.source_amount = res.data.source_amount; // 来源价格
+                    this.form.security_deposit = res.data.security_deposit; // 安全保证金
+                    this.form.efficiency_deposit = res.data.efficiency_deposit; // 效率保证金
+                    this.form.title = res.data.title; //代练标题
+                    this.form.game_role = res.data.game_role; // 游戏角色
+                    this.form.game_account = res.data.game_account; // 游戏账号
+                    this.form.game_password = res.data.game_password; // 游戏密码
+                    this.form.price_increase_step = res.data.price_increase_step != '0.0000' ? res.data.price_increase_step : ''; // 自动加价步长
+                    this.form.price_ceiling = res.data.price_ceiling != '0.0000' ? res.data.price_ceiling : ''; // 自动加价上限
+                    this.form.explain = res.data.game_leveling_order_detail.explain; // 代练说明
+                    this.form.requirement = res.data.game_leveling_order_detail.requirement; // 代练要求
+                    this.form.take_order_password = res.data.take_order_password; // 接单密码
+                    this.form.player_phone = res.data.game_leveling_order_detail.player_phone; // 玩家电话
+                    this.form.user_qq = res.data.game_leveling_order_detail.user_qq; // 商家qq
+                    this.form.remark = res.data.remark;
+                    this.form.domains = [];
+                    // 平台数据
+                    this.platformData = [
+                        {
+                            name: '平台单号',
+                            value: res.data.trade_no,
+                        },
+                        {
+                            name: '订单状态',
+                            value: this.status[res.data.status]
+                        },
+                        {
+                            name: '接单平台',
+                            value: this.platform[res.data.platform_id]
+                        },
+                        {
+                            name: '打手呢称',
+                            value: res.data.game_leveling_order_detail.hatchet_man_name
+                        },
+                        {
+                            name: '打手电话',
+                            value: res.data.game_leveling_order_detail.hatchet_man_phone
+                        },
+                        {
+                            name: '打手QQ',
+                            value: res.data.game_leveling_order_detail.hatchet_man_qq
+                        },
+                        {
+                            name: '剩余代练时间',
+                            value: res.data.left_time
+                        },
+                        {
+                            name: '发布时间',
+                            value: res.data.created_at
+                        },
+                        {
+                            name: '接单时间',
+                            value: res.data.take_at
+                        },
+                        {
+                            name: '提验时间',
+                            value: res.data.apply_complete_at
+                        },
+                        {
+                            name: '结算时间',
+                            value: res.data.complete_at
+                        },
+                        {
+                            name: '发单客服',
+                            value: res.data.game_leveling_order_detail.username
+                        },
+                        {
+                            name: '撤销说明',
+                            value: res.data.consult_describe
+                        },
+                        {
+                            name: '仲裁说明',
+                            value: res.data.complain_describe
+                        },
+                        {
+                            name: '支付代练费用',
+                            value: res.data.pay_amount
+                        },
+                        {
+                            name: '获得赔偿金额',
+                            value: res.data.get_amount
+                        },
+                        {
+                            name: '手续费',
+                            value: res.data.get_poundage
+                        },
+                        {
+                            name: '最终支付金额',
+                            value: res.data.complain_amount
+                        },
+                    ];
+                    this.taobaoData = [
+                        {
+                            name: '店铺名',
+                            value: res.data.taobao_data.seller_nick,
+                        },
+                        {
+                            name: '天猫单号',
+                            value: res.data.taobao_data.tid,
+                        },
+                        {
+                            name: '订单状态',
+                            value: res.data.taobao_data.trade_status,
+                        },
+                        {
+                            name: '买家旺旺',
+                            value: res.data.taobao_data.buyer_nick,
+                        }, {
+                            name: '购买单价',
+                            value: res.data.taobao_data.price,
+                        },
+                        {
+                            name: '购买数量',
+                            value: res.data.taobao_data.num,
+                        },
+                        {
+                            name: '实付金额',
+                            value: res.data.taobao_data.payment,
+                        },
+                        {
+                            name: '所在区/服',
+                            value: res.data.taobao_data.region_server,
+                        },
+                        {
+                            name: '角色名称',
+                            value: res.data.taobao_data.role,
+                        },
+                        {
+                            name: '买家留言',
+                            value: res.data.taobao_data.buyer_message,
+                        },
+                        {
+                            name: '下单时间',
+                            value: res.data.taobao_data.created,
+                        }
+                    ];
 
                 }).catch(err => {
                 });
@@ -4149,7 +4202,7 @@
             },
             handleFromGameLevelingTypeIdOptions(val) {
                 axios.post(this.gameLevelingTypesApi, {
-                    'game_id' : this.form.game_region_server[2]
+                    'game_id': this.form.game_region_server[2]
                 }).then(res => {
                     this.gameLevelingTypeOptions = res.data;
                 }).catch(err => {
@@ -4170,8 +4223,8 @@
                             });
                         }).catch(err => {
                             this.$message({
-                               'type': 'error',
-                               'message': '修改订单失败，服务器错误！',
+                                'type': 'error',
+                                'message': '修改订单失败，服务器错误！',
                             });
                         });
                     }
@@ -4187,11 +4240,11 @@
                     cancelButtonText: '取消',
                     inputPattern: /^[0-9]+.?[0-9]*$/,
                     inputErrorMessage: '代练价格只能为数字'
-                }).then(({ value }) => {
+                }).then(({value}) => {
                     // 发送加价请求 value 为写入的值
                     axios.post(this.orderAddAmountApi, {
-                        trade_no:this.form.trade_no,
-                        amount:value
+                        trade_no: this.form.trade_no,
+                        amount: value
                     }).then(res => {
                         this.$message({
                             'type': res.data.status == 1 ? 'success' : 'error',
@@ -4214,10 +4267,10 @@
                     message: h('div', null, [
                         h('el-cascader', {
                             props: {
-                                options:this.dayHourOptions,
+                                options: this.dayHourOptions,
                             },
-                            on:{
-                                'change' (addDayHour) {
+                            on: {
+                                'change'(addDayHour) {
                                     currentThis.addDay = addDayHour[0];
                                     currentThis.addHour = addDayHour[1];
                                 }
@@ -4231,9 +4284,9 @@
                         if (action == 'confirm') {
                             // 发送加天与小时请求
                             axios.post(this.orderAddDayHourApi, {
-                                trade_no:this.form.trade_no,
-                                day:this.addDay,
-                                hour:this.addHour
+                                trade_no: this.form.trade_no,
+                                day: this.addDay,
+                                hour: this.addHour
                             }).then(res => {
                                 this.$message({
                                     'type': res.data.status == 1 ? 'success' : 'error',
@@ -4256,11 +4309,11 @@
             },
             handleOrderTab(tab, event) {
                 if (tab.name == 2) {
-                   this.handleComplainData();
+                    this.handleComplainData();
                 }
                 // 订单操作日志
                 if (tab.name == 3) {
-                    axios.post(this.orderLogApi, {trade_no:this.tradeNo}).then(res => {
+                    axios.post(this.orderLogApi, {trade_no: this.tradeNo}).then(res => {
                         this.logData = res.data;
                     });
                 }
@@ -4287,14 +4340,14 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.deleteApi, {
-                        'trade_no' : this.form.trade_no
+                        'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
                             message: res.data.message
                         });
 
-                        if(res.data.status == 1) {
+                        if (res.data.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -4313,14 +4366,14 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.onSaleApi, {
-                        'trade_no' : this.form.trade_no
+                        'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
                             message: res.data.message
                         });
 
-                        if(res.data.status == 1) {
+                        if (res.data.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -4339,14 +4392,14 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.offSaleApi, {
-                        'trade_no' : this.form.trade_no
+                        'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
                             message: res.data.message
                         });
 
-                        if(res.data.status == 1) {
+                        if (res.data.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -4370,14 +4423,14 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.cancelComplainApi, {
-                        'trade_no' : this.form.trade_no
+                        'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
                             message: res.data.message
                         });
 
-                        if(res.data.status == 1) {
+                        if (res.data.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -4395,9 +4448,9 @@
                 this.$msgbox({
                     title: '查看验收图片',
                     message: h('el-carousel', {
-                            // props: {
-                            //     options:this.dayHourOptions,
-                            // },
+                        // props: {
+                        //     options:this.dayHourOptions,
+                        // },
                     }, '<h3>3</h3>'),
                     showCancelButton: true,
                     confirmButtonText: '确定',
@@ -4406,9 +4459,9 @@
                         if (action == 'confirm') {
                             // 发送加天与小时请求
                             axios.post(this.orderAddDayHourApi, {
-                                trade_no:this.form.trade_no,
-                                day:this.addDay,
-                                hour:this.addHour
+                                trade_no: this.form.trade_no,
+                                day: this.addDay,
+                                hour: this.addHour
                             }).then(res => {
                                 this.$message({
                                     'type': res.data.status == 1 ? 'success' : 'error',
@@ -4437,14 +4490,14 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.completeApi, {
-                        'trade_no' : this.form.trade_no
+                        'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
                             message: res.data.message
                         });
 
-                        if(res.data.status == 1) {
+                        if (res.data.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -4485,14 +4538,14 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.cancelConsultApi, {
-                        'trade_no' : this.form.trade_no
+                        'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
                             message: res.data.message
                         });
 
-                        if(res.data.status == 1) {
+                        if (res.data.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -4511,14 +4564,14 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.agreeConsultApi, {
-                        'trade_no' : this.form.trade_no
+                        'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
                             message: res.data.message
                         });
 
-                        if(res.data.status == 1) {
+                        if (res.data.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -4537,14 +4590,14 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.rejectConsultApi, {
-                        'trade_no' : this.form.trade_no
+                        'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
                             message: res.data.message
                         });
 
-                        if(res.data.status == 1) {
+                        if (res.data.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -4563,14 +4616,14 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.lockApi, {
-                        'trade_no' : this.form.trade_no
+                        'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
                             message: res.data.message
                         });
 
-                        if(res.data.status == 1) {
+                        if (res.data.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -4589,14 +4642,14 @@
                     type: 'warning'
                 }).then(() => {
                     axios.post(this.cancelLockApi, {
-                        'trade_no' : this.form.trade_no
+                        'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
                             type: res.data.status == 1 ? 'success' : 'error',
                             message: res.data.message
                         });
 
-                        if(res.data.status == 1) {
+                        if (res.data.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -4609,22 +4662,21 @@
             },
             // 重新下单
             handleRepeatOrder() {
-                location.href= this.orderRepeatApi + '/' + this.tradeNo;
+                location.href = this.orderRepeatApi + '/' + this.tradeNo;
             },
             // 打开图片大图
-            handleOpenImage(src){
-                console.log(src);
+            handleOpenImage(src) {
                 const h = this.$createElement;
                 this.$msgbox({
                     center: true,
-                    showConfirmButton:false,
-                    customClass:'img-box',
-                    message: h('img', {attrs:{src:src}}, '')
+                    showConfirmButton: false,
+                    customClass: 'img-box',
+                    message: h('img', {attrs: {src: src}}, '')
                 });
             },
             // 获取仲裁数据
             handleComplainData() {
-                axios.post(this.complainInfoApi, {trade_no:this.tradeNo}).then(res => {
+                axios.post(this.complainInfoApi, {trade_no: this.tradeNo}).then(res => {
                     this.complainDesData = [res.data.detail];
                     this.complainMessageData = res.data.info;
                 });
@@ -4640,7 +4692,7 @@
                     }
                 });
             },
-            handleUploadFile(options){
+            handleUploadFile(options) {
                 let file = options.file;
                 if (file) {
                     this.fileReader.readAsDataURL(file)
@@ -4656,36 +4708,69 @@
                     this.$message.error('上传头像图片大小不能超过 2MB!');
                 }
                 return true;
+            },
+            handleOpenChat() {
+                this.chatVisible = true;
+                this.handleChatData();
+            },
+            handleChatData() {
+                axios.post(this.messageApi, this.chatForm).then(res => {
+                    if (res.data.status == 1) {
+                        this.chatData = res.data.content;
+
+                        setTimeout(() => {
+                            let chatWindowsHeight = document.querySelector(".chat-main").scrollHeight;
+                            this.$nextTick(() => {
+                                document.querySelector(".chat-main").scrollTop = chatWindowsHeight;
+                            });
+                            this.chatForm.content = '';
+                        }, 80);
+                    }
+                });
+            },
+            handleChatForm() {
+                axios.post(this.sendMessageApi, this.chatForm).then(res => {
+                    if (res.data.status == 1) {
+                        this.handleChatData();
+                    }
+                });
+            },
+            handleCloseChat() {
+                this.chatVisible = false;
             }
         },
         created() {
             this.handleFromGameRegionServerOptions();
             this.handleFromData();
         },
-        mounted () {
+        mounted() {
             this.fileReader = new FileReader()
         }
     }
 </script>
 
 <style lang="less">
-    .img-box{
+    .img-box {
         width: auto;
-        padding:0;
-        background-color:transparent;
+        padding: 0;
+        background-color: transparent;
         border: none;
-        box-shadow:none;
+        box-shadow: none;
     }
+
     .el-col {
         border-radius: 4px;
     }
+
     .grid-content {
         border-radius: 4px;
         min-height: 36px;
     }
+
     .game-leveling-order-create .el-card__body {
         padding: 20px 20px 10px;
     }
+
     .game-leveling-order-create .el-card {
         border-radius: 0;
         border: 1px solid #ebeef5;
@@ -4695,14 +4780,155 @@
         -webkit-transition: none;
         transition: none;
     }
+
     .game-leveling-order-create .el-card__header {
         padding: 10px 20px;
     }
+
     .game-leveling-order-create .footer {
-        height: 60px;background-color: #fff;
-        position: fixed;bottom: 0;width:100%;
+        height: 60px;
+        background-color: #fff;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
         /*box-shadow:inset 0px 15px 15px -15px rgba(0, 0, 0, 0.1);*/
         /*!*-webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*!*/
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     }
+
+    #chat .el-dialog__header {
+        background-color: #efefef;
+    }
+    #chat .el-dialog__header .el-dialog__title {
+        font-size: 16px;
+    }
+    #chat .el-dialog__body {
+        padding: 0 20px 20px 20px;
+    }
+
+    #chat .el-dialog__footer {
+        padding: 0 20px 10px;
+        padding-top: 0;
+    }
+    .chat-title {
+        position: absolute;
+        top: -80px;
+        height: 80px;
+    }
+    .chat-main {
+        height: 350px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .chat-main ul .chat-mine {
+        text-align: right;
+        padding-left: 0;
+        padding-right: 60px;
+    }
+
+    .chat-main ul .chat-mine .chat-user {
+        position: absolute;
+        left: auto;
+        right: 3px;
+    }
+
+    .chat-main ul .chat-mine .chat-user img {
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+    }
+
+    .chat-main ul .chat-mine .chat-user cite {
+        left: auto;
+        right: 60px;
+        text-align: right;
+    }
+
+    .chat-main ul .chat-mine .chat-user cite i {
+        padding-left: 0;
+        padding-right: 15px;
+    }
+
+    .chat-main ul .chat-mine .chat-text {
+        margin-left: 0;
+        text-align: left;
+        background-color: #5FB878;
+        color: #fff;
+    }
+
+    .chat-main ul .chat-mine .chat-text:after {
+        left: auto;
+        right: -10px;
+        border-top-color: #5FB878;
+    }
+
+    .chat-main ul li {
+        position: relative;
+        font-size: 0;
+        margin-bottom: 10px;
+        padding-left: 60px;
+        min-height: 68px;
+    }
+
+    .chat-main ul li .chat-user {
+        display: inline-block;
+        vertical-align: top;
+        font-size: 14px;
+        position: absolute;
+        left: 3px;
+    }
+
+    .chat-main ul li .chat-user img {
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+    }
+
+    .chat-main ul li .chat-user cite {
+        position: absolute;
+        left: 60px;
+        top: -2px;
+        width: 500px;
+        line-height: 24px;
+        font-size: 12px;
+        white-space: nowrap;
+        color: #999;
+        text-align: left;
+        font-style: normal;
+    }
+
+    .chat-main ul li .chat-user cite i {
+        padding-left: 15px;
+        font-style: normal;
+    }
+
+    .chat-main ul li .chat-text {
+        position: relative;
+        line-height: 22px;
+        margin-top: 25px;
+        padding: 8px 15px;
+        background-color: #e2e2e2;
+        border-radius: 3px;
+        color: #333;
+        word-break: break-all;
+        max-width: 462px \9;
+        display: inline-block;
+        vertical-align: top;
+        font-size: 14px;
+    }
+
+    .chat-main ul li .chat-text:after {
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 13px;
+        width: 0;
+        height: 0;
+        border-style: solid dashed dashed;
+        border-color: #e2e2e2 transparent transparent;
+        overflow: hidden;
+        border-width: 10px;
+    }
+
 </style>

@@ -30,6 +30,8 @@
             cancel-lock-api="{{ route('order.game-leveling.cancel-lock') }}"
             anomaly-api="{{ route('order.game-leveling.anomaly') }}"
             cancel-anomaly-api="{{ route('order.game-leveling.cancel-anomaly') }}"
+            message-api="{{ route('order.game-leveling.message') }}"
+            send-message-api="{{ route('order.game-leveling.send-message') }}"
             game-region-server-api="{{ route('game-region-server') }}">
     </game-leveling-order-show>
 @endsection

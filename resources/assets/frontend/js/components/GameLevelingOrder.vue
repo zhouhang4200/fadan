@@ -561,10 +561,16 @@
             // 设置仲裁窗口是否显示
             handleApplyComplainVisible(data) {
                 this.applyComplainVisible = data.visible;
+                if (data.visible == false) {
+                    this.handleTableData();
+                }
             },
             // 设置协商窗口是否显示
             handleApplyConsultVisible(data) {
                 this.applyConsultVisible = data.visible;
+                if (data.visible == false) {
+                    this.handleTableData();
+                }
             },
             // 设置当前页面包屑
             handlePageTitle() {
