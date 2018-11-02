@@ -176,6 +176,12 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('black-list-update', 'AccountController@blackListUpdate')->name('v2.account.black-list-update');
             Route::post('black-list-delete', 'AccountController@blackListDelete')->name('v2.account.black-list-delete');
             Route::post('black-list-name', 'AccountController@blackListName')->name('v2.account.black-list-name');
+            // 实名认证
+            Route::get('authentication', 'AccountController@authentication')->name('v2.account.authentication');
+            Route::post('authentication-form', 'AccountController@authenticationForm')->name('v2.account.authentication-form');
+            Route::post('authentication-add', 'AccountController@authenticationAdd')->name('v2.account.authentication-add');
+            Route::post('authentication-update', 'AccountController@authenticationUpdate')->name('v2.account.authentication-update');
+            Route::post('authentication-upload', 'AccountController@authenticationUpLoad')->name('v2.account.authentication-upload');
         });
     });
 

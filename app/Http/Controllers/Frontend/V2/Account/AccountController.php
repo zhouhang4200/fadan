@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\V2\Account;
 
 use App\Models\HatchetManBlacklist;
 use App\Models\NewRole;
+use App\Models\RealNameIdent;
 use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,6 +17,8 @@ use Illuminate\Support\Str;
 
 class AccountController extends Controller
 {
+    protected static $extensions = ['png', 'jpg', 'jpeg', 'gif'];
+
     /**
      * 我的账号
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -350,5 +353,154 @@ class AccountController extends Controller
         }
 
         return response()->ajax(1, '删除成功');
+    }
+
+    /**
+     * 实名认证
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function authentication()
+    {
+        return view('frontend.v2.account.authentication');
+    }
+
+    /**
+     * 图片上传
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function authenticationUpload()
+    {
+        try {
+            $file = request('file');
+            $path =  public_path("/resources/ident/".date('Ymd')."/");
+
+            $extension = $file->getClientOriginalExtension();
+
+            if (!request('name')) {
+                return response()->ajax(0, '参数缺失！');
+            }
+
+            if ($extension && ! in_array(strtolower($extension), static::$extensions)) {
+                return response()->ajax(0, '图片格式不正确!');
+            }
+
+            if (! $file->isValid()) {
+                return response()->ajax(0, '无效的图片！');
+            }
+
+            if (!file_exists($path)) {
+                mkdir($path, 0755, true);
+            }
+            $randNum = rand(1, 100000000) . rand(1, 100000000);
+
+            $fileName = time().substr($randNum, 0, 6).'.'.$extension;
+
+            $path = $file->move($path, $fileName);
+
+            $path = strstr($path, '/resources');
+
+            $finalPath =  str_replace('\\', '/', $path);
+
+            return response()->json(['status' => 1, 'name' => request('name'), 'path' => $finalPath]);
+        } catch (Exception $e) {
+            return response()->ajax(0, '服务器异常！');
+        }
+    }
+
+    /**
+     * 实名认证新增
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function authenticationAdd()
+    {
+        try {
+            if (RealNameIdent::where('user_id', Auth::id())->first()) {
+                return response()->ajax(0, '您已提交申请，请勿重复提交！');
+            }
+
+            $userId = Auth::user()->getPrimaryUserId();
+
+            if (request('front_card_picture')) {
+                $data['type']                      = 1;
+                $data['name']                      = request('name');
+                $data['bank_name']                 = request('bank_name');
+                $data['bank_number']               = request('bank_number');
+                $data['user_id']                   = $userId;
+                $data['identity_card']             = request('identity_card');
+                $data['phone_number']              = request('phone_number');
+                $data['front_card_picture']        = request('front_card_picture');
+                $data['back_card_picture']         = request('back_card_picture');
+                $data['hold_card_picture']         = request('hold_card_picture');
+                RealNameIdent::create($data);
+            } elseif (request('license_picture')) {
+                $data['type']                      = 2;
+                $data['name']                      = request('name');
+                $data['bank_name']                 = request('bank_name');
+                $data['bank_number']               = request('bank_number');
+                $data['user_id']                   = $userId;
+                $data['phone_number']              = request('phone_number');
+                $data['corporation']               = request('corporation');
+                $data['license_number']            = request('license_number');
+                $data['license_picture']           = request('license_picture');
+                $data['bank_open_account_picture'] = request('bank_open_account_picture');
+                $data['agency_agreement_picture']  = request('agency_agreement_picture');
+                RealNameIdent::create($data);
+            } else {
+                return response()->ajax(0, '页面数据异常，请重新填写！');
+            }
+        } catch (Exception $e) {
+            return response()->ajax(0, '服务器异常！');
+        }
+        return response()->ajax(1, '实名认证申请成功，请等待后台工作人员处理！');
+    }
+
+    /**
+     * 实名认证修改
+     * @return mixed
+     */
+    public function authenticationUpdate()
+    {
+        try {
+            $userId = Auth::user()->getPrimaryUserId();
+
+            $authentication = RealNameIdent::where('user_id', $userId)->first();
+
+            if (request('front_card_picture')) {
+                $authentication->name                      = request('name');
+                $authentication->bank_name                 = request('bank_name');
+                $authentication->bank_number               = request('bank_number');
+                $authentication->identity_card             = request('identity_card');
+                $authentication->phone_number              = request('phone_number');
+                $authentication->front_card_picture        = request('front_card_picture');
+                $authentication->back_card_picture         = request('back_card_picture');
+                $authentication->hold_card_picture         = request('hold_card_picture');
+                $authentication->save();
+            } elseif (request('license_picture')) {
+                $authentication->name                      = request('name');
+                $authentication->bank_name                 = request('bank_name');
+                $authentication->bank_number               = request('bank_number');
+                $authentication->phone_number              = request('phone_number');
+                $authentication->corporation               = request('corporation');
+                $authentication->license_number            = request('license_number');
+                $authentication->license_picture           = request('license_picture');
+                $authentication->bank_open_account_picture = request('bank_open_account_picture');
+                $authentication->agency_agreement_picture  = request('agency_agreement_picture');
+                $authentication->save();
+            } else {
+                return response()->ajax(0, '页面数据异常，请重新填写！');
+            }
+        } catch (Exception $e) {
+            return response()->ajax(0, '服务器异常！');
+        }
+        return response()->ajax(1, '修改成功，请等待后台工作人员处理！');
+    }
+
+    /**
+     * 页面数据
+     * @return mixed
+     */
+    public function authenticationForm()
+    {
+        return RealNameIdent::where('user_id', Auth::user()->getPrimaryUserId())->first();
     }
 }

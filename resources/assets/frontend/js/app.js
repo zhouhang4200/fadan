@@ -45,6 +45,8 @@ Vue.component('account-employee', resolve => void(require(['./components/Account
 Vue.component('account-employee-create', resolve => void(require(['./components/AccountEmployeeCreate.vue'], resolve)));
 // 打手黑名单
 Vue.component('account-black-list', resolve => void(require(['./components/AccountBlackList.vue'], resolve)));
+// 实名认证
+Vue.component('account-authentication', resolve => void(require(['./components/AccountAuthentication.vue'], resolve)));
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 const store = new Vuex.Store({
