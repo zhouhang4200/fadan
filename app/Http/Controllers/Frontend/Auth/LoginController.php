@@ -100,7 +100,11 @@ class LoginController extends Controller
 
         if ($this->attemptLogin($request)) {
             if ($this->sendLoginResponse($request)) {
-                return response()->ajax(1, 'success');
+                $index = route('frontend.workbench.index');
+                if (!Auth::user()->could('frontend.workbench.index')) {
+                    $index = route('frontend.workbench.leveling.index');
+                }
+                return response()->ajax(1, 'success', $index);
             }
         }
         // If the login attempt was unsuccessful we will increment the number of attempts
