@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Frontend\V2\Account;
 
-use App\Models\HatchetManBlacklist;
-use App\Models\NewRole;
-use App\Models\RealNameIdent;
 use Exception;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\NewRole;
+use Illuminate\Support\Str;
 use App\Models\LoginHistory;
+use App\Models\RealNameIdent;
+use Illuminate\Support\Facades\DB;
+use App\Models\HatchetManBlacklist;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class AccountController extends Controller
 {

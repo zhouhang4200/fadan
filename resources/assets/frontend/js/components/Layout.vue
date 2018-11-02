@@ -48,9 +48,10 @@
                         <span slot="title">账号</span>
                     </template>
                     <a href="/v2/account/mine"><el-menu-item index="3-1">我的账号</el-menu-item></a>
-                    <a href="/v2/account/employee"><el-menu-item index="3-2">岗位管理</el-menu-item></a>
-                    <a href="/v2/account/black-list"><el-menu-item index="3-3">打手黑名单</el-menu-item></a>
-                    <a href="/v2/account/authentication"><el-menu-item index="3-4">实名认证</el-menu-item></a>
+                    <a href="/v2/account/login-history"><el-menu-item index="3-2">登录记录</el-menu-item></a>
+                    <a href="/v2/account/employee"><el-menu-item index="3-3">岗位管理</el-menu-item></a>
+                    <a href="/v2/account/black-list"><el-menu-item index="3-4">打手黑名单</el-menu-item></a>
+                    <a href="/v2/account/authentication"><el-menu-item index="3-5">实名认证</el-menu-item></a>
                 </el-submenu>
                 <!--没有子菜单示例-->
                 <!--<el-menu-item index="4">-->

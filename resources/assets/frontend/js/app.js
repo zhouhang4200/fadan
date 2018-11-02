@@ -21,6 +21,8 @@ Vue.component('game-leveling-order-show', resolve => void(require(['./components
 Vue.component('game-leveling-order-repeat', resolve => void(require(['./components/GameLevelingOrderRepeat.vue'], resolve)));
 // 资金流水
 Vue.component('amount-flow', resolve => void(require(['./components/AmountFlow.vue'], resolve)));
+// 我的提现
+Vue.component('my-withdraw', resolve => void(require(['./components/MyWithdraw.vue'], resolve)));
 // 我的资产
 Vue.component('my-asset', resolve => void(require(['./components/MyAsset.vue'], resolve)));
 // 资产日报
