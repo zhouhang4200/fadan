@@ -182,6 +182,13 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('authentication-add', 'AccountController@authenticationAdd')->name('v2.account.authentication-add');
             Route::post('authentication-update', 'AccountController@authenticationUpdate')->name('v2.account.authentication-update');
             Route::post('authentication-upload', 'AccountController@authenticationUpLoad')->name('v2.account.authentication-upload');
+            // 岗位管理
+            Route::get('station', 'AccountController@station')->name('v2.account.station');
+            Route::post('station-data-list', 'AccountController@stationDataList')->name('v2.account.station-data-list');
+            Route::post('station-update', 'AccountController@stationUpdate')->name('v2.account.station-update');
+            Route::post('station-delete', 'AccountController@stationDelete')->name('v2.account.station-delete');
+            Route::post('station-add', 'AccountController@stationAdd')->name('v2.account.station-add');
+            Route::post('station-form', 'AccountController@stationForm')->name('v2.account.station-form');
         });
     });
 

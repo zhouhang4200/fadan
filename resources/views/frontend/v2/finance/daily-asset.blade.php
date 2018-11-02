@@ -3,8 +3,8 @@
 @section('title', '资产日报')
 
 @section('content')
-    <daily-asset
+    <finance-daily-asset
             daily-asset-api="{{ route('v2.finance.daily-asset.data-list') }}"
     >
-    </daily-asset>
+    </finance-daily-asset>
 @endsection
