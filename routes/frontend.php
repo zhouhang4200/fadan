@@ -96,9 +96,9 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 // 发送仲裁留言
                 Route::post('add-complain-info', 'GameLevelingController@addComplainInfo')->name('order.game-leveling.add-complain-info');
                 // 获取订单留言
-                Route::get('message/{trade_no}', 'GameLevelingController@message')->name('order.game-leveling.message');
+                Route::post('message', 'GameLevelingController@message')->name('order.game-leveling.message');
                 // 发送订单留言
-                Route::post('send-message/{trade_no}', 'GameLevelingController@sendMessage')->name('order.game-leveling.send-message');
+                Route::post('send-message', 'GameLevelingController@sendMessage')->name('order.game-leveling.send-message');
                 // 留言列表
                 Route::get('message-list', 'GameLevelingController@messageList')->name('order.game-leveling.message-list');
                 // 删除留言
