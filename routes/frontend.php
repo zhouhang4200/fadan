@@ -191,6 +191,23 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('station-form', 'AccountController@stationForm')->name('v2.account.station-form');
             Route::post('station-permission', 'AccountController@stationPermission')->name('v2.account.station-permission');
         });
+        // 设置
+        Route::prefix('setting')->namespace('Setting')->group(function () {
+            // 抓取商品配置
+            Route::get('goods', 'SettingController@goods')->name('v2.setting.goods');
+            Route::post('goods-data-list', 'SettingController@orderDataList')->name('v2.setting.goods-data-list');
+            // 短信管理
+            Route::get('message', 'SettingController@message')->name('v2.setting.message');
+            Route::post('message-status', 'SettingController@messageStatus')->name('v2.setting.message-status');
+            Route::post('message-update', 'SettingController@messageUpdate')->name('v2.setting.message-update');
+            Route::post('message-data-list', 'SettingController@messageDataList')->name('v2.setting.message-data-list');
+            // 店铺授权
+            Route::get('authorize', 'SettingController@authorize')->name('v2.setting.authorize');
+            Route::post('authorize-data-list', 'SettingController@authorizeDataList')->name('v2.setting.authorize-data-list');
+            // 代练发单辅助
+            Route::get('auxiliary', 'SettingController@auxiliary')->name('v2.setting.auxiliary');
+            Route::post('auxiliary-data-list', 'SettingController@auxiliaryDataList')->name('v2.setting.auxiliary-data-list');
+        });
     });
 
 //    Route::namespace('Auth')->group(function () {

@@ -54,6 +54,16 @@
                     <a href="/v2/account/employee"><el-menu-item index="3-5">员工管理</el-menu-item></a>
                     <a href="/v2/account/black-list"><el-menu-item index="3-6">打手黑名单</el-menu-item></a>
                 </el-submenu>
+                <el-submenu index="4">
+                    <template slot="title">
+                        <i class="el-icon-location"></i>
+                        <span slot="title">设置</span>
+                    </template>
+                    <a href="/v2/setting/goods"><el-menu-item index="4-1">抓取商品配置</el-menu-item></a>
+                    <a href="/v2/setting/message"><el-menu-item index="4-2">短信管理</el-menu-item></a>
+                    <a href="/v2/setting/authorize"><el-menu-item index="4-3">店铺授权</el-menu-item></a>
+                    <a href="/v2/setting/auxiliary"><el-menu-item index="4-4">代练发单辅助</el-menu-item></a>
+                </el-submenu>
                 <!--没有子菜单示例-->
                 <!--<el-menu-item index="4">-->
                     <!--<i class="el-icon-setting"></i>-->

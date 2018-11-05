@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Frontend\V2\Account;
 
-use App\Models\NewModule;
-use App\Models\NewPermission;
 use Exception;
 use App\Models\User;
 use App\Models\NewRole;
+use App\Models\NewModule;
 use Illuminate\Support\Str;
 use App\Models\LoginHistory;
 use App\Models\RealNameIdent;
@@ -605,7 +604,6 @@ class AccountController extends Controller
     {
         try {
             if (request('permission')) {
-                myLog('test', [request()->all()]);
                 $permission = explode(',', request('permission'));
                 // 主账号
                 $user = User::find(Auth::user()->getPrimaryUserId());

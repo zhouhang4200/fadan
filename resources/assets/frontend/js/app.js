@@ -51,6 +51,8 @@ Vue.component('account-black-list', resolve => void(require(['./components/Accou
 Vue.component('account-authentication', resolve => void(require(['./components/AccountAuthentication.vue'], resolve)));
 // 岗位管理
 Vue.component('account-station', resolve => void(require(['./components/AccountStation.vue'], resolve)));
+// 短信管理
+Vue.component('setting-message', resolve => void(require(['./components/SettingMessage.vue'], resolve)));
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 const store = new Vuex.Store({

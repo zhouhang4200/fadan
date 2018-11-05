@@ -124,6 +124,7 @@
             'AccountStationPermissionApi',
         ],
         methods: {
+            // 获取当前用户所有的权限
             allPermissions() {
                 axios.post(this.AccountStationPermissionApi).then(res => {
                    this.permissionTree = res.data;
@@ -135,11 +136,13 @@
                     });
                 });
             },
+            // 新增按钮
             ShowAddForm() {
                 this.dialogFormVisibleAdd = true;
-                this.title="岗位新增";
             },
+            // 编辑按钮
             ShowEditForm(row) {
+                this.handleTableData();
                 this.dialogFormVisible = true;
                 this.editForm = row;
                 let permission = [];
@@ -149,6 +152,7 @@
                 })
                 this.checkedPermission=permission;
             },
+            // 新增
             submitFormAdd(formName) {
                 // console.log(this.$refs.tree.getCheckedNodes());
                 this.$refs[formName].validate((valid) => {
@@ -177,6 +181,7 @@
                     }
                 });
             },
+            // 更新
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -229,6 +234,7 @@
                 this.searchParams.page = page;
                 this.handleTableData();
             },
+            // 删除
             stationDelete (id) {
                 axios.post(this.AccountStationDeleteApi, {id:id}).then(res => {
                     this.$message({
