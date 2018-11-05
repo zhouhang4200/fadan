@@ -189,6 +189,7 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('station-delete', 'AccountController@stationDelete')->name('v2.account.station-delete');
             Route::post('station-add', 'AccountController@stationAdd')->name('v2.account.station-add');
             Route::post('station-form', 'AccountController@stationForm')->name('v2.account.station-form');
+            Route::post('station-permission', 'AccountController@stationPermission')->name('v2.account.station-permission');
         });
     });
 

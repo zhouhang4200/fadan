@@ -5,7 +5,7 @@
                 <el-col :span="5">
                     <el-form-item label="状态">
                         <el-select v-model="searchParams.status" placeholder="请选择">
-                            <el-option v-for="(value, key) in StatusArr" v-bind:value="key" :label="value"></el-option>
+                            <el-option v-for="(value, key) in StatusArr" :key="key" :value="key" :label="value"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>

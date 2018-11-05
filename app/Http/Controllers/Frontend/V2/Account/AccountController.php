@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Frontend\V2\Account;
 
+use App\Models\NewModule;
+use App\Models\NewPermission;
 use Exception;
 use App\Models\User;
 use App\Models\NewRole;
@@ -501,5 +503,169 @@ class AccountController extends Controller
     public function authenticationForm()
     {
         return RealNameIdent::where('user_id', Auth::user()->getPrimaryUserId())->first();
+    }
+
+    /**
+     * 岗位管理
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function station()
+    {
+        return view('frontend.v2.account.station');
+    }
+
+    /**
+     * 岗位列表接口
+     * @return mixed
+     */
+    public function stationDataList()
+    {
+        return NewRole::where('user_id', Auth::user()->getPrimaryUserId())
+            ->with(['newUsers', 'newPermissions'])
+            ->paginate(15);
+    }
+
+    /**
+     * 用户所有的权限
+     * @return mixed
+     */
+    public function stationPermission()
+    {
+        $user = User::find(Auth::user()->getPrimaryUserId());
+
+        // 获取此账号下面所有的模块
+        $permissionIds = $user->getUserPermissions()->pluck('id');
+
+        return NewModule::whereHas('newPermissions', function ($query) use ($permissionIds) {
+            $query->whereIn('id', $permissionIds);
+        })->with('newPermissions')->select('id', 'name as alias')->get();
+    }
+
+    /**
+     * 岗位表单接口
+     * @return mixed
+     */
+    public function stationForm()
+    {
+        try {
+            myLog('test', [request()->all()]);
+            $data['name'] = request('name');
+            $data['alias'] = request('name');
+            $data['user_id'] = Auth::user()->getPrimaryUserId();
+
+            $newRole = NewRole::create($data);
+            // 角色-权限关联
+            $newRole->newPermissions()->sync(request('permission'));
+            // 清除缓存
+            if ($newRole->newUsers) {
+                foreach ($newRole->newUsers as $childUser) {
+                    Cache::forget('newPermissions:user:'.$childUser->id);
+                }
+            }
+
+        } catch (Exception $e) {
+
+        }
+        return response()->ajax(1, '添加成功!');
+    }
+
+    /**
+     * 岗位添加
+     * @return mixed
+     */
+    public function stationAdd()
+    {
+        try {
+            $data['name'] = request('name');
+            $data['alias'] = request('name');
+            $data['user_id'] = Auth::user()->getPrimaryUserId();
+
+            $newRole = NewRole::create($data);
+            $permission = explode(',', request('permission'));
+            // 角色-权限关联
+            $newRole->newPermissions()->sync($permission);
+            // 清除缓存
+            if ($newRole->newUsers) {
+                foreach ($newRole->newUsers as $childUser) {
+                    Cache::forget('newPermissions:user:'.$childUser->id);
+                }
+            }
+
+        } catch (Exception $e) {
+
+        }
+        return response()->ajax(1, '添加成功!');
+    }
+
+    /**
+     * 岗位修改
+     * @return mixed
+     */
+    public function stationUpdate()
+    {
+        try {
+            if (request('permission')) {
+                myLog('test', [request()->all()]);
+                $permission = explode(',', request('permission'));
+                // 主账号
+                $user = User::find(Auth::user()->getPrimaryUserId());
+                // 清除缓存
+                Cache::forget('newPermissions:user:'.$user->id);
+                // 获取当前角色
+                $userRole = NewRole::find(request('id'));
+                // 数据
+                $userRole->user_id = $user->id;
+                $userRole->alias = request('name');
+                $userRole->name = request('name');
+                // 修改岗位
+                $userRole->save();
+                // 关联岗位-权限
+                $userRole->newPermissions()->sync($permission);
+                // 清除缓存
+                if ($userRole->newUsers) {
+                    foreach ($userRole->newUsers as $user) {
+                        Cache::forget('newPermissions:user:'.$user->id);
+                    }
+                }
+                // 清除缓存
+                if ($userRole->newUsers) {
+                    foreach ($userRole->newUsers as $childUser) {
+                        Cache::forget('newPermissions:user:'.$childUser->id);
+                    }
+                }
+            } else {
+                return response()->ajax(1, '请勾选权限！');
+            }
+        } catch (Exception $e) {
+            return response()->ajax(1, '服务器异常!');
+        }
+        return response()->ajax(1, '修改成功!');
+    }
+
+    /**
+     * 岗位删除
+     * @return mixed
+     */
+    public function stationDelete()
+    {
+        try {
+            // 获取当前岗位
+            $userRole = NewRole::find(request('id'));
+            // 岗位删除成功之后，再删除子账号下面的权限
+            $userRole->delete();
+            // 删除此岗位下面所有的权限值
+            $userRole->newPermissions()->detach();
+            // 删除此角色下的用户
+            $userRole->newUsers()->detach();
+            // 清除缓存
+            if ($userRole->newUsers) {
+                foreach ($userRole->newUsers as $childUser) {
+                    Cache::forget('newPermissions:user:'.$childUser->id);
+                }
+            }
+        } catch (Exception $e) {
+            return response()->ajax(1, '服务器错误!');
+        }
+        return response()->ajax(1, '删除成功!');
     }
 }
