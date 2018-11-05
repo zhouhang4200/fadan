@@ -109,7 +109,7 @@ class AccountController extends Controller
      */
     public function employeeStation()
     {
-        return NewRole::where('user_id', Auth::user()->getPrimaryUserId())->pluck('name', 'id');
+        return NewRole::where('user_id', Auth::user()->getPrimaryUserId())->get();
     }
 
     /**
