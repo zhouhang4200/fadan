@@ -105,7 +105,7 @@
                     <el-button
                                type="primary"
                                size="small"
-                               @click="ShowEditForm(scope.row)">编辑</el-button>
+                               @click="employeeUpdate(scope.row)">编辑</el-button>
                     <el-button
                                type="primary"
                                size="small"
@@ -125,7 +125,7 @@
         <el-dialog title="岗位编辑" :visible.sync="dialogFormVisible">
             <el-form :model="form" ref="form" :rules="rules" label-width="80px">
                 <el-form-item label="*账号" prop="name">
-                    <el-input v-model="form.name" name="name" autocomplete="off" :disabled="true"></el-input>
+                    <el-input v-model="form.name" name="name" autocomplete="off" :disabled="isDisabled"></el-input>
                 </el-form-item>
                 <el-form-item label="*昵称" prop="username">
                     <el-input v-model="form.username" name="username" autocomplete="off"></el-input>
@@ -134,14 +134,12 @@
                     <el-input v-model="form.password" autocomplete="off" placeholder="不填写则为原密码"></el-input>
                 </el-form-item>
                 <el-form-item label="*类型" prop="leveling_type">
-                    <el-radio-group v-model="form.leveling_type">
-                        <el-radio :label="1" name="leveling_type" autocomplete="off">接单</el-radio>
-                        <el-radio :label="2" name="leveling_type" autocomplete="off">发单</el-radio>
-                    </el-radio-group>
+                    <el-radio v-model="form.leveling_type" :label=1 autocomplete="off">接单</el-radio>
+                    <el-radio v-model="form.leveling_type" :label=2 autocomplete="off">发单</el-radio>
                 </el-form-item>
                 <el-form-item label="*岗位" prop="station">
                     <el-checkbox-group v-model="form.station">
-                        <el-checkbox v-for="(value, key) of AccountEmployeeStation" :value="key" :key="key"  :label="key">{{ value }}</el-checkbox>
+                        <el-checkbox v-for="item in AccountEmployeeStation" :key=item.id  :label=item.id>{{ item.name }}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="*电话" prop="phone">
@@ -157,7 +155,8 @@
                     <el-input type="textarea" v-model="form.remark" name="remark" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('form')">确认修改</el-button>
+                    <el-button v-if="isAdd" type="primary" @click="submitFormAdd('form')">确认添加</el-button>
+                    <el-button v-if="isUpdate" type="primary" @click="submitFormUpdate('form')">确认修改</el-button>
                     <el-button @click="dialogFormVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>
@@ -173,11 +172,34 @@
             'AccountEmployeeDataListApi',
             'AccountEmployeeSwitchApi',
             'AccountEmployeeUpdateApi',
+            'AccountEmployeeAddApi',
             'AccountEmployeeDeleteApi',
             'AccountEmployeeCreateApi',
         ],
         methods: {
-            submitForm(formName) {
+            employeeAdd() {
+                this.dialogFormVisible = true;
+                this.isAdd=true;
+                this.isUpdate=false;
+                this.isDisabled=false;
+            },
+            employeeUpdate(row) {
+                this.dialogFormVisible = true;
+                this.form = row;
+                let arr = [];
+                if (row.new_roles) {
+                    row.new_roles.forEach(function (item) {
+                        arr.push(item.id);
+                    })
+                    this.form.station = [];
+                } else {
+                }
+                this.form.station=[];
+                this.isAdd=false;
+                this.isUpdate=true;
+                this.isDisabled=true;
+            },
+            submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         axios.post(this.AccountEmployeeUpdateApi, this.form).then(res => {
@@ -186,6 +208,7 @@
                                 type: res.data.status == 1 ? 'success' : 'error',
                                 message: res.data.message
                             });
+                            this.handleTableData();
                         }).catch(err => {
                             this.$alert('获取数据失败, 请重试!', '提示', {
                                 confirmButtonText: '确定',
@@ -198,16 +221,27 @@
                     }
                 });
             },
-            ShowEditForm(row) {
-                this.dialogFormVisible = true;
-                this.form = row;
-                let arr=[];
-                row.new_roles.forEach(function(v){
-                    arr.push(v.id+'');
+            submitFormAdd(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        axios.post(this.AccountEmployeeAddApi, this.form).then(res => {
+                            this.$message({
+                                showClose: true,
+                                type: res.data.status == 1 ? 'success' : 'error',
+                                message: res.data.message
+                            });
+                            this.handleTableData();
+                        }).catch(err => {
+                            this.$alert('获取数据失败, 请重试!', '提示', {
+                                confirmButtonText: '确定',
+                                callback: action => {
+                                }
+                            });
+                        });
+                    } else {
+                        return false;
+                    }
                 });
-                console.log(arr);
-                this.form.station = arr;
-                console.log(this.form.station);
             },
             // 加载数据
             handleTableData(){
@@ -237,7 +271,6 @@
             handleStation(){
                 axios.post(this.AccountEmployeeStationApi, this.searchParams).then(res => {
                    this.AccountEmployeeStation = res.data;
-                   this.form.station = res.data;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -287,9 +320,6 @@
                     });
                 });
             },
-            employeeAdd() {
-                window.location.href=this.AccountEmployeeCreateApi;
-            },
         },
         created () {
             this.handleTableData();
@@ -328,6 +358,10 @@
                 callback();
             };
             return {
+                allStation:[],
+                isDisabled:false,
+                isAdd:true,
+                isUpdate:false,
                 dialogFormVisible:false,
                 AccountEmployeeUser:{},
                 AccountEmployeeStation:{},

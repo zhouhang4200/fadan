@@ -11,6 +11,7 @@
             account-employee-delete-api="{{ route('v2.account.employee-delete') }}"
             account-employee-create-api="{{ route('v2.account.employee-create') }}"
             account-employee-update-api="{{ route('v2.account.employee-update') }}"
+            account-employee-add-api="{{ route('v2.account.employee-add') }}"
     >
     </account-employee>
 @endsection

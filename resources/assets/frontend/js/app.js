@@ -47,8 +47,6 @@ Vue.component('account-mine', resolve => void(require(['./components/AccountMine
 Vue.component('account-login-history', resolve => void(require(['./components/AccountLoginHistory.vue'], resolve)));
 // 岗位管理
 Vue.component('account-employee', resolve => void(require(['./components/AccountEmployee.vue'], resolve)));
-// 岗位新增
-Vue.component('account-employee-create', resolve => void(require(['./components/AccountEmployeeCreate.vue'], resolve)));
 // 打手黑名单
 Vue.component('account-black-list', resolve => void(require(['./components/AccountBlackList.vue'], resolve)));
 // 实名认证

@@ -105,7 +105,7 @@
                         <el-input type="textarea" v-model="form.remark"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button v-if="isAdd" type="primary" @click="submitFormAdd('form')">确认新增</el-button>
+                        <el-button v-if="isAdd" type="primary" @click="submitFormAdd('form')">确认添加</el-button>
                         <el-button v-if="isUpdate" type="primary" @click="submitFormUpdate('form')">确认修改</el-button>
                         <el-button @click="dialogFormVisible = false">取消</el-button>
                     </el-form-item>

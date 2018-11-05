@@ -113,7 +113,7 @@
                     <el-input type="textarea" v-model="form.content" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitUpdateForm('form')">确认</el-button>
+                    <el-button type="primary" @click="submitUpdateForm('form')">确认修改</el-button>
                     <el-button @click="dialogUpdateFormVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>
