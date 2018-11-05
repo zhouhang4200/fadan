@@ -19,6 +19,10 @@ Vue.component('game-leveling-order-create', resolve => void(require(['./componen
 Vue.component('game-leveling-order-show', resolve => void(require(['./components/GameLevelingOrderShow.vue'], resolve)));
 // 重新下单
 Vue.component('game-leveling-order-repeat', resolve => void(require(['./components/GameLevelingOrderRepeat.vue'], resolve)));
+// 代练待发
+Vue.component('game-leveling-taobao', resolve => void(require(['./components/GameLevelingTaobao.vue'], resolve)));
+// 代练商户投诉
+Vue.component('game-leveling-businessman-complain', resolve => void(require(['./components/GameLevelingBusinessmanComplain.vue'], resolve)));
 // 资金流水
 Vue.component('finance-amount-flow', resolve => void(require(['./components/FinanceAmountFlow.vue'], resolve)));
 // 我的提现

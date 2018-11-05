@@ -212,3 +212,6 @@ Route::prefix('uplay')->group(function (){
 
 // 财务提现回调
 Route::post('fulu-pay/withdraw-notify', 'FuluPayController@withdrawNotify')->name('api.fulu-pay.withdraw-notify');
+
+# v1 api 路由文件
+require  __DIR__ . '/v1-api.php';

@@ -25,86 +25,100 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
         Route::prefix('order')->namespace('Order')->group(function () {
 
             // 代练订单
-            Route::prefix('game-leveling')->group(function () {
+            Route::prefix('game-leveling')->namespace('GameLeveling')->group(function () {
                 // 订单列表视图
-                Route::get('/', 'GameLevelingController@index')->name('order.game-leveling.index');
+                Route::get('/', 'IndexController@index')->name('order.game-leveling.index');
                 // 获取订单列表数据
-                Route::post('data-list', 'GameLevelingController@dataList')->name('order.game-leveling.data-list');
+                Route::post('data-list', 'IndexController@dataList')->name('order.game-leveling.data-list');
                 // 订单状态数量
-                Route::post('status-quantity', 'GameLevelingController@statusQuantity')->name('order.game-leveling.status-quantity');
+                Route::post('status-quantity', 'IndexController@statusQuantity')->name('order.game-leveling.status-quantity');
                 // 订单详情视图
-                Route::get('show/{trade_no?}', 'GameLevelingController@show')->name('order.game-leveling.show');
+                Route::get('show/{trade_no?}', 'IndexController@show')->name('order.game-leveling.show');
                 // 获取待编辑数据
-                Route::post('edit', 'GameLevelingController@edit')->name('order.game-leveling.edit');
+                Route::post('edit', 'IndexController@edit')->name('order.game-leveling.edit');
                 // 更新
-                Route::post('update', 'GameLevelingController@update')->name('order.game-leveling.update');
+                Route::post('update', 'IndexController@update')->name('order.game-leveling.update');
                 // 获取淘宝订单
-                Route::post('taobao-order', 'GameLevelingController@taobaoOrder')->name('order.game-leveling.taobao-order');
+                Route::post('taobao-order', 'IndexController@taobaoOrder')->name('order.game-leveling.taobao-order');
 
                 // 加价
-                Route::post('add-amount', 'GameLevelingController@addAmount')->name('order.game-leveling.add-amount');
+                Route::post('add-amount', 'IndexController@addAmount')->name('order.game-leveling.add-amount');
                 // 加代练天与小时
-                Route::post('add-day-hour', 'GameLevelingController@addDayHour')->name('order.game-leveling.add-day-hour');
+                Route::post('add-day-hour', 'IndexController@addDayHour')->name('order.game-leveling.add-day-hour');
                 // 下单  重新下单
-                Route::get('create', 'GameLevelingController@create')->name('order.game-leveling.create');
-                Route::get('repeat/{trade_no?}', 'GameLevelingController@repeat')->name('order.game-leveling.repeat');
-                Route::post('create', 'GameLevelingController@doCreate');
+                Route::get('create', 'IndexController@create')->name('order.game-leveling.create');
+                Route::get('repeat/{trade_no?}', 'IndexController@repeat')->name('order.game-leveling.repeat');
+                Route::post('create', 'IndexController@doCreate');
                 // 接单
-                Route::post('take', 'GameLevelingController@take')->name('order.game-leveling.take');
+                Route::post('take', 'IndexController@take')->name('order.game-leveling.take');
                 // 撤单
-                Route::post('delete', 'GameLevelingController@delete')->name('order.game-leveling.delete');
+                Route::post('delete', 'IndexController@delete')->name('order.game-leveling.delete');
                 // 申请验收
-                Route::post('apply-complete', 'GameLevelingController@applyComplete')->name('order.game-leveling.apply-complete');
+                Route::post('apply-complete', 'IndexController@applyComplete')->name('order.game-leveling.apply-complete');
                 // 取消验收
-                Route::post('cancel-complete', 'GameLevelingController@cancelComplete')->name('order.game-leveling.cancel-complete');
+                Route::post('cancel-complete', 'IndexController@cancelComplete')->name('order.game-leveling.cancel-complete');
                 // 完成
-                Route::post('complete', 'GameLevelingController@complete')->name('order.game-leveling.complete');
+                Route::post('complete', 'IndexController@complete')->name('order.game-leveling.complete');
                 // 上架
-                Route::post('on-sale', 'GameLevelingController@onSale')->name('order.game-leveling.on-sale');
+                Route::post('on-sale', 'IndexController@onSale')->name('order.game-leveling.on-sale');
                 // 下架
-                Route::post('off-sale', 'GameLevelingController@offSale')->name('order.game-leveling.off-sale');
+                Route::post('off-sale', 'IndexController@offSale')->name('order.game-leveling.off-sale');
                 // 锁定
-                Route::post('lock', 'GameLevelingController@lock')->name('order.game-leveling.lock');
+                Route::post('lock', 'IndexController@lock')->name('order.game-leveling.lock');
                 // 取消锁定
-                Route::post('cancel-lock', 'GameLevelingController@cancelLock')->name('order.game-leveling.cancel-lock');
+                Route::post('cancel-lock', 'IndexController@cancelLock')->name('order.game-leveling.cancel-lock');
                 // 提交异常
-                Route::post('anomaly', 'GameLevelingController@anomaly')->name('order.game-leveling.anomaly');
+                Route::post('anomaly', 'IndexController@anomaly')->name('order.game-leveling.anomaly');
                 // 取消异常
-                Route::post('cancel-anomaly', 'GameLevelingController@cancelAnomaly')->name('order.game-leveling.cancel-anomaly');
+                Route::post('cancel-anomaly', 'IndexController@cancelAnomaly')->name('order.game-leveling.cancel-anomaly');
                 // 申请撤销
-                Route::post('apply-consult', 'GameLevelingController@applyConsult')->name('order.game-leveling.apply-consult');
+                Route::post('apply-consult', 'IndexController@applyConsult')->name('order.game-leveling.apply-consult');
                 // 取消撤销
-                Route::post('cancel-consult', 'GameLevelingController@cancelConsult')->name('order.game-leveling.cancel-consult');
+                Route::post('cancel-consult', 'IndexController@cancelConsult')->name('order.game-leveling.cancel-consult');
                 // 同意撤销
-                Route::post('agree-consult', 'GameLevelingController@agreeConsult')->name('order.game-leveling.agree-consult');
+                Route::post('agree-consult', 'IndexController@agreeConsult')->name('order.game-leveling.agree-consult');
                 // 不同意撤销
-                Route::post('reject-consult', 'GameLevelingController@rejectConsult')->name('order.game-leveling.reject-consult');
+                Route::post('reject-consult', 'IndexController@rejectConsult')->name('order.game-leveling.reject-consult');
                 // 强制撤单
-                Route::post('force-delete', 'GameLevelingController@forceDelete')->name('order.game-leveling.force-delete');
+                Route::post('force-delete', 'IndexController@forceDelete')->name('order.game-leveling.force-delete');
                 // 申请仲裁
-                Route::post('apply-complain', 'GameLevelingController@applyComplain')->name('order.game-leveling.apply-complain');
+                Route::post('apply-complain', 'IndexController@applyComplain')->name('order.game-leveling.apply-complain');
                 // 取消仲裁
-                Route::post('cancel-complain', 'GameLevelingController@cancelComplain')->name('order.game-leveling.cancel-complain');
+                Route::post('cancel-complain', 'IndexController@cancelComplain')->name('order.game-leveling.cancel-complain');
                 // 客服仲裁
-                Route::post('arbitration', 'GameLevelingController@arbitration')->name('order.game-leveling.arbitration');
+                Route::post('arbitration', 'IndexController@arbitration')->name('order.game-leveling.arbitration');
                 // 申请验收图片
-                Route::post('apply-complete-image?', 'GameLevelingController@applyCompleteImage')->name('order.game-leveling.apply-complete-image');
+                Route::post('apply-complete-image?', 'IndexController@applyCompleteImage')->name('order.game-leveling.apply-complete-image');
                 // 订单操作日志
-                Route::post('log', 'GameLevelingController@log')->name('order.game-leveling.log');
+                Route::post('log', 'IndexController@log')->name('order.game-leveling.log');
                 // 仲裁信息
-                Route::post('complain-info', 'GameLevelingController@complainInfo')->name('order.game-leveling.complain-info');
+                Route::post('complain-info', 'IndexController@complainInfo')->name('order.game-leveling.complain-info');
                 // 发送仲裁留言
-                Route::post('add-complain-info', 'GameLevelingController@addComplainInfo')->name('order.game-leveling.add-complain-info');
+                Route::post('add-complain-info', 'IndexController@addComplainInfo')->name('order.game-leveling.add-complain-info');
                 // 获取订单留言
-                Route::post('message', 'GameLevelingController@message')->name('order.game-leveling.message');
+                Route::post('message', 'IndexController@message')->name('order.game-leveling.message');
                 // 发送订单留言
-                Route::post('send-message', 'GameLevelingController@sendMessage')->name('order.game-leveling.send-message');
+                Route::post('send-message', 'IndexController@sendMessage')->name('order.game-leveling.send-message');
                 // 留言列表
-                Route::get('message-list', 'GameLevelingController@messageList')->name('order.game-leveling.message-list');
+                Route::get('message-list', 'IndexController@messageList')->name('order.game-leveling.message-list');
                 // 删除留言
-                Route::post('delete-message', 'GameLevelingController@deleteMessage')->name('order.game-leveling.delete-message');
+                Route::post('delete-message', 'IndexController@deleteMessage')->name('order.game-leveling.delete-message');
                 // 删除所有留言
-                Route::post('delete-all-message', 'GameLevelingController@deleteAllMessage')->name('order.game-leveling.delete-all-message');
+                Route::post('delete-all-message', 'IndexController@deleteAllMessage')->name('order.game-leveling.delete-all-message');
+
+                Route::prefix('taobao')->group(function () {
+                    Route::get('/', 'TaobaoController@index')->name('order.game-leveling.taobao.index');
+                    Route::post('data-list', 'TaobaoController@dataList')->name('order.game-leveling.taobao.data-list');
+                    Route::post('update', 'TaobaoController@update')->name('order.game-leveling.taobao.update');
+                    Route::post('status-quantity', 'TaobaoController@statusQuantity')->name('order.game-leveling.taobao.status-quantity');
+                });
+                Route::prefix('businessman-complain')->group(function () {
+                    Route::get('/', 'BusinessmanComplainController@index')->name('order.game-leveling.businessman-complain.index');
+                    Route::any('data-list', 'BusinessmanComplainController@dataList')->name('order.game-leveling.businessman-complain.data-list');
+                    Route::post('images', 'BusinessmanComplainController@images')->name('order.game-leveling.businessman-complain.images');
+                    Route::post('cancel', 'BusinessmanComplainController@cancel')->name('order.game-leveling.businessman-complain.cancel');
+                    Route::post('status-quantity', 'BusinessmanComplainController@statusQuantity')->name('order.game-leveling.businessman-complain.status-quantity');
+                });
             });
 
         });

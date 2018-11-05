@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Frontend\V2\Order;
+namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
-use App\Models\TaobaoTrade;
+
 use DB;
 use Auth;
 use Exception;
 use Carbon\Carbon;
+use App\Models\TaobaoTrade;
 use App\Models\OrderHistory;
 use App\Models\OrderBasicData;
 use App\Models\GameLevelingOrder;
@@ -22,7 +23,7 @@ use App\Exceptions\GameLevelingOrderOperateException;
  * Class GameLevelingController
  * @package App\Http\Controllers\Frontend\V2\Order
  */
-class GameLevelingController extends Controller
+class IndexController extends Controller
 {
     /**
      * 代练订单视图
