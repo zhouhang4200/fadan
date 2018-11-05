@@ -195,7 +195,13 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
         Route::prefix('setting')->namespace('Setting')->group(function () {
             // 抓取商品配置
             Route::get('goods', 'SettingController@goods')->name('v2.setting.goods');
-            Route::post('goods-data-list', 'SettingController@orderDataList')->name('v2.setting.goods-data-list');
+            Route::post('goods-delivery', 'SettingController@goodsDelivery')->name('v2.setting.goods-delivery');
+            Route::post('goods-game', 'SettingController@goodsGame')->name('v2.setting.goods-game');
+            Route::post('goods-seller-nick', 'SettingController@goodsSellerNick')->name('v2.setting.goods-seller-nick');
+            Route::post('goods-add', 'SettingController@goodsAdd')->name('v2.setting.goods-add');
+            Route::post('goods-update', 'SettingController@goodsUpdate')->name('v2.setting.goods-update');
+            Route::post('goods-delete', 'SettingController@goodsDelete')->name('v2.setting.goods-delete');
+            Route::post('goods-data-list', 'SettingController@goodsDataList')->name('v2.setting.goods-data-list');
             // 短信管理
             Route::get('message', 'SettingController@message')->name('v2.setting.message');
             Route::post('message-status', 'SettingController@messageStatus')->name('v2.setting.message-status');
