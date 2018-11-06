@@ -229,4 +229,79 @@ class SettingController extends Controller
         }
         return response()->ajax(1, '删除成功！');
     }
+
+    /**
+     * 店铺授权页面
+     * @return \Illuminate\Auth\Access\Response|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function authorizeIndex()
+    {
+        return view('frontend.v2.setting.authorize');
+    }
+
+    /**
+     * 店铺授权数据
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function authorizeDataList()
+    {
+        try {
+            $id = request('id');
+            $sign = request('sign');
+            $wangWang = request('retMsg');
+
+            $taoBaoShopAuth = TaobaoShopAuthorization::where('user_id', auth()->user()->getPrimaryUserId())->paginate(15);
+
+            $bindResult = 0;
+            if ($id && $sign && $wangWang) {
+                if ($sign == md5(Auth::user()->id . Auth::user()->name)) {
+
+                    $exist = TaobaoShopAuthorization::where('wang_wang', $wangWang)->first();
+
+                    if (!$exist) {
+                        $userExist = TaobaoShopAuthorization::where('wang_wang', $wangWang)
+                            ->where('user_id', auth()->user()->getPrimaryUserId())
+                            ->first();
+
+                        if ( !$userExist) {
+                            TaobaoShopAuthorization::create([
+                                'wang_wang'  => $wangWang,
+                                'user_id'  => auth()->user()->getPrimaryUserId(),
+                            ]);
+                        }
+                    }
+                    $bindResult = 1;
+                }
+            }
+            return response()->json(['status' => 1, 'data' => $taoBaoShopAuth, 'bind' => $bindResult]);
+        } catch (Exception $e) {
+            return response()->ajax(0, '数据异常!');
+        }
+    }
+
+    /**
+     * 店铺授权地址
+     * @return string
+     */
+    public function authorizeUrl()
+    {
+        $callBack = route('frontend.setting.tb-auth.store') . '?id=' .  auth()->user()->id . '&sign=' . md5(auth()->user()->id . auth()->user()->name);
+        return 'http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack=' . urlencode($callBack);
+    }
+
+    /**
+     * 店铺授权删除
+     * @return mixed
+     */
+    public function authorizeDelete()
+    {
+        try {
+            TaobaoShopAuthorization::where('user_id', auth()->user()->getPrimaryUserId())
+                ->where('id', request('id'))
+                ->delete();
+            return response()->ajax(1, '删除成功!');
+        } catch (Exception $e) {
+            return response()->ajax(0, '服务器异常!');
+        }
+    }
 }

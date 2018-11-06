@@ -107,7 +107,7 @@
                     <el-form-item>
                         <el-button v-if="isAdd" type="primary" @click="submitFormAdd('form')">确认添加</el-button>
                         <el-button v-if="isUpdate" type="primary" @click="submitFormUpdate('form')">确认修改</el-button>
-                        <el-button @click="dialogFormVisible = false">取消</el-button>
+                        <el-button @click="goodsCancel('form')">取消</el-button>
                     </el-form-item>
                 </el-form>
             </el-dialog>
@@ -132,6 +132,7 @@
                 this.dialogFormVisible = true;
                 this.isAdd=true;
                 this.isUpdate=false;
+                this.$refs.form.resetFields();
             },
             // 编辑按钮
             goodsEdit(row) {
@@ -140,6 +141,11 @@
                 this.isAdd=false;
                 this.isUpdate=true;
             },
+            // 取消按钮
+            goodsCancel(formName) {
+                this.dialogFormVisible = false;
+            },
+            // 添加
             submitFormAdd(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -162,6 +168,7 @@
                     }
                 });
             },
+            // 修改
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -252,6 +259,7 @@
                     });
                 });
             },
+            // 商铺
             sellerNick(){
                 axios.post(this.SettingGoodsSellerNickApi).then(res => {
                     this.sellerNicks=res.data;

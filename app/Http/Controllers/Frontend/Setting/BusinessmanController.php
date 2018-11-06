@@ -53,7 +53,7 @@ class BusinessmanController extends Controller
         $status = $request->input('status', 0);
         $name = $request->name;
         $type = $request->type;
-        $content = $request->content;
+        $content = request('content');
 
         if (in_array($type, [1,2,3])) {
 

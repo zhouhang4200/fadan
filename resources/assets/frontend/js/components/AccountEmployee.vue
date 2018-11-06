@@ -182,6 +182,7 @@
                 this.isAdd=true;
                 this.isUpdate=false;
                 this.isDisabled=false;
+                this.$refs.form.resetFields();
             },
             employeeUpdate(row) {
                 this.dialogFormVisible = true;
@@ -192,7 +193,6 @@
                         arr.push(item.id);
                     })
                     this.form.station = [];
-                } else {
                 }
                 this.form.station=[];
                 this.isAdd=false;
