@@ -124,9 +124,22 @@ class AccountController extends Controller
 
         $filter = compact( 'userName', 'name', 'station');
 
-        return User::staffManagementFilter($filter)
+        $users = User::staffManagementFilter($filter)
             ->with('newRoles')
             ->paginate(15);
+
+        $roles = NewRole::where('user_id', Auth::user()->getPrimaryUserId())->get();
+
+        foreach ($users as $user) {
+            $user->allStation = $roles;
+            if ($user->newRoles) {
+                $user->hasStation = $user->newRoles->pluck('id')->toArray();
+            } else {
+                $user->hasStation = [];
+            }
+        }
+
+        return $users;
     }
 
     /**
@@ -164,15 +177,6 @@ class AccountController extends Controller
             return response()->ajax(0, '删除失败：服务器异常!');
         }
         return response()->ajax(1, '删除成功!');
-    }
-
-    /**
-     * 新增岗位
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function employeeCreate()
-    {
-        return view('frontend.v2.account.employee-create');
     }
 
     /**
