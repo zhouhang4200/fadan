@@ -59,7 +59,7 @@
                     <el-button
                             type="primary"
                             size="small"
-                            @click="updateForm(scope.row)">编辑</el-button>
+                            @click="blackListUpdate(scope.row)">编辑</el-button>
                     <el-button
                             type="primary"
                             size="small"
@@ -76,7 +76,7 @@
                 :total="TotalPage">
         </el-pagination>
 
-        <el-dialog title="新增打手黑名单" :visible.sync="dialogFormVisible">
+        <el-dialog :title="title" :visible.sync="dialogFormVisible">
             <el-form :model="form" ref="form" :rules="rules" label-width="80px">
                 <el-form-item label="*打手昵称" prop="hatchet_man_name">
                     <el-input v-model="form.hatchet_man_name" autocomplete="off"></el-input>
@@ -91,30 +91,9 @@
                     <el-input type="textarea" v-model="form.content" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitForm('form')">确认</el-button>
+                    <el-button v-if="isAdd" type="primary" @click="submitFormAdd('form')">确认</el-button>
+                    <el-button v-if="isUpdate" type="primary" @click="submitFormUpdate('form')">确认修改</el-button>
                     <el-button @click="dialogFormVisible = false">取消</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-
-        <el-dialog title="编辑打手黑名单" :visible.sync="dialogUpdateFormVisible">
-            <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-                <el-input v-model="form.id" autocomplete="off" type="hidden"></el-input>
-                <el-form-item label="*打手昵称" prop="hatchet_man_name">
-                    <el-input v-model="form.hatchet_man_name" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="*打手电话" prop="hatchet_man_phone">
-                    <el-input v-model.number="form.hatchet_man_phone" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="*打手QQ" prop="hatchet_man_qq">
-                    <el-input v-model.number="form.hatchet_man_qq" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="备注" prop="content">
-                    <el-input type="textarea" v-model="form.content" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="submitUpdateForm('form')">确认修改</el-button>
-                    <el-button @click="dialogUpdateFormVisible = false">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -131,10 +110,23 @@
             'AccountBlackListAddApi',
         ],
         methods: {
+            //新增按钮
             blackListAdd(){
+                this.isAdd=true;
+                this.isUpdate=false;
+                this.title='打手黑名单新增',
                 this.dialogFormVisible = true;
             },
-            submitForm(formName) {
+            // 编辑按钮
+            blackListUpdate(row) {
+                this.isAdd=false;
+                this.isUpdate=true;
+                this.title='打手黑名单修改',
+                this.dialogFormVisible = true;
+                this.form = row;
+            },
+            // 添加
+            submitFormAdd(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         axios.post(this.AccountBlackListAddApi, this.form).then(res => {
@@ -156,11 +148,8 @@
                 });
                 this.handleTableData();
             },
-            updateForm(row) {
-                this.dialogUpdateFormVisible = true;
-                this.form = row;
-            },
-            submitUpdateForm(formName) {
+            // 修改
+            submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         axios.post(this.AccountBlackListUpdateApi, this.form).then(res => {
@@ -274,9 +263,11 @@
                 callback();
             };
             return {
+                isAdd:true,
+                isUpdate:false,
+                title:'新增',
                 url:'',
                 dialogFormVisible:false,
-                dialogUpdateFormVisible:false,
                 AccountBlackListName:{},
                 searchParams:{
                     hatchet_man_name:'',

@@ -107,7 +107,7 @@
                     <el-form-item>
                         <el-button v-if="isAdd" type="primary" @click="submitFormAdd('form')">确认添加</el-button>
                         <el-button v-if="isUpdate" type="primary" @click="submitFormUpdate('form')">确认修改</el-button>
-                        <el-button @click="dialogFormVisible = false">取消</el-button>
+                        <el-button @click="goodsCancel('form')">取消</el-button>
                     </el-form-item>
                 </el-form>
             </el-dialog>
@@ -132,6 +132,7 @@
                 this.dialogFormVisible = true;
                 this.isAdd=true;
                 this.isUpdate=false;
+                this.$refs.form.resetFields();
             },
             // 编辑按钮
             goodsEdit(row) {
@@ -139,6 +140,10 @@
                 this.form=row;
                 this.isAdd=false;
                 this.isUpdate=true;
+            },
+            goodsCancel(formName) {
+                this.$refs[formName].resetFields();
+                this.dialogFormVisible = false;
             },
             submitFormAdd(formName) {
                 this.$refs[formName].validate((valid) => {
