@@ -38,7 +38,7 @@ class SettingController extends Controller
                 $template = SmsTemplate::where(['user_id'=> Auth::user()->getPrimaryUserId(), 'id'=> request('id')])->first();
 
                 if (! $template) {
-                    return response()->ajax(0, '模板不存在!');
+                    return response()->ajax(0, '设置失败：模板不存在!');
                 }
 
                 $template->status = request('status');
@@ -46,10 +46,8 @@ class SettingController extends Controller
 
                 return response()->ajax(1, '设置成功!');
             }
-        } catch (CustomException $e) {
-            return response()->ajax(0, '服务器异常!');
         } catch (Exception $e) {
-            return response()->ajax(0, '服务器异常!');
+            return response()->ajax(0, '设置失败：服务器异常!');
         }
         return response()->ajax(0, '数据信息有误!');
     }
@@ -73,17 +71,15 @@ class SettingController extends Controller
             $template = SmsTemplate::where(['user_id'=> Auth::user()->getPrimaryUserId(), 'id'=> request('id')])->first();
 
             if (! $template) {
-                return response()->ajax(0, '模板不存在!');
+                return response()->ajax(0, '修改失败：模板不存在!');
             }
 
             $template->name = request('name');
             $template->contents = request('contents');
             $template->save();
 
-        } catch (CustomException $e){
-            return response()->ajax(0, '服务器异常!');
         } catch (Exception $e) {
-            return response()->ajax(0, '服务器异常!');
+            return response()->ajax(0, '修改失败：服务器异常!');
         }
         return response()->ajax(1, '修改成功!');
     }
@@ -126,7 +122,7 @@ class SettingController extends Controller
                     'delivery' => request('delivery')
                 ]);
         } catch (Exception $e) {
-            return response()->ajax(0, '设置失败！');
+            return response()->ajax(0, '设置失败：服务器异常！');
         }
         return response()->ajax(1, '设置成功！');
     }
@@ -144,11 +140,11 @@ class SettingController extends Controller
         $sellerNick= request('seller_nick');
 
         if (!is_numeric($goodsId)) {
-            return response()->ajax(0, '商品ID不合法!');
+            return response()->ajax(0, '添加失败：商品ID不合法!');
         }
 
         if (!in_array($serviceId, array_flip($serviceRepository->available()->toArray()))) {
-            return response()->ajax(0, '类型不合法!');
+            return response()->ajax(0, '添加失败：类型不合法!');
         }
 
         $exist = AutomaticallyGrabGoods::where('service_id', $serviceId)
@@ -156,7 +152,7 @@ class SettingController extends Controller
             ->first();
 
         if ($exist) {
-            return response()->ajax(0, '该商品ID已存在!');
+            return response()->ajax(0, '添加失败：该商品ID已存在!');
         }
         try {
             AutomaticallyGrabGoods::create([
@@ -169,7 +165,7 @@ class SettingController extends Controller
                 'remark' => request('remark'),
             ]);
         } catch (Exception $e) {
-            return response()->ajax(0, '服务器异常!');
+            return response()->ajax(0, '添加失败：服务器异常!');
         }
         return response()->ajax(1, '添加成功!');
     }
@@ -202,7 +198,7 @@ class SettingController extends Controller
             $automaticallyGrabGoods = AutomaticallyGrabGoods::where(['user_id'=> Auth::user()->getPrimaryUserId(), 'id'=> request('id')])->first();
 
             if (!$automaticallyGrabGoods) {
-                return response()->ajax(0, '商品不存在!');
+                return response()->ajax(0, '修改失败：商品不存在!');
             }
 
             $automaticallyGrabGoods->foreign_goods_id = request('foreign_goods_id');
@@ -213,7 +209,7 @@ class SettingController extends Controller
             $automaticallyGrabGoods->type = request('type');
             $automaticallyGrabGoods->save();
         } catch (Exception $e){
-            return response()->ajax(0, '修改失败!');
+            return response()->ajax(0, '修改失败：服务器异常!');
         }
         return response()->ajax(1, '修改成功!');
     }
@@ -227,7 +223,7 @@ class SettingController extends Controller
         try {
             AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())->where('id', request('id'))->delete();
         } catch (Exception $e) {
-            return response()->ajax(0, '服务器异常！');
+            return response()->ajax(0, '删除失败：服务器异常！');
         }
         return response()->ajax(1, '删除成功！');
     }
@@ -277,7 +273,7 @@ class SettingController extends Controller
             }
             return response()->json(['status' => 1, 'data' => $taoBaoShopAuth, 'bind' => $bindResult]);
         } catch (Exception $e) {
-            return response()->ajax(0, '数据异常!');
+            return response()->ajax(0, '获取数据失败：数据异常!');
         }
     }
 
@@ -301,10 +297,10 @@ class SettingController extends Controller
             TaobaoShopAuthorization::where('user_id', auth()->user()->getPrimaryUserId())
                 ->where('id', request('id'))
                 ->delete();
-            return response()->ajax(1, '删除成功!');
         } catch (Exception $e) {
-            return response()->ajax(0, '服务器异常!');
+            return response()->ajax(0, '删除失败：服务器异常!');
         }
+        return response()->ajax(1, '删除成功!');
     }
 
     /**

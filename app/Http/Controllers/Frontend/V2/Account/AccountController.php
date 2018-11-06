@@ -53,7 +53,7 @@ class AccountController extends Controller
             $user->leveling_type = request('type');
             $user->save();
         } catch (Exception $e) {
-            return response()->ajax(0, '服务器异常!');
+            return response()->ajax(0, '修改失败：服务器异常!');
         }
         return response()->ajax(1, '修改成功!');
     }
@@ -140,9 +140,9 @@ class AccountController extends Controller
             $user->status = request('status');
             $user->save();
         } catch (Exception $e) {
-            return response()->ajax(0, '服务器异常!');
+            return response()->ajax(0, '设置失败：服务器异常!');
         }
-        return response()->ajax(1, '修改成功!');
+        return response()->ajax(1, '设置成功!');
     }
 
     /**
@@ -161,9 +161,9 @@ class AccountController extends Controller
             // 清除缓存
             Cache::forget('newPermissions:user:'.$user->id);
         } catch (Exception $e) {
-            return response()->ajax(0, '服务器异常!');
+            return response()->ajax(0, '删除失败：服务器异常!');
         }
-        return response()->ajax(1, '删除成功');
+        return response()->ajax(1, '删除成功!');
     }
 
     /**
@@ -186,7 +186,7 @@ class AccountController extends Controller
             $isSingle = User::where('name', request('name'))->withTrashed()->first();
 
             if ($isSingle) {
-                return response()->ajax(0, '账号名已存在!');
+                return response()->ajax(0, '添加失败：账号名已存在!');
             }
             myLog('test', [request('station')]);
             // 数据
@@ -211,10 +211,9 @@ class AccountController extends Controller
             // 清除缓存
             Cache::forget('newPermissions:user:'.$user->id);
         } catch (Exception $e) {
-            myLog('test', [$e->getMessage()]);
-            return response()->ajax(0, '请重新提交数据!');
+            return response()->ajax(0, '添加失败：服务器异常!');
         }
-        return response()->ajax(1, '添加成功');
+        return response()->ajax(1, '添加成功！');
     }
 
     /**
@@ -247,7 +246,7 @@ class AccountController extends Controller
             Cache::forget('newPermissions:user:'.$user->id);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->ajax(0, '修改失败！');
+            return response()->ajax(0, '修改失败：服务器异常！');
         }
         DB::commit();
         return response()->ajax(1, '修改成功!');
@@ -279,7 +278,7 @@ class AccountController extends Controller
     {
         try {
             if (is_null(request('hatchet_man_name')) || is_null(request('hatchet_man_qq')) || is_null(request('hatchet_man_phone'))) {
-                return response()->ajax(0, '带*为必填内容');
+                return response()->ajax(0, '添加失败：带*为必填内容！');
             }
             $data['user_id'] = Auth::user()->getPrimaryUserId();
             $data['hatchet_man_name'] = request('hatchet_man_name');
@@ -289,7 +288,7 @@ class AccountController extends Controller
 
             HatchetManBlacklist::create($data);
         } catch (Exception $e) {
-            return response()->ajax(0, '添加失败');
+            return response()->ajax(0, '添加失败：服务器异常！');
         }
         return response()->ajax(1, '添加成功');
     }
@@ -302,7 +301,7 @@ class AccountController extends Controller
     {
         try {
             if (is_null(request('hatchet_man_name')) || is_null(request('hatchet_man_qq')) || is_null(request('hatchet_man_phone'))) {
-                return response()->ajax(0, '带*为必填内容');
+                return response()->ajax(0, '修改失败：带*为必填内容！');
             }
 
             $blackList = HatchetManBlacklist::find(request('id'));
@@ -314,7 +313,7 @@ class AccountController extends Controller
 
             $blackList->save();
         } catch (Exception $e) {
-            return response()->ajax(0, '修改失败!');
+            return response()->ajax(0, '修改失败：服务器异常!');
         }
         return response()->ajax(1, '修改成功!');
     }
@@ -344,15 +343,15 @@ class AccountController extends Controller
     public function blackListDelete()
     {
         if (! request('id')) {
-            return response()->ajax(0, '该条记录未找到');
+            return response()->ajax(0, '删除失败：该条记录未找到！');
         }
         $del = HatchetManBlacklist::destroy(request('id'));
 
         if (! $del) {
-            return response()->ajax(0, '删除失败');
+            return response()->ajax(0, '删除失败：服务器异常！');
         }
 
-        return response()->ajax(1, '删除成功');
+        return response()->ajax(1, '删除成功！');
     }
 
     /**
@@ -377,15 +376,15 @@ class AccountController extends Controller
             $extension = $file->getClientOriginalExtension();
 
             if (!request('name')) {
-                return response()->ajax(0, '参数缺失！');
+                return response()->ajax(0, '图片上传失败：参数缺失！');
             }
 
             if ($extension && ! in_array(strtolower($extension), static::$extensions)) {
-                return response()->ajax(0, '图片格式不正确!');
+                return response()->ajax(0, '图片上传失败：图片格式不正确!');
             }
 
             if (! $file->isValid()) {
-                return response()->ajax(0, '无效的图片！');
+                return response()->ajax(0, '图片上传失败：无效的图片！');
             }
 
             if (!file_exists($path)) {
@@ -403,7 +402,7 @@ class AccountController extends Controller
 
             return response()->json(['status' => 1, 'name' => request('name'), 'path' => $finalPath]);
         } catch (Exception $e) {
-            return response()->ajax(0, '服务器异常！');
+            return response()->ajax(0, '图片上传失败：服务器异常！');
         }
     }
 
@@ -415,7 +414,7 @@ class AccountController extends Controller
     {
         try {
             if (RealNameIdent::where('user_id', Auth::id())->first()) {
-                return response()->ajax(0, '您已提交申请，请勿重复提交！');
+                return response()->ajax(0, '添加失败：请勿重复提交！');
             }
 
             $userId = Auth::user()->getPrimaryUserId();
@@ -446,10 +445,10 @@ class AccountController extends Controller
                 $data['agency_agreement_picture']  = request('agency_agreement_picture');
                 RealNameIdent::create($data);
             } else {
-                return response()->ajax(0, '页面数据异常，请重新填写！');
+                return response()->ajax(0, '添加失败：页面数据异常！');
             }
         } catch (Exception $e) {
-            return response()->ajax(0, '服务器异常！');
+            return response()->ajax(0, '添加失败：服务器异常！');
         }
         return response()->ajax(1, '实名认证申请成功，请等待后台工作人员处理！');
     }
@@ -487,10 +486,10 @@ class AccountController extends Controller
                 $authentication->agency_agreement_picture  = request('agency_agreement_picture');
                 $authentication->save();
             } else {
-                return response()->ajax(0, '页面数据异常，请重新填写！');
+                return response()->ajax(0, '修改失败：页面数据异常！');
             }
         } catch (Exception $e) {
-            return response()->ajax(0, '服务器异常！');
+            return response()->ajax(0, '修改失败：服务器异常！');
         }
         return response()->ajax(1, '修改成功，请等待后台工作人员处理！');
     }
@@ -561,9 +560,8 @@ class AccountController extends Controller
                     Cache::forget('newPermissions:user:'.$childUser->id);
                 }
             }
-
         } catch (Exception $e) {
-
+            return response()->ajax(1, '添加失败：服务器异常!');
         }
         return response()->ajax(1, '添加成功!');
     }
@@ -589,9 +587,8 @@ class AccountController extends Controller
                     Cache::forget('newPermissions:user:'.$childUser->id);
                 }
             }
-
         } catch (Exception $e) {
-
+            return response()->ajax(1, '添加失败：服务器异常!');
         }
         return response()->ajax(1, '添加成功!');
     }
@@ -632,10 +629,10 @@ class AccountController extends Controller
                     }
                 }
             } else {
-                return response()->ajax(1, '请勾选权限！');
+                return response()->ajax(1, '修改失败：请勾选权限！');
             }
         } catch (Exception $e) {
-            return response()->ajax(1, '服务器异常!');
+            return response()->ajax(1, '修改失败：服务器异常!');
         }
         return response()->ajax(1, '修改成功!');
     }
@@ -662,7 +659,7 @@ class AccountController extends Controller
                 }
             }
         } catch (Exception $e) {
-            return response()->ajax(1, '服务器错误!');
+            return response()->ajax(1, '删除失败：服务器错误!');
         }
         return response()->ajax(1, '删除成功!');
     }

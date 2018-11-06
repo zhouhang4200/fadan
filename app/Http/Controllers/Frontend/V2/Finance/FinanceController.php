@@ -157,7 +157,7 @@ class FinanceController extends Controller
         $bool = event(new Punish(Auth::user()->getPrimaryUserId()));
 
         if ($bool) {
-            return response()->json(['status' => 0, 'message' => '您还有罚单没有交清，请先交清罚单哦!']);
+            return response()->json(['status' => 0, 'message' => '提现申请失败：您还有罚单没有交清，请先交清罚单哦!']);
         }
 
         try {
