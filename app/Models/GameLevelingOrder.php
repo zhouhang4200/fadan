@@ -544,7 +544,7 @@ class GameLevelingOrder extends Model
      */
     public function getProfit()
     {
-        return $this->getAmount() - $this->payAmount() - $this->getPoundage() + $this->gameLevelingOrderComplainAmount() + 0;
+        return $this->getAmount() - $this->payAmount() - $this->getPoundage() + $this->complainAmount() + 0;
     }
 
     /**

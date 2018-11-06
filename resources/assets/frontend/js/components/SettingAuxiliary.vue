@@ -2,9 +2,12 @@
     <div class="main content amount-flow">
         <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="自动加价设置" name="markup">
-                <div style="margin-bottom: 20px;color: #909399">
-                    操作提示: “自动加价”功能可以自动给“未接单”状态的订单增加代练费。
-                </div>
+                <el-alert
+                        style="margin-bottom: 15px"
+                        title="操作提示: “自动加价”功能可以自动给“未接单”状态的订单增加代练费。"
+                        type="success"
+                        :closable="false">
+                </el-alert>
                 <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
                     <el-row :gutter="16">
                         <el-col :span="5">
@@ -166,9 +169,12 @@
                 </el-dialog>
             </el-tab-pane>
             <el-tab-pane label="发布渠道设置" name="channel">
-                <div style="margin-bottom: 20px;color: #909399">
-                    操作提示：发布渠道设置可以控制发布的订单所能转单的平台，每种游戏至少选择一家平台。
-                </div>
+                <el-alert
+                        style="margin-bottom: 15px"
+                        title="操作提示：发布渠道设置可以控制发布的订单所能转单的平台，每种游戏至少选择一家平台。"
+                        type="success"
+                        :closable="false">
+                </el-alert>
                 <template>
                     <el-table
                             :data="tableDataChannel"

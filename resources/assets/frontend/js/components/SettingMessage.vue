@@ -1,9 +1,12 @@
 <template>
     <div class="main content amount-flow">
         <template>
-            <div style="margin-bottom: 20px;color: #909399">
-                操作提示: 编辑自动发送短信模板，可在打手接单/完成订单/提交验收/提交撤销/提交仲裁时自动发送短信提醒用户。
-            </div>
+            <el-alert
+                    style="margin-bottom: 15px"
+                    title="操作提示: 编辑自动发送短信模板，可在打手接单/完成订单/提交验收/提交撤销/提交仲裁时自动发送短信提醒用户。"
+                    type="success"
+                    :closable="false">
+            </el-alert>
             <el-table
                     :data="tableData"
                     border

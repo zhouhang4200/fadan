@@ -1,9 +1,12 @@
 <template>
     <div class="main content amount-flow">
         <template>
-            <div style="margin-bottom: 20px;color: #909399">
-                操作提示: 添加了某一淘宝/天猫商品，则会自动获取该商品对应的订单，未添加商品则无法获取商品对应订单。请确保添加商品之前，已进行店铺授权。
-            </div>
+            <el-alert
+                    style="margin-bottom: 15px"
+                    title="操作提示: 添加了某一淘宝/天猫商品，则会自动获取该商品对应的订单，未添加商品则无法获取商品对应订单。请确保添加商品之前，已进行店铺授权。"
+                    type="success"
+                    :closable="false">
+            </el-alert>
             <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
                 <el-row :gutter="16">
                     <el-col :span="5">

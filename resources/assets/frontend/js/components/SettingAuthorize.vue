@@ -1,9 +1,12 @@
 <template>
     <div class="main content amount-flow">
         <template>
-            <div style="margin-bottom: 20px;color: #909399">
-                操作提示: 该授权用于抓取您淘宝店铺的订单。授权成功后您店铺订单会自动同步到平台中。
-            </div>
+            <el-alert
+                    style="margin-bottom: 15px"
+                    title="操作提示: 该授权用于抓取您淘宝店铺的订单。授权成功后您店铺订单会自动同步到平台中。"
+                    type="success"
+                    :closable="false">
+            </el-alert>
             <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
                 <el-row :gutter="16">
                     <el-col :span="5">
