@@ -35,10 +35,12 @@ class OpenApi extends BaseMiddleware
 
         // 使用 try 包裹，以捕捉 token 过期所抛出的 TokenExpiredException  异常
         try {
+
             // 检测用户的登录状态，如果正常则通过
             if ($this->auth->parseToken()->authenticate()) {
                 return $next($request);
             }
+
             throw new UnauthorizedHttpException('jwt-auth', '未登录');
         } catch (TokenExpiredException $exception) {
             // 此处捕获到了 token 过期所抛出的 TokenExpiredException 异常，我们在这里需要做的是刷新该用户的 token 并将它添加到响应头中

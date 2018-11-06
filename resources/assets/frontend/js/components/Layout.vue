@@ -21,10 +21,10 @@
                         <i class="el-icon-location"></i>
                         <span slot="title">工作台</span>
                     </template>
-                    <a href=""><el-menu-item index="1-1">代练待发</el-menu-item></a>
+                    <a href="/v2/order/game-leveling/taobao"><el-menu-item index="1-1">代练待发</el-menu-item></a>
                     <a href="/v2/order/game-leveling/create"><el-menu-item index="1-2">代练发布</el-menu-item></a>
                     <a href="/v2/order/game-leveling"><el-menu-item index="1-3">代练订单</el-menu-item></a>
-                    <a href=""><el-menu-item index="1-4">订单投诉</el-menu-item></a>
+                    <a href="/v2/order/game-leveling/businessman-complain"><el-menu-item index="1-4">订单投诉</el-menu-item></a>
                 </el-submenu>
 
                 <el-submenu index="2">

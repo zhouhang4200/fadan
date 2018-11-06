@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\OpenApi\Auth;
+namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-//use App\Transformers\UserTransformer;
 
 /**
  * Class AuthController
  * @package App\Http\Controllers\OpenApi
  */
-class AuthController extends Controller
+class AuthController extends ApiController
 {
 
     /**
@@ -31,7 +30,6 @@ class AuthController extends Controller
             ],
             'password' => 'required|string|min:6|max:20',
         ];
-
         // 验证参数，如果验证失败，则会抛出 ValidationException 的异常
         $params = $this->validate($request, $rules);
 
