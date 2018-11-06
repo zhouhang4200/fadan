@@ -117,6 +117,7 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                     Route::any('data-list', 'BusinessmanComplainController@dataList')->name('order.game-leveling.businessman-complain.data-list');
                     Route::post('images', 'BusinessmanComplainController@images')->name('order.game-leveling.businessman-complain.images');
                     Route::post('cancel', 'BusinessmanComplainController@cancel')->name('order.game-leveling.businessman-complain.cancel');
+                    Route::post('store', 'BusinessmanComplainController@store')->name('order.game-leveling.businessman-complain.store');
                     Route::post('status-quantity', 'BusinessmanComplainController@statusQuantity')->name('order.game-leveling.businessman-complain.status-quantity');
                 });
             });

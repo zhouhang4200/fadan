@@ -406,21 +406,27 @@
             },
             // 取消投诉操作
             handleCancelComplain(row) {
-                // 请求图片
-                axios.post(this.businessmanComplainCancelApi, {
-                    'id' : row.id
-                }).then(res => {
-                    this.$message({
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: '操作失败'
-                    });
-                    if (res.data.status == 1) {
-                        this.handleTableData();
-                    }
-                }).catch(err => {
-                    this.$message({
-                        type: 'error',
-                        message: '操作失败'
+                this.$confirm('您确定要"取消投诉"吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 请求图片
+                    axios.post(this.businessmanComplainCancelApi, {
+                        'id' : row.id
+                    }).then(res => {
+                        this.$message({
+                            type: res.data.status == 1 ? 'success' : 'error',
+                            message: res.data.message
+                        });
+                        if (res.data.status == 1) {
+                            this.handleTableData();
+                        }
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
                     });
                 });
             },
