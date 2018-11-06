@@ -24,6 +24,8 @@
             'MyAssetApi',
         ],
         created () {
+            this.$store.commit('handleOpenMenu', '2');
+            this.$store.commit('handleOpenSubmenu', '2-1');
             this.handleTableData();
         },
         methods:{

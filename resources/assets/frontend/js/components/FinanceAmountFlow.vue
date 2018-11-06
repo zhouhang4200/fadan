@@ -134,6 +134,8 @@
             },
         },
         created () {
+            this.$store.commit('handleOpenMenu', '2');
+            this.$store.commit('handleOpenSubmenu', '2-3');
             this.handleTableData();
         },
         watch: {

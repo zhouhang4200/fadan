@@ -98,6 +98,8 @@
         ],
         // 初始化数据
         created () {
+            this.$store.commit('handleOpenMenu', '2');
+            this.$store.commit('handleOpenSubmenu', '2-4');
             this.handleTableData();
             this.CanWithdraw();
         },

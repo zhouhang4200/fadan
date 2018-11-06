@@ -446,6 +446,8 @@
             }
         },
         created() {
+            this.$store.commit('handleOpenMenu', '1');
+            this.$store.commit('handleOpenSubmenu', '1-4');
             this.handlePageTitle();
             this.handleTableHeight();
             this.handleTableData();

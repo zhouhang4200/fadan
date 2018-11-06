@@ -322,6 +322,8 @@
             },
         },
         created () {
+            this.$store.commit('handleOpenMenu', '3');
+            this.$store.commit('handleOpenSubmenu', '3-5');
             this.handleTableData();
             this.handleUser();
             this.handleStation();

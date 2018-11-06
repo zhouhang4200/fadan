@@ -971,6 +971,8 @@
             }
         },
         created() {
+            this.$store.commit('handleOpenMenu', '1');
+            this.$store.commit('handleOpenSubmenu', '1-3');
             this.handlePageTitle();
             this.handleTableHeight();
             this.handleTableData();
@@ -979,6 +981,6 @@
         },
         destroyed() {
             window.removeEventListener('resize', this.handleTableHeight)
-        },
+        }
     }
 </script>

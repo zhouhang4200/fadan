@@ -59,17 +59,26 @@ Vue.component('setting-message', resolve => void(require(['./components/SettingM
 Vue.component('setting-goods', resolve => void(require(['./components/SettingGoods.vue'], resolve)));
 // 店铺授权
 Vue.component('setting-authorize', resolve => void(require(['./components/SettingAuthorize.vue'], resolve)));
-// this.$store.state.applyConsultVisible 获取
+
+// this.$store.state.openedMenu 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 const store = new Vuex.Store({
     state: {
+        openMenu: ['1'],
+        openSubmenu: '',
         pageTitle: '',
     },
     mutations: {
         // 页标题
         handlePageTitle(state, par){
             state.pageTitle = par.pageTitle
-        }
+        },
+        handleOpenMenu(state, par){
+            state.openMenu[0] = par
+        },
+        handleOpenSubmenu(state, par){
+            state.openSubmenu = par
+        },
     }
 });
 

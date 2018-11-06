@@ -1,15 +1,15 @@
 <template>
     <el-container>
-        <el-aside v-bind:style="{'width': collapse ? '64px':'200px', 'background-color': '#515a6e'}">
+        <el-aside :style="{'width': collapse ? '64px':'200px', 'background-color': '#515a6e'}">
             <div class="logo">
                 <i class="icon-tao" style="font-size:32px;color:#fff"></i>
                 <img src="/frontend/v2/images/logo.png" style="vertical-align: top" v-show="!collapse">
             </div>
             <el-menu
-                    :default-openeds="['one']"
+                    :default-openeds="this.$store.state.openMenu"
                     :unique-opened=true
                     :collapse-transition="collapseTransition"
-                    default-active="1-3"
+                    :default-active="this.$store.state.openSubmenu"
                     class="side-menu"
                     background-color="#515a6e"
                     :min-height="menuMinHeight"
@@ -17,52 +17,12 @@
                     active-text-color="#ffd04b"
                     :collapse="collapse">
 
-                <el-submenu index="one">
-                    <template slot="title">
-                        <i class="el-icon-location"></i>
-                        <span slot="title">工作台</span>
-                    </template>
-                    <a href="/v2/order/game-leveling/taobao"><el-menu-item index="1-1">代练待发</el-menu-item></a>
-                    <a href="/v2/order/game-leveling/create"><el-menu-item index="1-2">代练发布</el-menu-item></a>
-                    <a href="/v2/order/game-leveling"><el-menu-item index="1-3">代练订单</el-menu-item></a>
-                    <a href="/v2/order/game-leveling/businessman-complain"><el-menu-item index="1-4">订单投诉</el-menu-item></a>
-                </el-submenu>
-
-                <el-submenu index="2">
-                    <template slot="title">
-                        <i class="el-icon-location"></i>
-                        <span slot="title">财务</span>
-                    </template>
-                    <a href="/v2/finance/my-asset"><el-menu-item index="2-1">我的资产</el-menu-item></a>
-                    <a href="/v2/finance/daily-asset"><el-menu-item index="2-2">资产日报</el-menu-item></a>
-                    <a href="/v2/finance/amount-flow"><el-menu-item index="2-3">资金流水</el-menu-item></a>
-                    <a href="/v2/finance/my-withdraw"><el-menu-item index="2-4">我的提现</el-menu-item></a>
-                    <a href="/v2/statistic/employee"><el-menu-item index="2-6">员工统计</el-menu-item></a>
-                    <a href="/v2/statistic/order"><el-menu-item index="2-7">订单统计</el-menu-item></a>
-                    <a href="/v2/statistic/message"><el-menu-item index="2-8">短信统计</el-menu-item></a>
-                    <a href="/v2/finance/order"><el-menu-item index="2-9">财务订单列表</el-menu-item></a>
-                </el-submenu>
-
-                <el-submenu index="3">
-                    <template slot="title">
-                        <i class="el-icon-location"></i>
-                        <span slot="title">账号</span>
-                    </template>
-                    <a href="/v2/account/mine"><el-menu-item index="3-1">我的账号</el-menu-item></a>
-                    <a href="/v2/account/login-history"><el-menu-item index="3-2">登录记录</el-menu-item></a>
-                    <a href="/v2/account/authentication"><el-menu-item index="3-3">实名认证</el-menu-item></a>
-                    <a href="/v2/account/station"><el-menu-item index="3-4">岗位管理</el-menu-item></a>
-                    <a href="/v2/account/employee"><el-menu-item index="3-5">员工管理</el-menu-item></a>
-                    <a href="/v2/account/black-list"><el-menu-item index="3-6">打手黑名单</el-menu-item></a>
-                </el-submenu>
-
                 <el-submenu v-for="item in menu" :index="item.index">
                     <template slot="title">
-                        <i class="el-icon-location"></i>
+                        <i :class="item.icon"></i>
                         <span slot="title">{{ item.name }}</span>
                     </template>
-
-                    <a v-for="submenu in item.submenu" :href="submenu.url"><el-menu-item index="4-1">{{ submenu.name }}</el-menu-item></a>
+                    <a v-for="submenu in item.submenu" :href="submenu.url"><el-menu-item :index="submenu.index">{{ submenu.name }}</el-menu-item></a>
                 </el-submenu>
 
                 <!--没有子菜单示例-->

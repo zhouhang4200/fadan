@@ -705,6 +705,8 @@
             }
         },
         created() {
+            this.$store.commit('handleOpenMenu', '1');
+            this.$store.commit('handleOpenSubmenu', '1-2');
             this.handleFromGameRegionServerOptions();
             this.handelTaobaoData();
             this.handleDayHour();
