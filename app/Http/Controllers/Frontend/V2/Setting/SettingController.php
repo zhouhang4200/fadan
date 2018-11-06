@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Frontend\V2\Setting;
 
+use App\Models\OrderSendChannel;
 use Exception;
 use App\Models\Game;
 use App\Models\SmsTemplate;
 use Illuminate\Http\Request;
+use App\Models\OrderAutoMarkup;
 use App\Exceptions\CustomException;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -303,5 +305,190 @@ class SettingController extends Controller
         } catch (Exception $e) {
             return response()->ajax(0, '服务器异常!');
         }
+    }
+
+    /**
+     * 代练发单辅助页面
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function auxiliary()
+    {
+        return view('frontend.v2.setting.auxiliary');
+    }
+
+    /**
+     * 订单数据
+     * @return mixed
+     */
+    public function markupDataList()
+    {
+        return OrderAutoMarkup::where('user_id', Auth::user()->getPrimaryUserId())
+            ->oldest('markup_amount')
+            ->paginate(15);
+    }
+
+    /**
+     * 自动加价添加
+     * @return mixed
+     */
+    public function markupAdd()
+    {
+        try {
+            $data['user_id'] = Auth::user()->getPrimaryUserId();
+            $requestMarkupAmount = is_numeric(request('markup_amount')) ? round(request('markup_amount'), 2) : 0;
+            $requestMarkupMoney = is_numeric(request('markup_money')) ? round(request('markup_money'), 2) : 0;
+            // 如果填的值不合法则
+            if (! $requestMarkupAmount || !$requestMarkupMoney) {
+                return response()->ajax(0, '添加失败：发单价或增加金额必须为数字且大于0!');
+            }
+            // 查看发单价是否有重复
+            $sameMarkupAmount = OrderAutoMarkup::where('user_id', Auth::user()->getPrimaryUserId())
+                ->where('markup_amount', $requestMarkupAmount)
+                ->count();
+
+            if ($sameMarkupAmount > 0) {
+                return response()->ajax(0, '添加失败：发单价已存在!');
+            }
+
+            // 数据
+            $data['markup_amount'] = $requestMarkupAmount;
+            $data['markup_time'] = request('markup_time', 0);
+            $data['markup_type'] = request('markup_type');
+            $data['markup_money'] = is_numeric(request('markup_money')) ? round(request('markup_money'), 2) : 0;
+            $data['markup_frequency'] = is_numeric(request('markup_frequency')) ? intval(request('markup_frequency')) : 0;
+            $data['markup_number'] = is_numeric(request('markup_number')) ? intval(request('markup_number')) : 0;
+
+            // 保存
+            OrderAutoMarkup::create($data);
+
+            return response()->ajax(1, '添加成功!');
+        } catch (Exception $e) {
+            return response()->ajax(0, '添加失败：服务器异常!');
+        }
+    }
+
+    /**
+     * 自动加价修改
+     * @return mixed
+     */
+    public function markupUpdate()
+    {
+        try {
+            $orderAutoMarkup = OrderAutoMarkup::find(request('id'));
+            $requestMarkupAmount = is_numeric(request('markup_amount')) ? round(request('markup_amount'), 2) : 0;
+            $requestMarkupMoney = is_numeric(request('markup_money')) ? round(request('markup_money'), 2) : 0;
+            // 如果填的值不合法则
+            if (!$requestMarkupAmount || !$requestMarkupMoney) {
+                return response()->ajax(0, '添加失败：发单价或增加金额必须为数字且大于0!');
+            }
+            // 查看发单价是否有重复
+            $sameMarkupAmount = OrderAutoMarkup::where('user_id', $orderAutoMarkup->user_id)
+                ->where('markup_amount', $requestMarkupAmount)
+                ->count();
+
+            if ($sameMarkupAmount > 0 && $orderAutoMarkup->markup_amount != $requestMarkupAmount) {
+                return response()->ajax(0, '修改失败：发单价已存在');
+            }
+            // 数据
+            $orderAutoMarkup->markup_amount = $requestMarkupAmount;
+            $orderAutoMarkup->markup_time = request('markup_time', 0);
+            $orderAutoMarkup->markup_type = request('markup_type');
+            $orderAutoMarkup->markup_money = is_numeric(request('markup_money')) ? round(request('markup_money'), 2) : 0;
+            $orderAutoMarkup->markup_frequency = is_numeric(request('markup_frequency')) ? intval(request('markup_frequency')) : 0;
+            $orderAutoMarkup->markup_number = is_numeric(request('markup_number')) ? intval(request('markup_number')) : 0;
+            // 保存
+            $res = $orderAutoMarkup->save();
+
+        } catch (Exception $e) {
+            return response()->ajax(0, '修改失败：服务器异常!');
+        }
+        return response()->ajax(1, '修改成功!');
+    }
+
+    /**
+     * 自动加价删除
+     * @return mixed
+     */
+    public function markupDelete()
+    {
+        try {
+            OrderAutoMarkup::destroy(request('id'));
+        } catch (Exception $e) {
+            return response()->ajax(0, '删除失败：服务器异常!');
+        }
+        return response()->ajax(1, '删除成功!');
+    }
+
+    /**
+     * 渠道设置
+     * @return mixed
+     */
+    public function channelDataList()
+    {
+        $games = Game::get();
+
+        foreach ($games as $k => $game) {
+            $orderSendChannel = OrderSendChannel::where('user_id', Auth::user()->getPrimaryUserId())
+                ->where('game_id', $game->id)
+                ->first();
+
+            if ($orderSendChannel) {
+                $game->hasModel = explode('-', $orderSendChannel->third);
+                $arr = [];
+                foreach ($game->hasModel as $v) {
+                    $arr[] = (int)$v;
+                }
+                $diffThirds = array_diff([1, 3, 4, 5], $arr); //黑名单
+                $game->hasModel = $diffThirds;
+            } else {
+                $game->hasModel = [1, 3, 4, 5];
+            }
+            myLog('test', [$game->hasModel]);
+            $game->allChannel = [
+                ['id' => 1, 'name' => 'show91平台'],
+                ['id' => 3, 'name' => '蚂蚁代练'],
+                ['id' => 4, 'name' => 'dd373平台'],
+                ['id' => 5, 'name' => '丸子代练']
+            ];
+        }
+        return $games;
+    }
+
+    /**
+     * 多选框事件
+     * @return mixed
+     */
+    public function channelSwitch()
+    {
+        try {
+            $userId = Auth::user()->getPrimaryUserId();
+            $gameId = request('game_id');
+            $gameName = request('game_name');
+            $thirds = request('thirds'); // 白名单
+            $realThirds = config('leveling.third'); // 所有
+
+            // 至少选一个游戏
+            if (! $thirds) {
+                return response()->ajax(0, '设置失败：请至少选择一个平台！');
+            }
+            // 如果已经存在设置过的平台
+            $orderSendChannel = OrderSendChannel::where('user_id', $userId)->where('game_id', $gameId)->first();
+
+            $diffThirds = array_diff($realThirds, $thirds); //黑名单
+
+            if (count($diffThirds) < 1 && $orderSendChannel) {
+                $orderSendChannel->delete();
+            } else {
+                $data['user_id'] = $userId;
+                $data['game_id'] = $gameId;
+                $data['game_name'] = $gameName;
+                $data['third'] = implode($diffThirds, '-');
+                OrderSendChannel::updateOrCreate(['user_id' => $userId, 'game_id' => $gameId], $data);
+            }
+
+        } catch (Exception $e) {
+            return response()->ajax(1, '设置失败：服务器异常！');
+        }
+        return response()->ajax(1, '设置成功');
     }
 }

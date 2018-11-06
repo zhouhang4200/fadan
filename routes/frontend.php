@@ -227,9 +227,17 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('authorize-delete', 'SettingController@authorizeDelete')->name('v2.setting.authorize-delete');
             Route::post('authorize-url', 'SettingController@authorizeUrl')->name('v2.setting.authorize-url');
             Route::post('authorize-data-list', 'SettingController@authorizeDataList')->name('v2.setting.authorize-data-list');
-            // 代练发单辅助
+            // 代练发单辅助加价
             Route::get('auxiliary', 'SettingController@auxiliary')->name('v2.setting.auxiliary');
-            Route::post('auxiliary-data-list', 'SettingController@auxiliaryDataList')->name('v2.setting.auxiliary-data-list');
+
+            Route::post('markup-time', 'SettingController@markupTime')->name('v2.setting.markup-time');
+            Route::post('markup-add', 'SettingController@markupAdd')->name('v2.setting.markup-add');
+            Route::post('markup-update', 'SettingController@markupUpdate')->name('v2.setting.markup-update');
+            Route::post('markup-delete', 'SettingController@markupDelete')->name('v2.setting.markup-delete');
+            Route::post('markup-data-list', 'SettingController@markupDataList')->name('v2.setting.markup-data-list');
+            // 代练发单辅助渠道设置
+            Route::post('channel-switch', 'SettingController@channelSwitch')->name('v2.setting.channel-switch');
+            Route::post('channel-data-list', 'SettingController@channelDataList')->name('v2.setting.channel-data-list');
         });
     });
 

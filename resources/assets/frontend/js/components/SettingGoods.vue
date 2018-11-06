@@ -132,6 +132,7 @@
                 this.dialogFormVisible = true;
                 this.isAdd=true;
                 this.isUpdate=false;
+                this.title="新增";
                 this.$refs.form.resetFields();
             },
             // 编辑按钮
@@ -139,6 +140,7 @@
                 this.dialogFormVisible = true;
                 this.form=row;
                 this.isAdd=false;
+                this.title="修改";
                 this.isUpdate=true;
             },
             // 取消按钮

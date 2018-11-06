@@ -53,7 +53,7 @@ class SendingAssistController extends Controller
     	// 数据
     	$datas['name'] = $request->name;
     	$datas['game_id'] = $request->game_id;
-    	$datas['content'] = $request->content;
+    	$datas['content'] = request('content');
     	$datas['user_id'] = Auth::user()->getPrimaryUserId();
 
         GameLevelingRequirementsTemplate::create($datas);
@@ -90,7 +90,7 @@ class SendingAssistController extends Controller
         $gameId = $request->input('game_id', 0);
         $status = $request->input('status', 0);
         $name = $request->name;
-        $content = $request->content;
+        $content = request('content');
 
         if ($id == 0) {
             if ($status) {
@@ -178,7 +178,7 @@ class SendingAssistController extends Controller
     	$orderTemplate = GameLevelingRequirementsTemplate::find($request->id);
     	$orderTemplate->name = $request->name;
     	$orderTemplate->game_id = $request->game_id;
-    	$orderTemplate->content = $request->content;
+    	$orderTemplate->content = request('content');
         $orderTemplate->status = 0;
     	$orderTemplate->save();
 
