@@ -57,7 +57,7 @@
                                             </div>
                                         </div>
 
-                                        @if(auth()->user()->name != '淘宝发单平台')
+                                        @if(auth('admin')->user()->name != '淘宝发单平台')
 
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">代充类型</label>
