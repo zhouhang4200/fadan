@@ -59,6 +59,8 @@ Vue.component('setting-message', resolve => void(require(['./components/SettingM
 Vue.component('setting-goods', resolve => void(require(['./components/SettingGoods.vue'], resolve)));
 // 店铺授权
 Vue.component('setting-authorize', resolve => void(require(['./components/SettingAuthorize.vue'], resolve)));
+// 自动加价
+Vue.component('setting-auxiliary', resolve => void(require(['./components/SettingAuxiliary.vue'], resolve)));
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 const store = new Vuex.Store({
