@@ -164,6 +164,7 @@
             'AccountAuthenticationUploadApi',
         ],
         methods: {
+            // 获取编辑页面的数据
             authenticationForm() {
                 axios.post(this.AccountAuthenticationFormApi).then(res => {
                     if (res.data && res.data.type === 1) {
@@ -205,6 +206,7 @@
             },
             handleClick(tab, event) {
             },
+            // 图片上传成功将地址回传给表单
             handleAvatarSuccess(res, file) {
                 if (res.status > 0) {
                     if (res.name === 'front_card_picture') {
@@ -228,6 +230,7 @@
                     }
                 }
             },
+            // 图片上传
             beforeAvatarUpload(file) {
                 const isJPEG = file.type === 'image/jpeg';
                 // const isPng = file.type === 'image/png';
@@ -242,6 +245,7 @@
                 }
                 return isJPEG && isLt2M;
             },
+            // 修改
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -269,6 +273,7 @@
                     }
                 });
             },
+            // 新增
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {

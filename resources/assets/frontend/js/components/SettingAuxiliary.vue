@@ -218,7 +218,7 @@
             'SettingChannelSwitchApi',
         ],
         methods: {
-            // 新增
+            // 新增按钮
             markupAdd() {
                 this.dialogFormVisible = true;
                 this.isAdd = true;

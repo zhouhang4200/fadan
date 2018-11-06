@@ -197,15 +197,14 @@
                 });
             },
             handleSearch() {
-
                 this.handleTableData();
             },
 
             handleCurrentChange(page) {
-
                 this.searchParams.page = page;
                 this.handleTableData();
             },
+            // 删除
             blackListDelete (id) {
                 axios.post(this.AccountBlackListDeleteApi, {id:id}).then(res => {
                     this.$message({

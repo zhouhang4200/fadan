@@ -177,6 +177,7 @@
             'AccountEmployeeCreateApi',
         ],
         methods: {
+            // 新增按钮
             employeeAdd() {
                 this.dialogFormVisible = true;
                 this.isAdd=true;
@@ -184,6 +185,7 @@
                 this.isDisabled=false;
                 this.$refs.form.resetFields();
             },
+            // 编辑按钮
             employeeUpdate(row) {
                 this.dialogFormVisible = true;
                 this.form = row;
@@ -199,6 +201,7 @@
                 this.isUpdate=true;
                 this.isDisabled=true;
             },
+            // 修改
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -221,6 +224,7 @@
                     }
                 });
             },
+            // 新增
             submitFormAdd(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -256,6 +260,7 @@
                     });
                 });
             },
+            // 所有子账号
             handleUser(){
                 axios.post(this.AccountEmployeeUserApi, this.searchParams).then(res => {
                  this.AccountEmployeeUser = res.data;
@@ -267,6 +272,7 @@
                     });
                 });
             },
+            // 所有岗位
             handleStation(){
                 axios.post(this.AccountEmployeeStationApi, this.searchParams).then(res => {
                    this.AccountEmployeeStation = res.data;
@@ -286,6 +292,7 @@
                 this.searchParams.page = page;
                 this.handleTableData();
             },
+            // 子账号禁用
             handleSwitch(value, row) {
                 axios.post(this.AccountEmployeeSwitchApi, {status:value, user_id:row.id}).then(res => {
                     this.$message({
@@ -301,6 +308,7 @@
                     });
                 });
             },
+            // 删除
             employeeDelete (id) {
                 axios.post(this.AccountEmployeeDeleteApi, {user_id:id}).then(res => {
                     this.$message({

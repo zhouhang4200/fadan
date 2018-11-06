@@ -130,7 +130,7 @@
             'SettingGoodsDeliveryApi',
         ],
         methods: {
-            // 新增
+            // 新增按钮
             goodsAdd() {
                 this.dialogFormVisible = true;
                 this.isAdd=true;
