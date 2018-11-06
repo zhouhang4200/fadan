@@ -141,10 +141,11 @@
                 this.isAdd=false;
                 this.isUpdate=true;
             },
+            // 取消按钮
             goodsCancel(formName) {
-                this.$refs[formName].resetFields();
                 this.dialogFormVisible = false;
             },
+            // 添加
             submitFormAdd(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -167,6 +168,7 @@
                     }
                 });
             },
+            // 修改
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -257,6 +259,7 @@
                     });
                 });
             },
+            // 商铺
             sellerNick(){
                 axios.post(this.SettingGoodsSellerNickApi).then(res => {
                     this.sellerNicks=res.data;

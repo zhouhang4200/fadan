@@ -222,7 +222,9 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('message-update', 'SettingController@messageUpdate')->name('v2.setting.message-update');
             Route::post('message-data-list', 'SettingController@messageDataList')->name('v2.setting.message-data-list');
             // 店铺授权
-            Route::get('authorize', 'SettingController@authorize')->name('v2.setting.authorize');
+            Route::get('authorize', 'SettingController@authorizeIndex')->name('v2.setting.authorize');
+            Route::post('authorize-delete', 'SettingController@authorizeDelete')->name('v2.setting.authorize-delete');
+            Route::post('authorize-url', 'SettingController@authorizeUrl')->name('v2.setting.authorize-url');
             Route::post('authorize-data-list', 'SettingController@authorizeDataList')->name('v2.setting.authorize-data-list');
             // 代练发单辅助
             Route::get('auxiliary', 'SettingController@auxiliary')->name('v2.setting.auxiliary');

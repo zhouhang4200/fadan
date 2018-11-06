@@ -57,6 +57,8 @@ Vue.component('account-station', resolve => void(require(['./components/AccountS
 Vue.component('setting-message', resolve => void(require(['./components/SettingMessage.vue'], resolve)));
 // 抓取商品配置
 Vue.component('setting-goods', resolve => void(require(['./components/SettingGoods.vue'], resolve)));
+// 店铺授权
+Vue.component('setting-authorize', resolve => void(require(['./components/SettingAuthorize.vue'], resolve)));
 // this.$store.state.applyConsultVisible 获取
 // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle}) 修改
 const store = new Vuex.Store({
