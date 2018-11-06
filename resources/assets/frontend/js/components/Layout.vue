@@ -6,7 +6,7 @@
                 <img src="/frontend/v2/images/logo.png" style="vertical-align: top" v-show="!collapse">
             </div>
             <el-menu
-                    :default-openeds="['1']"
+                    :default-openeds="['one']"
                     :unique-opened=true
                     :collapse-transition="collapseTransition"
                     default-active="1-3"
@@ -16,7 +16,8 @@
                     text-color="#fff"
                     active-text-color="#ffd04b"
                     :collapse="collapse">
-                <el-submenu index="1">
+
+                <el-submenu index="one">
                     <template slot="title">
                         <i class="el-icon-location"></i>
                         <span slot="title">工作台</span>
@@ -54,16 +55,16 @@
                     <a href="/v2/account/employee"><el-menu-item index="3-5">员工管理</el-menu-item></a>
                     <a href="/v2/account/black-list"><el-menu-item index="3-6">打手黑名单</el-menu-item></a>
                 </el-submenu>
-                <el-submenu index="4">
+
+                <el-submenu v-for="item in menu" :index="item.index">
                     <template slot="title">
                         <i class="el-icon-location"></i>
-                        <span slot="title">设置</span>
+                        <span slot="title">{{ item.name }}</span>
                     </template>
-                    <a href="/v2/setting/goods"><el-menu-item index="4-1">抓取商品配置</el-menu-item></a>
-                    <a href="/v2/setting/message"><el-menu-item index="4-2">短信管理</el-menu-item></a>
-                    <a href="/v2/setting/authorize"><el-menu-item index="4-3">店铺授权</el-menu-item></a>
-                    <a href="/v2/setting/auxiliary"><el-menu-item index="4-4">代练发单辅助</el-menu-item></a>
+
+                    <a v-for="submenu in item.submenu" :href="submenu.url"><el-menu-item index="4-1">{{ submenu.name }}</el-menu-item></a>
                 </el-submenu>
+
                 <!--没有子菜单示例-->
                 <!--<el-menu-item index="4">-->
                     <!--<i class="el-icon-setting"></i>-->
@@ -190,6 +191,7 @@
     export default {
         data() {
             return {
+                menu:null,
                 collapse: false,
                 collapseTransition: false,
                 menuMinHeight:'400px',
@@ -225,6 +227,7 @@
         created() {
             window.addEventListener('resize', this.handleContentContainerStyle);
             this.handleContentContainerStyle();
+            this.menu = JSON.parse(menu);
         },
         destroyed() {
             window.removeEventListener('resize', this.handleContentContainerStyle)
