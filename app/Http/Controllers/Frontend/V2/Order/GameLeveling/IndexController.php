@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
-
 use DB;
 use Auth;
 use Exception;

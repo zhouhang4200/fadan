@@ -14,9 +14,8 @@ class GameLevelingOrderBusinessmanComplain extends Model
         'from_user_id',
         'to_user_id',
         'game_leveling_order_trade_no',
-        'game_id',
         'amount',
-        'remark',
+        'reason',
         'result',
         'status',
         'images',
@@ -37,7 +36,7 @@ class GameLevelingOrderBusinessmanComplain extends Model
             });
         }
 
-        if (isset($filters['status']) && $filters['status'] > 0) {
+        if (isset($filters['status']) && $filters['status'] != 99) {
             $query->where('status', $filters['status']);
         }
 

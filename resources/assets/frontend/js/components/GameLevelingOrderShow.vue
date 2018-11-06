@@ -783,11 +783,15 @@
                     title="订单投诉"
                     :before-close="handleBusinessmanComplainVisible"
                     :visible=businessmanComplainVisible>
-                <el-form :model="businessmanComplainForm" ref="businessmanComplainForm" :rules="businessmanComplainFormRules" label-width="110px"
+                <el-form :model="businessmanComplainForm" ref="businessmanComplainForm"  label-width="110px"
                          class="demo-ruleForm">
-                    <el-form-item label="证据截图" prop="images" ref="image">
-                        <el-upload
-                                   :class="uploadNumber"
+                    <el-form-item label="证据截图"
+                                  prop="images"
+                                  :rules="[
+                                     { required: true, message: '最少上传一张图片', trigger: 'change'}
+                                    ]"
+                                  ref="image">
+                        <el-upload :class="uploadNumber"
                                    action="action"
                                    list-type="picture-card"
                                    :limit="3"
@@ -798,20 +802,26 @@
                         </el-upload>
 
                         <el-dialog :visiblec="businessmanComplainForm.dialogVisible">
-                            <img width="100%" :src="businessmanComplainForm.dialogImageUrl">
+                            <img width="100%"
+                                 :src="businessmanComplainForm.dialogImageUrl">
                         </el-dialog>
                     </el-form-item>
 
-                    <!--:rules="[{ required: true, message: '要求赔偿金额不能为空'}]"-->
                     <el-form-item prop="amount"
+                                  :rules="[
+                                      { required: true, message: '赔偿金额不能为空', trigger: 'blur'},
+                                      { type: 'number', message: '赔偿金额必须为数字值', trigger: 'blur'}
+                                  ]"
                                   label="要求赔偿金额">
                         <el-input type="input"
                                   :rows="8"
-                                  v-model="businessmanComplainForm.amount"></el-input>
+                                  v-model.number="businessmanComplainForm.amount"></el-input>
                     </el-form-item>
 
-                    <!--:rules="[{ required: true, message: '仲裁原因不能为空'}]"-->
                     <el-form-item label="投诉原因"
+                                  :rules="[
+                                      { required: true, message: '投诉原因不能为空'},
+                                  ]"
                                   prop="reason">
                         <el-input type="textarea"
                                   :rows="8"
@@ -821,7 +831,6 @@
                         <el-button type="primary"
                                    @click="handleSubmitBusinessmanComplainForm('businessmanComplainForm')">提交
                         </el-button>
-                        <el-button @click="handleResetForm('form')">重置</el-button>
                     </el-form-item>
                 </el-form>
             </el-dialog>
@@ -883,6 +892,7 @@
             'messageApi',
             'sendMessageApi',
             'businessmanComplainApi',
+            'businessmanComplainStoreApi',
         ],
         computed: {
             fieldDisabled() {
@@ -919,9 +929,7 @@
                 orderTab: "1",
                 dataTab: "1",
                 gameRegionServerOptions: [], // 游戏/区/服 选项
-                dayHourOptions: [  // 天数/小时  选项
-
-                ],
+                dayHourOptions: [],  // 天数/小时  选项
                 gameLevelingTypeOptions: [], // 游戏代练类型 选项
                 addDay: 0, // 增加的天数
                 addHour: 0, // 增加的小时
@@ -933,15 +941,6 @@
                     reason: '',
                     dialogVisible: false,
                     dialogImageUrl: '',
-                },
-                businessmanComplainFormRules: {
-                    images :[
-                        { required: true, message: '最少上传一张图片', trigger: 'change'}
-                    ],
-                    amount:[
-                        { required: true, message: '要求赔偿金额不能为空'}
-                    ],
-
                 },
                 complainMessageForm: {
                     trade_no: this.tradeNo,
@@ -1827,15 +1826,18 @@
             handleSubmitBusinessmanComplainForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
+                        axios.post(this.businessmanComplainStoreApi, this.businessmanComplainForm).then(res => {
+                            this.$message({
+                               type: res.data.status == 1 ? 'success' :'error',
+                                message:res.data.message,
+                            });
+                            if (res.data.status == 1) {
+                                this.businessmanComplainVisible = false;
+                                this.handleFromData();
+                            }
+                        });
                     }
                 });
-
-                // axios.post(this.businessmanComplainApi, this.businessmanComplainForm).then(res => {
-                //     if (res.data.status == 1) {
-                //         this.handleChatData();
-                //     }
-                // });
             },
             // 上传商户投诉图片
             handleUploadBusinessmanComplainImage(options) {
