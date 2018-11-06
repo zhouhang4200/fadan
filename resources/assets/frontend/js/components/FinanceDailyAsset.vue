@@ -92,7 +92,7 @@
             // 加载数据
             handleTableData(){
                 axios.post(this.DailyAssetApi, this.searchParams).then(res => {
-                    console.log(res);
+
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -104,7 +104,7 @@
                 });
             },
             handleCurrentChange(page) {
-                console.log(`当前页: ${page}`);
+
                 this.searchParams.page = page;
                 this.handleTableData();
             },

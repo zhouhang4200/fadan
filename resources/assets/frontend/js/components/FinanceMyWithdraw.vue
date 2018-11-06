@@ -107,7 +107,7 @@
             // 表格加载数据
             handleTableData(){
                 axios.post(this.MyWithdrawApi, this.searchParams).then(res => {
-                    console.log(res);
+
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -119,7 +119,7 @@
                 });
             },
             handleCurrentChange(page) {
-                console.log(`当前页: ${page}`);
+
                 this.searchParams.page = page;
                 this.handleTableData();
             },
@@ -165,7 +165,7 @@
                         });
                         this.dialogFormVisible = false;
                     } else {
-                        console.log('error submit!!');
+
                         return false;
                     }
                 });

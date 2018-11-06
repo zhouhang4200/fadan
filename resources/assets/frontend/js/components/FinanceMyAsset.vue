@@ -32,7 +32,6 @@
             // 加载数据
             handleTableData(){
                 axios.post(this.MyAssetApi).then(res => {
-                    console.log(res);
                     this.tableData = res.data;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {

@@ -94,7 +94,7 @@
             // 加载数据
             handleTableData(){
                 axios.post(this.SettingAuthorizeDataListApi, this.searchParams).then(res => {
-                    console.log(res);
+
                     this.tableData = res.data.data.data;
                     this.TotalPage = res.data.data.total;
 
@@ -110,11 +110,11 @@
                 });
             },
             handleSearch() {
-                console.log(this.searchParams);
+
                 this.handleTableData();
             },
             handleCurrentChange(page) {
-                console.log(`当前页: ${page}`);
+
                 this.searchParams.page = page;
                 this.handleTableData();
             },

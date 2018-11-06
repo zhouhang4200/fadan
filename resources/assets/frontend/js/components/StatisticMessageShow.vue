@@ -85,7 +85,7 @@
             // 表格加载数据
             handleTableData(){
                 axios.post(this.StatisticMessageShowDataListApi, this.searchParams).then(res => {
-                    console.log(this.searchParams);
+
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {

@@ -108,7 +108,7 @@
                 axios.post(this.StatisticEmployeeDataListApi, this.searchParams).then(res => {
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
-                    console.log(res.data.total);
+
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -128,7 +128,7 @@
             StatisticEmployeeUser() {
                 axios.post(this.StatisticEmployeeUserApi).then(res => {
                     this.UserArr = res.data;
-                    console.log(res.data);
+
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',

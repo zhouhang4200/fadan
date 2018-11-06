@@ -159,7 +159,7 @@
                 axios.post(this.StatisticOrderDataListApi, this.searchParams).then(res => {
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
-                    console.log(res.data.total);
+
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',

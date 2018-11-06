@@ -481,7 +481,6 @@
         },
         methods: {
             handleFromData() {
-                console.log(this.tradeNo);
                 axios.post(this.orderEditApi, {trade_no: this.tradeNo}).then(res => {
                         this.form.status = res.data.status;
                         this.form.channel_order_trade_no = res.data.channel_order_trade_no;

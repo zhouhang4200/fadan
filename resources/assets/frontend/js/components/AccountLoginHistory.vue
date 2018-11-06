@@ -89,12 +89,10 @@
                 });
             },
             handleSearch() {
-                console.log(this.searchParams);
                 this.handleTableData();
             },
 
             handleCurrentChange(page) {
-                console.log(`当前页: ${page}`);
                 this.searchParams.page = page;
                 this.handleTableData();
             },

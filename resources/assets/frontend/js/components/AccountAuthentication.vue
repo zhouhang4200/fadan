@@ -166,7 +166,6 @@
         methods: {
             authenticationForm() {
                 axios.post(this.AccountAuthenticationFormApi).then(res => {
-                    console.log(res.data);
                     if (res.data && res.data.type === 1) {
                         this.form = res.data;
                         this.isCompanyDisabled = true;
@@ -205,10 +204,8 @@
                 });
             },
             handleClick(tab, event) {
-                console.log(tab, event);
             },
             handleAvatarSuccess(res, file) {
-                console.log(res);
                 if (res.status > 0) {
                     if (res.name === 'front_card_picture') {
                         this.imageUrl1 = URL.createObjectURL(file.raw);

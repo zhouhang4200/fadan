@@ -8,16 +8,17 @@
             <el-menu
                     :default-openeds="this.$store.state.openMenu"
                     :unique-opened=true
-                    :collapse-transition="collapseTransition"
+                    :collapse-transition=false
                     :default-active="this.$store.state.openSubmenu"
                     class="side-menu"
                     background-color="#515a6e"
                     :min-height="menuMinHeight"
                     text-color="#fff"
                     active-text-color="#ffd04b"
+                    @open="handleOpen"
                     :collapse="collapse">
 
-                <el-submenu v-for="item in menu" :index="item.index">
+                <el-submenu v-for="item in menu" :index="item.index" :show-timeout=0 :hide-timeout=0>
                     <template slot="title">
                         <i :class="item.icon"></i>
                         <span slot="title">{{ item.name }}</span>
@@ -153,7 +154,6 @@
             return {
                 menu:null,
                 collapse: false,
-                collapseTransition: false,
                 menuMinHeight:'400px',
                 contentContainerStyle:{
                     // padding: '20px',
@@ -182,7 +182,10 @@
                 window.fullHeight = document.documentElement.clientHeight;
                 this.menuMinHeight = window.fullHeight + 'px';
                 return this.contentContainerStyle.minHeight = (window.fullHeight - 100) + 'px';
-            }
+            },
+            handleOpen(key, keyPath) {
+                console.log(1);
+            },
         },
         created() {
             window.addEventListener('resize', this.handleContentContainerStyle);

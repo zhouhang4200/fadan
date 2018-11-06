@@ -111,7 +111,7 @@
             // 加载数据
             handleTableData(){
                 axios.post(this.AmountFlowApi, this.searchParams).then(res => {
-                    console.log(res);
+
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -123,12 +123,12 @@
                 });
             },
             handleSearch() {
-                console.log(this.searchParams);
+
                 this.handleTableData();
             },
 
             handleCurrentChange(page) {
-                console.log(`当前页: ${page}`);
+
                 this.searchParams.page = page;
                 this.handleTableData();
             },
@@ -141,7 +141,7 @@
         watch: {
             t: function (val) {
                 this.weekse = val;
-                console.log(this.weekse);
+
                 this.getL()
             }
         },

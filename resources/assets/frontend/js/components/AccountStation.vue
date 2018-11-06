@@ -149,12 +149,12 @@
 
                 row.new_permissions.forEach(function(v) {
                     permission.push(v.id);
-                })
+                });
                 this.checkedPermission=permission;
             },
             // 新增
             submitFormAdd(formName) {
-                // console.log(this.$refs.tree.getCheckedNodes());
+                //
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         let permission = '';
@@ -213,7 +213,6 @@
             // 加载数据
             handleTableData(){
                 axios.post(this.AccountStationDataListApi, this.searchParams).then(res => {
-                    console.log(res);
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -225,12 +224,10 @@
                 });
             },
             handleSearch() {
-                console.log(this.searchParams);
                 this.handleTableData();
             },
 
             handleCurrentChange(page) {
-                console.log(`当前页: ${page}`);
                 this.searchParams.page = page;
                 this.handleTableData();
             },
