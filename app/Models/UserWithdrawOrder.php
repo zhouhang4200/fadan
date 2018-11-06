@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use DB;
+use Auth;
+use Asset;
+use Exception;
 use App\Extensions\Asset\Withdraw;
 use App\Extensions\Asset\Unfreeze;
-use DB;
-use Asset;
-use Auth;
+use Illuminate\Database\Eloquent\Model;
 use App\Extensions\Revisionable\RevisionableTrait;
 
 class UserWithdrawOrder extends Model
@@ -48,7 +49,7 @@ class UserWithdrawOrder extends Model
 
         // 提现
         try {
-            Asset::handle(new Withdraw($this->fee, $type, $this->no, $remark, $this->creator_primary_user_id, Auth::user()->id));
+            Asset::handle(new Withdraw($this->fee, $type, $this->no, $remark, $this->creator_primary_user_id, auth('admin')->user()->id));
         }
         catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -85,7 +86,7 @@ class UserWithdrawOrder extends Model
 
         // 解冻
         try {
-            Asset::handle(new Unfreeze($this->fee, Unfreeze::TRADE_SUBTYPE_WITHDRAW, $this->no, '拒绝提现解冻', $this->creator_primary_user_id, Auth::user()->id));
+            Asset::handle(new Unfreeze($this->fee, Unfreeze::TRADE_SUBTYPE_WITHDRAW, $this->no, '拒绝提现解冻', $this->creator_primary_user_id, auth('admin')->user()->id));
         }
         catch (Exception $e) {
             throw new Exception($e->getMessage());
