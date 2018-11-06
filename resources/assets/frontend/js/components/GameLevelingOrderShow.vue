@@ -512,7 +512,8 @@
                                                 label="留言证据"
                                                 width="80">
                                             <template slot-scope="scope">
-                                                <el-button icon="el-icon-search" v-if="scope.row.pic"
+                                                <el-button icon="el-icon-search"
+                                                           v-if="scope.row.pic"
                                                            @click.native="handleOpenImage(scope.row.pic)"></el-button>
                                             </template>
                                         </el-table-column>
@@ -530,16 +531,15 @@
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item label="上传证据">
-                                            <el-upload
-                                                    ref="complainMessageUpload"
-                                                    action="action"
-                                                    list-type="picture-card"
-                                                    :http-request="handleUploadFile">
+                                            <el-upload action="action"
+                                                       :class="complainMessageImageExceedLimit"
+                                                       list-type="picture-card"
+                                                       :limit="1"
+                                                       :on-preview="handleUploadPreview"
+                                                       :on-remove="handleRemoveComplainMessageImage"
+                                                       :http-request="handleUploadComplainMessageImage">
                                                 <i class="el-icon-plus"></i>
                                             </el-upload>
-                                            <el-dialog :visible="complainMessageForm.dialogVisible">
-                                                <img width="100%" :src="complainMessageForm.dialogImageUrl" alt="">
-                                            </el-dialog>
                                         </el-form-item>
                                         <el-form-item>
                                             <el-button type="primary" @click="handleAddComplainMessageForm()">提交
@@ -783,7 +783,7 @@
                     title="订单投诉"
                     :before-close="handleBusinessmanComplainVisible"
                     :visible=businessmanComplainVisible>
-                <el-form :model="businessmanComplainForm" ref="businessmanComplainForm"  label-width="110px"
+                <el-form :model="businessmanComplainForm" ref="businessmanComplainForm" label-width="110px"
                          class="demo-ruleForm">
                     <el-form-item label="证据截图"
                                   prop="images"
@@ -791,11 +791,10 @@
                                      { required: true, message: '最少上传一张图片', trigger: 'change'}
                                     ]"
                                   ref="image">
-                        <el-upload :class="uploadNumber"
+                        <el-upload :class="businessmanComplainImageExceedLimit"
                                    action="action"
                                    list-type="picture-card"
                                    :limit="3"
-                                   :on-exceed="handleExceedBusinessmanComplainImage"
                                    :on-remove="handleRemoveBusinessmanComplainImage"
                                    :http-request="handleUploadBusinessmanComplainImage">
                             <i class="el-icon-plus"></i>
@@ -909,12 +908,19 @@
                     return false;
                 }
             },
-            // 如果上传图片等于3张时就隐藏增加图片按钮
-            uploadNumber() {
+            // 商户投诉图片上传数量限制 3 张
+            businessmanComplainImageExceedLimit() {
                 return [
-                    this.businessmanComplainForm.images.length == 3 ? 'exceed' : ''
+                    this.businessmanComplainForm.images.length == 3 ? 'exceed' : ' '
                 ];
-            }
+            },
+            // 仲裁证据补充图片上传数量限制 1 张
+            complainMessageImageExceedLimit() {
+                return [
+                    this.complainMessageForm.pic != '' ? 'exceed' : ' '
+                ];
+            },
+
         },
         data() {
             return {
@@ -1741,13 +1747,13 @@
             handleRepeatOrder() {
                 location.href = this.orderRepeatApi + '/' + this.tradeNo;
             },
-            // 打开图片大图
+            // 查看图片大图
             handleOpenImage(src) {
                 const h = this.$createElement;
                 this.$msgbox({
                     center: true,
                     showConfirmButton: false,
-                    customClass: 'img-box',
+                    customClass: 'preview-image',
                     message: h('img', {attrs: {src: src}}, '')
                 });
             },
@@ -1768,7 +1774,23 @@
                     }
                 });
             },
-            handleUploadFile(options) {
+            // 预览图片
+            handleUploadPreview(file) {
+                const h = this.$createElement;
+                this.$msgbox({
+                    message: h('img', {attrs:{src:file.url}}),
+                    showCancelButton: false,
+                    cancelButtonText: false,
+                    showConfirmButton: false,
+                    customClass:'preview-image'
+                });
+            },
+            // 仲裁证据补充图片删除
+            handleRemoveComplainMessageImage() {
+                this.complainMessageForm.pic = '';
+            },
+            // 仲裁证据补充图片上传
+            handleUploadComplainMessageImage(options) {
                 let file = options.file;
                 if (file) {
                     this.fileReader.readAsDataURL(file)
@@ -1777,18 +1799,12 @@
                     this.complainMessageForm.pic = this.fileReader.result;
                 }
             },
-            HandleBeforeUpload(file) {
-                const isLt2M = file.size / 1024 / 1024 < 2;
-
-                if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
-                }
-                return true;
-            },
+            // 打开聊天窗口
             handleOpenChat() {
                 this.chatVisible = true;
                 this.handleChatData();
             },
+            // 加载聊天数据
             handleChatData() {
                 axios.post(this.messageApi, this.chatForm).then(res => {
                     if (res.data.status == 1) {
@@ -1804,6 +1820,7 @@
                     }
                 });
             },
+            // 发送聊天数据
             handleChatForm() {
                 axios.post(this.sendMessageApi, this.chatForm).then(res => {
                     if (res.data.status == 1) {
@@ -1811,6 +1828,7 @@
                     }
                 });
             },
+            // 关闭聊天窗口
             handleCloseChat() {
                 this.chatVisible = false;
             },
@@ -1828,8 +1846,8 @@
                     if (valid) {
                         axios.post(this.businessmanComplainStoreApi, this.businessmanComplainForm).then(res => {
                             this.$message({
-                               type: res.data.status == 1 ? 'success' :'error',
-                                message:res.data.message,
+                                type: res.data.status == 1 ? 'success' : 'error',
+                                message: res.data.message,
                             });
                             if (res.data.status == 1) {
                                 this.businessmanComplainVisible = false;
@@ -1854,24 +1872,21 @@
             handleRemoveBusinessmanComplainImage(file, fileList) {
                 let index = this.businessmanComplainForm.images.indexOf(file.response);
                 this.businessmanComplainForm.images.splice(index, 1);
-                // this.$refs.businessmanComplainForm.validateField('images')
             },
-            handleExceedBusinessmanComplainImage() {
-                this.businessmanComplainForm.dialogVisible = false;
-            },
+            // 初始化天数与小时
             handleDayHour() {
-                for(let i = 0; i<=90; i++) {
+                for (let i = 0; i <= 90; i++) {
                     let day = [];
-                    for (let i = 0; i<=24; i++) {
+                    for (let i = 0; i <= 24; i++) {
                         day.push({
-                            value:i,
-                            label:i + '小时',
+                            value: i,
+                            label: i + '小时',
                         })
                     }
                     this.dayHourOptions.push({
-                        value:i,
-                        label:i + '天',
-                        children:day,
+                        value: i,
+                        label: i + '天',
+                        children: day,
                     })
                 }
             }

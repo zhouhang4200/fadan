@@ -144,6 +144,30 @@
         transform: rotate(-90deg);
     }
 
+    /*创建订单、查看订单、重发订单输入框左侧菜单样式*/
+    .icon-button {
+        line-height: 32px;
+        font-size: 22px;
+        height: 32px;
+    }
+    /*上传图片超过限制时隐藏增加图片按钮*/
+    .exceed .el-upload {
+        display: none;
+    }
+    /*预览图片*/
+    .preview-image {
+        width: auto;
+        max-width: 800px;
+        background-color: transparent;
+        border: none;
+        box-shadow: 0 0 0 0;
+        -webkit-box-shadow: 0 0 0 0;
+    }
+    /*限制预览图片的最大宽度*/
+    .preview-image img{
+        max-width: 800px;
+    }
+
     /*全局重写*/
     .el-main {
         padding: 0;
@@ -159,12 +183,6 @@
     .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner,
     .el-form-item.is-success .el-textarea__inner:focus {
         border-color:#DCDFE6;
-    }
-    /*创建订单、查看订单、重发订单输入框左侧菜单样式*/
-    .icon-button {
-        line-height: 32px;
-        font-size: 22px;
-        height: 32px;
     }
 </style>
 
