@@ -24,9 +24,12 @@
                         <i :class="item.icon"></i>
                         <span slot="title">{{ item.name }}</span>
                     </template>
-                    <el-menu-item v-for="submenu in item.children" :index="item.path + submenu.path" v-if="submenu.menu === true">{{ submenu.name }}</el-menu-item>
+                    <el-menu-item v-for="submenu in item.children"
+                                  :index="item.path + submenu.path"
+                                  v-if="submenu.menu === true">
+                        {{ submenu.name }}
+                    </el-menu-item>
                 </el-submenu>
-
             </el-menu>
         </el-aside>
         <el-container>
@@ -62,6 +65,7 @@
     }
     .logo {
         /*height: 60px;*/
+        width: auto;
         background-color: #ff9900;
         padding: 14px 0 14px 16px;
         /*line-height: 32px;*/

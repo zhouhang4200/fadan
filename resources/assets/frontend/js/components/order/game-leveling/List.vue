@@ -442,8 +442,8 @@
 </style>
 
 <script>
-    import ApplyComplain from './ApplyComplain';
-    import ApplyConsult from './ApplyConsult';
+    import ApplyComplain from '../ApplyComplain';
+    import ApplyConsult from '../ApplyConsult';
     export default {
         components: {
             ApplyComplain,
