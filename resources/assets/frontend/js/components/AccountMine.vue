@@ -58,8 +58,6 @@
             },
         },
         created () {
-            this.$store.commit('handleOpenMenu', '3');
-            this.$store.commit('handleOpenSubmenu', '3-1');
             this.handleForm();
         },
         data() {

@@ -24,8 +24,6 @@
             'MyAssetApi',
         ],
         created () {
-            this.$store.commit('handleOpenMenu', '2');
-            this.$store.commit('handleOpenSubmenu', '2-1');
             this.handleTableData();
         },
         methods:{
@@ -46,6 +44,10 @@
             return {
                 tableData: []
             }
-        }
+        },
+        mounted() {
+            this.$cookieStore.setCookie('menu', '2');
+            this.$cookieStore.setCookie('submenu', '2-1');
+        },
     }
 </script>

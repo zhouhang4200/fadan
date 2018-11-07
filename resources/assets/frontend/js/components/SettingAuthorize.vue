@@ -123,8 +123,6 @@
             },
         },
         created () {
-            this.$store.commit('handleOpenMenu', '4');
-            this.$store.commit('handleOpenSubmenu', '4-3');
             this.handleTableData();
         },
         data() {
@@ -143,6 +141,10 @@
                 },
                 TotalPage:0,
             }
-        }
+        },
+        mounted() {
+            this.$cookieStore.setCookie('menu', '4');
+            this.$cookieStore.setCookie('submenu', '4-3');
+        },
     }
 </script>

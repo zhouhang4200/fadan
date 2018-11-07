@@ -391,5 +391,9 @@
         destroyed() {
             window.removeEventListener('resize', this.handleTableHeight)
         },
+        mounted() {
+            this.$cookieStore.setCookie('menu', '1');
+            this.$cookieStore.setCookie('submenu', '1-1');
+        },
     }
 </script>

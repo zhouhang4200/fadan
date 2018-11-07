@@ -150,8 +150,6 @@
             },
         },
         created () {
-            this.$store.commit('handleOpenMenu', '4');
-            this.$store.commit('handleOpenSubmenu', '4-2');
             this.handleTableData();
         },
         data() {
@@ -185,6 +183,10 @@
                     contents:''
                 }
             }
-        }
+        },
+        mounted() {
+            this.$cookieStore.setCookie('menu', '4');
+            this.$cookieStore.setCookie('submenu', '4-2');
+        },
     }
 </script>

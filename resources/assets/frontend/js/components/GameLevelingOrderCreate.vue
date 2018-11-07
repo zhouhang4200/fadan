@@ -705,12 +705,14 @@
             }
         },
         created() {
-            this.$store.commit('handleOpenMenu', '1');
-            this.$store.commit('handleOpenSubmenu', '1-2');
             this.handleFromGameRegionServerOptions();
             this.handelTaobaoData();
             this.handleDayHour();
-        }
+        },
+        mounted() {
+            this.$cookieStore.setCookie('menu', '1');
+            this.$cookieStore.setCookie('submenu', '1-2');
+        },
     }
 </script>
 

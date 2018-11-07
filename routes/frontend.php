@@ -12,12 +12,18 @@
 
 Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
 
+//    Route::get('spa', 'SpaController@index')->where('any', '.*');
+
+    Route::get('/{vue?}', function (){
+        return view('frontend.spa');
+    })->where('vue', '[\/\w\.-]*');
+
     Route::middleware(['auth'])->group(function () {
 
         // 获取所有游戏
         Route::any('games', 'GameController@index')->name('games');
         // 游戏区服数据
-        Route::any('game-region-server', 'GameController@gameRegionServer')->name('game-region-server');
+        Route::post('game-region-server', 'GameController@gameRegionServer')->name('game-region-server');
         // 游戏代练类型
         Route::post('game-leveling-types', 'GameLevelingTypeController@index')->name('game-leveling-types');
 

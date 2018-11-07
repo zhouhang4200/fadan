@@ -12,6 +12,7 @@
 <body>
 <div id="app" style="background: #f0f2f5;">
     <?php
+
     $menu = json_encode([
         [
             'index' => '1',

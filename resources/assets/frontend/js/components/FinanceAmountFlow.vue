@@ -213,6 +213,9 @@
                 TotalPage:0,
                 tableData: []
             }
-        }
+        },
+        mounted() {
+            this.$cookieStore.setCookie('menu', '2');
+        },
     }
 </script>

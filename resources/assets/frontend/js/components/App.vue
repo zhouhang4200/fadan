@@ -5,31 +5,28 @@
                 <i class="icon-tao" style="font-size:32px;color:#fff"></i>
                 <img src="/frontend/v2/images/logo.png" style="vertical-align: top" v-show="!collapse">
             </div>
+            <!--:default-openeds="['1']"-->
             <el-menu
-                    :default-openeds="[this.$cookieStore.getCookie('menu') ? this.$cookieStore.getCookie('menu') : '1']"
+                    @select="handleSelect"
                     :unique-opened=true
                     :collapse-transition=false
-                    :default-active="submenu"
                     class="side-menu"
+                    :router=true
+                    :default-active="$route.path"
                     background-color="#515a6e"
                     :min-height="menuMinHeight"
                     text-color="#fff"
                     active-text-color="#ffd04b"
                     :collapse="collapse">
 
-                <el-submenu v-for="item in menu" :index="item.index" :show-timeout=0 :hide-timeout=0>
+                <el-submenu v-for="item in menus" :index="item.path">
                     <template slot="title">
                         <i :class="item.icon"></i>
                         <span slot="title">{{ item.name }}</span>
                     </template>
-                    <a v-for="submenu in item.submenu" :href="submenu.url"><el-menu-item :index="submenu.index">{{ submenu.name }}</el-menu-item></a>
+                    <el-menu-item v-for="submenu in item.children" :index="item.path + submenu.path" v-if="submenu.menu === true">{{ submenu.name }}</el-menu-item>
                 </el-submenu>
 
-                <!--没有子菜单示例-->
-                <!--<el-menu-item index="4">-->
-                    <!--<i class="el-icon-setting"></i>-->
-                    <!--<span slot="title">导航四</span>-->
-                <!--</el-menu-item>-->
             </el-menu>
         </el-aside>
         <el-container>
@@ -47,7 +44,7 @@
             </el-header>
             <el-main>
                 <div :style="contentContainerStyle">
-                    <slot></slot>
+                    <router-view></router-view>
                 </div>
             </el-main>
         </el-container>
@@ -149,12 +146,11 @@
 
 <script>
     export default {
+        name:"app",
         data() {
             return {
-                openMenu:['1'],
-                submenu:'',
-                menu:null,
                 collapse: false,
+                menus:null,
                 menuMinHeight:'400px',
                 contentContainerStyle:{
                     // padding: '20px',
@@ -175,8 +171,10 @@
             handleCollapse() {
                 if(this.collapse) {
                     this.collapse = false;
+                    sessionStorage.setItem('collapse', '0');
                 }else {
                     this.collapse = true;
+                    sessionStorage.setItem('collapse', '1');
                 }
             },
             handleContentContainerStyle() {
@@ -184,20 +182,19 @@
                 this.menuMinHeight = window.fullHeight + 'px';
                 return this.contentContainerStyle.minHeight = (window.fullHeight - 100) + 'px';
             },
+            handleSelect(key, keyPath) {
+                // sessionStorage.setItem('menu', keyPath[0]);
+            }
         },
         created() {
-
             window.addEventListener('resize', this.handleContentContainerStyle);
             this.handleContentContainerStyle();
-            this.menu = JSON.parse(menu);
         },
         mounted() {
-          // console.log(this.$cookieStore.getCookie('menu') ? this.$cookieStore.getCookie('menu') : '1');
-            let currentObj = this;
-          setTimeout(function () {
-              currentObj.submenu = currentObj.$cookieStore.getCookie('submenu');
-               console.log(1);
-          }, 200)
+            this.collapse = (sessionStorage.getItem('collapse') == 1 ? true : false);
+            // this.menu[0] = sessionStorage.getItem('menu');
+            this.menus = this.$router.options.routes;
+            // console.log(this.$router.options.routes);
         },
         destroyed() {
             window.removeEventListener('resize', this.handleContentContainerStyle)

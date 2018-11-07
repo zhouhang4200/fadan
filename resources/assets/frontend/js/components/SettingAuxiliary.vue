@@ -358,7 +358,7 @@
             this.handleTableDataChannel();
         },
         data() {
-            var greaterZero = (rule, value, callback) => {
+            let greaterZero = (rule, value, callback) => {
                 if (parseInt(value) < 0) {
                     callback(new Error('不可填写负数!'));
                 }
@@ -404,6 +404,10 @@
                     channel:''
                 }
             }
-        }
+        },
+        mounted() {
+            this.$cookieStore.setCookie('menu', '4');
+            this.$cookieStore.setCookie('submenu', '4-4');
+        },
     }
 </script>

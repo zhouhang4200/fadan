@@ -582,33 +582,24 @@
             },
             // 获取订单状态数量
             handleStatusQuantity() {
-                axios.post(this.statusQuantityApi, this.searchParams).then(res => {
-                    this.statusQuantity = res.data;
-                }).catch(err => {
+                this.$api.gameLevelingOrderStatusQuantity({}).then(res => {
+                    this.statusQuantity = res;
                 });
             },
             // 加载订单数据
             handleTableData(){
                 this.tableLoading = true;
-                axios.post(this.orderApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.tableDataTotal = res.data.total;
-                    this.tableLoading = false;
-                }).catch(err => {
-                    this.$alert('获取数据失败, 请重试!', '提示', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                        }
-                    });
+                this.$api.gameLevelingOrderList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.tableDataTotal = res.total;
                     this.tableLoading = false;
                 });
-                this.handleStatusQuantity();
+                // this.handleStatusQuantity();
             },
             // 加载游戏选项
             handleGameOptions() {
-                axios.post(this.gamesApi).then(res => {
-                    this.gameOptions = res.data;
-                }).catch(err => {
+                this.$api.games().then(res => {
+                    this.gameOptions = res;
                 });
             },
             // 搜索
@@ -627,11 +618,10 @@
             // 选择游戏后加载代练类型
             handleSearchParamsGameId() {
                 if(this.searchParams.game_id) {
-                    axios.post(this.gameLevelingTypesApi, {
+                    this.$api.gameLevelingTypes({
                         'game_id' : this.searchParams.game_id
                     }).then(res => {
                         this.gameLevelingTypeOptions = res.data;
-                    }).catch(err => {
                     });
                 } else {
                     this.gameLevelingTypeOptions = [];
@@ -971,13 +961,15 @@
             }
         },
         created() {
-            this.$store.commit('handleOpenMenu', '1');
-            this.$store.commit('handleOpenSubmenu', '1-3');
             this.handlePageTitle();
             this.handleTableHeight();
             this.handleTableData();
             this.handleGameOptions();
             window.addEventListener('resize', this.handleTableHeight);
+        },
+        mounted() {
+            this.$cookieStore.setCookie('menu', '1');
+            this.$cookieStore.setCookie('submenu', '1-3');
         },
         destroyed() {
             window.removeEventListener('resize', this.handleTableHeight)
