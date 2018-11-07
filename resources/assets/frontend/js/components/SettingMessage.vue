@@ -86,7 +86,7 @@
             // 编辑按钮
             ShowEditForm(row) {
                 this.dialogFormVisible = true;
-                this.form=row;
+                this.form=JSON.parse(JSON.stringify(row));
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {

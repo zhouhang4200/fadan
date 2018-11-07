@@ -121,13 +121,13 @@
 <script>
     export default {
         props: [
-            'SettingGoodsDataListApi',
             'SettingGoodsGameApi',
-            'SettingGoodsSellerNickApi',
             'SettingGoodsAddApi',
             'SettingGoodsUpdateApi',
             'SettingGoodsDeleteApi',
+            'SettingGoodsDataListApi',
             'SettingGoodsDeliveryApi',
+            'SettingGoodsSellerNickApi',
         ],
         methods: {
             // 新增按钮
@@ -136,12 +136,22 @@
                 this.isAdd=true;
                 this.isUpdate=false;
                 this.title="新增";
-                this.$refs.form.resetFields();
+                this.form={
+                    id:'',
+                    game_name:'',
+                    seller_nick:'',
+                    foreign_goods_id:'',
+                    game_id:'',
+                    remark:'',
+                    delivery:'',
+                    created_at:'',
+                    updated_at:'',
+                };
             },
             // 编辑按钮
             goodsEdit(row) {
                 this.dialogFormVisible = true;
-                this.form=row;
+                this.form=JSON.parse(JSON.stringify(row));
                 this.isAdd=false;
                 this.title="修改";
                 this.isUpdate=true;
@@ -149,6 +159,7 @@
             // 取消按钮
             goodsCancel(formName) {
                 this.dialogFormVisible = false;
+                this.$refs[formName].clearValidate();
             },
             // 添加
             submitFormAdd(formName) {
@@ -160,6 +171,7 @@
                                 type: res.data.status == 1 ? 'success' : 'error',
                                 message: res.data.message
                             });
+                            // location.reload();
                             this.handleTableData();
                         }).catch(err => {
                             this.$alert('获取数据失败, 请重试!', '提示', {
@@ -171,6 +183,7 @@
                     } else {
                         return false;
                     }
+                    this.$refs[formName].clearValidate();
                 });
             },
             // 修改
@@ -216,7 +229,6 @@
             // 加载数据
             handleTableData(){
                 axios.post(this.SettingGoodsDataListApi, this.searchParams).then(res => {
-
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -228,7 +240,6 @@
                 });
             },
             handleSearch() {
-
                 this.handleTableData();
             },
             handleCurrentChange(page) {
@@ -292,6 +303,7 @@
                 callback();
             };
             return {
+                form:'form',
                 games:[],
                 sellerNicks:[],
                 title:'新增',

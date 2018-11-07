@@ -83,7 +83,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitFormAdd('form')">确认添加</el-button>
-                    <el-button @click="dialogFormVisibleAdd = false">取消</el-button>
+                    <el-button @click="cancel('form')">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -106,7 +106,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitFormUpdate('editForm')">确认修改</el-button>
-                    <el-button @click="dialogFormVisible = false">取消</el-button>
+                    <el-button @click="cancel('editForm')">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -124,27 +124,19 @@
             'AccountStationPermissionApi',
         ],
         methods: {
-            // 获取当前用户所有的权限
-            allPermissions() {
-                axios.post(this.AccountStationPermissionApi).then(res => {
-                   this.permissionTree = res.data;
-                }).catch(err => {
-                    this.$alert('获取数据失败, 请重试!', '提示', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                        }
-                    });
-                });
-            },
             // 新增按钮
             ShowAddForm() {
                 this.dialogFormVisibleAdd = true;
+                this.form={
+                    name: '',
+                    permission: ''
+                };
             },
             // 编辑按钮
             ShowEditForm(row) {
                 this.handleTableData();
                 this.dialogFormVisible = true;
-                this.editForm = row;
+                this.editForm=JSON.parse(JSON.stringify(row));
                 let permission = [];
 
                 row.new_permissions.forEach(function(v) {
@@ -179,7 +171,13 @@
                     } else {
                         return false;
                     }
+                    this.$refs[formName].clearValidate();
                 });
+            },
+            cancel(formName){
+                this.dialogFormVisible = false;
+                this.dialogFormVisibleAdd = false;
+                this.$refs[formName].clearValidate();
             },
             // 更新
             submitFormUpdate(formName) {
@@ -215,6 +213,18 @@
                 axios.post(this.AccountStationDataListApi, this.searchParams).then(res => {
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
+                }).catch(err => {
+                    this.$alert('获取数据失败, 请重试!', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                });
+            },
+            // 获取当前用户所有的权限
+            allPermissions() {
+                axios.post(this.AccountStationPermissionApi).then(res => {
+                    this.permissionTree = res.data;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -268,33 +278,33 @@
                 permissionTree:[],
                 defaultProps: {
                     children: 'new_permissions',
-                    label: 'alias',
+                    label: 'alias'
                 },
                 allPermission:[],
                 permissions:permissionOptions,
                 dialogFormVisible:false,
                 dialogFormVisibleAdd:false,
                 searchParams:{
-                    page:1,
+                    page:1
                 },
                 TotalPage:0,
                 tableData: [],
                 rules:{
                     name:[{ validator: checkHas, trigger: 'blur' }],
-                    permission:[{ validator: checkHas, trigger: 'blur' }],
+                    permission:[{ validator: checkHas, trigger: 'blur' }]
                 },
                 editFormRules:{
                     name:[{ validator: checkHas, trigger: 'blur' }],
-                    permission:[{ validator: checkHas, trigger: 'blur' }],
+                    permission:[{ validator: checkHas, trigger: 'blur' }]
                 },
                 form: {
                     name: '',
-                    permission: '',
+                    permission: ''
                 },
                 editForm: {
                     id: '',
                     name: '',
-                    permission: '',
+                    permission: ''
                 }
             }
         }

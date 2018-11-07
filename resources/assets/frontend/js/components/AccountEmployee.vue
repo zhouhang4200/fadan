@@ -157,7 +157,7 @@
                 <el-form-item>
                     <el-button v-if="isAdd" type="primary" @click="submitFormAdd('form')">确认添加</el-button>
                     <el-button v-if="isUpdate" type="primary" @click="submitFormUpdate('form')">确认修改</el-button>
-                    <el-button @click="dialogFormVisible = false">取消</el-button>
+                    <el-button @click="employeeCancel('form')">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -184,12 +184,25 @@
                 this.isUpdate=false;
                 this.isDisabled=false;
                 this.title="新增";
+                this.form={
+                    username: '',
+                    name: '',
+                    hasStation:[],
+                    allStation:[],
+                    phone: '',
+                    password: '',
+                    leveling_type: '',
+                    station: [],
+                    qq: '',
+                    wechat: '',
+                    remark: ''
+                };
             },
             // 编辑按钮
             employeeUpdate(row) {
                 this.dialogFormVisible = true;
                 this.title="修改";
-                this.form = row;
+                this.form=JSON.parse(JSON.stringify(row));
                 this.isAdd=false;
                 this.isUpdate=true;
                 this.isDisabled=true;
@@ -242,7 +255,13 @@
                     } else {
                         return false;
                     }
+                    this.$refs[formName].clearValidate();
                 });
+            },
+            // 取消按钮
+            employeeCancel(formName) {
+                this.dialogFormVisible = false;
+                this.$refs[formName].clearValidate();
             },
             // 加载数据
             handleTableData(){
@@ -375,7 +394,7 @@
                     username:'',
                     name:'',
                     station:'',
-                    page:1,
+                    page:1
                 },
                 TotalPage:0,
                 tableData: [],
@@ -384,7 +403,7 @@
                     phone: [{ validator: checkPhone, trigger: 'blur' }],
                     username:[{ validator: checkHas, trigger: 'blur' }],
                     name:[{ validator: checkHas, trigger: 'blur' }],
-                    leveling_type:[{ validator: checkHas, trigger: 'blur' }],
+                    leveling_type:[{ validator: checkHas, trigger: 'blur' }]
                 },
                 form: {
                     username: '',
