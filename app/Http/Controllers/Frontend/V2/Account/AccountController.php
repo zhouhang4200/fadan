@@ -138,7 +138,6 @@ class AccountController extends Controller
                 $user->hasStation = [];
             }
         }
-
         return $users;
     }
 
@@ -180,7 +179,7 @@ class AccountController extends Controller
     }
 
     /**
-     * 岗位新增接口
+     * 员工新增接口
      * @return mixed
      */
     public function employeeAdd()
@@ -221,7 +220,7 @@ class AccountController extends Controller
     }
 
     /**
-     * 员工岗位修改
+     * 员工修改
      * @return mixed
      */
     public function employeeUpdate()
@@ -522,9 +521,15 @@ class AccountController extends Controller
      */
     public function stationDataList()
     {
-        return NewRole::where('user_id', Auth::user()->getPrimaryUserId())
+        $roles = NewRole::where('user_id', Auth::user()->getPrimaryUserId())
             ->with(['newUsers', 'newPermissions'])
             ->paginate(15);
+
+        foreach ($roles as $role) {
+            $role->checkedPermission = $role->newPermissions ? $role->newPermissions->pluck('id')->toArray() : [];
+        }
+
+        return $roles;
     }
 
     /**
@@ -550,7 +555,6 @@ class AccountController extends Controller
     public function stationForm()
     {
         try {
-            myLog('test', [request()->all()]);
             $data['name'] = request('name');
             $data['alias'] = request('name');
             $data['user_id'] = Auth::user()->getPrimaryUserId();
@@ -604,8 +608,10 @@ class AccountController extends Controller
     public function stationUpdate()
     {
         try {
-            if (request('permission')) {
-                $permission = explode(',', request('permission'));
+//            myLog('test', [request('checkedPermission')]);
+            if (request('checkedPermission')) {
+//                $permission = explode(',', request('checkedPermission'));
+                $permission =request('checkedPermission');
                 // 主账号
                 $user = User::find(Auth::user()->getPrimaryUserId());
                 // 清除缓存
