@@ -1,24 +1,24 @@
 <template>
     <div class="main content game-leveling-order" :class="tableDataEmpty">
         <el-form :inline=true
-                 :model="searchParams"
+                 :model="search"
                  class="search-form-inline"
                  size="small">
             <el-row :gutter="16">
                 <el-col :span="6">
                     <el-form-item label="订单单号" prop="name">
-                        <el-input v-model="searchParams.order_no"></el-input>
+                        <el-input v-model="search.order_no"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="玩家旺旺" prop="name">
-                        <el-input v-model="searchParams.buyer_nick"></el-input>
+                        <el-input v-model="search.buyer_nick"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="代练游戏" prop="name">
-                        <el-select v-model="searchParams.game_id"
-                                   @change="handleSearchParamsGameId"
+                        <el-select v-model="search.game_id"
+                                   @change="handleSearchGameId"
                                    placeholder="请选择">
                             <el-option key="0"
                                        label="所有游戏"
@@ -34,7 +34,7 @@
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="代练类型" prop="name">
-                        <el-select v-model="searchParams.game_leveling_type_id" placeholder="请选择">
+                        <el-select v-model="search.game_leveling_type_id" placeholder="请选择">
                             <el-option
                                     v-for="item in gameLevelingTypeOptions"
                                     :key="item.id"
@@ -50,7 +50,7 @@
                 <el-col :span="6">
                     <el-form-item label="发布时间" prop="name">
                         <el-date-picker
-                                v-model="searchParams.created_at"
+                                v-model="search.created_at"
                                 type="daterange"
                                 align="right"
                                 unlink-panels
@@ -68,7 +68,7 @@
             </el-row>
         </el-form>
 
-        <el-tabs  v-model="searchParams.status"
+        <el-tabs  v-model="search.status"
                   @tab-click="handleParamsStatus"
                   size="small"
                   class="game-leveling-order-tab">
@@ -186,7 +186,7 @@
             <el-pagination
                     background
                     @current-change="handleParamsPage"
-                    :current-page.sync="searchParams.page"
+                    :current-page.sync="search.page"
                     :page-size="20"
                     layout="total, prev, pager, next, jumper"
                     :total="tableDataTotal">
@@ -221,13 +221,7 @@
 
 <script>
     export default {
-        props: [
-            'pageTitle',
-            'orderApi',
-            'gamesApi',
-            'statusQuantityApi',
-            'gameLevelingTypesApi',
-        ],
+        props: [],
         computed: {
             tableDataEmpty() {
                 return [
@@ -240,8 +234,8 @@
                 statusQuantity:[],
                 gameLevelingTypeOptions:[],
                 gameOptions:[],
-                searchParams:{
-                    status:'',
+                search:{
+                    status:'99',
                     order_no:'',
                     buyer_nick:'',
                     game_id:'',
@@ -301,17 +295,17 @@
             },
             // 获取订单状态数量
             handleStatusQuantity() {
-                axios.post(this.statusQuantityApi, this.searchParams).then(res => {
-                    this.statusQuantity = res.data;
+                this.$api.taobaoOrderStatusQuantity(this.search).then(res => {
+                    this.statusQuantity = res;
                 }).catch(err => {
                 });
             },
             // 加载订单数据
             handleTableData(){
                 this.tableLoading = true;
-                axios.post(this.orderApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.tableDataTotal = res.data.total;
+                this.$api.taobaoOrder(this.search).then(res => {
+                    this.tableData = res.data;
+                    this.tableDataTotal = res.total;
                     this.tableLoading = false;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
@@ -325,8 +319,8 @@
             },
             // 加载游戏选项
             handleGameOptions() {
-                axios.post(this.gamesApi).then(res => {
-                    this.gameOptions = res.data;
+                this.$api.games().then(res => {
+                    this.gameOptions = res;
                 }).catch(err => {
                 });
             },
@@ -336,7 +330,7 @@
             },
             // 切换页码
             handleParamsPage(page){
-                this.searchParams.page = page;
+                this.search.page = page;
                 this.handleTableData();
             },
             // 切换状态tab
@@ -344,12 +338,12 @@
                 this.handleTableData();
             },
             // 选择游戏后加载代练类型
-            handleSearchParamsGameId() {
-                if(this.searchParams.game_id) {
-                    axios.post(this.gameLevelingTypesApi, {
-                        'game_id' : this.searchParams.game_id
+            handleSearchGameId() {
+                if(this.search.game_id) {
+                    this.$api.gameLevelingTypes({
+                        'game_id' : this.search.game_id
                     }).then(res => {
-                        this.gameLevelingTypeOptions = res.data;
+                        this.gameLevelingTypeOptions = res;
                     }).catch(err => {
                     });
                 } else {
@@ -366,7 +360,7 @@
             },
             // 重置表单
             handleResetForm() {
-                this.searchParams = {
+                this.search = {
                     status:'',
                     order_no:'',
                     buyer_nick:'',
@@ -380,8 +374,6 @@
             }
         },
         created() {
-            this.$store.commit('handleOpenMenu', '1');
-            this.$store.commit('handleOpenSubmenu', '1-1');
             this.handlePageTitle();
             this.handleTableHeight();
             this.handleTableData();
@@ -390,10 +382,6 @@
         },
         destroyed() {
             window.removeEventListener('resize', this.handleTableHeight)
-        },
-        mounted() {
-            this.$cookieStore.setCookie('menu', '1');
-            this.$cookieStore.setCookie('submenu', '1-1');
         },
     }
 </script>

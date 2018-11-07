@@ -1,24 +1,24 @@
 <template>
     <div class="main content game-leveling-order" :class="tableDataEmpty">
         <el-form :inline=true
-                 :model="searchParams"
+                 :model="search"
                  class="search-form-inline"
                  size="small">
             <el-row :gutter="16">
                 <el-col :span="6">
                     <el-form-item label="订单单号" prop="name">
-                        <el-input v-model="searchParams.order_no"></el-input>
+                        <el-input v-model="search.order_no"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="玩家旺旺" prop="name">
-                        <el-input v-model="searchParams.buyer_nick"></el-input>
+                        <el-input v-model="search.buyer_nick"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="代练游戏" prop="name">
-                        <el-select v-model="searchParams.game_id"
-                                   @change="handleSearchParamsGameId"
+                        <el-select v-model="search.game_id"
+                                   @change="handlesearchGameId"
                                    placeholder="请选择">
                             <el-option key="0"
                                        label="所有游戏"
@@ -34,7 +34,7 @@
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="代练类型" prop="name">
-                        <el-select v-model="searchParams.game_leveling_type_id" placeholder="请选择">
+                        <el-select v-model="search.game_leveling_type_id" placeholder="请选择">
                             <el-option
                                     v-for="item in gameLevelingTypeOptions"
                                     :key="item.id"
@@ -49,12 +49,12 @@
             <el-row :gutter="16">
                 <el-col :span="6">
                     <el-form-item label="发单客服">
-                        <el-input v-model="searchParams.user_id" placeholder="发单客服"></el-input>
+                        <el-input v-model="search.user_id" placeholder="发单客服"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="代练平台">
-                        <el-select v-model="searchParams.platform_id" placeholder="请选择">
+                        <el-select v-model="search.platform_id" placeholder="请选择">
                             <el-option
                                     v-for="item in platformOptions"
                                     :key="item.key"
@@ -67,7 +67,7 @@
                 <el-col :span="6">
                     <el-form-item label="发布时间" prop="name">
                         <el-date-picker
-                                v-model="searchParams.created_at"
+                                v-model="search.created_at"
                                 type="daterange"
                                 align="right"
                                 unlink-panels
@@ -85,7 +85,7 @@
             </el-row>
         </el-form>
 
-        <el-tabs  v-model="searchParams.status"
+        <el-tabs  v-model="search.status"
                   @tab-click="handleParamsStatus"
                   size="small"
                   class="game-leveling-order-tab">
@@ -394,7 +394,7 @@
             <el-pagination
                     background
                     @current-change="handleParamsPage"
-                    :current-page.sync="searchParams.page"
+                    :current-page.sync="search.page"
                     :page-size="20"
                     layout="total, prev, pager, next, jumper"
                     :total="tableDataTotal">
@@ -442,8 +442,8 @@
 </style>
 
 <script>
-    import ApplyComplain from '../ApplyComplain';
-    import ApplyConsult from '../ApplyConsult';
+    import ApplyComplain from './ApplyComplain';
+    import ApplyConsult from './ApplyConsult';
     export default {
         components: {
             ApplyComplain,
@@ -451,27 +451,8 @@
         },
         props: [
             'pageTitle',
-            'orderApi',
             'orderRepeatApi',
-            'statusQuantityApi',
-            'gameLevelingTypesApi',
-            'gamesApi',
             'showApi',
-            'deleteApi',
-            'onSaleApi',
-            'offSaleApi',
-            'applyConsultApi',
-            'applyComplainApi',
-            'cancelComplainApi',
-            'cancelConsultApi',
-            'rejectConsultApi',
-            'agreeConsultApi',
-            'completeApi',
-            'lockApi',
-            'cancelLockApi',
-            'anomalyApi',
-            'cancelAnomalyApi',
-            'applyCompleteImageApi',
         ],
         computed: {
             tableDataEmpty() {
@@ -497,7 +478,7 @@
                 ],
                 gameLevelingTypeOptions:[],
                 gameOptions:[],
-                searchParams:{
+                search:{
                     status:'',
                     order_no:'',
                     buyer_nick:'',
@@ -589,7 +570,7 @@
             // 加载订单数据
             handleTableData(){
                 this.tableLoading = true;
-                this.$api.gameLevelingOrderList(this.searchParams).then(res => {
+                this.$api.gameLevelingOrder(this.search).then(res => {
                     this.tableData = res.data;
                     this.tableDataTotal = res.total;
                     this.tableLoading = false;
@@ -608,7 +589,7 @@
             },
             // 切换页码
             handleParamsPage(page){
-                this.searchParams.page = page;
+                this.search.page = page;
                 this.handleTableData();
             },
             // 切换状态tab
@@ -616,10 +597,10 @@
                 this.handleTableData();
             },
             // 选择游戏后加载代练类型
-            handleSearchParamsGameId() {
-                if(this.searchParams.game_id) {
+            handlesearchGameId() {
+                if(this.search.game_id) {
                     this.$api.gameLevelingTypes({
-                        'game_id' : this.searchParams.game_id
+                        'game_id' : this.search.game_id
                     }).then(res => {
                         this.gameLevelingTypeOptions = res.data;
                     });
@@ -634,7 +615,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.deleteApi, {
+                    this.$api.gameLevelingOrderDelete({
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
@@ -660,15 +641,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.onSaleApi, {
+                    this.$api.gameLevelingOrderOnSale({
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if(res.data.status == 1) {
+                        if(res.status == 1) {
                             this.handleTableData();
                         }
                     }).catch(err => {
@@ -686,15 +667,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.offSaleApi, {
+                    this.$api.gameLevelingOrderOffSale({
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if(res.data.status == 1) {
+                        if(res.status == 1) {
                             this.handleTableData();
                         }
                     }).catch(err => {
@@ -717,7 +698,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.cancelComplainApi, {
+                    this.$api.gameLevelingOrderCancelComplain({
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
@@ -739,7 +720,7 @@
             // 查看图片
             handleApplyCompleteImage(row) {
                 // 请求图片
-                axios.post(this.applyCompleteImageApi, {
+                this.$api.gameLevelingOrderApplyCompleteImage({
                     'trade_no' : row.trade_no
                 }).then(res => {
                     if(res.data.status == 1) {
@@ -782,7 +763,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.completeApi, {
+                    this.gameLevelingOrderComplete({
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
@@ -816,7 +797,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.cancelConsultApi, {
+                    this.gameLevelingOrderCancelConsult({
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
@@ -842,7 +823,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.agreeConsultApi, {
+                    this.$api.gameLevelingOrderAgreeConsult({
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
@@ -868,15 +849,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.rejectConsultApi, {
+                    this.$api.gameLevelingOrderRejectConsult({
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if(res.data.status == 1) {
+                        if(res.status == 1) {
                             this.handleTableData();
                         }
                     }).catch(err => {
@@ -894,15 +875,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.lockApi, {
+                    this.gameLevelingOrderLock({
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if(res.data.status == 1) {
+                        if(res.status == 1) {
                             this.handleTableData();
                         }
                     }).catch(err => {
@@ -920,15 +901,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.cancelLockApi, {
+                    this.$api.gameLevelingOrderCancelLock({
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if(res.data.status == 1) {
+                        if(res.status == 1) {
                             this.handleTableData();
                         }
                     }).catch(err => {
@@ -945,7 +926,7 @@
             },
             // 重置表单
             handleResetForm() {
-                this.searchParams = {
+                this.search = {
                     status:'',
                     order_no:'',
                     buyer_nick:'',

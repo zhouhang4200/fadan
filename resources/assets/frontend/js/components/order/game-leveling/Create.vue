@@ -432,10 +432,6 @@
     export default {
         name: "GameLevelingCreate",
         props:[
-            'orderCreateApi',
-            'gameRegionServerApi',
-            'gameLevelingTypesApi',
-            'taobaoOrderApi',
             'tid',
         ],
         data() {
@@ -570,16 +566,16 @@
         },
         methods: {
             handleFromGameRegionServerOptions() {
-                axios.post(this.gameRegionServerApi).then(res => {
-                    this.gameRegionServerOptions = res.data;
+                this.$api.gameRegionServer().then(res => {
+                    this.gameRegionServerOptions = res;
                 }).catch(err => {
                 });
             },
             handleFromGameLevelingTypeIdOptions(val) {
-                axios.post(this.gameLevelingTypesApi, {
+                this.$api.gameLevelingTypes({
                     'game_id' : this.form.game_region_server[2]
                 }).then(res => {
-                    this.gameLevelingTypeOptions = res.data;
+                    this.gameLevelingTypeOptions = res;
                 }).catch(err => {
                 });
             },
@@ -594,10 +590,10 @@
                         this.form.game_server_id = this.form.game_region_server[2];
                         this.form.day = this.form.day_hour[0];
                         this.form.hour = this.form.day_hour[1];
-                        axios.post(this.orderCreateApi, this.form).then(res => {
+                        this.$api.gameLevelingOrderCreate(this.form).then(res => {
                             this.$message({
-                                'type': res.data.status == 1 ? 'success' : 'error',
-                                'message': res.data.message,
+                                'type': res.status == 1 ? 'success' : 'error',
+                                'message': res.message,
                             });
                         }).catch(err => {
                             this.$message({
@@ -637,7 +633,7 @@
                 });
             },
             handelTaobaoData() {
-                axios.post(this.taobaoOrderApi, {tid:this.tid}).then(res => {
+                this.$api.taobaoOrderShow({tid:this.tid}).then(res => {
                    this.taobaoData = [
                        {
                            name: '店铺名',
@@ -708,10 +704,6 @@
             this.handleFromGameRegionServerOptions();
             this.handelTaobaoData();
             this.handleDayHour();
-        },
-        mounted() {
-            this.$cookieStore.setCookie('menu', '1');
-            this.$cookieStore.setCookie('submenu', '1-2');
         },
     }
 </script>

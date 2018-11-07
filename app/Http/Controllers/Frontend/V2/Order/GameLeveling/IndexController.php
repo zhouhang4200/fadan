@@ -24,20 +24,12 @@ use App\Exceptions\GameLevelingOrderOperateException;
  */
 class IndexController extends Controller
 {
-    /**
-     * 代练订单视图
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function index()
-    {
-        return view('frontend.v2.order.game-leveling.index');
-    }
 
     /**
      * 获取代练订单集合
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function dataList()
+    public function index()
     {
         return GameLevelingOrder::filter(array_merge([
             'parent_user_id' => request()->user()->getPrimaryUserId()
@@ -63,25 +55,9 @@ class IndexController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function create()
-    {
-        return view('frontend.v2.order.game-leveling.create');
-    }
-
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function repeat()
-    {
-        return view('frontend.v2.order.game-leveling.repeat');
-    }
-
-    /**
      * 下单
      */
-    public function doCreate()
+    public function store()
     {
         // 验证前台传入数据
 
@@ -92,15 +68,6 @@ class IndexController extends Controller
         } catch (\Exception $exception) {
             return response()->json(['status' => 0, 'message' => $exception->getMessage()]);
         }
-    }
-
-    /**
-     * 查看订单
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function show()
-    {
-        return view('frontend.v2.order.game-leveling.show');
     }
 
     /**
@@ -138,28 +105,6 @@ class IndexController extends Controller
         ])
             ->where('tid', $order->channel_order_trade_no)->first();
         return response($order);
-    }
-
-    /**
-     * 获取淘宝订单数据
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
-     */
-    public function taobaoOrder()
-    {
-        // 获取淘宝订单数据
-        $taobaoOrder = TaobaoTrade::select([
-            'tid',
-            'seller_nick',
-            'num',
-            'buyer_nick',
-            'buyer_message',
-            'price',
-            'payment',
-            'trade_status',
-            'created'
-        ])
-            ->where('tid', request('tid'))->first();
-        return response($taobaoOrder);
     }
 
     /**

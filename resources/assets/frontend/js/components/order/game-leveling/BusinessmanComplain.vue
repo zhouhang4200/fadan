@@ -208,16 +208,7 @@
 
 <script>
     export default {
-        props: [
-            'pageTitle',
-            'showApi',
-            'orderApi',
-            'gamesApi',
-            'imagesApi',
-            'businessmanComplainCancelApi',
-            'statusQuantityApi',
-            'gameLevelingTypesApi',
-        ],
+        props: [],
         computed: {
             tableDataEmpty() {
                 return [
@@ -229,10 +220,9 @@
             return {
                 statusQuantity:[],
                 gameLevelingTypeOptions:[],
-
                 gameOptions:[],
                 searchParams:{
-                    status:'',
+                    status:'99',
                     order_no:'',
                     buyer_nick:'',
                     game_id:'',
@@ -311,39 +301,29 @@
             },
             // 获取订单状态数量
             handleStatusQuantity() {
-                axios.post(this.statusQuantityApi).then(res => {
-                    this.statusQuantity = res.data;
-                }).catch(err => {
+                this.$api.businessmanComplainStatusQuantity().then(res => {
+                    this.statusQuantity = res;
                 });
             },
             // 加载订单数据
             handleTableData(){
                 this.tableLoading = true;
-                axios.post(this.orderApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.tableDataTotal = res.data.total;
-                    this.tableLoading = false;
-                }).catch(err => {
-                    this.$alert('获取数据失败, 请重试!', '提示', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                        }
-                    });
+                this.$api.businessmanComplain(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.tableDataTotal = res.total;
                     this.tableLoading = false;
                 });
                 this.handleStatusQuantity();
             },
             // 加载游戏选项
             handleGameOptions() {
-                axios.post(this.gamesApi).then(res => {
-                    this.gameOptions = res.data;
+                this.$api.games().then(res => {
+                    this.gameOptions = res;
                     let currentThis = this;
-                    res.data.forEach(function (item) {
+                    res.forEach(function (item) {
                         currentThis.gameMap[item.id]  = item.name;
                     });
-                }).catch(err => {
                 });
-
             },
             // 搜索
             handleSearch(){
@@ -361,11 +341,10 @@
             // 选择游戏后加载代练类型
             handleSearchParamsGameId() {
                 if(this.searchParams.game_id) {
-                    axios.post(this.gameLevelingTypesApi, {
+                    this.$api.gameLevelingTypes({
                         'game_id' : this.searchParams.game_id
                     }).then(res => {
-                        this.gameLevelingTypeOptions = res.data;
-                    }).catch(err => {
+                        this.gameLevelingTypeOptions = res;
                     });
                 } else {
                     this.gameLevelingTypeOptions = [];
@@ -374,12 +353,12 @@
             // 查看投诉图片
             handleShowImage(row) {
                 // 请求图片
-                axios.post(this.imagesApi, {
+                this.$api.businessmanComplainImage({
                     'id' : row.id
                 }).then(res => {
                     const h = this.$createElement;
                     let item = [];
-                    res.data.content.forEach(function (val) {
+                    res.content.forEach(function (val) {
                         item.push(h('el-carousel-item', null, [
                             h('img', {
                                 attrs:{
@@ -411,15 +390,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    // 请求图片
-                    axios.post(this.businessmanComplainCancelApi, {
+                    // 取消操作
+                    this.$api.businessmanComplainCancel({
                         'id' : row.id
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
-                        if (res.data.status == 1) {
+                        if (res.status == 1) {
                             this.handleTableData();
                         }
                     }).catch(err => {
@@ -454,10 +433,6 @@
         },
         destroyed() {
             window.removeEventListener('resize', this.handleTableHeight)
-        },
-        mounted() {
-            this.$cookieStore.setCookie('menu', '1');
-            this.$cookieStore.setCookie('submenu', '1-4');
-        },
+        }
     }
 </script>

@@ -327,13 +327,7 @@
 <script>
     export default {
         name: "GameLevelingRepeat",
-        props:[
-            'tradeNo',
-            'orderEditApi',
-            'orderCreateApi',
-            'gameRegionServerApi',
-            'gameLevelingTypesApi',
-        ],
+        props:[],
         computed: {
             displayFooter() {
                 let status = [19, 20, 21, 22, 23, 24];
@@ -481,99 +475,99 @@
         },
         methods: {
             handleFromData() {
-                axios.post(this.orderEditApi, {trade_no: this.tradeNo}).then(res => {
-                        this.form.status = res.data.status;
-                        this.form.channel_order_trade_no = res.data.channel_order_trade_no;
-                        this.form.game_leveling_order_consult = res.data.game_leveling_order_consult;
-                        this.form.game_leveling_order_complain = res.data.game_leveling_order_complain;
+                this.gameLevelingOrderEdit({trade_no: this.tradeNo}).then(res => {
+                        this.form.status = res.status;
+                        this.form.channel_order_trade_no = res.channel_order_trade_no;
+                        this.form.game_leveling_order_consult = res.game_leveling_order_consult;
+                        this.form.game_leveling_order_complain = res.game_leveling_order_complain;
                         this.form.game_region_server =  [  // 选择的 游戏/区/服
-                            res.data.game_id,
-                            res.data.game_region_id,
-                            res.data.game_server_id,
+                            res.game_id,
+                            res.game_region_id,
+                            res.game_server_id,
                         ];
                         this.handleFromGameLevelingTypeIdOptions();
                         this.form.day_hour = [   // 选择的代练天/小时
-                            res.data.day,
-                            res.data.hour,
+                            res.day,
+                            res.hour,
                         ];
-                        this.form.game_id = res.data.game_id; // 游戏ID
-                        this.form.game_region_id =  res.data.game_region_id; // 游戏区ID
-                        this.form.game_server_id =  res.data.game_server_id;// 游戏服务器ID
-                        this.form.game_leveling_type_id =  res.data.game_leveling_type_id; // 代练类型ID
-                        this.form.amount = res.data.amount; // 代练金额
-                        this.form.source_amount = res.data.source_amount; // 来源价格
-                        this.form.security_deposit = res.data.security_deposit; // 安全保证金
-                        this.form.efficiency_deposit = res.data.efficiency_deposit; // 效率保证金
-                        this.form.title = res.data.title; //代练标题
-                        this.form.game_role = res.data.game_role; // 游戏角色
-                        this.form.game_account = res.data.game_account; // 游戏账号
-                        this.form.game_password = res.data.game_password; // 游戏密码
-                        this.form.price_increase_step = res.data.price_increase_step != '0.0000' ? res.data.price_increase_step : ''; // 自动加价步长
-                        this.form.price_ceiling = res.data.price_ceiling != '0.0000' ? res.data.price_ceiling : ''; // 自动加价上限
-                        this.form.explain = res.data.game_leveling_order_detail.explain; // 代练说明
-                        this.form.requirement = res.data.game_leveling_order_detail.requirement; // 代练要求
-                        this.form.take_order_password = res.data.take_order_password; // 接单密码
-                        this.form.player_phone = res.data.game_leveling_order_detail.player_phone; // 玩家电话
-                        this.form.user_qq = res.data.game_leveling_order_detail.user_qq; // 商家qq
-                        this.form.remark =  res.data.remark;
+                        this.form.game_id = res.game_id; // 游戏ID
+                        this.form.game_region_id =  res.game_region_id; // 游戏区ID
+                        this.form.game_server_id =  res.game_server_id;// 游戏服务器ID
+                        this.form.game_leveling_type_id =  res.game_leveling_type_id; // 代练类型ID
+                        this.form.amount = res.amount; // 代练金额
+                        this.form.source_amount = res.source_amount; // 来源价格
+                        this.form.security_deposit = res.security_deposit; // 安全保证金
+                        this.form.efficiency_deposit = res.efficiency_deposit; // 效率保证金
+                        this.form.title = res.title; //代练标题
+                        this.form.game_role = res.game_role; // 游戏角色
+                        this.form.game_account = res.game_account; // 游戏账号
+                        this.form.game_password = res.game_password; // 游戏密码
+                        this.form.price_increase_step = res.price_increase_step != '0.0000' ? res.price_increase_step : ''; // 自动加价步长
+                        this.form.price_ceiling = res.price_ceiling != '0.0000' ? res.price_ceiling : ''; // 自动加价上限
+                        this.form.explain = res.game_leveling_order_detail.explain; // 代练说明
+                        this.form.requirement = res.game_leveling_order_detail.requirement; // 代练要求
+                        this.form.take_order_password = res.take_order_password; // 接单密码
+                        this.form.player_phone = res.game_leveling_order_detail.player_phone; // 玩家电话
+                        this.form.user_qq = res.game_leveling_order_detail.user_qq; // 商家qq
+                        this.form.remark =  res.remark;
                         this.form.domains = [];
 
                         this.taobaoData = [
                             {
                                 name: '店铺名',
-                                value: res.data.taobao_data.seller_nick,
+                                value: res.taobao_data.seller_nick,
                             },
                             {
                                 name: '天猫单号',
-                                value: res.data.taobao_data.tid,
+                                value: res.taobao_data.tid,
                             },
                             {
                                 name: '订单状态',
-                                value: res.data.taobao_data.trade_status,
+                                value: res.taobao_data.trade_status,
                             },
                             {
                                 name: '买家旺旺',
-                                value: res.data.taobao_data.buyer_nick,
+                                value: res.taobao_data.buyer_nick,
                             }, {
                                 name: '购买单价',
-                                value: res.data.taobao_data.price,
+                                value: res.taobao_data.price,
                             },
                             {
                                 name: '购买数量',
-                                value: res.data.taobao_data.num,
+                                value: res.taobao_data.num,
                             },
                             {
                                 name: '实付金额',
-                                value: res.data.taobao_data.payment,
+                                value: res.taobao_data.payment,
                             },
                             {
                                 name: '所在区/服',
-                                value: res.data.taobao_data.region_server,
+                                value: res.taobao_data.region_server,
                             },
                             {
                                 name: '角色名称',
-                                value: res.data.taobao_data.role,
+                                value: res.taobao_data.role,
                             },
                             {
                                 name: '买家留言',
-                                value: res.data.taobao_data.buyer_message,
+                                value: res.taobao_data.buyer_message,
                             },
                             {
                                 name: '下单时间',
-                                value: res.data.taobao_data.created,
+                                value: res.taobao_data.created,
                             }
                         ];
                 }).catch(err => {
                 });
             },
             handleFromGameRegionServerOptions() {
-                axios.post(this.gameRegionServerApi).then(res => {
+                this.$api.gameRegionServer().then(res => {
                     this.gameRegionServerOptions = res.data;
                 }).catch(err => {
                 });
             },
             handleFromGameLevelingTypeIdOptions(val) {
-                axios.post(this.gameLevelingTypesApi, {
+                this.$api.gameLevelingTypes({
                     'game_id' : this.form.game_region_server[2]
                 }).then(res => {
                     this.gameLevelingTypeOptions = res.data;
@@ -588,10 +582,10 @@
                         this.form.game_server_id = this.form.game_region_server[2];
                         this.form.day = this.form.day_hour[0];
                         this.form.hour = this.form.day_hour[1];
-                        axios.post(this.orderCreateApi, this.form).then(res => {
+                        this.$api.gameLevelingOrderCreate(this.form).then(res => {
                             this.$message({
-                                'type': res.data.status == 1 ? 'success' : 'error',
-                                'message': res.data.message,
+                                'type': res.status == 1 ? 'success' : 'error',
+                                'message': res.message,
                             });
                         }).catch(err => {
                             this.$message({
@@ -611,8 +605,8 @@
                 }
                 // 订单操作日志
                 if (tab.name == 3) {
-                    axios.post(this.orderLogApi, {trade_no:this.tradeNo}).then(res => {
-                        this.logData = res.data;
+                    this.$api.gameLevelingOrderLog({trade_no:this.tradeNo}).then(res => {
+                        this.logData = res;
                     });
                 }
             },

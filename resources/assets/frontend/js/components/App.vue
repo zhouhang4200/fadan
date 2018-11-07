@@ -1,5 +1,6 @@
 <template>
     <el-container>
+
         <el-aside :style="{'width': collapse ? '64px':'200px', 'background-color': '#515a6e'}">
             <div class="logo">
                 <i class="icon-tao" style="font-size:32px;color:#fff"></i>
@@ -7,6 +8,7 @@
             </div>
             <!--:default-openeds="['1']"-->
             <el-menu
+                    :default-openeds="openMenu"
                     @select="handleSelect"
                     :unique-opened=true
                     :collapse-transition=false
@@ -36,12 +38,16 @@
             <el-header style="font-size: 30px;height:60px;line-height:60px">
                 <i class="icon-ios-menu" :class="rotateIcon" @click="handleCollapse"></i>
                 <el-menu  class="el-menu-demo" mode="horizontal"  style="float: right">
-                    <el-menu-item index="1">处理中心</el-menu-item>
+                    <el-menu-item index="1">
+                        <i class="el-icon-bell"></i>
+                    </el-menu-item>
                     <el-submenu index="2">
-                        <template slot="title">我的工作台</template>
-                        <el-menu-item index="2-1">选项1</el-menu-item>
-                        <el-menu-item index="2-2">选项2</el-menu-item>
-                        <el-menu-item index="2-3">选项3</el-menu-item>
+                        <template slot="title">
+                            <span class="avatar"></span>
+                            我的工作台
+                        </template>
+                        <el-menu-item index="2-1">修改密码</el-menu-item>
+                        <el-menu-item index="2-3">退出登录</el-menu-item>
                     </el-submenu>
                 </el-menu>
             </el-header>
@@ -64,11 +70,20 @@
         background: rgb(255, 255, 255);
     }
     .logo {
-        /*height: 60px;*/
         width: auto;
         background-color: #ff9900;
         padding: 14px 0 14px 16px;
         /*line-height: 32px;*/
+    }
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgb(240, 171, 73);
+        display: inline-flex;
+        position: relative;
+        top: 0;
+        right: 10px;
     }
     .el-header {
         color: #333;
@@ -155,10 +170,9 @@
             return {
                 collapse: false,
                 menus:null,
+                openMenu:['1'],
                 menuMinHeight:'400px',
                 contentContainerStyle:{
-                    // padding: '20px',
-                    // background: '#fff',
                     minHeight:'',
                 },
             }
@@ -171,6 +185,7 @@
                 ];
             },
         },
+
         methods: {
             handleCollapse() {
                 if(this.collapse) {
@@ -187,18 +202,19 @@
                 return this.contentContainerStyle.minHeight = (window.fullHeight - 100) + 'px';
             },
             handleSelect(key, keyPath) {
-                // sessionStorage.setItem('menu', keyPath[0]);
+                sessionStorage.setItem('openMenu', keyPath[0]);
             }
         },
         created() {
             window.addEventListener('resize', this.handleContentContainerStyle);
             this.handleContentContainerStyle();
         },
+        beforeMount(){
+            this.openMenu[0] = sessionStorage.getItem('openMenu')
+        },
         mounted() {
             this.collapse = (sessionStorage.getItem('collapse') == 1 ? true : false);
-            // this.menu[0] = sessionStorage.getItem('menu');
             this.menus = this.$router.options.routes;
-            // console.log(this.$router.options.routes);
         },
         destroyed() {
             window.removeEventListener('resize', this.handleContentContainerStyle)

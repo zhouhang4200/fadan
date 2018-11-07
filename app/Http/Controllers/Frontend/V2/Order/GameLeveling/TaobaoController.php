@@ -9,7 +9,6 @@ use App\Services\RedisConnect;
 use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
 
-
 /**
  * 游戏代练淘宝（待发）订单控制器
  * Class GameLevelingController
@@ -18,18 +17,10 @@ use App\Http\Controllers\Controller;
 class TaobaoController extends Controller
 {
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function index()
-    {
-        return view('frontend.v2.order.game-leveling.taobao.index', compact('games', 'sort'));
-    }
-
-    /**
      * 获取待发订单数据
      * @return array
      */
-    public function dataList()
+    public function index()
     {
         $orderRedis = RedisConnect::order();
         $sort = $orderRedis->get('wait:sort:' . auth()->user()->id) ?? 'asc';
@@ -82,6 +73,26 @@ class TaobaoController extends Controller
         ];
     }
 
+    /**
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function show()
+    {
+        // 获取淘宝订单数据
+        $taobaoOrder = TaobaoTrade::select([
+            'tid',
+            'seller_nick',
+            'num',
+            'buyer_nick',
+            'buyer_message',
+            'price',
+            'payment',
+            'trade_status',
+            'created'
+        ])
+            ->where('tid', request('tid'))->first();
+        return response($taobaoOrder);
+    }
 
     /**
      * 对应订单状态的数量

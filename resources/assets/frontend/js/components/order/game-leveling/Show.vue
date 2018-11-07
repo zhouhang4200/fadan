@@ -853,8 +853,8 @@
 </template>
 
 <script>
-    import ApplyComplain from '../ApplyComplain';
-    import ApplyConsult from '../ApplyConsult';
+    import ApplyComplain from './ApplyComplain';
+    import ApplyConsult from './ApplyConsult';
 
     export default {
         name: "GameLevelingShow",
@@ -864,34 +864,6 @@
         },
         props: [
             'tradeNo',
-            'orderEditApi',
-            'orderUpdateApi',
-            'orderRepeatApi',
-            'orderLogApi',
-            'orderAddAmountApi',
-            'orderAddDayHourApi',
-            'gameRegionServerApi',
-            'gameLevelingTypesApi',
-            'deleteApi',
-            'onSaleApi',
-            'offSaleApi',
-            'applyConsultApi',
-            'applyComplainApi',
-            'cancelComplainApi',
-            'cancelConsultApi',
-            'rejectConsultApi',
-            'agreeConsultApi',
-            'completeApi',
-            'lockApi',
-            'cancelLockApi',
-            'anomalyApi',
-            'cancelAnomalyApi',
-            'complainInfoApi',
-            'addComplainInfoApi',
-            'messageApi',
-            'sendMessageApi',
-            'businessmanComplainApi',
-            'businessmanComplainStoreApi',
         ],
         computed: {
             fieldDisabled() {
@@ -1115,162 +1087,162 @@
                 return (this.form.status == 1 || this.form.status == 22) ? false : false;
             },
             handleFromData() {
-                axios.post(this.orderEditApi, {trade_no: this.tradeNo}).then(res => {
-                    this.amount = res.data.amount;
-                    this.securityDeposit = res.data.security_deposit;
-                    this.efficiencyDeposit = res.data.efficiency_deposit;
-                    this.form.status = res.data.status;
-                    this.form.game_leveling_order_consult = res.data.game_leveling_order_consult;
-                    this.form.game_leveling_order_complain = res.data.game_leveling_order_complain;
+                this.$api.gameLevelingOrderEdit({trade_no: this.tradeNo}).then(res => {
+                    this.amount = res.amount;
+                    this.securityDeposit = res.security_deposit;
+                    this.efficiencyDeposit = res.efficiency_deposit;
+                    this.form.status = res.status;
+                    this.form.game_leveling_order_consult = res.game_leveling_order_consult;
+                    this.form.game_leveling_order_complain = res.game_leveling_order_complain;
                     this.form.game_region_server = [  // 选择的 游戏/区/服
-                        res.data.game_id,
-                        res.data.game_region_id,
-                        res.data.game_server_id,
+                        res.game_id,
+                        res.game_region_id,
+                        res.game_server_id,
                     ];
                     this.handleFromGameLevelingTypeIdOptions();
                     this.form.day_hour = [   // 选择的代练天/小时
-                        res.data.day,
-                        res.data.hour,
+                        res.day,
+                        res.hour,
                     ];
-                    this.form.game_id = res.data.game_id; // 游戏ID
-                    this.form.game_region_id = res.data.game_region_id; // 游戏区ID
-                    this.form.game_server_id = res.data.game_server_id;// 游戏服务器ID
-                    this.form.game_leveling_type_id = res.data.game_leveling_type_id; // 代练类型ID
-                    this.form.amount = res.data.amount; // 代练金额
-                    this.form.source_amount = res.data.source_amount; // 来源价格
-                    this.form.security_deposit = res.data.security_deposit; // 安全保证金
-                    this.form.efficiency_deposit = res.data.efficiency_deposit; // 效率保证金
-                    this.form.title = res.data.title; //代练标题
-                    this.form.game_role = res.data.game_role; // 游戏角色
-                    this.form.game_account = res.data.game_account; // 游戏账号
-                    this.form.game_password = res.data.game_password; // 游戏密码
-                    this.form.price_increase_step = res.data.price_increase_step != '0.0000' ? res.data.price_increase_step : ''; // 自动加价步长
-                    this.form.price_ceiling = res.data.price_ceiling != '0.0000' ? res.data.price_ceiling : ''; // 自动加价上限
-                    this.form.explain = res.data.game_leveling_order_detail.explain; // 代练说明
-                    this.form.requirement = res.data.game_leveling_order_detail.requirement; // 代练要求
-                    this.form.take_order_password = res.data.take_order_password; // 接单密码
-                    this.form.player_phone = res.data.game_leveling_order_detail.player_phone; // 玩家电话
-                    this.form.user_qq = res.data.game_leveling_order_detail.user_qq; // 商家qq
-                    this.form.remark = res.data.remark;
+                    this.form.game_id = res.game_id; // 游戏ID
+                    this.form.game_region_id = res.game_region_id; // 游戏区ID
+                    this.form.game_server_id = res.game_server_id;// 游戏服务器ID
+                    this.form.game_leveling_type_id = res.game_leveling_type_id; // 代练类型ID
+                    this.form.amount = res.amount; // 代练金额
+                    this.form.source_amount = res.source_amount; // 来源价格
+                    this.form.security_deposit = res.security_deposit; // 安全保证金
+                    this.form.efficiency_deposit = res.efficiency_deposit; // 效率保证金
+                    this.form.title = res.title; //代练标题
+                    this.form.game_role = res.game_role; // 游戏角色
+                    this.form.game_account = res.game_account; // 游戏账号
+                    this.form.game_password = res.game_password; // 游戏密码
+                    this.form.price_increase_step = res.price_increase_step != '0.0000' ? res.price_increase_step : ''; // 自动加价步长
+                    this.form.price_ceiling = res.price_ceiling != '0.0000' ? res.price_ceiling : ''; // 自动加价上限
+                    this.form.explain = res.game_leveling_order_detail.explain; // 代练说明
+                    this.form.requirement = res.game_leveling_order_detail.requirement; // 代练要求
+                    this.form.take_order_password = res.take_order_password; // 接单密码
+                    this.form.player_phone = res.game_leveling_order_detail.player_phone; // 玩家电话
+                    this.form.user_qq = res.game_leveling_order_detail.user_qq; // 商家qq
+                    this.form.remark = res.remark;
                     this.form.domains = [];
                     // 平台数据
                     this.platformData = [
                         {
                             name: '平台单号',
-                            value: res.data.trade_no,
+                            value: res.trade_no,
                         },
                         {
                             name: '订单状态',
-                            value: this.status[res.data.status]
+                            value: this.status[res.status]
                         },
                         {
                             name: '接单平台',
-                            value: this.platform[res.data.platform_id]
+                            value: this.platform[res.platform_id]
                         },
                         {
                             name: '打手呢称',
-                            value: res.data.game_leveling_order_detail.hatchet_man_name
+                            value: res.game_leveling_order_detail.hatchet_man_name
                         },
                         {
                             name: '打手电话',
-                            value: res.data.game_leveling_order_detail.hatchet_man_phone
+                            value: res.game_leveling_order_detail.hatchet_man_phone
                         },
                         {
                             name: '打手QQ',
-                            value: res.data.game_leveling_order_detail.hatchet_man_qq
+                            value: res.game_leveling_order_detail.hatchet_man_qq
                         },
                         {
                             name: '剩余代练时间',
-                            value: res.data.left_time
+                            value: res.left_time
                         },
                         {
                             name: '发布时间',
-                            value: res.data.created_at
+                            value: res.created_at
                         },
                         {
                             name: '接单时间',
-                            value: res.data.take_at
+                            value: res.take_at
                         },
                         {
                             name: '提验时间',
-                            value: res.data.apply_complete_at
+                            value: res.apply_complete_at
                         },
                         {
                             name: '结算时间',
-                            value: res.data.complete_at
+                            value: res.complete_at
                         },
                         {
                             name: '发单客服',
-                            value: res.data.game_leveling_order_detail.username
+                            value: res.game_leveling_order_detail.username
                         },
                         {
                             name: '撤销说明',
-                            value: res.data.consult_describe
+                            value: res.consult_describe
                         },
                         {
                             name: '仲裁说明',
-                            value: res.data.complain_describe
+                            value: res.complain_describe
                         },
                         {
                             name: '支付代练费用',
-                            value: res.data.pay_amount
+                            value: res.pay_amount
                         },
                         {
                             name: '获得赔偿金额',
-                            value: res.data.get_amount
+                            value: res.get_amount
                         },
                         {
                             name: '手续费',
-                            value: res.data.get_poundage
+                            value: res.get_poundage
                         },
                         {
                             name: '最终支付金额',
-                            value: res.data.complain_amount
+                            value: res.complain_amount
                         },
                     ];
                     this.taobaoData = [
                         {
                             name: '店铺名',
-                            value: res.data.taobao_data.seller_nick,
+                            value: res.taobao_data.seller_nick,
                         },
                         {
                             name: '天猫单号',
-                            value: res.data.taobao_data.tid,
+                            value: res.taobao_data.tid,
                         },
                         {
                             name: '订单状态',
-                            value: res.data.taobao_data.trade_status,
+                            value: res.taobao_data.trade_status,
                         },
                         {
                             name: '买家旺旺',
-                            value: res.data.taobao_data.buyer_nick,
+                            value: res.taobao_data.buyer_nick,
                         }, {
                             name: '购买单价',
-                            value: res.data.taobao_data.price,
+                            value: res.taobao_data.price,
                         },
                         {
                             name: '购买数量',
-                            value: res.data.taobao_data.num,
+                            value: res.taobao_data.num,
                         },
                         {
                             name: '实付金额',
-                            value: res.data.taobao_data.payment,
+                            value: res.taobao_data.payment,
                         },
                         {
                             name: '所在区/服',
-                            value: res.data.taobao_data.region_server,
+                            value: res.taobao_data.region_server,
                         },
                         {
                             name: '角色名称',
-                            value: res.data.taobao_data.role,
+                            value: res.taobao_data.role,
                         },
                         {
                             name: '买家留言',
-                            value: res.data.taobao_data.buyer_message,
+                            value: res.taobao_data.buyer_message,
                         },
                         {
                             name: '下单时间',
-                            value: res.data.taobao_data.created,
+                            value: res.taobao_data.created,
                         }
                     ];
 
@@ -1278,13 +1250,13 @@
                 });
             },
             handleFromGameRegionServerOptions() {
-                axios.post(this.gameRegionServerApi).then(res => {
+                this.$api.gameRegionServer().then(res => {
                     this.gameRegionServerOptions = res.data;
                 }).catch(err => {
                 });
             },
             handleFromGameLevelingTypeIdOptions(val) {
-                axios.post(this.gameLevelingTypesApi, {
+                this.$api.gameLevelingTypes({
                     'game_id': this.form.game_region_server[2]
                 }).then(res => {
                     this.gameLevelingTypeOptions = res.data;
@@ -1301,8 +1273,8 @@
                         this.form.hour = this.form.day_hour[1];
                         axios.post(this.orderUpdateApi, this.form).then(res => {
                             this.$message({
-                                'type': res.data.status == 1 ? 'success' : 'error',
-                                'message': res.data.message,
+                                'type': res.status == 1 ? 'success' : 'error',
+                                'message': res.message,
                             });
                         }).catch(err => {
                             this.$message({
@@ -1325,13 +1297,13 @@
                     inputErrorMessage: '代练价格只能为数字'
                 }).then(({value}) => {
                     // 发送加价请求 value 为写入的值
-                    axios.post(this.orderAddAmountApi, {
+                    this.$api.gameLevelingOrderAddAmount({
                         trade_no: this.form.trade_no,
                         amount: value
                     }).then(res => {
                         this.$message({
-                            'type': res.data.status == 1 ? 'success' : 'error',
-                            'message': res.data.message,
+                            'type': res.status == 1 ? 'success' : 'error',
+                            'message': res.message,
                         });
                     }).catch(err => {
                         this.$message({
@@ -1366,16 +1338,16 @@
                     beforeClose: (action, instance, done) => {
                         if (action == 'confirm') {
                             // 发送加天与小时请求
-                            axios.post(this.orderAddDayHourApi, {
+                            this.$api.gameLevelingOrderAddDayHour({
                                 trade_no: this.form.trade_no,
                                 day: this.addDay,
                                 hour: this.addHour
                             }).then(res => {
                                 this.$message({
-                                    'type': res.data.status == 1 ? 'success' : 'error',
-                                    'message': res.data.message,
+                                    'type': res.status == 1 ? 'success' : 'error',
+                                    'message': res.message,
                                 });
-                                if (res.data.status == 1) {
+                                if (res.status == 1) {
                                     done();
                                 }
                             }).catch(err => {
@@ -1396,7 +1368,7 @@
                 }
                 // 订单操作日志
                 if (tab.name == 3) {
-                    axios.post(this.orderLogApi, {trade_no: this.tradeNo}).then(res => {
+                    this.$api.gameLevelingOrderLog({trade_no: this.tradeNo}).then(res => {
                         this.logData = res.data;
                     });
                 }
@@ -1422,15 +1394,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.deleteApi, {
+                    this.$api.gameLevelingOrderDelete({
                         'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if (res.data.status == 1) {
+                        if (res.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -1448,15 +1420,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.onSaleApi, {
+                    this.$api.gameLevelingOrderOnSale({
                         'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if (res.data.status == 1) {
+                        if (res.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -1474,15 +1446,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.offSaleApi, {
+                    this.$api.gameLevelingOrderOffSale({
                         'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if (res.data.status == 1) {
+                        if (res.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -1505,15 +1477,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.cancelComplainApi, {
+                    this.$api.gameLevelingOrderCancelComplain({
                         'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if (res.data.status == 1) {
+                        if (res.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -1541,16 +1513,16 @@
                     beforeClose: (action, instance, done) => {
                         if (action == 'confirm') {
                             // 发送加天与小时请求
-                            axios.post(this.orderAddDayHourApi, {
+                            this.$api.gameLevelingOrderAddDayHour({
                                 trade_no: this.form.trade_no,
                                 day: this.addDay,
                                 hour: this.addHour
                             }).then(res => {
                                 this.$message({
-                                    'type': res.data.status == 1 ? 'success' : 'error',
-                                    'message': res.data.message,
+                                    'type': res.status == 1 ? 'success' : 'error',
+                                    'message': res.message,
                                 });
-                                if (res.data.status == 1) {
+                                if (res.status == 1) {
                                     done();
                                 }
                             }).catch(err => {
@@ -1572,15 +1544,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.completeApi, {
+                    this.$api.gameLevelingOrderComplete({
                         'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if (res.data.status == 1) {
+                        if (res.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -1620,15 +1592,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.cancelConsultApi, {
+                    this.$api.gameLevelingOrderCancelConsult({
                         'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if (res.data.status == 1) {
+                        if (res.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -1646,15 +1618,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.agreeConsultApi, {
+                    this.$api.gameLevelingOrderAgreeConsult({
                         'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if (res.data.status == 1) {
+                        if (res.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -1672,15 +1644,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.rejectConsultApi, {
+                    this.$api.gameLevelingOrderRejectConsult({
                         'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if (res.data.status == 1) {
+                        if (res.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -1698,15 +1670,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.lockApi, {
+                    this.$api.gameLevelingOrderLock({
                         'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if (res.data.status == 1) {
+                        if (res.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -1724,15 +1696,15 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    axios.post(this.cancelLockApi, {
+                    this.$api.gameLevelingOrderCancelLock({
                         'trade_no': this.form.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if (res.data.status == 1) {
+                        if (res.status == 1) {
                             this.handleFromData();
                         }
                     }).catch(err => {
@@ -1759,15 +1731,15 @@
             },
             // 获取仲裁数据
             handleComplainData() {
-                axios.post(this.complainInfoApi, {trade_no: this.tradeNo}).then(res => {
-                    this.complainDesData = [res.data.detail];
-                    this.complainMessageData = res.data.info;
+                this.$api.gameLevelingOrderComplainInfo({trade_no: this.tradeNo}).then(res => {
+                    this.complainDesData = [res.detail];
+                    this.complainMessageData = res.info;
                 });
             },
             // 添加仲裁留言
             handleAddComplainMessageForm() {
-                axios.post(this.addComplainInfoApi, this.complainMessageForm).then(res => {
-                    if (res.data.status == 1) {
+                this.$api.gameLevelingOrderAddComplainInfo(this.complainMessageForm).then(res => {
+                    if (res.status == 1) {
                         this.$message.success('发送成功');
                         this.complainMessageForm.reason = '';
                         this.handleComplainData();
@@ -1806,9 +1778,9 @@
             },
             // 加载聊天数据
             handleChatData() {
-                axios.post(this.messageApi, this.chatForm).then(res => {
-                    if (res.data.status == 1) {
-                        this.chatData = res.data.content;
+                this.$api.gameLevelingOrderMessage(this.chatForm).then(res => {
+                    if (res.status == 1) {
+                        this.chatData = res.content;
 
                         setTimeout(() => {
                             let chatWindowsHeight = document.querySelector(".chat-main").scrollHeight;
@@ -1822,8 +1794,8 @@
             },
             // 发送聊天数据
             handleChatForm() {
-                axios.post(this.sendMessageApi, this.chatForm).then(res => {
-                    if (res.data.status == 1) {
+                this.$api.gameLevelingOrderSendMessage(this.chatForm).then(res => {
+                    if (res.status == 1) {
                         this.handleChatData();
                     }
                 });
@@ -1844,12 +1816,12 @@
             handleSubmitBusinessmanComplainForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.businessmanComplainStoreApi, this.businessmanComplainForm).then(res => {
+                        this.$api.gameLevelingOrderBusinessmanComplainStore(this.businessmanComplainForm).then(res => {
                             this.$message({
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message,
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message,
                             });
-                            if (res.data.status == 1) {
+                            if (res.status == 1) {
                                 this.businessmanComplainVisible = false;
                                 this.handleFromData();
                             }

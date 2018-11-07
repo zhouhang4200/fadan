@@ -18,18 +18,10 @@ use App\Models\GameLevelingOrderBusinessmanComplain;
 class BusinessmanComplainController extends Controller
 {
     /**
-     * @return $this
-     */
-    public function index()
-    {
-        return view('frontend.v2.order.game-leveling.businessman-complain.index');
-    }
-
-    /**
      * @param 
      * @return array
      */
-    public function dataList()
+    public function index()
     {
         return GameLevelingOrderBusinessmanComplain::filter(request()->all())
             ->with(['gameLevelingOrder' => function($query) {
