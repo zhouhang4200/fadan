@@ -519,7 +519,7 @@
                         { required: true, message: '请输入安全保证金', trigger: 'change' }
                     ],
                     player_phone: [
-                        { required: true, message: '请输入无家电话', trigger: 'blur' },
+                        { required: true, message: '请输入玩家电话', trigger: 'blur' },
                         { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
                     ],
                     user_qq: [

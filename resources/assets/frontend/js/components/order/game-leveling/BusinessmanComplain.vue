@@ -297,7 +297,7 @@
             },
             // 表格高度计算
             handleTableHeight() {
-                this.tableHeight = window.innerHeight - 345;
+                this.tableHeight = window.innerHeight - 318;
             },
             // 获取订单状态数量
             handleStatusQuantity() {

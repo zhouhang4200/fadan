@@ -43,7 +43,7 @@
                     </el-menu-item>
                     <el-submenu index="2">
                         <template slot="title">
-                            <span class="avatar"></span>
+                            <span class="header-avatar"></span>
                             我的工作台
                         </template>
                         <el-menu-item index="2-1">修改密码</el-menu-item>
@@ -52,7 +52,14 @@
                 </el-menu>
             </el-header>
             <el-main>
+
                 <div :style="contentContainerStyle">
+                    <el-breadcrumb separator-class="el-icon-arrow-right"
+                                   style="height: 45px;line-height: 45px;margin-left: 20px">
+                        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+                        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+                    </el-breadcrumb>
                     <router-view></router-view>
                 </div>
             </el-main>
@@ -63,7 +70,8 @@
 <style lang="less">
     /*全局样式*/
     .main {
-        margin: 20px;
+        /*margin:20px;*/
+        margin:0 20px 20px;
     }
     .content {
         padding: 20px;
@@ -73,9 +81,8 @@
         width: auto;
         background-color: #ff9900;
         padding: 14px 0 14px 16px;
-        /*line-height: 32px;*/
     }
-    .avatar {
+    .header-avatar {
         width: 40px;
         height: 40px;
         border-radius: 50%;
@@ -99,7 +106,6 @@
     .el-menu {
         border-right:none;
     }
-
     .side-menu {
         .el-menu-item {
             border-bottom-color: #ff9900;
@@ -110,17 +116,14 @@
             transition: all .3s;
         }
     }
-
     .side-menu:not(.el-menu--collapse) {
         width: 200px;
         min-height: 400px;
     }
-
     .rotate-icon {
         -webkit-transform: rotate(-90deg);
         transform: rotate(-90deg);
     }
-
     /*创建订单、查看订单、重发订单输入框左侧菜单样式*/
     .icon-button {
         line-height: 32px;
@@ -144,7 +147,6 @@
     .preview-image img{
         max-width: 800px;
     }
-
     /*全局重写*/
     .el-main {
         padding: 0;
@@ -199,7 +201,7 @@
             handleContentContainerStyle() {
                 window.fullHeight = document.documentElement.clientHeight;
                 this.menuMinHeight = window.fullHeight + 'px';
-                return this.contentContainerStyle.minHeight = (window.fullHeight - 100) + 'px';
+                return this.contentContainerStyle.minHeight = (window.fullHeight - 80) + 'px';
             },
             handleSelect(key, keyPath) {
                 sessionStorage.setItem('openMenu', keyPath[0]);
