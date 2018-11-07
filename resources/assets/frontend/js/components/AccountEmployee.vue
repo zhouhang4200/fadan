@@ -17,7 +17,7 @@
                 <el-col :span="5">
                     <el-form-item label="岗位">
                         <el-select v-model="searchParams.station" placeholder="请选择">
-                            <el-option v-for="(value, key) of AccountEmployeeStation" :value="key" :key="key"  :label="value"></el-option>
+                            <el-option v-for="item in AccountEmployeeStation" :value=item.id :key=item.id  :label=item.name>{{item.name}}</el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
@@ -62,7 +62,7 @@
                     label="岗位"
                     width="100" >
                 <template slot-scope="scope" >
-                    <div v-for="(value, key) of scope.row.new_roles">{{ value.name ? value.name : '' }}</div>
+                    <div v-for="item in scope.row.new_roles">{{ item.name ? item.name : '' }}</div>
                 </template>
             </el-table-column>
             <el-table-column
@@ -122,27 +122,27 @@
                 :total="TotalPage">
         </el-pagination>
 
-        <el-dialog title="岗位编辑" :visible.sync="dialogFormVisible">
+        <el-dialog :title="title" :visible.sync="dialogFormVisible">
             <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-                <el-form-item label="*账号" prop="name">
+                <el-form-item label="账号" prop="name">
                     <el-input v-model="form.name" name="name" autocomplete="off" :disabled="isDisabled"></el-input>
                 </el-form-item>
-                <el-form-item label="*昵称" prop="username">
+                <el-form-item label="昵称" prop="username">
                     <el-input v-model="form.username" name="username" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="*密码" prop="password">
+                <el-form-item label="密码" prop="password">
                     <el-input v-model="form.password" autocomplete="off" placeholder="不填写则为原密码"></el-input>
                 </el-form-item>
-                <el-form-item label="*类型" prop="leveling_type">
+                <el-form-item label="类型" prop="leveling_type">
                     <el-radio v-model="form.leveling_type" :label=1 autocomplete="off">接单</el-radio>
                     <el-radio v-model="form.leveling_type" :label=2 autocomplete="off">发单</el-radio>
                 </el-form-item>
-                <el-form-item label="*岗位" prop="station">
-                    <el-checkbox-group v-model="form.station">
-                        <el-checkbox v-for="item in AccountEmployeeStation" :key=item.id  :label=item.id>{{ item.name }}</el-checkbox>
+                <el-form-item label="岗位" prop="station">
+                    <el-checkbox-group v-model="form.hasStation" @change="switchChange(form.hasStation)">
+                        <el-checkbox v-for="item in form.allStation" :key="item.id" :value=item.id :label=item.id>{{ item.name }}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
-                <el-form-item label="*电话" prop="phone">
+                <el-form-item label="电话" prop="phone">
                     <el-input v-model.number="form.phone" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="QQ" prop="qq">
@@ -157,7 +157,7 @@
                 <el-form-item>
                     <el-button v-if="isAdd" type="primary" @click="submitFormAdd('form')">确认添加</el-button>
                     <el-button v-if="isUpdate" type="primary" @click="submitFormUpdate('form')">确认修改</el-button>
-                    <el-button @click="dialogFormVisible = false">取消</el-button>
+                    <el-button @click="employeeCancel('form')">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -174,7 +174,7 @@
             'AccountEmployeeUpdateApi',
             'AccountEmployeeAddApi',
             'AccountEmployeeDeleteApi',
-            'AccountEmployeeCreateApi',
+            'AccountEmployeeCreateApi'
         ],
         methods: {
             // 新增按钮
@@ -183,23 +183,30 @@
                 this.isAdd=true;
                 this.isUpdate=false;
                 this.isDisabled=false;
-                this.$refs.form.resetFields();
+                this.title="新增";
+                this.form.username='';
+                this.form.name='';
+                this.form.hasStation=[];
+                this.form.phone='';
+                this.form.leveling_type='';
+                this.form.password='';
+                this.form.station='';
+                this.form.qq='';
+                this.form.wechat='';
+                this.form.remark='';
             },
             // 编辑按钮
             employeeUpdate(row) {
                 this.dialogFormVisible = true;
-                this.form = row;
-                let arr = [];
-                if (row.new_roles) {
-                    row.new_roles.forEach(function (item) {
-                        arr.push(item.id);
-                    })
-                    this.form.station = [];
-                }
-                this.form.station=[];
+                this.title="修改";
+                this.form=JSON.parse(JSON.stringify(row));
                 this.isAdd=false;
                 this.isUpdate=true;
                 this.isDisabled=true;
+            },
+            // 多选框改变事件
+            switchChange($stationIds) {
+                this.form.station=$stationIds;
             },
             // 修改
             submitFormUpdate(formName) {
@@ -245,7 +252,13 @@
                     } else {
                         return false;
                     }
+                    this.$refs[formName].clearValidate();
                 });
+            },
+            // 取消按钮
+            employeeCancel(formName) {
+                this.dialogFormVisible = false;
+                this.$refs[formName].clearValidate();
             },
             // 加载数据
             handleTableData(){
@@ -276,6 +289,7 @@
             handleStation(){
                 axios.post(this.AccountEmployeeStationApi, this.searchParams).then(res => {
                    this.AccountEmployeeStation = res.data;
+                   this.form.allStation=res.data;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -339,7 +353,7 @@
                     return callback(new Error('必填项不能为空!'));
                 }
 
-                if (!Number.isInteger(value)) {
+                if (!Number.isInteger(parseInt(value))) {
                     callback(new Error('请输入数字值！'));
                 } else {
                     const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
@@ -358,38 +372,35 @@
                 }
                 callback();
             };
-            var checkHas = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('必填项不能为空!'));
-                }
-                callback();
-            };
             return {
+                title:'新增',
                 allStation:[],
                 isDisabled:false,
                 isAdd:true,
                 isUpdate:false,
                 dialogFormVisible:false,
                 AccountEmployeeUser:{},
-                AccountEmployeeStation:{},
+                AccountEmployeeStation:[],
                 searchParams:{
                     username:'',
                     name:'',
                     station:'',
-                    page:1,
+                    page:1
                 },
                 TotalPage:0,
                 tableData: [],
                 rules:{
-                    password: [{ validator: validatePass, trigger: 'blur' }],
-                    phone: [{ validator: checkPhone, trigger: 'blur' }],
-                    username:[{ validator: checkHas, trigger: 'blur' }],
-                    name:[{ validator: checkHas, trigger: 'blur' }],
-                    leveling_type:[{ validator: checkHas, trigger: 'blur' }],
+                    password: [{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: validatePass, trigger: 'blur' }],
+                    phone: [{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkPhone, trigger: 'blur' }],
+                    username:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    leveling_type:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }]
                 },
                 form: {
                     username: '',
                     name: '',
+                    hasStation:[],
+                    allStation:[],
                     phone: '',
                     password: '',
                     leveling_type: '',

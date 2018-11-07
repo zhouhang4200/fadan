@@ -90,21 +90,21 @@
                     :total="TotalPage">
             </el-pagination>
             <el-dialog :title="title" :visible.sync="dialogFormVisible">
-                <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-                    <el-form-item label="*店铺" prop="seller_nick">
+                <el-form :model="form" ref="form" :rules="rules" label-width="120px">
+                    <el-form-item label="店铺" prop="seller_nick">
                         <el-select v-model="form.seller_nick" placeholder="请选择">
                             <el-option v-for="value of sellerNicks" :value="value" :key="value"  :label="value">{{value}}</el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="*绑定游戏" prop="game_id">
+                    <el-form-item label="绑定游戏" prop="game_id">
                         <el-select v-model="form.game_id" placeholder="请选择">
                             <el-option v-for="item in games" :value="item.id" :key="item.id"  :label="item.name">{{ item.name }}</el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="*淘宝链接" prop="foreign_goods_id">
+                    <el-form-item label="淘宝链接" prop="foreign_goods_id">
                         <el-input v-model="form.foreign_goods_id" name="foreign_goods_id" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*备注信息" prop="remark">
+                    <el-form-item label="备注信息" prop="remark">
                         <el-input type="textarea" v-model="form.remark"></el-input>
                     </el-form-item>
                     <el-form-item>
@@ -121,13 +121,13 @@
 <script>
     export default {
         props: [
-            'SettingGoodsDataListApi',
             'SettingGoodsGameApi',
-            'SettingGoodsSellerNickApi',
             'SettingGoodsAddApi',
             'SettingGoodsUpdateApi',
             'SettingGoodsDeleteApi',
+            'SettingGoodsDataListApi',
             'SettingGoodsDeliveryApi',
+            'SettingGoodsSellerNickApi'
         ],
         methods: {
             // 新增按钮
@@ -136,12 +136,22 @@
                 this.isAdd=true;
                 this.isUpdate=false;
                 this.title="新增";
-                this.$refs.form.resetFields();
+                this.form={
+                    id:'',
+                    game_name:'',
+                    seller_nick:'',
+                    foreign_goods_id:'',
+                    game_id:'',
+                    remark:'',
+                    delivery:'',
+                    created_at:'',
+                    updated_at:''
+                };
             },
             // 编辑按钮
             goodsEdit(row) {
                 this.dialogFormVisible = true;
-                this.form=row;
+                this.form=JSON.parse(JSON.stringify(row));
                 this.isAdd=false;
                 this.title="修改";
                 this.isUpdate=true;
@@ -149,6 +159,7 @@
             // 取消按钮
             goodsCancel(formName) {
                 this.dialogFormVisible = false;
+                this.$refs[formName].clearValidate();
             },
             // 添加
             submitFormAdd(formName) {
@@ -160,6 +171,7 @@
                                 type: res.data.status == 1 ? 'success' : 'error',
                                 message: res.data.message
                             });
+                            // location.reload();
                             this.handleTableData();
                         }).catch(err => {
                             this.$alert('获取数据失败, 请重试!', '提示', {
@@ -171,6 +183,7 @@
                     } else {
                         return false;
                     }
+                    this.$refs[formName].clearValidate();
                 });
             },
             // 修改
@@ -216,7 +229,6 @@
             // 加载数据
             handleTableData(){
                 axios.post(this.SettingGoodsDataListApi, this.searchParams).then(res => {
-
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -228,7 +240,6 @@
                 });
             },
             handleSearch() {
-
                 this.handleTableData();
             },
             handleCurrentChange(page) {
@@ -285,13 +296,8 @@
             this.game();
         },
         data() {
-            var checkHas = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('必填项不能为空!'));
-                }
-                callback();
-            };
             return {
+                form:'form',
                 games:[],
                 sellerNicks:[],
                 title:'新增',
@@ -299,10 +305,10 @@
                 isUpdate:false,
                 dialogFormVisible:false,
                 rules:{
-                    seller_nick:[{ validator: checkHas, trigger: 'blur' }],
-                    foreign_goods_id:[{ validator: checkHas, trigger: 'blur' }],
-                    game_id:[{ validator: checkHas, trigger: 'blur' }],
-                    remark:[{ validator: checkHas, trigger: 'blur' }],
+                    seller_nick:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    foreign_goods_id:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    game_id:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    remark:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
                 },
                 tableData: [],
                 searchParams:{

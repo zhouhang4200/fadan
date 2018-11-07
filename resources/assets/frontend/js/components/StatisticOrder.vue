@@ -130,7 +130,7 @@
     import XLSX from 'xlsx';
     export default {
         props: [
-            'StatisticOrderDataListApi',
+            'StatisticOrderDataListApi'
         ],
         // 初始化数据
         created () {
@@ -183,7 +183,7 @@
                 UserArr:[],
                 searchParams:{
                     date:'',
-                    page:1,
+                    page:1
                 },
                 TotalPage:0,
             }

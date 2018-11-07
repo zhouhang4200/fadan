@@ -78,7 +78,7 @@
     export default {
         props: [
             'StatisticEmployeeDataListApi',
-            'StatisticEmployeeUserApi',
+            'StatisticEmployeeUserApi'
         ],
         // 初始化数据
         created () {

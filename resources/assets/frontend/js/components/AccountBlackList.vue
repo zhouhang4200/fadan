@@ -78,13 +78,13 @@
 
         <el-dialog :title="title" :visible.sync="dialogFormVisible">
             <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-                <el-form-item label="*打手昵称" prop="hatchet_man_name">
+                <el-form-item label="打手昵称" prop="hatchet_man_name">
                     <el-input v-model="form.hatchet_man_name" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="*打手电话" prop="hatchet_man_phone">
+                <el-form-item label="打手电话" prop="hatchet_man_phone">
                     <el-input v-model.number="form.hatchet_man_phone" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="*打手QQ" prop="hatchet_man_qq">
+                <el-form-item label="打手QQ" prop="hatchet_man_qq">
                     <el-input v-model.number="form.hatchet_man_qq" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="备注" prop="content">
@@ -93,7 +93,7 @@
                 <el-form-item>
                     <el-button v-if="isAdd" type="primary" @click="submitFormAdd('form')">确认</el-button>
                     <el-button v-if="isUpdate" type="primary" @click="submitFormUpdate('form')">确认修改</el-button>
-                    <el-button @click="dialogFormVisible = false">取消</el-button>
+                    <el-button @click="blackListCancel('form')">取消</el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
@@ -107,7 +107,7 @@
             'AccountBlackListDataListApi',
             'AccountBlackListUpdateApi',
             'AccountBlackListDeleteApi',
-            'AccountBlackListAddApi',
+            'AccountBlackListAddApi'
         ],
         methods: {
             //新增按钮
@@ -116,6 +116,12 @@
                 this.isUpdate=false;
                 this.title='打手黑名单新增',
                 this.dialogFormVisible = true;
+                this.form={
+                    hatchet_man_name: '',
+                    hatchet_man_phone: '',
+                    hatchet_man_qq: '',
+                    content: ''
+                };
             },
             // 编辑按钮
             blackListUpdate(row) {
@@ -123,7 +129,12 @@
                 this.isUpdate=true;
                 this.title='打手黑名单修改',
                 this.dialogFormVisible = true;
-                this.form = row;
+                this.form=JSON.parse(JSON.stringify(row));
+            },
+            // 取消按钮
+            blackListCancel(formName) {
+                this.dialogFormVisible = false;
+                this.$refs[formName].clearValidate();
             },
             // 添加
             submitFormAdd(formName) {
@@ -145,6 +156,7 @@
                     } else {
                         return false;
                     }
+                    this.$refs[formName].clearValidate();
                 });
                 this.handleTableData();
             },
@@ -174,7 +186,6 @@
             // 加载数据
             handleTableData(){
                 axios.post(this.AccountBlackListDataListApi, this.searchParams).then(res => {
-
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -199,7 +210,6 @@
             handleSearch() {
                 this.handleTableData();
             },
-
             handleCurrentChange(page) {
                 this.searchParams.page = page;
                 this.handleTableData();
@@ -222,19 +232,13 @@
                 });
             },
         },
-        created () {
+        created(){
             this.$store.commit('handleOpenMenu', '3');
             this.$store.commit('handleOpenSubmenu', '3-6');
             this.handleTableData();
             this.handleName();
         },
-        data() {
-            var checkHas = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('必填项不能为空!'));
-                }
-                callback();
-            };
+        data(){
             var checkPhone = (rule, value, callback) => {
                 if (!value) {
                     return callback(new Error('必填项不能为空!'));
@@ -274,20 +278,20 @@
                     hatchet_man_name:'',
                     hatchet_man_phone:'',
                     hatchet_man_qq:'',
-                    page:1,
+                    page:1
                 },
                 TotalPage:0,
                 tableData: [],
                 rules:{
-                    hatchet_man_qq:[{ validator: checkQq, trigger: 'blur' }],
-                    hatchet_man_name:[{ validator: checkHas, trigger: 'blur' }],
-                    hatchet_man_phone:[{ validator: checkPhone, trigger: 'blur' }],
+                    hatchet_man_qq:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkQq, trigger: 'blur' }],
+                    hatchet_man_name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    hatchet_man_phone:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkPhone, trigger: 'blur' }]
                 },
                 form: {
                     hatchet_man_name: '',
                     hatchet_man_phone: '',
                     hatchet_man_qq: '',
-                    content: '',
+                    content: ''
                 }
             }
         }

@@ -105,13 +105,12 @@
 <script>
     export default {
         props: [
-            'AmountFlowApi',
+            'AmountFlowApi'
         ],
         methods: {
             // 加载数据
             handleTableData(){
                 axios.post(this.AmountFlowApi, this.searchParams).then(res => {
-
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -123,12 +122,10 @@
                 });
             },
             handleSearch() {
-
                 this.handleTableData();
             },
 
             handleCurrentChange(page) {
-
                 this.searchParams.page = page;
                 this.handleTableData();
             },
@@ -192,7 +189,7 @@
                     814:'代练改价退款',
                     815:'保证金退款',
                     816:'退还订单集市押金',
-                    817:'订单投诉收入',
+                    817:'订单投诉收入'
                 },
                 TradeTypeArr:{
                     1:'加款',
@@ -200,7 +197,7 @@
                     3:'冻结',
                     4:'解冻',
                     7:'支出',
-                    8:'收入',
+                    8:'收入'
                 },
 
                 searchParams:{
@@ -208,7 +205,7 @@
                     trade_no:'',
                     channel_order_trade_no:'',
                     date:'',
-                    page:1,
+                    page:1
                 },
                 TotalPage:0,
                 tableData: []

@@ -21,7 +21,7 @@
 <script>
     export default {
         props: [
-            'MyAssetApi',
+            'MyAssetApi'
         ],
         created () {
             this.handleTableData();

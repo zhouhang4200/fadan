@@ -66,7 +66,7 @@
     export default {
         props: [
             'StatisticMessageDataListApi',
-            'StatisticMessageShowApi',
+            'StatisticMessageShowApi'
         ],
         // 初始化数据
         created () {

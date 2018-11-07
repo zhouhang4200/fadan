@@ -68,10 +68,10 @@
 
         <el-dialog title="新增岗位" :visible.sync="dialogFormVisibleAdd">
             <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-                <el-form-item label="岗位名称" prop="name">
+                <el-form-item label="*岗位名称" prop="name">
                     <el-input v-model="form.name" name="name" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="拥有权限" prop="permission">
+                <el-form-item label="*拥有权限">
                     <el-tree
                             :props="defaultProps"
                             ref="tree"
@@ -90,17 +90,19 @@
 
         <el-dialog title="编辑岗位" :visible.sync="dialogFormVisible">
             <el-form :model="editForm" ref="editForm" :rules="editFormRules" label-width="80px">
-                <el-form-item label="岗位名称" prop="name">
+                <el-form-item label="*岗位名称" prop="name">
                     <el-input v-model="editForm.name" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="拥有权限" prop="permission">
-                    <template v-for="item in stations">
-                        <el-checkbox :indeterminate="isIndeterminate" v-model="item.id">{{item.alias}}</el-checkbox>
-                        <!--<div style="margin: 15px 0;"></div>-->
-                        <el-checkbox-group style="padding-left:25px" v-model="editForm.checkedPermission" @change="handleCheckedStationChange">
-                            <el-checkbox v-for="option in item.new_permissions" :label="option.id" :key="option.id">{{option.alias}}</el-checkbox>
-                        </el-checkbox-group>
-                    </template>
+                <el-form-item label="*拥有权限">
+                    <el-tree
+                            :props="defaultProps"
+                            :data="permissionTree"
+                            :default-expand-all="expendAll"
+                            node-key="id"
+                            ref="tree"
+                            show-checkbox
+                            :default-checked-keys="editForm.checkedPermission">
+                    </el-tree>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="submitFormUpdate('editForm')">确认修改</el-button>
@@ -174,13 +176,17 @@
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        let permission = '';
+                        this.$refs.tree.getCheckedNodes().forEach(function(v) {
+                            permission += v.id+',';
+                        })
+                        this.editForm.permission=permission;
                         axios.post(this.AccountStationUpdateApi, this.editForm).then(res => {
                             this.$message({
                                 showClose: true,
                                 type: res.data.status == 1 ? 'success' : 'error',
                                 message: res.data.message
                             });
-                            this.handleTableData();
                         }).catch(err => {
                             this.$alert('获取数据失败, 请重试!', '提示', {
                                 confirmButtonText: '确定',
@@ -191,6 +197,8 @@
                     } else {
                         return false;
                     }
+                    this.handleTableData();
+                    this.checkedPermission=[];
                 });
             },
             // 删除
@@ -227,7 +235,6 @@
             allPermissions() {
                 axios.post(this.AccountStationPermissionApi).then(res => {
                     this.permissionTree = res.data;
-                    this.stations=res.data;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -243,10 +250,6 @@
                 this.searchParams.page = page;
                 this.handleTableData();
             },
-            handleCheckedStationChange(value) {
-                let checkedCount = value.length;
-                this.isIndeterminate = true;
-            },
         },
         created () {
             this.$store.commit('handleOpenMenu', '3');
@@ -255,9 +258,13 @@
             this.allPermissions();
         },
         data() {
+            var checkHas = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('必填项不能为空!'));
+                }
+                callback();
+            };
             return {
-                stations:[],
-                isIndeterminate: true,
                 expendAll:true,
                 permissionTree:[],
                 defaultProps: {
@@ -272,12 +279,12 @@
                 TotalPage:0,
                 tableData: [],
                 rules:{
-                    name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
-                    permission:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }]
+                    name:[{ validator: checkHas, trigger: 'blur' }],
+                    permission:[{ validator: checkHas, trigger: 'blur' }]
                 },
                 editFormRules:{
-                    name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
-                    permission:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }]
+                    name:[{ validator: checkHas, trigger: 'blur' }],
+                    permission:[{ validator: checkHas, trigger: 'blur' }]
                 },
                 form: {
                     name: '',

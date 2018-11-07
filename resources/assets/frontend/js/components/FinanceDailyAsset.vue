@@ -81,7 +81,7 @@
 <script>
     export default {
         props: [
-            'DailyAssetApi',
+            'DailyAssetApi'
         ],
         created () {
             this.$store.commit('handleOpenMenu', '2');
@@ -117,7 +117,7 @@
                 tableData: [],
                 searchParams:{
                     date:'',
-                    page:1,
+                    page:1
                 },
                 TotalPage:0
             }

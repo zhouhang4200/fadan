@@ -72,7 +72,7 @@
     export default {
         props: [
             'AccountLoginHistoryDataListApi',
-            'AccountUserArrApi',
+            'AccountUserArrApi'
         ],
         methods: {
             // 加载数据
@@ -91,7 +91,6 @@
             handleSearch() {
                 this.handleTableData();
             },
-
             handleCurrentChange(page) {
                 this.searchParams.page = page;
                 this.handleTableData();
@@ -107,7 +106,7 @@
             return {
                 searchParams:{
                     date:'',
-                    page:1,
+                    page:1
                 },
                 TotalPage:0,
                 tableData: []

@@ -60,7 +60,7 @@
     export default {
         props: [
             'StatisticMessageShowDataListApi',
-            'DateApi',
+            'DateApi'
         ],
         // 初始化数据
         created () {
@@ -80,7 +80,7 @@
                     if (typeof console !== 'undefined')
                         console.log(e, wbout)
                 }
-                return wbout
+                return wbout;
             },
             // 表格加载数据
             handleTableData(){
@@ -113,7 +113,7 @@
                     date:this.DateApi,
                     order_no:'',
                     client_phone:'',
-                    page:1,
+                    page:1
                 },
                 TotalPage:0,
             }

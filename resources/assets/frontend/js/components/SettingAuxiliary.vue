@@ -84,7 +84,7 @@
                         :total="TotalPage">
                 </el-pagination>
                 <el-dialog :title="title" :visible.sync="dialogFormVisible">
-                    <el-form :model="form" ref="form" :rules="rules" label-width="80px">
+                    <el-form :model="form" ref="form" :rules="rules" label-width="135px">
                         <el-form-item label="发单价" prop="markup_amount" >
                             <el-row :gutter="10">
                                 <el-col :span="20">
@@ -215,7 +215,7 @@
             'SettingMarkupTimeApi',
             'SettingMarkupTimeApi',
             'SettingChannelDataListApi',
-            'SettingChannelSwitchApi',
+            'SettingChannelSwitchApi'
         ],
         methods: {
             // 新增按钮
@@ -224,12 +224,20 @@
                 this.isAdd = true;
                 this.isUpdate = false;
                 this.title = "新增";
-                this.$refs.form.resetFields();
+                this.form={
+                    id:'',
+                    markup_amount:'',
+                    markup_time:'',
+                    markup_type:0,
+                    markup_money:'',
+                    markup_frequency:'',
+                    markup_number:''
+                };
             },
             // 编辑按钮
             markupUpdate(row) {
                 this.dialogFormVisible = true;
-                this.form = row;
+                this.form=JSON.parse(JSON.stringify(row));
                 this.isAdd = false;
                 this.title = "修改";
                 this.isUpdate = true;
@@ -237,6 +245,7 @@
             // 取消按钮
             markupCancel(formName) {
                 this.dialogFormVisible = false;
+                this.$refs[formName].clearValidate();
             },
             handleClick(tab, event) {
             },
@@ -261,6 +270,7 @@
                     } else {
                         return false;
                     }
+                    this.$refs[formName].clearValidate();
                 });
             },
             // 修改
@@ -354,6 +364,8 @@
             }
         },
         created () {
+            this.$store.commit('handleOpenMenu', '4');
+            this.$store.commit('handleOpenSubmenu', '4-4');
             this.handleTableData();
             this.handleTableDataChannel();
         },
@@ -365,7 +377,6 @@
                 callback();
             };
             return {
-                // channelGroup:[1, 3, 4, 5],
                 channelGroup:[],
                 title:'新增',
                 activeName:'markup',
@@ -373,13 +384,14 @@
                 isUpdate:false,
                 dialogFormVisible:false,
                 rules:{
-                    markup_amount:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空'}],
-                    hour:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空'}, { type: 'number', message:'必须为数字'}],
-                    minute:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空'}, { type: 'number', message:'必须为数字'}],
-                    markup_type:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空'}, { type: 'number', message:'必须为数字'}],
-                    markup_money:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空'}],
-                    markup_frequency:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空'}, { type: 'number', message:'必须为数字'}],
-                    markup_number:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空'}, { type: 'number', message:'必须为数字'}],
+                    markup_amount:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}],
+                    hour:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
+                    minute:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
+                    markup_type:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
+                    markup_time:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
+                    markup_money:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}],
+                    markup_frequency:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
+                    markup_number:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
                 },
                 tableData: [],
                 tableDataChannel:[],
@@ -398,7 +410,7 @@
                     markup_type:0,
                     markup_money:'',
                     markup_frequency:'',
-                    markup_number:'',
+                    markup_number:''
                 },
                 channelForm:{
                     channel:''

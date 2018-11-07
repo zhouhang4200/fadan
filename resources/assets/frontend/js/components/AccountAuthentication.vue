@@ -2,23 +2,23 @@
     <div class="main content amount-flow">
         <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="个人认证" name="personal" :disabled="isPersonalDisabled">
-                <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-                    <el-form-item label="*真实姓名" prop="name">
+                <el-form :model="form" ref="form" :rules="rules" label-width="120px">
+                    <el-form-item label="真实姓名" prop="name">
                         <el-input v-model="form.name" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*手机号" prop="phone_number">
+                    <el-form-item label="手机号" prop="phone_number">
                         <el-input v-model.number="form.phone_number" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*开户银行卡号" prop="bank_number">
+                    <el-form-item label="开户银行卡号" prop="bank_number">
                         <el-input v-model="form.bank_number" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*开户银行名称" prop="bank_name">
+                    <el-form-item label="开户银行名称" prop="bank_name">
                         <el-input v-model="form.bank_name" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*身份证号" prop="identity_card">
+                    <el-form-item label="身份证号" prop="identity_card">
                         <el-input v-model="form.identity_card" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*身份证正面照" prop="front_card_picture">
+                    <el-form-item label="身份证正面照" prop="front_card_picture">
                         <el-upload
                                 class="avatar-uploader"
                                 :action="this.AccountAuthenticationUploadApi+'?name=front_card_picture'"
@@ -31,7 +31,7 @@
                         </el-upload>
                         <el-input v-model="form.front_card_picture" autocomplete="off" type="hidden"></el-input>
                     </el-form-item>
-                    <el-form-item label="*身份证背面照" prop="back_card_picture">
+                    <el-form-item label="身份证背面照" prop="back_card_picture">
                         <el-upload
                                 class="avatar-uploader"
                                 :action="this.AccountAuthenticationUploadApi+'?name=back_card_picture'"
@@ -43,7 +43,7 @@
                         </el-upload>
                         <el-input v-model="form.back_card_picture" autocomplete="off" type="hidden"></el-input>
                     </el-form-item>
-                    <el-form-item label="*手持身份证正面照" prop="hold_card_picture">
+                    <el-form-item label="手持身份证正面照" prop="hold_card_picture">
                         <el-upload
                                 class="avatar-uploader"
                                 :action="this.AccountAuthenticationUploadApi+'?name=hold_card_picture'"
@@ -62,29 +62,29 @@
                 </el-form>
             </el-tab-pane>
             <el-tab-pane label="企业认证" name="company" :disabled="isCompanyDisabled">
-                <el-form :model="companyForm" ref="companyForm" :rules="companyFormRules" label-width="80px">
-                    <el-form-item label="*真实姓名" prop="name">
+                <el-form :model="companyForm" ref="companyForm" :rules="companyFormRules" label-width="120px">
+                    <el-form-item label="真实姓名" prop="name">
                         <el-input v-model="companyForm.name" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*手机号" prop="phone_number">
+                    <el-form-item label="手机号" prop="phone_number">
                         <el-input v-model.number="companyForm.phone_number" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*开户银行卡号" prop="bank_number">
+                    <el-form-item label="开户银行卡号" prop="bank_number">
                         <el-input v-model="companyForm.bank_number" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*开户银行名称" prop="bank_name">
+                    <el-form-item label="开户银行名称" prop="bank_name">
                         <el-input v-model="companyForm.bank_name" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*营业执照名称" prop="license_name">
+                    <el-form-item label="营业执照名称" prop="license_name">
                         <el-input v-model="companyForm.license_name" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*营业执照号码" prop="license_number">
+                    <el-form-item label="营业执照号码" prop="license_number">
                         <el-input v-model="companyForm.license_number" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*法人姓名" prop="corporation">
+                    <el-form-item label="法人姓名" prop="corporation">
                         <el-input v-model="companyForm.corporation" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*营业执照正面照" prop="license_picture">
+                    <el-form-item label="营业执照正面照" prop="license_picture">
                         <el-upload
                                 class="avatar-uploader"
                                 :action="this.AccountAuthenticationUploadApi+'?name=license_picture'"
@@ -97,7 +97,7 @@
                         </el-upload>
                         <el-input v-model="companyForm.license_picture" autocomplete="off" type="hidden"></el-input>
                     </el-form-item>
-                    <el-form-item label="*银行开户许可证照片" prop="bank_open_account_picture">
+                    <el-form-item label="银行开户许可证照片" prop="bank_open_account_picture">
                         <el-upload
                                 class="avatar-uploader"
                                 :action="this.AccountAuthenticationUploadApi+'?name=bank_open_account_picture'"
@@ -109,7 +109,7 @@
                         </el-upload>
                         <el-input v-model="companyForm.bank_open_account_picture" autocomplete="off" type="hidden"></el-input>
                     </el-form-item>
-                    <el-form-item label="*代办协议照片" prop="agency_agreement_picture">
+                    <el-form-item label="代办协议照片" prop="agency_agreement_picture">
                         <el-upload
                                 class="avatar-uploader"
                                 :action="this.AccountAuthenticationUploadApi+'?name=agency_agreement_picture'"
@@ -161,7 +161,7 @@
             'AccountAuthenticationFormApi',
             'AccountAuthenticationUpdateApi',
             'AccountAuthenticationAddApi',
-            'AccountAuthenticationUploadApi',
+            'AccountAuthenticationUploadApi'
         ],
         methods: {
             // 获取编辑页面的数据
@@ -333,17 +333,10 @@
             this.authenticationForm();
         },
         data() {
-            var checkHas = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('必填项不能为空!'));
-                }
-                callback();
-            };
             var checkPhone = (rule, value, callback) => {
                 if (!value) {
                     return callback(new Error('必填项不能为空!'));
                 }
-
                 if (!Number.isInteger(parseInt(value))) {
                     callback(new Error('请输入数字值！'));
                 } else {
@@ -382,16 +375,15 @@
                 imageUrl6:'',
                 UploadUrl:'',
                 activeName:'personal',
-
                 rules:{
-                    identity_card:[{ validator: checkQq, trigger: 'blur' }],
-                    bank_number:[{ validator: checkQq, trigger: 'blur' }],
-                    phone_number:[{ validator: checkPhone, trigger: 'blur' }],
-                    bank_name:[{ validator: checkHas, trigger: 'blur' }],
-                    name:[{ validator: checkHas, trigger: 'blur' }],
-                    front_card_picture:[{ validator: checkHas, trigger: 'blur' }],
-                    back_card_picture:[{ validator: checkHas, trigger: 'blur' }],
-                    hold_card_picture:[{ validator: checkHas, trigger: 'blur' }],
+                    identity_card:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkQq, trigger: 'blur' }],
+                    bank_number:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkQq, trigger: 'blur' }],
+                    phone_number:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkPhone, trigger: 'blur' }],
+                    bank_name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    front_card_picture:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    back_card_picture:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    hold_card_picture:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }]
                 },
                 form: {
                     type:'',
@@ -402,7 +394,7 @@
                     identity_card:'',
                     front_card_picture:'',
                     back_card_picture:'',
-                    hold_card_picture:'',
+                    hold_card_picture:''
                 },
                 companyForm:{
                     type:'',
@@ -415,19 +407,19 @@
                     corporation:'',
                     license_picture:'',
                     bank_open_account_picture:'',
-                    agency_agreement_picture:'',
+                    agency_agreement_picture:''
                 },
                 companyFormRules:{
-                    bank_number:[{ validator: checkQq, trigger: 'blur' }],
-                    phone_number:[{ validator: checkPhone, trigger: 'blur' }],
-                    bank_name:[{ validator: checkHas, trigger: 'blur' }],
-                    name:[{ validator: checkHas, trigger: 'blur' }],
-                    license_name:[{ validator: checkHas, trigger: 'blur' }],
-                    license_number:[{ validator: checkHas, trigger: 'blur' }],
-                    corporation:[{ validator: checkHas, trigger: 'blur' }],
-                    bank_open_account_picture:[{ validator: checkHas, trigger: 'blur' }],
-                    agency_agreement_picture:[{ validator: checkHas, trigger: 'blur' }],
-                    license_picture:[{ validator: checkHas, trigger: 'blur' }],
+                    bank_number:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkQq, trigger: 'blur' }],
+                    phone_number:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkPhone, trigger: 'blur' }],
+                    bank_name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    license_name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    license_number:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    corporation:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    bank_open_account_picture:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    agency_agreement_picture:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    license_picture:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }]
                 }
             }
         }

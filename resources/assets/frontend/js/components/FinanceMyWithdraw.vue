@@ -94,7 +94,7 @@
         props: [
             'MyWithdrawApi',
             'CanWithdrawApi',
-            'CreateWithdrawApi',
+            'CreateWithdrawApi'
         ],
         // 初始化数据
         created () {
@@ -105,7 +105,6 @@
             // 表格加载数据
             handleTableData(){
                 axios.post(this.MyWithdrawApi, this.searchParams).then(res => {
-
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -117,7 +116,6 @@
                 });
             },
             handleCurrentChange(page) {
-
                 this.searchParams.page = page;
                 this.handleTableData();
             },
@@ -163,7 +161,6 @@
                         });
                         this.dialogFormVisible = false;
                     } else {
-
                         return false;
                     }
                 });
@@ -175,9 +172,6 @@
         data() {
             // 表单验证
             var checkFee = (rule, value, callback) => {
-                if (!value) {
-                    return callback(new Error('金额不能为空!'));
-                }
                 setTimeout(() => {
                     if (!Number.isInteger(value)) {
                         callback(new Error('请输入数字值'));
@@ -193,9 +187,7 @@
                     remark: '',
                 },
                 rules: {
-                    fee: [
-                        { validator: checkFee, trigger: 'blur' }
-                    ]
+                    fee: [{ required: true, message: '必填项不可为空!', trigger: 'blur'}, { validator: checkFee, trigger: 'blur' }]
                 },
                 dialogFormVisible: false,
                 // 表单查找和表单数据
@@ -208,12 +200,12 @@
                     5:'待确认',
                     6:'办款中',
                     7:'提现成功',
-                    8:'提现失败',
+                    8:'提现失败'
                 },
                 searchParams:{
                     date:'',
                     status:'',
-                    page:1,
+                    page:1
                 },
                 TotalPage:0,
                 // 申请提现输入框提示语句
