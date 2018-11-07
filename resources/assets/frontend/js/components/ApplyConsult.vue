@@ -65,7 +65,7 @@
             'amount',
             'securityDeposit',
             'efficiencyDeposit',
-            'applyConsultApi',
+            'applyConsultApi'
         ],
         computed: {
             // getVisible() {
@@ -85,7 +85,7 @@
                     trade_no: this.tradeNo,
                     amount: this.amount,
                     security_deposit: this.securityDeposit,
-                    efficiency_deposit: this.efficiencyDeposit,
+                    efficiency_deposit: this.efficiencyDeposit
                 },
             };
         },

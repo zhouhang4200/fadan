@@ -107,7 +107,7 @@
             'AccountBlackListDataListApi',
             'AccountBlackListUpdateApi',
             'AccountBlackListDeleteApi',
-            'AccountBlackListAddApi',
+            'AccountBlackListAddApi'
         ],
         methods: {
             //新增按钮
@@ -120,7 +120,7 @@
                     hatchet_man_name: '',
                     hatchet_man_phone: '',
                     hatchet_man_qq: '',
-                    content: '',
+                    content: ''
                 };
             },
             // 编辑按钮
@@ -186,7 +186,6 @@
             // 加载数据
             handleTableData(){
                 axios.post(this.AccountBlackListDataListApi, this.searchParams).then(res => {
-
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -211,7 +210,6 @@
             handleSearch() {
                 this.handleTableData();
             },
-
             handleCurrentChange(page) {
                 this.searchParams.page = page;
                 this.handleTableData();
@@ -234,13 +232,13 @@
                 });
             },
         },
-        created () {
+        created(){
             this.$store.commit('handleOpenMenu', '3');
             this.$store.commit('handleOpenSubmenu', '3-6');
             this.handleTableData();
             this.handleName();
         },
-        data() {
+        data(){
             var checkHas = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('必填项不能为空!'));

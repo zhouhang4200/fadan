@@ -161,7 +161,7 @@
             'AccountAuthenticationFormApi',
             'AccountAuthenticationUpdateApi',
             'AccountAuthenticationAddApi',
-            'AccountAuthenticationUploadApi',
+            'AccountAuthenticationUploadApi'
         ],
         methods: {
             // 获取编辑页面的数据
@@ -382,7 +382,6 @@
                 imageUrl6:'',
                 UploadUrl:'',
                 activeName:'personal',
-
                 rules:{
                     identity_card:[{ validator: checkQq, trigger: 'blur' }],
                     bank_number:[{ validator: checkQq, trigger: 'blur' }],
@@ -391,7 +390,7 @@
                     name:[{ validator: checkHas, trigger: 'blur' }],
                     front_card_picture:[{ validator: checkHas, trigger: 'blur' }],
                     back_card_picture:[{ validator: checkHas, trigger: 'blur' }],
-                    hold_card_picture:[{ validator: checkHas, trigger: 'blur' }],
+                    hold_card_picture:[{ validator: checkHas, trigger: 'blur' }]
                 },
                 form: {
                     type:'',
@@ -402,7 +401,7 @@
                     identity_card:'',
                     front_card_picture:'',
                     back_card_picture:'',
-                    hold_card_picture:'',
+                    hold_card_picture:''
                 },
                 companyForm:{
                     type:'',
@@ -415,7 +414,7 @@
                     corporation:'',
                     license_picture:'',
                     bank_open_account_picture:'',
-                    agency_agreement_picture:'',
+                    agency_agreement_picture:''
                 },
                 companyFormRules:{
                     bank_number:[{ validator: checkQq, trigger: 'blur' }],
@@ -427,7 +426,7 @@
                     corporation:[{ validator: checkHas, trigger: 'blur' }],
                     bank_open_account_picture:[{ validator: checkHas, trigger: 'blur' }],
                     agency_agreement_picture:[{ validator: checkHas, trigger: 'blur' }],
-                    license_picture:[{ validator: checkHas, trigger: 'blur' }],
+                    license_picture:[{ validator: checkHas, trigger: 'blur' }]
                 }
             }
         }

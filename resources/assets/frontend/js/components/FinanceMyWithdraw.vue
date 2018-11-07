@@ -94,7 +94,7 @@
         props: [
             'MyWithdrawApi',
             'CanWithdrawApi',
-            'CreateWithdrawApi',
+            'CreateWithdrawApi'
         ],
         // 初始化数据
         created () {
@@ -107,7 +107,6 @@
             // 表格加载数据
             handleTableData(){
                 axios.post(this.MyWithdrawApi, this.searchParams).then(res => {
-
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -119,7 +118,6 @@
                 });
             },
             handleCurrentChange(page) {
-
                 this.searchParams.page = page;
                 this.handleTableData();
             },
@@ -165,7 +163,6 @@
                         });
                         this.dialogFormVisible = false;
                     } else {
-
                         return false;
                     }
                 });
@@ -210,12 +207,12 @@
                     5:'待确认',
                     6:'办款中',
                     7:'提现成功',
-                    8:'提现失败',
+                    8:'提现失败'
                 },
                 searchParams:{
                     date:'',
                     status:'',
-                    page:1,
+                    page:1
                 },
                 TotalPage:0,
                 // 申请提现输入框提示语句

@@ -80,7 +80,7 @@
         props: [
             'SettingMessageDataListApi',
             'SettingMessageUpdateApi',
-            'SettingMessageStatusApi',
+            'SettingMessageStatusApi'
         ],
         methods: {
             // 编辑按钮

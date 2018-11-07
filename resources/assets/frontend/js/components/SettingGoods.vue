@@ -127,7 +127,7 @@
             'SettingGoodsDeleteApi',
             'SettingGoodsDataListApi',
             'SettingGoodsDeliveryApi',
-            'SettingGoodsSellerNickApi',
+            'SettingGoodsSellerNickApi'
         ],
         methods: {
             // 新增按钮
@@ -145,7 +145,7 @@
                     remark:'',
                     delivery:'',
                     created_at:'',
-                    updated_at:'',
+                    updated_at:''
                 };
             },
             // 编辑按钮

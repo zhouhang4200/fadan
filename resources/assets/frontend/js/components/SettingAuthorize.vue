@@ -61,7 +61,7 @@
         props: [
             'SettingAuthorizeDataListApi',
             'SettingAuthorizeUrlApi',
-            'SettingAuthorizeDeleteApi',
+            'SettingAuthorizeDeleteApi'
         ],
         methods: {
             // 删除
@@ -97,7 +97,6 @@
             // 加载数据
             handleTableData(){
                 axios.post(this.SettingAuthorizeDataListApi, this.searchParams).then(res => {
-
                     this.tableData = res.data.data.data;
                     this.TotalPage = res.data.data.total;
 
@@ -113,11 +112,9 @@
                 });
             },
             handleSearch() {
-
                 this.handleTableData();
             },
             handleCurrentChange(page) {
-
                 this.searchParams.page = page;
                 this.handleTableData();
             },

@@ -121,7 +121,7 @@
             'AccountStationUpdateApi',
             'AccountStationDeleteApi',
             'AccountStationAddApi',
-            'AccountStationPermissionApi',
+            'AccountStationPermissionApi'
         ],
         methods: {
             // 新增按钮

@@ -180,13 +180,12 @@
     export default {
         props: [
             'FinanceOrderDataListApi',
-            'FinanceGameApi',
+            'FinanceGameApi'
         ],
         methods: {
             // 加载数据
             handleTableData(){
                 axios.post(this.FinanceOrderDataListApi, this.searchParams).then(res => {
-
                     this.tableData = res.data.data;
                     this.TotalPage = res.data.total;
                 }).catch(err => {
@@ -230,7 +229,7 @@
                     1:'show91',
                     3:'蚂蚁',
                     4:'dd373',
-                    5:'丸子',
+                    5:'丸子'
                 },
                 StatusArr:{
                     1:'未接单',
@@ -245,7 +244,7 @@
                     21:'已仲裁',
                     22:'已下架',
                     23:'强制撤销',
-                    24:'已撤单',
+                    24:'已撤单'
                 },
                 searchParams:{
                     status:'',
@@ -254,7 +253,7 @@
                     platform_id:'',
                     seller_nick:'',
                     date:'',
-                    page:1,
+                    page:1
                 },
                 TotalPage:0,
                 tableData: []

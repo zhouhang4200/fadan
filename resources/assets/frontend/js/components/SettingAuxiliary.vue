@@ -215,7 +215,7 @@
             'SettingMarkupTimeApi',
             'SettingMarkupTimeApi',
             'SettingChannelDataListApi',
-            'SettingChannelSwitchApi',
+            'SettingChannelSwitchApi'
         ],
         methods: {
             // 新增按钮
@@ -364,6 +364,8 @@
             }
         },
         created () {
+            this.$store.commit('handleOpenMenu', '4');
+            this.$store.commit('handleOpenSubmenu', '4-4');
             this.handleTableData();
             this.handleTableDataChannel();
         },

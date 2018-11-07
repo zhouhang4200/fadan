@@ -174,7 +174,7 @@
             'AccountEmployeeUpdateApi',
             'AccountEmployeeAddApi',
             'AccountEmployeeDeleteApi',
-            'AccountEmployeeCreateApi',
+            'AccountEmployeeCreateApi'
         ],
         methods: {
             // 新增按钮

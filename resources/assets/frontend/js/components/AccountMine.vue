@@ -27,7 +27,7 @@
     export default {
         props: [
             'AccountMineFormApi',
-            'AccountMineUpdateApi',
+            'AccountMineUpdateApi'
         ],
         methods: {
             handleUpdate() {
@@ -69,7 +69,7 @@
                     'name':'',
                     'email':'',
                     'type':'',
-                    'password':'',
+                    'password':''
                 }
             }
         }
