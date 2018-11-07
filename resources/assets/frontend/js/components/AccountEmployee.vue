@@ -184,19 +184,16 @@
                 this.isUpdate=false;
                 this.isDisabled=false;
                 this.title="新增";
-                this.form={
-                    username: '',
-                    name: '',
-                    hasStation:[],
-                    allStation:[],
-                    phone: '',
-                    password: '',
-                    leveling_type: '',
-                    station: [],
-                    qq: '',
-                    wechat: '',
-                    remark: ''
-                };
+                this.form.username='';
+                this.form.name='';
+                this.form.hasStation=[];
+                this.form.phone='';
+                this.form.leveling_type='';
+                this.form.password='';
+                this.form.station='';
+                this.form.qq='';
+                this.form.wechat='';
+                this.form.remark='';
             },
             // 编辑按钮
             employeeUpdate(row) {
