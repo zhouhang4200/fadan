@@ -84,7 +84,7 @@
                         :total="TotalPage">
                 </el-pagination>
                 <el-dialog :title="title" :visible.sync="dialogFormVisible">
-                    <el-form :model="form" ref="form" :rules="rules" label-width="80px">
+                    <el-form :model="form" ref="form" :rules="rules" label-width="135px">
                         <el-form-item label="发单价" prop="markup_amount" >
                             <el-row :gutter="10">
                                 <el-col :span="20">
@@ -384,13 +384,14 @@
                 isUpdate:false,
                 dialogFormVisible:false,
                 rules:{
-                    markup_amount:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空', trigger: 'blur'}],
-                    hour:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
-                    minute:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
-                    markup_type:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
-                    markup_money:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空', trigger: 'blur'}],
-                    markup_frequency:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
-                    markup_number:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '不能为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
+                    markup_amount:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}],
+                    hour:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
+                    minute:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
+                    markup_type:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
+                    markup_time:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
+                    markup_money:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}],
+                    markup_frequency:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
+                    markup_number:[{ validator: greaterZero, trigger: 'blur' },{ required: true, message: '必填项不可为空', trigger: 'blur'}, { type: 'number', message:'必须为数字', trigger: 'blur'}],
                 },
                 tableData: [],
                 tableDataChannel:[],

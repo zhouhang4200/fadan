@@ -78,13 +78,13 @@
 
         <el-dialog :title="title" :visible.sync="dialogFormVisible">
             <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-                <el-form-item label="*打手昵称" prop="hatchet_man_name">
+                <el-form-item label="打手昵称" prop="hatchet_man_name">
                     <el-input v-model="form.hatchet_man_name" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="*打手电话" prop="hatchet_man_phone">
+                <el-form-item label="打手电话" prop="hatchet_man_phone">
                     <el-input v-model.number="form.hatchet_man_phone" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="*打手QQ" prop="hatchet_man_qq">
+                <el-form-item label="打手QQ" prop="hatchet_man_qq">
                     <el-input v-model.number="form.hatchet_man_qq" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="备注" prop="content">
@@ -239,12 +239,6 @@
             this.handleName();
         },
         data(){
-            var checkHas = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('必填项不能为空!'));
-                }
-                callback();
-            };
             var checkPhone = (rule, value, callback) => {
                 if (!value) {
                     return callback(new Error('必填项不能为空!'));
@@ -289,9 +283,9 @@
                 TotalPage:0,
                 tableData: [],
                 rules:{
-                    hatchet_man_qq:[{ validator: checkQq, trigger: 'blur' }],
-                    hatchet_man_name:[{ validator: checkHas, trigger: 'blur' }],
-                    hatchet_man_phone:[{ validator: checkPhone, trigger: 'blur' }]
+                    hatchet_man_qq:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkQq, trigger: 'blur' }],
+                    hatchet_man_name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    hatchet_man_phone:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkPhone, trigger: 'blur' }]
                 },
                 form: {
                     hatchet_man_name: '',

@@ -174,9 +174,6 @@
         data() {
             // 表单验证
             var checkFee = (rule, value, callback) => {
-                if (!value) {
-                    return callback(new Error('金额不能为空!'));
-                }
                 setTimeout(() => {
                     if (!Number.isInteger(value)) {
                         callback(new Error('请输入数字值'));
@@ -192,9 +189,7 @@
                     remark: '',
                 },
                 rules: {
-                    fee: [
-                        { validator: checkFee, trigger: 'blur' }
-                    ]
+                    fee: [{ required: true, message: '必填项不可为空!', trigger: 'blur'}, { validator: checkFee, trigger: 'blur' }]
                 },
                 dialogFormVisible: false,
                 // 表单查找和表单数据

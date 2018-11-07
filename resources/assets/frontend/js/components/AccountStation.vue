@@ -68,10 +68,10 @@
 
         <el-dialog title="新增岗位" :visible.sync="dialogFormVisibleAdd">
             <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-                <el-form-item label="*岗位名称" prop="name">
+                <el-form-item label="岗位名称" prop="name">
                     <el-input v-model="form.name" name="name" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="*拥有权限">
+                <el-form-item label="拥有权限" prop="permission">
                     <el-tree
                             :props="defaultProps"
                             ref="tree"
@@ -90,10 +90,10 @@
 
         <el-dialog title="编辑岗位" :visible.sync="dialogFormVisible">
             <el-form :model="editForm" ref="editForm" :rules="editFormRules" label-width="80px">
-                <el-form-item label="*岗位名称" prop="name">
+                <el-form-item label="岗位名称" prop="name">
                     <el-input v-model="editForm.name" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="*拥有权限" prop="permission">
+                <el-form-item label="拥有权限" prop="permission">
                     <template v-for="item in stations">
                         <el-checkbox :indeterminate="isIndeterminate" v-model="item.id">{{item.alias}}</el-checkbox>
                         <!--<div style="margin: 15px 0;"></div>-->
@@ -243,7 +243,6 @@
                 this.searchParams.page = page;
                 this.handleTableData();
             },
-            /***新的*/
             handleCheckedStationChange(value) {
                 let checkedCount = value.length;
                 this.isIndeterminate = true;
@@ -256,12 +255,6 @@
             this.allPermissions();
         },
         data() {
-            var checkHas = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('必填项不能为空!'));
-                }
-                callback();
-            };
             return {
                 stations:[],
                 isIndeterminate: true,
@@ -279,12 +272,12 @@
                 TotalPage:0,
                 tableData: [],
                 rules:{
-                    name:[{ validator: checkHas, trigger: 'blur' }],
-                    permission:[{ validator: checkHas, trigger: 'blur' }]
+                    name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    permission:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }]
                 },
                 editFormRules:{
-                    name:[{ validator: checkHas, trigger: 'blur' }],
-                    permission:[{ validator: checkHas, trigger: 'blur' }]
+                    name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    permission:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }]
                 },
                 form: {
                     name: '',

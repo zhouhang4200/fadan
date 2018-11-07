@@ -87,7 +87,7 @@
             <el-table-column
                     prop="status"
                     label="订单状态"
-                    width="60">
+                    width="">
                 <template slot-scope="scope">
                     {{ StatusArr[scope.row.status] }}
                 </template>
@@ -95,7 +95,7 @@
             <el-table-column
                     prop="seller_nick"
                     label="店铺名称"
-                    width="60">
+                    width="">
                 <template slot-scope="scope">
                     {{ scope.row.seller_nick ? scope.row.seller_nick : '--'}}
                 </template>
@@ -103,7 +103,7 @@
             <el-table-column
                     prop="platform_id"
                     label="接单平台"
-                    width="60">
+                    width="">
                 <template slot-scope="scope">
                     {{ scope.row.platform_id ? PlatformArr[scope.row.platform_id] : '--' }}
                 </template>
@@ -111,47 +111,47 @@
             <el-table-column
                     prop="taobao_amount"
                     label="淘宝金额"
-                    width="60">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="taobao_refund"
                     label="淘宝退款"
-                    width="60">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="pay_amount"
                     label="支付代练费用"
-                    width="60">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="get_amount"
                     label="获得赔偿金额"
-                    width="60">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="get_complain_amount"
                     label="获得投诉金额"
-                    width="60">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="poundage"
                     label="手续费"
-                    width="60">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="profit"
                     label="最终支付金额"
-                    width="60">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="customer_service_name"
                     label="发单客服"
-                    width="60">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="taobao_created_at"
                     label="淘宝下单时间"
-                    width="">
+                    width="180">
                 <template slot-scope="scope">
                     {{ scope.row.taobao_created_at ? scope.row.taobao_created_at : '--' }}
                 </template>
@@ -159,7 +159,7 @@
             <el-table-column
                     prop="complete_at"
                     label="代练结算时间"
-                    width="">
+                    width="180">
                 <template slot-scope="scope">
                     {{ scope.row.complete_at ? scope.row.complete_at : '--' }}
                 </template>

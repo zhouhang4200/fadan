@@ -124,25 +124,25 @@
 
         <el-dialog :title="title" :visible.sync="dialogFormVisible">
             <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-                <el-form-item label="*账号" prop="name">
+                <el-form-item label="账号" prop="name">
                     <el-input v-model="form.name" name="name" autocomplete="off" :disabled="isDisabled"></el-input>
                 </el-form-item>
-                <el-form-item label="*昵称" prop="username">
+                <el-form-item label="昵称" prop="username">
                     <el-input v-model="form.username" name="username" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="*密码" prop="password">
+                <el-form-item label="密码" prop="password">
                     <el-input v-model="form.password" autocomplete="off" placeholder="不填写则为原密码"></el-input>
                 </el-form-item>
-                <el-form-item label="*类型" prop="leveling_type">
+                <el-form-item label="类型" prop="leveling_type">
                     <el-radio v-model="form.leveling_type" :label=1 autocomplete="off">接单</el-radio>
                     <el-radio v-model="form.leveling_type" :label=2 autocomplete="off">发单</el-radio>
                 </el-form-item>
-                <el-form-item label="*岗位" prop="station">
+                <el-form-item label="岗位" prop="station">
                     <el-checkbox-group v-model="form.hasStation" @change="switchChange(form.hasStation)">
                         <el-checkbox v-for="item in form.allStation" :key="item.id" :value=item.id :label=item.id>{{ item.name }}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
-                <el-form-item label="*电话" prop="phone">
+                <el-form-item label="电话" prop="phone">
                     <el-input v-model.number="form.phone" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="QQ" prop="qq">
@@ -372,12 +372,6 @@
                 }
                 callback();
             };
-            var checkHas = (rule, value, callback) => {
-                if (value === '') {
-                    callback(new Error('必填项不能为空!'));
-                }
-                callback();
-            };
             return {
                 title:'新增',
                 allStation:[],
@@ -396,11 +390,11 @@
                 TotalPage:0,
                 tableData: [],
                 rules:{
-                    password: [{ validator: validatePass, trigger: 'blur' }],
-                    phone: [{ validator: checkPhone, trigger: 'blur' }],
-                    username:[{ validator: checkHas, trigger: 'blur' }],
-                    name:[{ validator: checkHas, trigger: 'blur' }],
-                    leveling_type:[{ validator: checkHas, trigger: 'blur' }]
+                    password: [{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: validatePass, trigger: 'blur' }],
+                    phone: [{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkPhone, trigger: 'blur' }],
+                    username:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    leveling_type:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }]
                 },
                 form: {
                     username: '',

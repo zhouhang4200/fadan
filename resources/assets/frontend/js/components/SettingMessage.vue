@@ -59,10 +59,10 @@
             </el-pagination>
             <el-dialog title="短信模板编辑" :visible.sync="dialogFormVisible">
                 <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-                    <el-form-item label="*短信名称" prop="name">
+                    <el-form-item label="短信名称" prop="name">
                         <el-input v-model="form.name" name="name" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="*短信内容" prop="contents">
+                    <el-form-item label="短信内容" prop="contents">
                         <el-input v-model="form.contents" name="contents" autocomplete="off"></el-input>
                     </el-form-item>
                     <el-form-item>
@@ -164,8 +164,8 @@
             return {
                 dialogFormVisible:false,
                 rules:{
-                    name:[{ validator: checkHas, trigger: 'blur' }],
-                    contents:[{ validator: checkHas, trigger: 'blur' }],
+                    name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
+                    contents:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
                 },
                 tableData: [],
                 purpose:{
