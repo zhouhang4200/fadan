@@ -9,18 +9,18 @@
             </el-alert>
             <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
                 <el-row :gutter="16">
-                    <el-col :span="5">
+                    <el-col :span="6">
                         <el-form-item label="淘宝商品ID">
                             <el-input v-model="searchParams.foreign_goods_id"></el-input>
                         </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="handleSearch">查询</el-button>
+                            <el-button
+                                    type="primary"
+                                    size="small"
+                                    @click="goodsAdd()">新增</el-button>
+                        </el-form-item>
                     </el-col>
-                    <el-form-item>
-                        <el-button type="primary" @click="handleSearch">查询</el-button>
-                        <el-button
-                                type="primary"
-                                size="small"
-                                @click="goodsAdd()">新增</el-button>
-                    </el-form-item>
                 </el-row>
             </el-form>
             <el-table

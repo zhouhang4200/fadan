@@ -2,20 +2,20 @@
     <div class="main content">
         <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
             <el-row :gutter="16">
-                <el-col :span="5">
+                <el-col :span="4">
                     <el-form-item label="订单号">
                         <el-input v-model="searchParams.order_no"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="7">
                     <el-form-item label="发送手机">
                         <el-input v-model="searchParams.client_phone"></el-input>
                     </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="handleSearch">查询</el-button>
+                        <el-button type="primary" @click="exportExcel">导出</el-button>
+                    </el-form-item>
                 </el-col>
-                <el-form-item>
-                    <el-button type="primary" @click="handleSearch">查询</el-button>
-                    <el-button type="primary" @click="exportExcel">导出</el-button>
-                </el-form-item>
             </el-row>
         </el-form>
         <el-table
