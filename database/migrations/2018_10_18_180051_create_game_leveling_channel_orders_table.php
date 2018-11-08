@@ -22,7 +22,7 @@ class CreateGameLevelingChannelOrdersTable extends Migration
             $table->decimal('discount_amount', 2)->default(0)->comment('优惠金额');
             $table->decimal('payment_amount', 2)->default(0)->comment('实际支付金额');
             $table->decimal('refund_amount', 2)->default(0)->comment('退款金额');
-            $table->tinyInteger('pay_type')->unsigned()->comment('支付方式:1-支付宝，2-微信');
+            $table->tinyInteger('payment_type')->unsigned()->comment('支付方式:1-支付宝，2-微信');
             $table->unsignedInteger('status')->default(1)->comment('订单状态 1 待付款 2 进行中 3 待收货 4 完成 6 退款中 7 已退款');
             $table->integer('game_id')->unsigned()->comment('游戏ID');
             $table->string('game_name')->comment('游戏名');
