@@ -13,8 +13,8 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="类型" prop="name">
-                        <el-select v-model="searchParams.game_id"
+                    <el-form-item label="类型" prop="trade_type">
+                        <el-select v-model="searchParams.trade_type"
                                    placeholder="请选择">
                             <el-option key="0"
                                        label="所有类型"
