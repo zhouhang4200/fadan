@@ -7,7 +7,7 @@
             <el-table-column
                     prop="name"
                     label="名称"
-                    width="100">
+                    width="200">
             </el-table-column>
             <el-table-column
                     prop="amount"

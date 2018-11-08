@@ -7,12 +7,12 @@
                  class="search-form-inline"
                  size="small">
             <el-row :gutter="16">
-                <el-col :span="6">
-                    <el-form-item label="订单单号" prop="name">
+                <el-col :span="4">
+                    <el-form-item label="单号" prop="name">
                         <el-input v-model="searchParams.trade_no"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="4">
                     <el-form-item label="类型" prop="name">
                         <el-select v-model="searchParams.game_id"
                                    @change="handleSearchParamsGameId"
@@ -31,12 +31,11 @@
                     </el-form-item>
                 </el-col>
 
-                <el-col :span="6">
+                <el-col :span="5">
                     <el-form-item label="天猫单号">
                         <el-input v-model="searchParams.channel_order_trade_no"></el-input>
                     </el-form-item>
                 </el-col>
-
                 <el-col :span="6">
                     <el-form-item label="发布时间" prop="name">
                         <el-date-picker
@@ -53,10 +52,12 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
+                <el-col :span="4">
                 <el-form-item style="padding:0 8px">
                     <el-button type="primary" @click="handleSearch">查询</el-button>
                     <el-button type="primary" @click="handleResetForm">重置</el-button>
                 </el-form-item>
+                </el-col>
             </el-row>
 
             <el-row :gutter="16">

@@ -9,7 +9,7 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="5">
                     <el-form-item label="日期">
                         <el-date-picker
                                 v-model="searchParams.date"
@@ -23,12 +23,13 @@
                                 end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
+                </el-col>
+                <el-col :span="4">
                     <el-form-item>
                         <el-button type="primary" @click="handleSearch">查询</el-button>
                         <el-button type="primary" @click="dialogFormVisible = true">余额提现</el-button>
                     </el-form-item>
                 </el-col>
-
                 <el-dialog title="余额提现" :visible.sync="dialogFormVisible">
                 <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="demo-ruleForm">
                             <el-form-item label="提现金额" prop="fee">
