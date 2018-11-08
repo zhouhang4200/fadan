@@ -271,10 +271,6 @@
             }
         },
         methods: {
-            // 设置当前页面包屑
-            handlePageTitle() {
-                // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle})
-            },
             // 表格高度计算
             handleTableHeight() {
                 this.tableHeight = window.innerHeight - 318;
@@ -405,7 +401,6 @@
             }
         },
         created() {
-            this.handlePageTitle();
             this.handleTableHeight();
             this.handleTableData();
             this.handleGameOptions();

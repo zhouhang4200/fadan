@@ -247,7 +247,7 @@ function canVisit(to) {
 router.beforeEach((to, from, next) => {
 
     if (to.meta.title) {
-        document.title = '淘宝发单平台 -' + to.meta.title;
+        document.title = '淘宝发单平台 - ' + to.meta.title;
     }
 
     if (to.path == '/login') {

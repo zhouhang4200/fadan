@@ -89,11 +89,11 @@
                         this.form.images = [];
                         this.$api.gameLevelingOrderApplyComplain(this.form).then(res => {
                             this.$message({
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
 
-                            if (res.data.status == 1) {
+                            if (res.status == 1) {
                                 // 关闭窗口
                                 this.$emit("handleApplyComplainVisible", {"visible": false});
                             }

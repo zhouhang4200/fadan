@@ -18,7 +18,7 @@
                 <el-col :span="6">
                     <el-form-item label="代练游戏" prop="name">
                         <el-select v-model="search.game_id"
-                                   @change="handlesearchGameId"
+                                   @change="handleSearchGameId"
                                    placeholder="请选择">
                             <el-option key="0"
                                        label="所有游戏"
@@ -514,10 +514,6 @@
                     this.handleTableData();
                 }
             },
-            // 设置当前页面包屑
-            handlePageTitle() {
-                // this.$store.commit('handlePageTitle',{pageTitle:this.pageTitle})
-            },
             // 表格高度计算
             handleTableHeight() {
                 this.tableHeight = window.innerHeight - 366;
@@ -536,7 +532,7 @@
                     this.tableDataTotal = res.total;
                     this.tableLoading = false;
                 });
-                // this.handleStatusQuantity();
+                this.handleStatusQuantity();
             },
             // 加载游戏选项
             handleGameOptions() {
@@ -558,12 +554,12 @@
                 this.handleTableData();
             },
             // 选择游戏后加载代练类型
-            handlesearchGameId() {
+            handleSearchGameId() {
                 if(this.search.game_id) {
                     this.$api.gameLevelingTypes({
                         'game_id' : this.search.game_id
                     }).then(res => {
-                        this.gameLevelingTypeOptions = res.data;
+                        this.gameLevelingTypeOptions = res;
                     });
                 } else {
                     this.gameLevelingTypeOptions = [];
@@ -580,11 +576,11 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if(res.data.status == 1) {
+                        if(res.status == 1) {
                             this.handleTableData();
                         }
                     }).catch(err => {
@@ -663,11 +659,11 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if(res.data.status == 1) {
+                        if(res.status == 1) {
                             this.handleTableData();
                         }
                     }).catch(err => {
@@ -684,10 +680,10 @@
                 this.$api.gameLevelingOrderApplyCompleteImage({
                     'trade_no' : row.trade_no
                 }).then(res => {
-                    if(res.data.status == 1) {
+                    if(res.status == 1) {
                         const h = this.$createElement;
                         let item = [];
-                        res.data.content.forEach(function (val) {
+                        res.content.forEach(function (val) {
                             item.push(h('el-carousel-item', null, [
                                 h('img', {
                                     attrs:{
@@ -707,7 +703,7 @@
                     } else {
                         this.$message({
                             type: 'error',
-                            message: res.data.message
+                            message: res.message
                         });
                     }
                 }).catch(err => {
@@ -728,11 +724,11 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if(res.data.status == 1) {
+                        if(res.status == 1) {
                             this.handleTableData();
                         }
                     }).catch(err => {
@@ -762,11 +758,11 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if(res.data.status == 1) {
+                        if(res.status == 1) {
                             this.handleTableData();
                         }
                     }).catch(err => {
@@ -788,11 +784,11 @@
                         'trade_no' : row.trade_no
                     }).then(res => {
                         this.$message({
-                            type: res.data.status == 1 ? 'success' : 'error',
-                            message: res.data.message
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
                         });
 
-                        if(res.data.status == 1) {
+                        if(res.status == 1) {
                             this.handleTableData();
                         }
                     }).catch(err => {
@@ -899,14 +895,10 @@
             }
         },
         created() {
-            this.handlePageTitle();
             this.handleTableHeight();
             this.handleTableData();
             this.handleGameOptions();
             window.addEventListener('resize', this.handleTableHeight);
         },
-        // destroyed() {
-        //     window.removeEventListener('resize', this.handleTableHeight)
-        // }
     }
 </script>

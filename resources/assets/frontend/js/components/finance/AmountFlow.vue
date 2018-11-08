@@ -162,7 +162,6 @@
         watch: {
             t: function (val) {
                 this.weekse = val;
-
                 this.getL()
             }
         },
