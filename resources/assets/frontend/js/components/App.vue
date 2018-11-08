@@ -2,8 +2,9 @@
     <el-container>
 
         <el-aside :style="{'width': collapse ? '64px':'200px', 'background-color': '#515a6e'}">
-            <div class="logo">
-                <i class="icon-tao" style="font-size:32px;color:#fff"></i>
+
+            <div class="logo" :style="{'width': collapse ? '64px':'200px'}">
+                <i class="icon-tao" style="font-size:32px;color:#fff;padding-left: 16px"></i>
                 <img src="/frontend/v2/images/logo.png" style="vertical-align: top" v-show="!collapse">
             </div>
             <!--:default-openeds="['1']"-->
@@ -21,7 +22,10 @@
                     active-text-color="#ffd04b"
                     :collapse="collapse">
 
+
                 <el-submenu v-for="item in menus"
+                            :show-timeout=100
+                            :hide-timeout=100
                             :index="item.path"
                             :key="item.id"
                             v-if="item.menu === true">
@@ -86,9 +90,8 @@
         background: rgb(255, 255, 255);
     }
     .logo {
-        width: auto;
         background-color: #ff9900;
-        padding: 14px 0 14px 16px;
+        padding: 14px 0;
     }
     .header-avatar {
         width: 40px;
