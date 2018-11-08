@@ -3,7 +3,7 @@
         <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
             <el-row :gutter="16">
                 <el-col :span="4">
-                    <el-form-item label="订单号">
+                    <el-form-item label="单号">
                         <el-input v-model="searchParams.trade_no"></el-input>
                     </el-form-item>
                 </el-col>
@@ -14,24 +14,24 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="5">
                     <el-form-item label="店铺名称">
                         <el-input v-model="searchParams.seller_nick"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="5">
                     <el-form-item label="接单平台">
                         <el-input v-model="searchParams.platform_id"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="5">
                     <el-form-item label="订单状态">
                         <el-select v-model="searchParams.status" placeholder="请选择">
                             <el-option v-for="(value, key) of StatusArr" :value="key" :key="key" :label="value"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="7">
+                <el-col :span="5">
                     <el-form-item label="日期">
                         <el-date-picker
                                 v-model="searchParams.date"
@@ -45,6 +45,8 @@
                                 end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
+                </el-col>
+                <el-col :span="2">
                     <el-form-item>
                         <el-button type="primary" @click="handleSearch">查询</el-button>
                     </el-form-item>

@@ -7,19 +7,21 @@
                         <el-input v-model="searchParams.name"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
-                    <el-form-item label="员工昵称">
+                <el-col :span="4">
+                    <el-form-item label="昵称">
                         <el-select v-model="searchParams.username" placeholder="请选择">
                             <el-option v-for="(value, key) of AccountEmployeeUser" :value="key" :key="key"  :label="value"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="4">
                     <el-form-item label="岗位">
                         <el-select v-model="searchParams.station" placeholder="请选择">
                             <el-option v-for="item in AccountEmployeeStation" :value=item.id :key=item.id  :label=item.name>{{item.name}}</el-option>
                         </el-select>
                     </el-form-item>
+                </el-col>
+                <el-col :span="4">
                     <el-form-item>
                         <el-button type="primary" @click="handleSearch">查询</el-button>
                         <el-button

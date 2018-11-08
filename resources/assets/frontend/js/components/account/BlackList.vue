@@ -14,10 +14,12 @@
                         <el-input v-model="searchParams.hatchet_man_phone"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="4">
                     <el-form-item label="QQ">
                         <el-input v-model="searchParams.hatchet_man_qq"></el-input>
                     </el-form-item>
+                </el-col>
+                <el-col :span="4">
                     <el-form-item>
                         <el-button type="primary" @click="handleSearch">查询</el-button>
                         <el-button
