@@ -77,11 +77,6 @@
 
 <script>
     export default {
-        props: [
-            'SettingMessageDataListApi',
-            'SettingMessageUpdateApi',
-            'SettingMessageStatusApi'
-        ],
         methods: {
             // 编辑按钮
             ShowEditForm(row) {
@@ -91,11 +86,11 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.SettingMessageUpdateApi, this.form).then(res => {
+                        this.$api.SettingMessageUpdate(this.form).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                         }).catch(err => {
                             this.$alert('获取数据失败, 请重试!', '提示', {
@@ -111,10 +106,9 @@
             },
             // 加载数据
             handleTableData(){
-                axios.post(this.SettingMessageDataListApi, this.searchParams).then(res => {
-
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+                this.$api.SettingMessageDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -134,11 +128,11 @@
             },
             // 开关状态
             handleSwitch(value, row) {
-                axios.post(this.SettingMessageStatusApi, {status:value, id:row.id}).then(res => {
+                this.$api.SettingMessageStatus({status:value, id:row.id}).then(res => {
                     this.$message({
                         showClose: true,
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: res.data.message
+                        type: res.status == 1 ? 'success' : 'error',
+                        message: res.message
                     });
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {

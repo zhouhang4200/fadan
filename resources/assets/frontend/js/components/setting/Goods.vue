@@ -120,15 +120,6 @@
 
 <script>
     export default {
-        props: [
-            'SettingGoodsGameApi',
-            'SettingGoodsAddApi',
-            'SettingGoodsUpdateApi',
-            'SettingGoodsDeleteApi',
-            'SettingGoodsDataListApi',
-            'SettingGoodsDeliveryApi',
-            'SettingGoodsSellerNickApi'
-        ],
         methods: {
             // 新增按钮
             goodsAdd() {
@@ -165,11 +156,11 @@
             submitFormAdd(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.SettingGoodsAddApi, this.form).then(res => {
+                        this.$api.SettingGoodsAdd(this.form).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                             // location.reload();
                             this.handleTableData();
@@ -190,11 +181,11 @@
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.SettingGoodsUpdateApi, this.form).then(res => {
+                        this.$api.SettingGoodsUpdate(this.form).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                             this.handleTableData();
                         }).catch(err => {
@@ -211,11 +202,11 @@
             },
             // 删除
             goodsDelete(id) {
-                axios.post(this.SettingGoodsDeleteApi, {id:id}).then(res => {
+                this.$api.SettingGoodsDelete({id:id}).then(res => {
                     this.$message({
                         showClose: true,
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: res.data.message
+                        type: res.status == 1 ? 'success' : 'error',
+                        message: res.message
                     });
                     this.handleTableData();
                 }).catch(err => {
@@ -228,9 +219,9 @@
             },
             // 加载数据
             handleTableData(){
-                axios.post(this.SettingGoodsDataListApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+                this.$api.SettingGoodsDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -249,11 +240,11 @@
             },
             // 开关状态
             handleSwitch(value, row) {
-                axios.post(this.SettingGoodsDeliveryApi, {delivery:value, id:row.id}).then(res => {
+                this.$api.SettingGoodsDelivery({delivery:value, id:row.id}).then(res => {
                     this.$message({
                         showClose: true,
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: res.data.message
+                        type: res.status == 1 ? 'success' : 'error',
+                        message: res.message
                     });
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
@@ -265,8 +256,8 @@
             },
             // 游戏
             game(){
-                axios.post(this.SettingGoodsGameApi).then(res => {
-                    this.games=res.data;
+                this.$api.SettingGoodsGame().then(res => {
+                    this.games=res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -277,8 +268,8 @@
             },
             // 商铺
             sellerNick(){
-                axios.post(this.SettingGoodsSellerNickApi).then(res => {
-                    this.sellerNicks=res.data;
+                this.$api.SettingGoodsSellerNick().then(res => {
+                    this.sellerNicks=res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
