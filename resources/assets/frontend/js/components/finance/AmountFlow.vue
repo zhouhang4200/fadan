@@ -1,6 +1,5 @@
 <template>
     <div class="main content amount-flow">
-
         <el-form :inline=true
                  ref="form"
                  :model="searchParams"
@@ -29,7 +28,6 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-
                 <el-col :span="5">
                     <el-form-item label="天猫单号">
                         <el-input v-model="searchParams.channel_order_trade_no"></el-input>
@@ -51,15 +49,11 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                <el-form-item style="padding:0 8px">
-                    <el-button type="primary" @click="handleSearch">查询</el-button>
-                    <el-button type="primary" @click="handleResetForm">重置</el-button>
-                </el-form-item>
+                    <el-form-item style="padding:0 8px">
+                        <el-button type="primary" @click="handleSearch">查询</el-button>
+                        <el-button type="primary" @click="handleResetForm">重置</el-button>
+                    </el-form-item>
                 </el-col>
-            </el-row>
-
-            <el-row :gutter="16">
-
             </el-row>
         </el-form>
 
