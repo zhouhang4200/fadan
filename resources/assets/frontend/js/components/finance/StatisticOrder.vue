@@ -2,7 +2,7 @@
     <div class="main content">
         <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
             <el-row :gutter="16">
-                <el-col :span="7">
+                <el-col :span="8">
                     <el-form-item label="日期">
                         <el-date-picker
                                 v-model="searchParams.date"
@@ -16,11 +16,11 @@
                                 end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="handleSearch">查询</el-button>
+                        <el-button type="primary" @click="exportExcel">导出</el-button>
+                    </el-form-item>
                 </el-col>
-                <el-form-item>
-                    <el-button type="primary" @click="handleSearch">查询</el-button>
-                    <el-button type="primary" @click="exportExcel">导出</el-button>
-                </el-form-item>
             </el-row>
         </el-form>
         <el-table

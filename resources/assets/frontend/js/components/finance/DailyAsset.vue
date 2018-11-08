@@ -16,10 +16,10 @@
                                 end-placeholder="结束日期">
                         </el-date-picker>
                     </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="handleSearch">查询</el-button>
+                    </el-form-item>
                 </el-col>
-                <el-form-item>
-                    <el-button type="primary" @click="handleSearch">查询</el-button>
-                </el-form-item>
             </el-row>
         </el-form>
     <el-table
