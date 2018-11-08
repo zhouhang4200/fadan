@@ -42,9 +42,5 @@
                 tableData: []
             }
         },
-        mounted() {
-            this.$cookieStore.setCookie('menu', '2');
-            this.$cookieStore.setCookie('submenu', '2-1');
-        },
     }
 </script>

@@ -81,8 +81,6 @@
 <script>
     export default {
         created () {
-            this.$store.commit('handleOpenMenu', '2');
-            this.$store.commit('handleOpenSubmenu', '2-2');
             this.handleTableData();
         },
         methods:{

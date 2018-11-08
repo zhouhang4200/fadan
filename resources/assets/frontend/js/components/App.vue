@@ -163,6 +163,18 @@
     .el-form-item.is-success .el-textarea__inner:focus {
         border-color:#DCDFE6;
     }
+    /*搜索表单样式*/
+    .search-form-inline .el-select,
+    .search-form-inline .el-date-editor--daterange.el-input__inner,
+    .search-form-inline .el-form-item {
+        width:100%;
+    }
+    .search-form-inline .el-range-separator {
+        width:10%;
+    }
+    .search-form-inline .el-form-item__content {
+        width:80%;
+    }
 </style>
 
 <script>

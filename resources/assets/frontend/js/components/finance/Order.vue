@@ -213,8 +213,6 @@
             },
         },
         created () {
-            this.$store.commit('handleOpenMenu', '2');
-            this.$store.commit('handleOpenSubmenu', '2-8');
             this.handleTableData();
             this.handleGame();
         },

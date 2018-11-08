@@ -177,10 +177,6 @@
                     contents:''
                 }
             }
-        },
-        mounted() {
-            this.$cookieStore.setCookie('menu', '4');
-            this.$cookieStore.setCookie('submenu', '4-2');
-        },
+        }
     }
 </script>

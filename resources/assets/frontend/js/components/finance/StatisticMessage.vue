@@ -65,8 +65,6 @@
     export default {
         // 初始化数据
         created () {
-            this.$store.commit('handleOpenMenu', '2');
-            this.$store.commit('handleOpenSubmenu', '2-7');
             this.handleTableData();
         },
         methods:{
