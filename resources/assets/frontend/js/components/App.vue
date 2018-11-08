@@ -21,16 +21,19 @@
                     active-text-color="#ffd04b"
                     :collapse="collapse">
 
-                <el-submenu v-for="item in menus" :index="item.path" :key="item.id">
+                <el-submenu v-for="item in menus"
+                            :index="item.path"
+                            :key="item.id"
+                            v-if="item.menu === true">
                     <template slot="title">
                         <i :class="item.icon"></i>
-                        <span slot="title">{{ item.title }}</span>
+                        <span slot="title">{{ item.meta.title }}</span>
                     </template>
                     <el-menu-item v-for="submenu in item.children"
                                   :key="submenu.id"
                                   :index="item.path + submenu.path"
                                   v-if="submenu.menu === true">
-                        {{ submenu.title }}
+                        {{ submenu.meta.title }}
                     </el-menu-item>
                 </el-submenu>
             </el-menu>
@@ -55,11 +58,15 @@
             <el-main>
 
                 <div :style="contentContainerStyle">
-                    <el-breadcrumb separator-class="el-icon-arrow-right"
+                    <el-breadcrumb
                                    style="height: 45px;line-height: 45px;margin-left: 20px">
                         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-                        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-                        <el-breadcrumb-item>1</el-breadcrumb-item>
+                        <el-breadcrumb-item
+                                v-for="item in breadcrumbList"
+                                :key="item.path"
+                                :to="item.path">
+                            {{item.name}}
+                        </el-breadcrumb-item>
                     </el-breadcrumb>
                     <router-view></router-view>
                 </div>
@@ -190,6 +197,7 @@
                 contentContainerStyle:{
                     minHeight:'',
                 },
+                breadcrumbList: [],
             }
         },
         computed: {
@@ -200,7 +208,6 @@
                 ];
             },
         },
-
         methods: {
             handleCollapse() {
                 if(this.collapse) {
@@ -218,11 +225,23 @@
             },
             handleSelect(key, keyPath) {
                 sessionStorage.setItem('openMenu', keyPath[0]);
+            },
+            handleBreadcrumb() {
+                let matched = this.$route.matched;
+                let currentThis = this;
+                currentThis.breadcrumbList = [];
+                matched.forEach(function (it) {
+                    currentThis.breadcrumbList.push({
+                        name:it.meta.title,
+                        path:it.path
+                    });
+                });
             }
         },
         created() {
             window.addEventListener('resize', this.handleContentContainerStyle);
             this.handleContentContainerStyle();
+            this.handleBreadcrumb();
         },
         beforeMount(){
             this.openMenu[0] = sessionStorage.getItem('openMenu')
@@ -230,6 +249,11 @@
         mounted() {
             this.collapse = (sessionStorage.getItem('collapse') == 1 ? true : false);
             this.menus = this.$router.options.routes;
+        },
+        watch: {
+            $route() {
+                this.handleBreadcrumb()
+            }
         },
         destroyed() {
             window.removeEventListener('resize', this.handleContentContainerStyle)
