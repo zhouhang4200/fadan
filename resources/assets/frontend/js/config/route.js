@@ -134,7 +134,8 @@ const router = new VueRouter({
             ]
         },
         {
-            name: "账号",
+            title: "账号",
+            name: "account",
             icon: "el-icon-news",
             path: '/v2/account/',
             component: Container,
@@ -185,6 +186,7 @@ const router = new VueRouter({
             ]
         },
         {
+            title: "设置",
             name: "设置",
             icon: "el-icon-setting",
             path: '/v2/setting/',
