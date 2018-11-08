@@ -1,13 +1,10 @@
 <template>
     <el-container>
-
         <el-aside :style="{'width': collapse ? '64px':'200px', 'background-color': '#515a6e'}">
-
             <div class="logo" :style="{'width': collapse ? '64px':'200px'}">
                 <i class="icon-tao" style="font-size:32px;color:#fff;padding-left: 16px"></i>
                 <img src="/frontend/v2/images/logo.png" style="vertical-align: top" v-show="!collapse">
             </div>
-            <!--:default-openeds="['1']"-->
             <el-menu
                     :default-openeds="openMenu"
                     @select="handleSelect"
@@ -21,7 +18,6 @@
                     text-color="#fff"
                     active-text-color="#ffd04b"
                     :collapse="collapse">
-
 
                 <el-submenu v-for="item in menus"
                             :show-timeout=100
@@ -82,7 +78,6 @@
 <style lang="less">
     /*全局样式*/
     .main {
-        /*margin:20px;*/
         margin:0 20px 20px;
     }
     .content {

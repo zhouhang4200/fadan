@@ -7,11 +7,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
     <link rel="stylesheet" href="{{mix('/css/app.css', 'frontend/v2')}}">
-    <link rel="stylesheet" href="{{mix('/css/theme.css', 'frontend/v2')}}">
 </head>
 <body>
 <div id="app">
-    {{--<router-view></router-view>--}}
     <app></app>
 </div>
 <script src="{{mix('js/manifest.js', 'frontend/v2')}}"></script>

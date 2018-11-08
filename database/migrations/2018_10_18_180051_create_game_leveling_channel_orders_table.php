@@ -15,8 +15,9 @@ class CreateGameLevelingChannelOrdersTable extends Migration
     {
         Schema::create('game_leveling_channel_orders', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('trade_no')->comment('订单号');
-            $table->string('channel_user_id')->default('0')->comment('渠道用户ID');
+            $table->string('trade_no')->comment('渠道订单号');
+            $table->string('user_id')->default('0')->comment('users表中的用户代表不同渠道');
+            $table->string('game_leveling_channel_user_id')->default('0')->comment('渠道的C端用户ID,根据渠道传过来的信息建立的用户');
             $table->decimal('amount', 2)->default(0)->comment('订单金额');
             $table->decimal('discount_amount', 2)->default(0)->comment('优惠金额');
             $table->decimal('payment_amount', 2)->default(0)->comment('实际支付金额');
