@@ -837,7 +837,6 @@
 
         <ApplyComplain v-if="applyComplainVisible"
                        :tradeNo="tradeNo"
-                       :applyComplainApi="applyComplainApi"
                        @handleApplyComplainVisible="handleApplyComplainVisible">
         </ApplyComplain>
 
@@ -846,7 +845,6 @@
                       :amount="amount"
                       :securityDeposit="securityDeposit"
                       :efficiencyDeposit="efficiencyDeposit"
-                      :applyConsultApi="applyConsultApi"
                       @handleApplyConsultVisible="handleApplyConsultVisible">
         </ApplyConsult>
     </div>

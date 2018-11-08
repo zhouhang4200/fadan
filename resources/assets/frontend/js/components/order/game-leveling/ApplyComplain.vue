@@ -49,7 +49,6 @@
         name: "ApplyComplain",
         props: [
             'tradeNo',
-            'applyComplainApi',
         ],
         computed: {
             // getVisible() {
@@ -88,7 +87,7 @@
                         this.form.pic2 = this.form.images[1];
                         this.form.pic3 = this.form.images[2];
                         this.form.images = [];
-                        axios.post(this.applyComplainApi, this.form).then(res => {
+                        this.$api.gameLevelingOrderApplyComplain(this.form).then(res => {
                             this.$message({
                                 type: res.data.status == 1 ? 'success' : 'error',
                                 message: res.data.message

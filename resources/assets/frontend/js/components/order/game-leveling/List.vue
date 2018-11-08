@@ -197,10 +197,10 @@
                     label="订单号"
                     width="230">
                 <template slot-scope="scope">
-                    <a :href="showApi + '/' + scope.row.trade_no">
+                    <router-link :to="{name:'gameLevelingOrderShow', params:{trade_no:scope.row.trade_no}}">
                         <div style="margin-left: 10px"> 淘宝：{{ scope.row.trade_no }}</div>
                         <div style="margin-left: 10px">渠道：{{ scope.row.trade_no }}</div>
-                    </a>
+                    </router-link>
                 </template>
             </el-table-column>
             <el-table-column
@@ -384,7 +384,11 @@
 
                     <!--重发-->
                     <div v-if="([19, 20, 21, 22, 23, 24].indexOf(scope.row.status)) != -1">
-                        <el-button size="small" @click="handleRepeatOrder(scope.row)">重发</el-button>
+                        <router-link :to="{name:'gameLevelingOrderRepeat', params: {trade_no:scope.row.trade_no}}">
+                            <el-button size="small">
+                                 重发
+                            </el-button>
+                        </router-link>
                     </div>
                 </template>
             </el-table-column>
@@ -403,7 +407,6 @@
 
         <ApplyComplain v-if="applyComplainVisible"
                        :tradeNo="tradeNo"
-                       :applyComplainApi="applyComplainApi"
                        @handleApplyComplainVisible="handleApplyComplainVisible">
         </ApplyComplain>
 
@@ -412,7 +415,6 @@
                       :amount="amount"
                       :securityDeposit="securityDeposit"
                       :efficiencyDeposit="efficiencyDeposit"
-                      :applyConsultApi="applyConsultApi"
                       @handleApplyConsultVisible="handleApplyConsultVisible">
         </ApplyConsult>
     </div>
@@ -451,8 +453,6 @@
         },
         props: [
             'pageTitle',
-            'orderRepeatApi',
-            'showApi',
         ],
         computed: {
             tableDataEmpty() {
@@ -919,10 +919,6 @@
                         });
                     });
                 });
-            },
-            // 重新下单
-            handleRepeatOrder(row) {
-                location.href= this.orderRepeatApi + '/' + row.trade_no;
             },
             // 重置表单
             handleResetForm() {

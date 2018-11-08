@@ -24,12 +24,12 @@
                 <el-submenu v-for="item in menus" :index="item.path">
                     <template slot="title">
                         <i :class="item.icon"></i>
-                        <span slot="title">{{ item.name }}</span>
+                        <span slot="title">{{ item.title }}</span>
                     </template>
                     <el-menu-item v-for="submenu in item.children"
                                   :index="item.path + submenu.path"
                                   v-if="submenu.menu === true">
-                        {{ submenu.name }}
+                        {{ submenu.title }}
                     </el-menu-item>
                 </el-submenu>
             </el-menu>
@@ -47,7 +47,7 @@
                             我的工作台
                         </template>
                         <el-menu-item index="2-1">修改密码</el-menu-item>
-                        <el-menu-item index="2-3">退出登录</el-menu-item>
+                        <el-menu-item index="2-3">{{ $route.name }}</el-menu-item>
                     </el-submenu>
                 </el-menu>
             </el-header>
@@ -58,7 +58,7 @@
                                    style="height: 45px;line-height: 45px;margin-left: 20px">
                         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
                         <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-                        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+                        <el-breadcrumb-item>1</el-breadcrumb-item>
                     </el-breadcrumb>
                     <router-view></router-view>
                 </div>

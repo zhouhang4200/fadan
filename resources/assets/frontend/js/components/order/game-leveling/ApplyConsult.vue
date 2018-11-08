@@ -65,7 +65,6 @@
             'amount',
             'securityDeposit',
             'efficiencyDeposit',
-            'applyConsultApi'
         ],
         computed: {
             // getVisible() {
@@ -96,7 +95,7 @@
             handleSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.applyConsultApi, this.form).then(res => {
+                        this.$api.gameLevelingOrderApplyConsult(this.form).then(res => {
                             this.$message({
                                 type: res.data.status == 1 ? 'success' : 'error',
                                 message: res.data.message

@@ -21,23 +21,23 @@ export default {
     gameLevelingOrderCreate(params) {
         return post('/v2/game-leveling/store', params);
     },
-    // 游戏代练订单数据
+    // 游戏代练 订单数据
     gameLevelingOrder(params) {
         return post('/v2/order/game-leveling', params);
     },
-    // 游戏代练订单操作日志
+    // 游戏代练订单 操作日志
     gameLevelingOrderLog(params) {
         return post('/v2/order/game-leveling/log', params);
     },
-    // 游戏代练订单编辑
+    // 游戏代练订单 编辑
     gameLevelingOrderEdit(params) {
         return post('/v2/order/game-leveling/edit', params);
     },
-    // 游戏代练订单详情
+    // 游戏代练订单 详情
     gameLevelingOrderShow(params) {
         return post('/v2/order/game-leveling/show', params);
     },
-    // 游戏代练订单状态数量
+    // 游戏代练订单 状态数量
     gameLevelingOrderStatusQuantity(params) {
         return post('/v2/order/game-leveling/status-quantity', params);
     },
@@ -45,11 +45,11 @@ export default {
     gameLevelingOrderSendMessage() {
         return post('/v2/order/game-leveling/status-quantity', params);
     },
-    // 游戏代练订单上架
+    // 游戏代练订单 上架
     gameLevelingOrderOnSale() {
         return post('/v2/order/game-leveling/on-sale', params);
     },
-    // 游戏代练订单下架
+    // 游戏代练订单 下架
     gameLevelingOrderOffSale() {
         return post('/v2/order/game-leveling/off-sale', params);
     },
@@ -57,23 +57,31 @@ export default {
     gameLevelingOrderDelete() {
         return post('/v2/order/game-leveling/delete', params);
     },
-    // 游戏代练订单取消仲裁
+    // 游戏代练订单 申请仲裁
+    gameLevelingOrderApplyComplain() {
+        return post('/v2/order/game-leveling/apply-complain', params);
+    },
+    // 游戏代练订单 取消仲裁
     gameLevelingOrderCancelComplain() {
         return post('/v2/order/game-leveling/cancel-complain', params);
     },
-    // 游戏代练订单取消协商
+    // 游戏代练订单 申请协商
+    gameLevelingOrderApplyConsult() {
+        return post('/v2/order/game-leveling/apply-consult', params);
+    },
+    // 游戏代练订单 取消协商
     gameLevelingOrderCancelConsult() {
         return post('/v2/order/game-leveling/cancel-consult', params);
     },
-    // 游戏代练订单同意协商
+    // 游戏代练订单 同意协商
     gameLevelingOrderAgreeConsult() {
         return post('/v2/order/game-leveling/agree-consult', params);
     },
-    // 游戏代练订单锁定
+    // 游戏代练订单 锁定
     gameLevelingOrderLock() {
         return post('/v2/order/game-leveling/lock', params);
     },
-    // 游戏代练订单取消锁定
+    // 游戏代练订单 取消锁定
     gameLevelingOrderCancelLock() {
         return post('/v2/order/game-leveling/cancel-lock', params);
     },
@@ -96,11 +104,11 @@ export default {
     gameLevelingOrderBusinessmanComplainStore() {
         return post('/v2/order/game-leveling/status-quantity', params);
     },
-    // 添加代练价格
+    // 添加代练订单 增加价格
     gameLevelingOrderAddAmount() {
         return post('/v2/order/game-leveling/add-amount', params);
     },
-    // 添加代练天数小时
+    // 添加代练订单 增加天数小时
     gameLevelingOrderAddDayHour() {
         return post('/v2/order/game-leveling/add-day-hour', params);
     },
@@ -116,11 +124,11 @@ export default {
     gameLevelingOrdertTaobaoOrder(params) {
         return post('/v2/order/game-leveling/taobao-order', params)
     },
-    // 游戏代练商户投诉订单
+    // 游戏代练 商户投诉订单
     businessmanComplain(params) {
         return post('/v2/order/game-leveling/businessman-complain', params);
     },
-    // 游戏代练商户投诉订单状态数量
+    // 游戏代练 商户投诉订单状态数量
     businessmanComplainStatusQuantity(params) {
         return post('/v2/order/game-leveling/businessman-complain/status-quantity', params);
     },

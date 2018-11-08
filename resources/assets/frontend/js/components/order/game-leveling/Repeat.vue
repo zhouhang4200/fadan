@@ -103,7 +103,6 @@
                                                 <el-col :span="12">
                                                     <el-form-item label="代练天/小时" prop="day_hour">
                                                         <el-cascader
-                                                                
                                                                 :options="dayHourOptions"
                                                                 v-model="form.day_hour"
                                                         ></el-cascader>
@@ -327,7 +326,6 @@
 <script>
     export default {
         name: "GameLevelingRepeat",
-        props:[],
         computed: {
             displayFooter() {
                 let status = [19, 20, 21, 22, 23, 24];
@@ -346,7 +344,7 @@
                 dayHourOptions:[],
                 gameLevelingTypeOptions:[], // 游戏代练类型 选项
                 form: {
-                    trade_no:this.tradeNo,
+                    trade_no: this.$route.params.trade_no,
                     status:0,
                     channel_order_trade_no:'',
                     game_leveling_order_consult:[],
@@ -475,7 +473,7 @@
         },
         methods: {
             handleFromData() {
-                this.gameLevelingOrderEdit({trade_no: this.tradeNo}).then(res => {
+                this.$api.gameLevelingOrderEdit({trade_no: this.tradeNo}).then(res => {
                         this.form.status = res.status;
                         this.form.channel_order_trade_no = res.channel_order_trade_no;
                         this.form.game_leveling_order_consult = res.game_leveling_order_consult;
@@ -562,7 +560,7 @@
             },
             handleFromGameRegionServerOptions() {
                 this.$api.gameRegionServer().then(res => {
-                    this.gameRegionServerOptions = res.data;
+                    this.gameRegionServerOptions = res;
                 }).catch(err => {
                 });
             },
@@ -570,7 +568,7 @@
                 this.$api.gameLevelingTypes({
                     'game_id' : this.form.game_region_server[2]
                 }).then(res => {
-                    this.gameLevelingTypeOptions = res.data;
+                    this.gameLevelingTypeOptions = res;
                 }).catch(err => {
                 });
             },
