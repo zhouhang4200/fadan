@@ -122,19 +122,19 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
         Route::prefix('finance')->namespace('Finance')->group(function () {
             // 我的资产
             Route::get('my-asset', 'FinanceController@myAsset')->name('v2.finance.my-asset');
-            Route::post('my-asset/data-list', 'FinanceController@myAssetDataList')->name('v2.finance.my-asset.data-list');
+            Route::post('my-asset-data-list', 'FinanceController@myAssetDataList')->name('v2.finance.my-asset-data-list');
             // 资金流水
             Route::get('amount-flow', 'FinanceController@amountFlow')->name('v2.finance.amount-flow');
-            Route::post('amount-flow/data-list', 'FinanceController@amountFlowDataList')->name('v2.finance.amount-flow.data-list');
+            Route::post('amount-flow-data-list', 'FinanceController@amountFlowDataList')->name('v2.finance.amount-flow-data-list');
             // 资产日报
             Route::get('daily-asset', 'FinanceController@dailyAsset')->name('v2.finance.daily-asset');
-            Route::post('daily-asset/data-list', 'FinanceController@dailyAssetDataList')->name('v2.finance.daily-asset.data-list');
+            Route::post('daily-asset-data-list', 'FinanceController@dailyAssetDataList')->name('v2.finance.daily-asset-data-list');
             // 我的提现
-            Route::get('my-withdraw', 'FinanceController@myWithdraw')->name('v2.finance.my-withdraw');
-            Route::post('my-withdraw/data-list', 'FinanceController@myWithdrawDataList')->name('v2.finance.my-withdraw.data-list');
+            Route::get('withdraw', 'FinanceController@myWithdraw')->name('v2.finance.withdraw');
+            Route::post('withdraw-data-list', 'FinanceController@myWithdrawDataList')->name('v2.finance.withdraw-data-list');
             Route::post('withdraw', 'FinanceController@withdraw')->name('v2.finance.withdraw');
-            Route::post('can-withdraw', 'FinanceController@canWithdraw')->name('v2.finance.can-withdraw');
-            Route::post('create-withdraw', 'FinanceController@createWithdraw')->name('v2.finance.create-withdraw');
+            Route::post('withdraw-can', 'FinanceController@canWithdraw')->name('v2.finance.withdraw-can');
+            Route::post('withdraw-add', 'FinanceController@createWithdraw')->name('v2.finance.withdraw-add');
             // 财务订单
             Route::get('order', 'FinanceController@order')->name('v2.finance.order');
             Route::post('game', 'FinanceController@game')->name('v2.finance.game');
@@ -223,8 +223,6 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
             Route::post('authorize-data-list', 'SettingController@authorizeDataList')->name('v2.setting.authorize-data-list');
             // 代练发单辅助加价
             Route::get('auxiliary', 'SettingController@auxiliary')->name('v2.setting.auxiliary');
-
-            Route::post('markup-time', 'SettingController@markupTime')->name('v2.setting.markup-time');
             Route::post('markup-add', 'SettingController@markupAdd')->name('v2.setting.markup-add');
             Route::post('markup-update', 'SettingController@markupUpdate')->name('v2.setting.markup-update');
             Route::post('markup-delete', 'SettingController@markupDelete')->name('v2.setting.markup-delete');

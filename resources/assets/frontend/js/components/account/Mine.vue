@@ -25,17 +25,13 @@
 
 <script>
     export default {
-        props: [
-            'AccountMineFormApi',
-            'AccountMineUpdateApi'
-        ],
         methods: {
             handleUpdate() {
-                axios.post(this.AccountMineUpdateApi, this.editForm).then(res => {
+                this.$api.AccountMineUpdate(this.editForm).then(res => {
                     this.$message({
                         showClose: true,
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: res.data.message
+                        type: res.status == 1 ? 'success' : 'error',
+                        message: res.message
                     });
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
@@ -46,8 +42,8 @@
                 });
             },
             handleForm(){
-                axios.post(this.AccountMineFormApi).then(res => {
-                    this.editForm = res.data;
+                this.$api.AccountMineForm().then(res => {
+                    this.editForm = res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',

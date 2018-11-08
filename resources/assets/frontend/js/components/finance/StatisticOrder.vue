@@ -129,9 +129,6 @@
     import FileSaver from 'file-saver';
     import XLSX from 'xlsx';
     export default {
-        props: [
-            'StatisticOrderDataListApi'
-        ],
         // 初始化数据
         created () {
             this.$store.commit('handleOpenMenu', '2');
@@ -156,9 +153,9 @@
             },
             // 表格加载数据
             handleTableData(){
-                axios.post(this.StatisticOrderDataListApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+                this.$api.StatisticOrderDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
 
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {

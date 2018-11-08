@@ -24,12 +24,12 @@
             <el-table-column
                     prop="name"
                     label="岗位名称"
-                    width="150">
+                    width="100">
             </el-table-column>
             <el-table-column
                     prop="station"
                     label="岗位员工"
-                    width="300">
+                    width="">
                 <template slot-scope="scope">
                     <span style="margin-right: 10px" v-for="(value, key) of scope.row.new_users">{{ value.username ? value.username : '' }}</span>
                 </template>
@@ -113,13 +113,6 @@
 
 <script>
     export default {
-        props: [
-            'AccountStationDataListApi',
-            'AccountStationUpdateApi',
-            'AccountStationDeleteApi',
-            'AccountStationAddApi',
-            'AccountStationPermissionApi'
-        ],
         methods: {
             // 新增按钮
             ShowAddForm() {
@@ -150,11 +143,11 @@
                             permission += v.id+',';
                         });
                         this.form.permission=permission;
-                        axios.post(this.AccountStationAddApi, this.form).then(res => {
+                       this.$api.AccountStationAdd(this.form).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                             this.handleTableData();
                         }).catch(err => {
@@ -174,11 +167,11 @@
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.AccountStationUpdateApi, this.editForm).then(res => {
+                       this.$api.AccountStationUpdate(this.editForm).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                             this.handleTableData();
                         }).catch(err => {
@@ -195,11 +188,11 @@
             },
             // 删除
             stationDelete (id) {
-                axios.post(this.AccountStationDeleteApi, {id:id}).then(res => {
+               this.$api.AccountStationDelete({id:id}).then(res => {
                     this.$message({
                         showClose: true,
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: res.data.message
+                        type: res.status == 1 ? 'success' : 'error',
+                        message: res.message
                     });
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
@@ -212,9 +205,9 @@
             },
             // 加载数据
             handleTableData(){
-                axios.post(this.AccountStationDataListApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+               this.$api.AccountStationDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -225,9 +218,9 @@
             },
             // 获取当前用户所有的权限
             allPermissions() {
-                axios.post(this.AccountStationPermissionApi).then(res => {
-                    this.permissionTree = res.data;
-                    this.stations=res.data;
+               this.$api.AccountStationPermission().then(res => {
+                    this.permissionTree = res;
+                    this.stations=res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',

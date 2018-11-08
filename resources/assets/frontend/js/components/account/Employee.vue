@@ -50,57 +50,57 @@
                     width="150">
             </el-table-column>
             <el-table-column
-                    prop="leveling_type"
-                    label="代练类型"
-                    width="100">
-                <template slot-scope="scope">
-                    {{ scope.row.leveling_type == 1  ? '接单' : '发单' }}
-                </template>
-            </el-table-column>
-            <el-table-column
                     prop="station"
                     label="岗位"
-                    width="100" >
+                    width="150" >
                 <template slot-scope="scope" >
                     <div v-for="item in scope.row.new_roles">{{ item.name ? item.name : '' }}</div>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="leveling_type"
+                    label="代练类型"
+                    width="">
+                <template slot-scope="scope">
+                    {{ scope.row.leveling_type == 1  ? '接单' : '发单' }}
+                </template>
+            </el-table-column>
+            <el-table-column
                     prop="qq"
                     label="QQ"
-                    width="150">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="wechat"
                     label="微信"
-                    width="150">
+                    width="">
             </el-table-column>
             <el-table-column
                     prop="phone"
                     label="电话"
-                    width="150">
-            </el-table-column>
-            <el-table-column
-                    prop="updated_at"
-                    label="最后操作时间"
                     width="">
             </el-table-column>
             <el-table-column
                     prop="remark"
                     label="备注"
-                    width="">
+                    width="200">
             </el-table-column>
             <el-table-column
                     prop="status"
                     label="状态"
-                    width="150">
+                    width="200">
                 <template slot-scope="scope">
                     <el-switch v-model=scope.row.status @change="handleSwitch($event, scope.row)" active-text="启用" inactive-text="禁用" :active-value=0 :inactive-value=1></el-switch>
                 </template>
             </el-table-column>
             <el-table-column
+                    prop="updated_at"
+                    label="最后操作时间"
+                    width="200">
+            </el-table-column>
+            <el-table-column
                 label="操作"
-                width="250">
+                width="200">
                 <template slot-scope="scope">
                     <el-button
                                type="primary"
@@ -166,16 +166,6 @@
 
 <script>
     export default {
-        props: [
-            'AccountEmployeeUserApi',
-            'AccountEmployeeStationApi',
-            'AccountEmployeeDataListApi',
-            'AccountEmployeeSwitchApi',
-            'AccountEmployeeUpdateApi',
-            'AccountEmployeeAddApi',
-            'AccountEmployeeDeleteApi',
-            'AccountEmployeeCreateApi'
-        ],
         methods: {
             // 新增按钮
             employeeAdd() {
@@ -212,11 +202,11 @@
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.AccountEmployeeUpdateApi, this.form).then(res => {
+                        this.$api.AccountEmployeeUpdate(this.form).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                             this.handleTableData();
                         }).catch(err => {
@@ -235,11 +225,11 @@
             submitFormAdd(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.AccountEmployeeAddApi, this.form).then(res => {
+                        this.$api.AccountEmployeeAdd(this.form).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                             this.handleTableData();
                         }).catch(err => {
@@ -262,9 +252,9 @@
             },
             // 加载数据
             handleTableData(){
-                axios.post(this.AccountEmployeeDataListApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+                this.$api.AccountEmployeeDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -275,8 +265,8 @@
             },
             // 所有子账号
             handleUser(){
-                axios.post(this.AccountEmployeeUserApi, this.searchParams).then(res => {
-                 this.AccountEmployeeUser = res.data;
+                this.$api.AccountEmployeeUser(this.searchParams).then(res => {
+                 this.AccountEmployeeUser = res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -287,9 +277,9 @@
             },
             // 所有岗位
             handleStation(){
-                axios.post(this.AccountEmployeeStationApi, this.searchParams).then(res => {
-                   this.AccountEmployeeStation = res.data;
-                   this.form.allStation=res.data;
+                this.$api.AccountEmployeeStation(this.searchParams).then(res => {
+                   this.AccountEmployeeStation = res;
+                   this.form.allStation=res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -308,11 +298,11 @@
             },
             // 子账号禁用
             handleSwitch(value, row) {
-                axios.post(this.AccountEmployeeSwitchApi, {status:value, user_id:row.id}).then(res => {
+                this.$api.AccountEmployeeSwitch({status:value, user_id:row.id}).then(res => {
                     this.$message({
                         showClose: true,
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: res.data.message
+                        type: res.status == 1 ? 'success' : 'error',
+                        message: res.message
                     });
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
@@ -324,11 +314,11 @@
             },
             // 删除
             employeeDelete (id) {
-                axios.post(this.AccountEmployeeDeleteApi, {user_id:id}).then(res => {
+                this.$api.AccountEmployeeDelete({user_id:id}).then(res => {
                     this.$message({
                         showClose: true,
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: res.data.message
+                        type: res.status == 1 ? 'success' : 'error',
+                        message: res.message
                     });
                     this.handleTableData();
                 }).catch(err => {

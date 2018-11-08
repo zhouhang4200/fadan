@@ -21,7 +21,7 @@
                     <el-form-item label="身份证正面照" prop="front_card_picture">
                         <el-upload
                                 class="avatar-uploader"
-                                :action="this.AccountAuthenticationUploadApi+'?name=front_card_picture'"
+                                action="/v2/account/authentication-upload?name=front_card_picture"
                                 :show-file-list="false"
                                 accept="image/jpeg,image/jpg,image/png"
                                 :on-success="handleAvatarSuccess"
@@ -34,7 +34,7 @@
                     <el-form-item label="身份证背面照" prop="back_card_picture">
                         <el-upload
                                 class="avatar-uploader"
-                                :action="this.AccountAuthenticationUploadApi+'?name=back_card_picture'"
+                                action="/v2/account/authentication-upload?name=back_card_picture"
                                 :show-file-list="false"
                                 :on-success="handleAvatarSuccess"
                                 :before-upload="beforeAvatarUpload">
@@ -46,7 +46,7 @@
                     <el-form-item label="手持身份证正面照" prop="hold_card_picture">
                         <el-upload
                                 class="avatar-uploader"
-                                :action="this.AccountAuthenticationUploadApi+'?name=hold_card_picture'"
+                                action="/v2/account/authentication-upload?name=hold_card_picture"
                                 :show-file-list="false"
                                 :on-success="handleAvatarSuccess"
                                 :before-upload="beforeAvatarUpload">
@@ -87,7 +87,7 @@
                     <el-form-item label="营业执照正面照" prop="license_picture">
                         <el-upload
                                 class="avatar-uploader"
-                                :action="this.AccountAuthenticationUploadApi+'?name=license_picture'"
+                                action="/v2/account/authentication-upload?name=license_picture"
                                 :show-file-list="false"
                                 accept="image/jpeg,image/jpg,image/png"
                                 :on-success="handleAvatarSuccess"
@@ -100,7 +100,7 @@
                     <el-form-item label="银行开户许可证照片" prop="bank_open_account_picture">
                         <el-upload
                                 class="avatar-uploader"
-                                :action="this.AccountAuthenticationUploadApi+'?name=bank_open_account_picture'"
+                                action="/v2/account/authentication-upload?name=bank_open_account_picture"
                                 :show-file-list="false"
                                 :on-success="handleAvatarSuccess"
                                 :before-upload="beforeAvatarUpload">
@@ -112,7 +112,7 @@
                     <el-form-item label="代办协议照片" prop="agency_agreement_picture">
                         <el-upload
                                 class="avatar-uploader"
-                                :action="this.AccountAuthenticationUploadApi+'?name=agency_agreement_picture'"
+                                action="/v2/account/authentication-upload?name=agency_agreement_picture"
                                 :show-file-list="false"
                                 :on-success="handleAvatarSuccess"
                                 :before-upload="beforeAvatarUpload">
@@ -157,38 +157,32 @@
 </style>
 <script>
     export default {
-        props: [
-            'AccountAuthenticationFormApi',
-            'AccountAuthenticationUpdateApi',
-            'AccountAuthenticationAddApi',
-            'AccountAuthenticationUploadApi'
-        ],
         methods: {
             // 获取编辑页面的数据
             authenticationForm() {
-                axios.post(this.AccountAuthenticationFormApi).then(res => {
-                    if (res.data && res.data.type === 1) {
-                        this.form = res.data;
+                this.$api.AccountAuthenticationForm().then(res => {
+                    if (res.type && res.type === 1) {
+                        this.form = res;
                         this.isCompanyDisabled = true;
                         this.imageUrl1 = this.form.front_card_picture;
                         this.imageUrl2 = this.form.back_card_picture;
                         this.imageUrl3 = this.form.hold_card_picture;
 
-                        if (res.data.status === 1) {
+                        if (res.status === 1) {
                             this.isPersonalShowAdd = false;
                             this.isPersonalShowEdit = false;
                         } else {
                             this.isPersonalShowAdd = false;
                             this.isPersonalShowEdit = true;
                         }
-                    } else if (res.data && res.data.type === 2) {
-                        this.companyForm = res.data;
+                    } else if (res.data && res.type === 2) {
+                        this.companyForm = res;
                         this.isPersonalDisabled = true;
                         this.imageUrl4 = this.form.license_picture;
                         this.imageUrl5 = this.form.bank_open_account_picture;
                         this.imageUrl6 = this.form.agency_agreement_picture;
 
-                        if (res.data.status === 1) {
+                        if (res.status === 1) {
                             this.isCompanyShowAdd = false;
                             this.isCompanyShowEdit = false;
                         } else {
@@ -255,11 +249,11 @@
                         } else if (this.companyForm.name) {
                             data = this.companyForm;
                         }
-                        axios.post(this.AccountAuthenticationUpdateApi, data).then(res => {
+                        this.$api.AccountAuthenticationUpdate(data).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                         }).catch(err => {
                             this.$alert('获取数据失败, 请重试!', '提示', {
@@ -283,11 +277,11 @@
                         } else if (this.companyForm.name) {
                             data = this.companyForm;
                         }
-                        axios.post(this.AccountAuthenticationAddApi, data).then(res => {
+                        this.$api.AccountAuthenticationAdd(data).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                             this.authenticationForm();
                         }).catch(err => {
@@ -308,11 +302,11 @@
             submitUpdateForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.AccountAuthenticationUpdateApi, this.form).then(res => {
+                        this.$api.AccountAuthenticationUpdate(this.form).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                         }).catch(err => {
                             this.$alert('获取数据失败, 请重试!', '提示', {

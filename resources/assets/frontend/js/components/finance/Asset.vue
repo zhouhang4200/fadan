@@ -20,17 +20,14 @@
 
 <script>
     export default {
-        props: [
-            'MyAssetApi'
-        ],
         created () {
             this.handleTableData();
         },
         methods:{
             // 加载数据
             handleTableData(){
-                axios.post(this.MyAssetApi).then(res => {
-                    this.tableData = res.data;
+                this.$api.FinanceMyAssetDataList().then(res => {
+                    this.tableData = res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',

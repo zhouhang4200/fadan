@@ -58,10 +58,6 @@
     import FileSaver from 'file-saver';
     import XLSX from 'xlsx';
     export default {
-        props: [
-            'StatisticMessageShowDataListApi',
-            'DateApi'
-        ],
         // 初始化数据
         created () {
             this.handleTableData();
@@ -84,10 +80,9 @@
             },
             // 表格加载数据
             handleTableData(){
-                axios.post(this.StatisticMessageShowDataListApi, this.searchParams).then(res => {
-
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+                this.$api.StatisticMessageShowDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -110,7 +105,7 @@
                 tableData: [],
                 UserArr:[],
                 searchParams:{
-                    date:this.DateApi,
+                    date:'',
                     order_no:'',
                     client_phone:'',
                     page:1

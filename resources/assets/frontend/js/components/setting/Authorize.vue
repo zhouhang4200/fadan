@@ -58,19 +58,14 @@
 
 <script>
     export default {
-        props: [
-            'SettingAuthorizeDataListApi',
-            'SettingAuthorizeUrlApi',
-            'SettingAuthorizeDeleteApi'
-        ],
         methods: {
             // 删除
             authorizeDelete(id) {
-                axios.post(this.SettingAuthorizeDeleteApi, {id:id}).then(res => {
+                this.$api.SettingAuthorizeDelete({id:id}).then(res => {
                     this.$message({
                         showClose: true,
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: res.data.message
+                        type: res.status == 1 ? 'success' : 'error',
+                        message: res.message
                     });
                     this.handleTableData();
                 }).catch(err => {
@@ -83,8 +78,8 @@
             },
             // 授权
             authorize(){
-                axios.post(this.SettingAuthorizeUrlApi).then(res => {
-                    this.url=res.data;
+                this.$api.SettingAuthorizeUrl().then(res => {
+                    this.url=res;
                     window.location.href=this.url;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
@@ -96,11 +91,11 @@
             },
             // 加载数据
             handleTableData(){
-                axios.post(this.SettingAuthorizeDataListApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data.data;
-                    this.TotalPage = res.data.data.total;
+                this.$api.SettingAuthorizeDataList(this.searchParams).then(res => {
+                    this.tableData = res.data.data;
+                    this.TotalPage = res.data.total;
 
-                    if (res.data.bind === 1) {
+                    if (res.bind === 1) {
                         this.loading=true;
                     }
                 }).catch(err => {

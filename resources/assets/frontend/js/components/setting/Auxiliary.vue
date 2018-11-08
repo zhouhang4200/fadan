@@ -35,12 +35,12 @@
                     <el-table-column
                             prop="markup_time"
                             label="加价开始时间"
-                            width="200">
+                            width="">
                     </el-table-column>
                     <el-table-column
                             prop="markup_type"
                             label="加价类型"
-                            width="200">
+                            width="">
                         <template slot-scope="scope">
                             {{ type[scope.row.markup_type] }}
                         </template>
@@ -48,21 +48,21 @@
                     <el-table-column
                             prop="markup_money"
                             label="增加金额"
-                            width="200">
+                            width="">
                     </el-table-column>
                     <el-table-column
                             prop="markup_frequency"
                             label="加价频率"
-                            width="200">
+                            width="">
                     </el-table-column>
                     <el-table-column
                             prop="markup_number"
                             label="加价次数限制"
-                            width="200">
+                            width="">
                     </el-table-column>
                     <el-table-column
                             label="操作"
-                            width="">
+                            width="200">
                         <template slot-scope="scope">
                             <el-button
                                     type="primary"
@@ -207,16 +207,6 @@
 
 <script>
     export default {
-        props: [
-            'SettingMarkupDataListApi',
-            'SettingMarkupAddApi',
-            'SettingMarkupUpdateApi',
-            'SettingMarkupDeleteApi',
-            'SettingMarkupTimeApi',
-            'SettingMarkupTimeApi',
-            'SettingChannelDataListApi',
-            'SettingChannelSwitchApi'
-        ],
         methods: {
             // 新增按钮
             markupAdd() {
@@ -253,11 +243,11 @@
             submitFormAdd(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.SettingMarkupAddApi, this.form).then(res => {
+                        this.$api.SettingMarkupAdd(this.form).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                             this.handleTableData();
                         }).catch(err => {
@@ -277,11 +267,11 @@
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.SettingMarkupUpdateApi, this.form).then(res => {
+                        this.$api.SettingMarkupUpdate(this.form).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                             this.handleTableData();
                         }).catch(err => {
@@ -298,11 +288,11 @@
             },
             // 删除
             markupDelete(id) {
-                axios.post(this.SettingMarkupDeleteApi, {id: id}).then(res => {
+                this.$api.SettingMarkupDelete({id: id}).then(res => {
                     this.$message({
                         showClose: true,
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: res.data.message
+                        type: res.status == 1 ? 'success' : 'error',
+                        message: res.message
                     });
                     this.handleTableData();
                 }).catch(err => {
@@ -313,11 +303,11 @@
                     });
                 });
             },
-            // 加载数据
+            // 加载加价数据
             handleTableData() {
-                axios.post(this.SettingMarkupDataListApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+                this.$api.SettingMarkupDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -326,10 +316,10 @@
                     });
                 });
             },
-            // 数据
+            // 渠道数据
             handleTableDataChannel(){
-                axios.post(this.SettingChannelDataListApi).then(res => {
-                    this.tableDataChannel = res.data;
+                this.$api.SettingChannelDataList().then(res => {
+                    this.tableDataChannel = res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -347,11 +337,11 @@
             },
             // 开关选择
             switchChange(gameId, gameName, platformIds){
-                axios.post(this.SettingChannelSwitchApi, {game_id:gameId, game_name:gameName, thirds:platformIds}).then(res => {
+                this.$api.SettingChannelSwitch({game_id:gameId, game_name:gameName, thirds:platformIds}).then(res => {
                     this.$message({
                         showClose: true,
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: res.data.message
+                        type: res.status == 1 ? 'success' : 'error',
+                        message: res.message
                     });
                     this.handleTableData();
                 }).catch(err => {

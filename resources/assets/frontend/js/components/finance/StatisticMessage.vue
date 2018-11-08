@@ -64,10 +64,6 @@
     import FileSaver from 'file-saver';
     import XLSX from 'xlsx';
     export default {
-        props: [
-            'StatisticMessageDataListApi',
-            'StatisticMessageShowApi'
-        ],
         // 初始化数据
         created () {
             this.$store.commit('handleOpenMenu', '2');
@@ -77,7 +73,7 @@
         methods:{
             // 详情页
             show(date) {
-                window.location.href=this.StatisticMessageShowApi+'?date='+date
+                window.location.href='/v2/statistic/message-show?date='+date
             },
             // 导出
             exportExcel() {
@@ -96,10 +92,9 @@
             },
             // 表格加载数据
             handleTableData(){
-                axios.post(this.StatisticMessageDataListApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
-
+                this.$api.StatisticMessageDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',

@@ -75,7 +75,7 @@ const router = new VueRouter({
                 },
                 {
                     name: "资金日报",
-                    path: "report-daily",
+                    path: "daily-asset",
                     menu:true,
                     component: resolve => void(require([ '../components/finance/DailyAsset'], resolve)),
                 },
@@ -87,25 +87,25 @@ const router = new VueRouter({
                 },
                 {
                     name: "员工统计",
-                    path: "statistic/employee",
+                    path: "statistic-employee",
                     menu:true,
                     component: resolve => void(require([ '../components/finance/StatisticEmployee'], resolve)),
                 },
                 {
                     name: "订单统计",
-                    path: "statistic/order",
+                    path: "statistic-order",
                     menu:true,
                     component: resolve => void(require([ '../components/finance/StatisticOrder'], resolve)),
                 },
                 {
                     name: "短信统计",
-                    path: "statistic/message",
+                    path: "statistic-message",
                     menu:true,
                     component: resolve => void(require([ '../components/finance/StatisticMessage'], resolve)),
                 },
                 {
                     name: "短信统计详情",
-                    path: "statistic/message/show",
+                    path: "statistic-message-show",
                     component: resolve => void(require([ '../components/finance/StatisticMessageShow'], resolve)),
                 },
                 {
@@ -125,7 +125,7 @@ const router = new VueRouter({
             children: [
                 {
                     name: "我的账号",
-                    path: "/",
+                    path: "mine",
                     menu:true,
                     component: resolve => void(require([ '../components/account/Mine'], resolve)),
                 },
@@ -152,6 +152,12 @@ const router = new VueRouter({
                     path: "station",
                     menu:true,
                     component: resolve => void(require([ '../components/account/Station'], resolve)),
+                },
+                {
+                    name: "打手黑名单",
+                    path: "black-list",
+                    menu:true,
+                    component: resolve => void(require([ '../components/account/BlackList'], resolve)),
                 },
             ]
         },
@@ -181,7 +187,7 @@ const router = new VueRouter({
                     component: resolve => void(require([ '../components/setting/Authorize'], resolve)),
                 },
                 {
-                    name: "自动加价",
+                    name: "代练发单辅助",
                     path: "auxiliary",
                     menu:true,
                     component: resolve => void(require([ '../components/setting/Auxiliary'], resolve)),

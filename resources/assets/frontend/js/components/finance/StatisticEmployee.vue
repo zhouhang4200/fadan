@@ -76,10 +76,6 @@
     import FileSaver from 'file-saver';
     import XLSX from 'xlsx';
     export default {
-        props: [
-            'StatisticEmployeeDataListApi',
-            'StatisticEmployeeUserApi'
-        ],
         // 初始化数据
         created () {
             this.$store.commit('handleOpenMenu', '2');
@@ -105,10 +101,9 @@
             },
             // 表格加载数据
             handleTableData(){
-                axios.post(this.StatisticEmployeeDataListApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
-
+                this.$api.StatisticEmployeeDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -126,8 +121,8 @@
             },
             // 所有的员工
             StatisticEmployeeUser() {
-                axios.post(this.StatisticEmployeeUserApi).then(res => {
-                    this.UserArr = res.data;
+                this.$api.StatisticEmployeeUser().then(res => {
+                    this.UserArr = res;
 
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {

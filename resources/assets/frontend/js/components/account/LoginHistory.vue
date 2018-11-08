@@ -70,16 +70,12 @@
 
 <script>
     export default {
-        props: [
-            'AccountLoginHistoryDataListApi',
-            'AccountUserArrApi'
-        ],
         methods: {
             // 加载数据
             handleTableData(){
-                axios.post(this.AccountLoginHistoryDataListApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+                this.$api.AccountLoginHistoryDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',

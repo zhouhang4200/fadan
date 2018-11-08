@@ -91,11 +91,6 @@
 
 <script>
     export default {
-        props: [
-            'MyWithdrawApi',
-            'CanWithdrawApi',
-            'CreateWithdrawApi'
-        ],
         // 初始化数据
         created () {
             this.handleTableData();
@@ -104,9 +99,9 @@
         methods:{
             // 表格加载数据
             handleTableData(){
-                axios.post(this.MyWithdrawApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+                this.$api.FinanceWithdrawDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -124,8 +119,8 @@
             },
             // 我的提现里面input框输入的说明文字
             CanWithdraw() {
-                axios.post(this.CanWithdrawApi).then(res => {
-                    this.placeString = '可以提现金额: '+res.data;
+                this.$api.FinanceWithdrawCan().then(res => {
+                    this.placeString = '可以提现金额: '+res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -138,8 +133,8 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.CreateWithdrawApi, this.ruleForm).then(res => {
-                            if (res.data.status > 0) {
+                        this.$api.FinanceWithdrawAdd(this.ruleForm).then(res => {
+                            if (res.status > 0) {
                                 this.$message({
                                     showClose: true,
                                     message: '发送成功!',
@@ -148,7 +143,7 @@
                             } else {
                                 this.$message({
                                     showClose: true,
-                                    message: '发送失败:'+res.data.message,
+                                    message: '发送失败:'+res.message,
                                     type: 'error'
                                 });
                             }

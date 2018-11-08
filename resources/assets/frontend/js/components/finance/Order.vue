@@ -178,16 +178,12 @@
 
 <script>
     export default {
-        props: [
-            'FinanceOrderDataListApi',
-            'FinanceGameApi'
-        ],
         methods: {
             // 加载数据
             handleTableData(){
-                axios.post(this.FinanceOrderDataListApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+               this.$api.FinanceOrderDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -197,8 +193,8 @@
                 });
             },
             handleGame(){
-                axios.post(this.FinanceGameApi, this.searchParams).then(res => {
-                    this.GameArr = res.data;
+               this.$api.FinanceGame(this.searchParams).then(res => {
+                    this.GameArr = res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',

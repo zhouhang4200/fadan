@@ -102,13 +102,6 @@
 
 <script>
     export default {
-        props: [
-            'AccountBlackListNameApi',
-            'AccountBlackListDataListApi',
-            'AccountBlackListUpdateApi',
-            'AccountBlackListDeleteApi',
-            'AccountBlackListAddApi'
-        ],
         methods: {
             //新增按钮
             blackListAdd(){
@@ -140,11 +133,11 @@
             submitFormAdd(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.AccountBlackListAddApi, this.form).then(res => {
+                        this.$api.AccountBlackListAdd(this.form).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                         }).catch(err => {
                             this.$alert('获取数据失败, 请重试!', '提示', {
@@ -164,11 +157,11 @@
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        axios.post(this.AccountBlackListUpdateApi, this.form).then(res => {
+                        this.$api.AccountBlackListUpdate(this.form).then(res => {
                             this.$message({
                                 showClose: true,
-                                type: res.data.status == 1 ? 'success' : 'error',
-                                message: res.data.message
+                                type: res.status == 1 ? 'success' : 'error',
+                                message: res.message
                             });
                         }).catch(err => {
                             this.$alert('获取数据失败, 请重试!', '提示', {
@@ -185,9 +178,9 @@
             },
             // 加载数据
             handleTableData(){
-                axios.post(this.AccountBlackListDataListApi, this.searchParams).then(res => {
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+                this.$api.AccountBlackListDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -197,8 +190,8 @@
                 });
             },
             handleName(){
-                axios.post(this.AccountBlackListNameApi, this.searchParams).then(res => {
-                    this.AccountBlackListName = res.data;
+                this.$api.AccountBlackListName(this.searchParams).then(res => {
+                    this.AccountBlackListName = res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -216,11 +209,11 @@
             },
             // 删除
             blackListDelete (id) {
-                axios.post(this.AccountBlackListDeleteApi, {id:id}).then(res => {
+                this.$api.AccountBlackListDelete({id:id}).then(res => {
                     this.$message({
                         showClose: true,
-                        type: res.data.status == 1 ? 'success' : 'error',
-                        message: res.data.message
+                        type: res.status == 1 ? 'success' : 'error',
+                        message: res.message
                     });
                     this.handleTableData();
                 }).catch(err => {

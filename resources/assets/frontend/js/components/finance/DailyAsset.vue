@@ -80,9 +80,6 @@
 
 <script>
     export default {
-        props: [
-            'DailyAssetApi'
-        ],
         created () {
             this.$store.commit('handleOpenMenu', '2');
             this.$store.commit('handleOpenSubmenu', '2-2');
@@ -91,10 +88,9 @@
         methods:{
             // 加载数据
             handleTableData(){
-                axios.post(this.DailyAssetApi, this.searchParams).then(res => {
-
-                    this.tableData = res.data.data;
-                    this.TotalPage = res.data.total;
+                this.$api.FinanceDailyAssetDataList(this.searchParams).then(res => {
+                    this.tableData = res.data;
+                    this.TotalPage = res.total;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
