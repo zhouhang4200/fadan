@@ -31,7 +31,7 @@
         <el-table
                 :data="tableData"
                 border
-                style="width: 100%">
+                style="width: 100%; margin-top: 1px">
             <el-table-column
                     prop="hatchet_man_name"
                     label="打手昵称"

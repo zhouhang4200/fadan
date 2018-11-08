@@ -581,6 +581,9 @@ class AccountController extends Controller
     public function stationAdd()
     {
         try {
+            if (!request('permission')) {
+                return response()->ajax(1, '修改失败：请勾选权限！');
+            }
             $data['name'] = request('name');
             $data['alias'] = request('name');
             $data['user_id'] = Auth::user()->getPrimaryUserId();

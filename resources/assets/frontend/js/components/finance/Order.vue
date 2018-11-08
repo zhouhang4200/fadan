@@ -56,7 +56,7 @@
         <el-table
                 :data="tableData"
                 border
-                style="width: 100%">
+                style="width: 100%; margin-top: 1px">
             <el-table-column
                     prop="trade_no"
                     label="内部单号"

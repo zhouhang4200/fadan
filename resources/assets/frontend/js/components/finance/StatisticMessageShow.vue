@@ -22,7 +22,7 @@
                 id="order"
                 :data="tableData"
                 border
-                style="width: 100%">
+                style="width: 100%; margin-top: 1px">
             <el-table-column
                     prop="foreign_order_no"
                     label="订单号"

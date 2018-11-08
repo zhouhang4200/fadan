@@ -33,7 +33,7 @@
         <el-table
                 :data="tableData"
                 border
-                style="width: 100%">
+                style="width: 100%; margin-top: 1px">
             <el-table-column
                     prop="id"
                     label="编号"
@@ -380,7 +380,7 @@
                 TotalPage:0,
                 tableData: [],
                 rules:{
-                    password: [{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: validatePass, trigger: 'blur' }],
+                    password: [{ validator: validatePass, trigger: 'blur' }],
                     phone: [{ required: true, message:'必填项不可为空!', trigger: 'blur' }, { validator: checkPhone, trigger: 'blur' }],
                     username:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
                     name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],

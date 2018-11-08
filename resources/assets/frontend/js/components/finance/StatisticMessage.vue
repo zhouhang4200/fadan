@@ -27,7 +27,7 @@
                 id="order"
                 :data="tableData"
                 border
-                style="width: 100%">
+                style="width: 100%; margin-top: 1px">
             <el-table-column
                     prop="date"
                     label="发布时间"
@@ -43,10 +43,6 @@
                     label="操作"
                     width="150">
                 <template slot-scope="scope">
-                        <!--<el-button v-if="scope.row.id > 0"-->
-                                <!--type="primary"-->
-                                <!--size="small"-->
-                                <!--@click="show(scope.row.date)">详情</el-button>-->
                     <router-link :to="{name:'financeStatisticMessageShow', params: {date:scope.row.date}}">
                         <el-button type="primary" size="small" >详情</el-button>
                     </router-link>

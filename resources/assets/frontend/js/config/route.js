@@ -143,8 +143,8 @@ const router = new VueRouter({
             children: [
                 {
                     title: "我的账号",
-                    name: "account",
-                    path: "/",
+                    name: "mine",
+                    path: "mine",
                     menu:true,
                     component: resolve => void(require([ '../components/account/Mine'], resolve)),
                 },

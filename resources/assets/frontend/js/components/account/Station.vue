@@ -15,7 +15,7 @@
         <el-table
                 :data="tableData"
                 border
-                style="width: 100%">
+                style="width: 100%; margin-top: 1px">
             <el-table-column
                     prop="id"
                     label="序号"
@@ -93,7 +93,7 @@
                 <el-form-item label="岗位名称" prop="name">
                     <el-input v-model="editForm.name" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="拥有权限" prop="permission">
+                <el-form-item label="拥有权限" prop="checkedPermission">
                     <template v-for="item in stations">
                         <el-checkbox :indeterminate="isIndeterminate" v-model="item.id">{{item.alias}}</el-checkbox>
                         <!--<div style="margin: 15px 0;"></div>-->
@@ -266,11 +266,10 @@
                 tableData: [],
                 rules:{
                     name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
-                    permission:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }]
                 },
                 editFormRules:{
                     name:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }],
-                    permission:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }]
+                    checkedPermission:[{ required: true, message:'必填项不可为空!', trigger: 'blur' }]
                 },
                 form: {
                     name: '',
