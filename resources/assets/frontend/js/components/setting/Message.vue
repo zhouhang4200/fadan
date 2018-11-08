@@ -83,6 +83,7 @@
                 this.dialogFormVisible = true;
                 this.form=JSON.parse(JSON.stringify(row));
             },
+            // 修改
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -92,6 +93,7 @@
                                 type: res.status == 1 ? 'success' : 'error',
                                 message: res.message
                             });
+                            this.handleTableData();
                         }).catch(err => {
                             this.$alert('获取数据失败, 请重试!', '提示', {
                                 confirmButtonText: '确定',
@@ -118,11 +120,9 @@
                 });
             },
             handleSearch() {
-
                 this.handleTableData();
             },
             handleCurrentChange(page) {
-
                 this.searchParams.page = page;
                 this.handleTableData();
             },

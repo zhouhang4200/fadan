@@ -80,6 +80,7 @@
             },
             // 表格加载数据
             handleTableData(){
+                this.searchParams.date=this.$route.params.date;
                 this.$api.StatisticMessageShowDataList(this.searchParams).then(res => {
                     this.tableData = res.data;
                     this.TotalPage = res.total;

@@ -238,8 +238,9 @@
                 this.$refs[formName].clearValidate();
             },
             handleClick(tab, event) {
+                this.handleTableDataChannel();
             },
-            // 添加
+            // 加价添加
             submitFormAdd(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -263,7 +264,7 @@
                     this.$refs[formName].clearValidate();
                 });
             },
-            // 修改
+            // 加价修改
             submitFormUpdate(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -286,7 +287,7 @@
                     }
                 });
             },
-            // 删除
+            // 加价删除
             markupDelete(id) {
                 this.$api.SettingMarkupDelete({id: id}).then(res => {
                     this.$message({
@@ -335,7 +336,7 @@
                 this.searchParams.page = page;
                 this.handleTableData();
             },
-            // 开关选择
+            // 渠道开关选择
             switchChange(gameId, gameName, platformIds){
                 this.$api.SettingChannelSwitch({game_id:gameId, game_name:gameName, thirds:platformIds}).then(res => {
                     this.$message({
@@ -357,7 +358,6 @@
             this.$store.commit('handleOpenMenu', '4');
             this.$store.commit('handleOpenSubmenu', '4-4');
             this.handleTableData();
-            this.handleTableDataChannel();
         },
         data() {
             let greaterZero = (rule, value, callback) => {

@@ -43,10 +43,13 @@
                     label="操作"
                     width="150">
                 <template slot-scope="scope">
-                        <el-button v-if="scope.row.id > 0"
-                                type="primary"
-                                size="small"
-                                @click="show(scope.row.date)">详情</el-button>
+                        <!--<el-button v-if="scope.row.id > 0"-->
+                                <!--type="primary"-->
+                                <!--size="small"-->
+                                <!--@click="show(scope.row.date)">详情</el-button>-->
+                    <router-link :to="{name:'financeStatisticMessageShow', params: {date:scope.row.date}}">
+                        <el-button type="primary" size="small" >详情</el-button>
+                    </router-link>
                 </template>
             </el-table-column>
         </el-table>
