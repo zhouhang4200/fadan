@@ -335,7 +335,7 @@ export default {
     SettingGoodsDelivery (params) {
         return post('/v2/setting/goods-delivery', params)
     },
-    SettingGoodsSellerNick () {
+    SettingGoodsSellerNick (params) {
         return post('/v2/setting/goods-seller-nick', params)
     },
     // 设置-短信管理
