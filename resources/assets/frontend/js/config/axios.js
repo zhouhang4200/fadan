@@ -4,7 +4,7 @@ import axios from 'axios'
 import {Message, MessageBox} from 'element-ui'
 
 // 响应时间
-axios.defaults.timeout = 5 * 1000;
+axios.defaults.timeout = 5 * 10000;
 
 // 配置cookie
 // axios.defaults.withCredentials = true
