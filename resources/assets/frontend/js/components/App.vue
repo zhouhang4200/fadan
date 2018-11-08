@@ -21,12 +21,13 @@
                     active-text-color="#ffd04b"
                     :collapse="collapse">
 
-                <el-submenu v-for="item in menus" :index="item.path">
+                <el-submenu v-for="item in menus" :index="item.path" :key="item.id">
                     <template slot="title">
                         <i :class="item.icon"></i>
                         <span slot="title">{{ item.title }}</span>
                     </template>
                     <el-menu-item v-for="submenu in item.children"
+                                  :key="submenu.id"
                                   :index="item.path + submenu.path"
                                   v-if="submenu.menu === true">
                         {{ submenu.title }}

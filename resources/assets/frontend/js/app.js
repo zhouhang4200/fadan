@@ -9,7 +9,6 @@ import '../sass/app.scss';
 import api from './config/api'
 import router from './config/route';
 
-
 Vue.use(ElementUI, {size:"small"});
 Vue.use(Vuex);
 Vue.use(VueRouter);
