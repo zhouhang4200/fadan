@@ -20,4 +20,17 @@ class GameLevelingChannelPrice extends Model
         'security_deposit',
         'efficiency_deposit',
     ];
+
+    /**
+     * @param $query
+     * @param $conditions
+     * @return
+     */
+    public static function scopeFilter($query, $conditions)
+    {
+        if (isset($conditions['game_leveling_channel_game_id']) && $conditions['game_leveling_channel_game_id']) {
+            $query->where('game_leveling_channel_game_id', $conditions['game_leveling_channel_game_id']);
+        }
+        return $query;
+    }
 }

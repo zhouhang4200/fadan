@@ -560,4 +560,36 @@ Route::middleware(['auth.admin'])->namespace('Backend')->group(function () {
             Route::post('match', 'UserRoleController@match')->name('home.user.match');
         });
     });
+
+    # 游戏代练
+    Route::namespace('GameLeveling')->prefix('game-leveling')->group(function (){
+
+        # 游戏代练类型
+        Route::get('type', 'GameLevelingTypeController@index')->name('game-leveling-type');
+
+        # 渠道
+        Route::namespace('Channel')->prefix('channel')->group(function (){
+            # 游戏
+            Route::get('game', 'GameController@index')->name('game-leveling.channel.game.index');
+            Route::get('game/create', 'GameController@create')->name('game-leveling.channel.game.create');
+            Route::post('game/store', 'GameController@store')->name('game-leveling.channel.game.store');
+            Route::get('game/edit/{id}', 'GameController@edit')->name('game-leveling.channel.game.edit');
+            Route::post('game/update', 'GameController@update')->name('game-leveling.channel.game.update');
+            Route::post('game/delete', 'GameController@delete')->name('game-leveling.channel.game.delete');
+            # 价格
+            Route::get('price', 'PriceController@index')->name('game-leveling.channel.price.index');
+            Route::get('price/create', 'PriceController@create')->name('game-leveling.channel.price.create');
+            Route::post('price/store', 'PriceController@store')->name('game-leveling.channel.price.store');
+            Route::get('price/edit/{id}', 'PriceController@edit')->name('game-leveling.channel.price.edit');
+            Route::post('price/update', 'PriceController@update')->name('game-leveling.channel.price.update');
+            Route::post('price/delete', 'PriceController@delete')->name('game-leveling.channel.price.delete');
+            # 折扣
+            Route::get('discount', 'DiscountController@index')->name('game-leveling.channel.discount.index');
+            Route::get('discount/create', 'DiscountController@create')->name('game-leveling.channel.discount.create');
+            Route::post('discount/store', 'DiscountController@store')->name('game-leveling.channel.discount.store');
+            Route::get('discount/edit/{id}', 'DiscountController@edit')->name('game-leveling.channel.discount.edit');
+            Route::post('discount/update', 'DiscountController@update')->name('game-leveling.channel.discount.update');
+            Route::post('discount/delete', 'DiscountController@delete')->name('game-leveling.channel.discount.delete');
+        });
+    });
 });

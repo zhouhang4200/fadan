@@ -521,9 +521,19 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 'config.leveling.rebate.index',
                                 'config.leveling.rebate.create',
                                 'config.leveling.rebate.edit',
+                                'game-leveling.channel.game.index',
+                                'game-leveling.channel.game.edit',
+                                'game-leveling.channel.game.create',
+                                'game-leveling.channel.price.index',
+                                'game-leveling.channel.price.edit',
+                                'game-leveling.channel.price.create',
+                                'game-leveling.channel.discount.index',
+                                'game-leveling.channel.discount.edit',
+                                'game-leveling.channel.discount.create',
+
                             ]; ?>
                             <li>
-                                <a href="{{ route('config.leveling.index') }}" @if(in_array($currentRouteName, $levelingConfigRoutes)) class="active" @endif>
+                                <a href="{{ route('game-leveling.channel.game.index') }}" @if(in_array($currentRouteName, $levelingConfigRoutes)) class="active" @endif>
                                     标品下单
                                 </a>
                             </li>

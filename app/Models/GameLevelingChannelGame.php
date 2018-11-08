@@ -42,4 +42,16 @@ class GameLevelingChannelGame extends Model
         $this->hasMany(GameLevelingChannelPrice::class);
     }
 
+    /**
+     * @param $query
+     * @param $conditions
+     * @return
+     */
+    public static function scopeFilter($query, $conditions)
+    {
+        if (isset($conditions['game_id']) && $conditions['game_id']) {
+            $query->where('game_id', $conditions['game_id']);
+        }
+        return $query;
+    }
 }

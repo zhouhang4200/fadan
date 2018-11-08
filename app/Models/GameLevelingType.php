@@ -20,4 +20,17 @@ class GameLevelingType extends Model
     {
         return $this->belongsTo(Game::class);
     }
+
+    /**
+     * @param $query
+     * @param $conditions
+     * @return mixed
+     */
+    public function scopeFilter($query, $conditions)
+    {
+        if (isset($conditions['game_id']) && $conditions['game_id']) {
+            $query->where('game_id', $conditions['game_id']);
+        }
+        return $query;
+    }
 }
