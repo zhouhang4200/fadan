@@ -14,6 +14,7 @@
         </el-form>
         <el-table
                 :data="tableData"
+                :height="tableHeight"
                 border
                 style="width: 100%; margin-top: 1px">
             <el-table-column
@@ -241,13 +242,23 @@
                 let checkedCount = value.length;
                 this.isIndeterminate = true;
             },
+            // 表格高度计算
+            handleTableHeight() {
+                this.tableHeight = window.innerHeight - 318;
+            },
         },
         created () {
             this.handleTableData();
             this.allPermissions();
+            this.handleTableHeight();
+            window.addEventListener('resize', this.handleTableHeight);
+        },
+        destroyed() {
+            window.removeEventListener('resize', this.handleTableHeight);
         },
         data() {
             return {
+                tableHeight: 0,
                 stations:[],
                 isIndeterminate: true,
                 expendAll:true,

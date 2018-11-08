@@ -65,6 +65,7 @@
 
         <el-table
                 :data="tableData"
+                :height="tableHeight"
                 border
                 style="width: 100%; margin-top: 1px">
             <el-table-column
@@ -155,10 +156,19 @@
             handleResetForm() {
                 this.$refs.form.resetFields;
                 this.handleTableData();
-            }
+            },
+            // 表格高度计算
+            handleTableHeight() {
+                this.tableHeight = window.innerHeight - 318;
+            },
         },
         created () {
             this.handleTableData();
+            this.handleTableHeight();
+            window.addEventListener('resize', this.handleTableHeight);
+        },
+        destroyed() {
+            window.removeEventListener('resize', this.handleTableHeight)
         },
         watch: {
             t: function (val) {
@@ -168,6 +178,7 @@
         },
         data() {
             return {
+                tableHeight: 0,
                 TradeSubTypeArr:{
                     11:'自动加款',
                     12:'手动加款',

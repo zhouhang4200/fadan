@@ -48,6 +48,7 @@
         </el-form>
         <el-table
                 :data="tableData"
+                :height="tableHeight"
                 border
                 style="width: 100%; margin-top: 1px">
             <el-table-column
@@ -97,6 +98,11 @@
         created () {
             this.handleTableData();
             this.CanWithdraw();
+            this.handleTableHeight();
+            window.addEventListener('resize', this.handleTableHeight);
+        },
+        destroyed() {
+            window.removeEventListener('resize', this.handleTableHeight)
         },
         methods:{
             // 表格加载数据
@@ -164,6 +170,10 @@
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
+            },
+            // 表格高度计算
+            handleTableHeight() {
+                this.tableHeight = window.innerHeight - 318;
             }
         },
         data() {
@@ -178,6 +188,7 @@
                 }, 1000);
             };
             return {
+                tableHeight: 0,
                 // 表单提交规则和数据
                 ruleForm: {
                     fee: '',

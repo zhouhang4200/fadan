@@ -28,6 +28,7 @@
         <el-table
                 id="order"
                 :data="tableData"
+                :height="tableHeight"
                 border
                 style="width: 100%; margin-top: 1px">
             <el-table-column
@@ -70,8 +71,17 @@
         // 初始化数据
         created () {
             this.handleTableData();
+            this.handleTableHeight();
+            window.addEventListener('resize', this.handleTableHeight);
+        },
+        destroyed() {
+            window.removeEventListener('resize', this.handleTableHeight);
         },
         methods:{
+            // 表格高度计算
+            handleTableHeight() {
+                this.tableHeight = window.innerHeight - 318;
+            },
             // 详情页
             show(date) {
                 window.location.href='/v2/statistic/message-show?date='+date
@@ -114,6 +124,7 @@
         },
         data() {
             return {
+                tableHeight: 0,
                 // 表单查找和表单数据
                 tableData: [],
                 UserArr:[],
