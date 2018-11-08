@@ -15,9 +15,7 @@ class CreateGameLevelingChannelDiscountsTable extends Migration
     {
         Schema::create('game_leveling_channel_discounts', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('game_id')->unsigned()->comment('游戏ID');
-            $table->string('game_name')->comment('游戏名称');
-            $table->string('game_leveling_type_id')->comment('游戏类型');
+            $table->integer('game_leveling_channel_game_id')->unsigned()->comment('关联渠道开通的游戏');
             $table->integer('level')->unsigned()->comment('层级数');
             $table->integer('discount')->unsigned()->comment('折扣');
             $table->timestamps();

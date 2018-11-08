@@ -15,10 +15,7 @@ class CreateGameLevelingChannelPricesTable extends Migration
     {
         Schema::create('game_leveling_channel_prices', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->comment('用户ID');
-            $table->integer('game_id')->unsigned()->comment('游戏ID');
-            $table->string('game_name')->comment('游戏名称');
-            $table->string('game_leveling_type_id')->comment('游戏类型');
+            $table->integer('game_leveling_channel_game_id')->unsigned()->comment('关联渠道开通的游戏');
             $table->integer('sort')->unsigned()->comment('排序');
             $table->string('level')->comment('层级');
             $table->decimal('price', 10, 4)->unsigned()->comment('层级价格');

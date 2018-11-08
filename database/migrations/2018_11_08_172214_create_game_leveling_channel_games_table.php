@@ -15,6 +15,7 @@ class CreateGameLevelingChannelGamesTable extends Migration
     {
         Schema::create('game_leveling_channel_games', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id')->unsigned()->comment('用户Id users 表');
             $table->integer('game_id')->unsigned()->comment('游戏ID');
             $table->string('game_name')->comment('游戏名称');
             $table->string('game_leveling_type_id')->comment('游戏类型');
