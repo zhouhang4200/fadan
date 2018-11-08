@@ -15,7 +15,6 @@
                 <el-col :span="4">
                     <el-form-item label="类型" prop="name">
                         <el-select v-model="searchParams.game_id"
-                                   @change="handleSearchParamsGameId"
                                    placeholder="请选择">
                             <el-option key="0"
                                        label="所有类型"
@@ -47,8 +46,7 @@
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期"
                                 format="yyyy-MM-dd"
-                                value-format="yyyy-MM-dd"
-                                :picker-options="pickerOptions">
+                                value-format="yyyy-MM-dd">
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
@@ -64,7 +62,6 @@
 
             </el-row>
         </el-form>
-
 
         <el-table
                 :data="tableData"
@@ -226,7 +223,6 @@
                     7:'支出',
                     8:'收入'
                 },
-
                 searchParams:{
                     trade_type:'',
                     trade_no:'',
@@ -237,9 +233,6 @@
                 TotalPage:0,
                 tableData: []
             }
-        },
-        mounted() {
-            this.$cookieStore.setCookie('menu', '2');
-        },
+        }
     }
 </script>
