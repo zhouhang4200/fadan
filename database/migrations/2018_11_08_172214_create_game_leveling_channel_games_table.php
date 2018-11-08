@@ -18,7 +18,8 @@ class CreateGameLevelingChannelGamesTable extends Migration
             $table->integer('user_id')->unsigned()->comment('用户Id users 表');
             $table->integer('game_id')->unsigned()->comment('游戏ID');
             $table->string('game_name')->comment('游戏名称');
-            $table->string('game_leveling_type_id')->comment('游戏类型');
+            $table->integer('game_leveling_type_id')->comment('游戏类型Id');
+            $table->string('game_leveling_type_name')->comment('游戏类型');
             $table->integer('rebate')->unsigned()->comment('发单价格固定比例折扣');
             $table->string('instructions')->comment('代练说明');
             $table->string('requirements')->comment('代练要求');

@@ -19,6 +19,7 @@ class GameLevelingChannelGame extends Model
         'game_id',
         'game_name',
         'game_leveling_type_id',
+        'game_leveling_type_name',
         'rebate',
         'instructions',
         'requirements',

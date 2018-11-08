@@ -23,7 +23,7 @@ class GameLevelingChannelOrder extends Model
         'game_server_id',
         'game_server_name',
         'game_leveling_type_id',
-        'game_leveling_type',
+        'game_leveling_type_name',
         'game_role',
         'game_account',
         'game_password',

@@ -31,7 +31,7 @@ class CreateGameLevelingChannelOrdersTable extends Migration
             $table->integer('game_server_id')->comment('服id');
             $table->string('game_server_name')->comment('服');
             $table->integer('game_leveling_type_id')->comment('代练类型id');
-            $table->string('game_leveling_type')->comment('代练类型');
+            $table->string('game_leveling_type_name')->comment('代练类型');
             $table->string('game_role')->comment('游戏角色名称');
             $table->string('game_account')->comment('游戏账号');
             $table->string('game_password')->comment('游戏密码');
