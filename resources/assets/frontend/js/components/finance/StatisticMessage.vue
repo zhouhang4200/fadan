@@ -33,17 +33,17 @@
             <el-table-column
                     prop="date"
                     label="发布时间"
-                    width="150">
+                    width="200">
             </el-table-column>
             <el-table-column
                     prop="count"
                     label="发送条数"
-                    width="">
+                    width="200">
             </el-table-column>
             <el-table-column
                     prop="id"
                     label="操作"
-                    width="150">
+                    width="200">
                 <template slot-scope="scope">
                     <router-link :to="{name:'financeStatisticMessageShow', params: {date:scope.row.date}}">
                         <el-button type="primary" size="small" >详情</el-button>
@@ -52,10 +52,12 @@
             </el-table-column>
         </el-table>
         <el-pagination
+                style="margin-top: 25px"
+                background
                 @current-change="handleCurrentChange"
                 :current-page.sync="searchParams.page"
                 :page-size="15"
-                layout="prev, pager, next, jumper"
+                layout="total, prev, pager, next, jumper"
                 :total="TotalPage">
         </el-pagination>
     </div>

@@ -117,10 +117,11 @@
         </el-table>
         <el-pagination
                 style="margin-top: 25px"
+                background
                 @current-change="handleCurrentChange"
                 :current-page.sync="searchParams.page"
                 :page-size="15"
-                layout="prev, pager, next, jumper"
+                layout="total, prev, pager, next, jumper"
                 :total="TotalPage">
         </el-pagination>
 

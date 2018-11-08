@@ -69,12 +69,14 @@
                 width="200">
         </el-table-column>
     </el-table>
+
     <el-pagination
             style="margin-top: 25px"
+            background
             @current-change="handleCurrentChange"
             :current-page.sync="searchParams.page"
-            :page-size="20"
-            layout="prev, pager, next, jumper"
+            :page-size="15"
+            layout="total, prev, pager, next, jumper"
             :total="TotalPage">
     </el-pagination>
     </div>

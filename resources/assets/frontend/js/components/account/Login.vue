@@ -1,105 +1,29 @@
 <template>
     <div class="main content amount-flow">
-        <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
+        <el-form ref="form" :model="form">
             <el-row :gutter="16">
                 <el-col :span="4">
-                    <el-form-item label="昵称">
+                    <el-form-item label="账号">
                         <el-select v-model="searchParams.hatchet_man_name" placeholder="请选择">
                             <el-option v-for="(value, key) of AccountBlackListName" :value="value" :key="key" :label="value">{{ value }}</el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="电话">
+                    <el-form-item label="密码">
                         <el-input v-model="searchParams.hatchet_man_phone"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="4">
-                    <el-form-item label="QQ">
-                        <el-input v-model="searchParams.hatchet_man_qq"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="4">
                     <el-form-item>
-                        <el-button type="primary" @click="handleSearch">查询</el-button>
                         <el-button
                                 type="primary"
                                 size="small"
-                                @click="blackListAdd()">新增</el-button>
+                                @click="login()">登录</el-button>
                     </el-form-item>
                 </el-col>
             </el-row>
         </el-form>
-        <el-table
-                :data="tableData"
-                border
-                style="width: 100%; margin-top: 1px">
-            <el-table-column
-                    prop="hatchet_man_name"
-                    label="打手昵称"
-                    width="200">
-            </el-table-column>
-            <el-table-column
-                    prop="hatchet_man_phone"
-                    label="电话"
-                    width="200">
-            </el-table-column>
-            <el-table-column
-                    prop="hatchet_man_qq"
-                    label="QQ"
-                    width="200">
-            </el-table-column>
-            <el-table-column
-                    prop="content"
-                    label="备注"
-                    width="">
-            </el-table-column>
-            <el-table-column
-                    label="操作"
-                    width="250">
-                <template slot-scope="scope">
-                    <el-button
-                            type="primary"
-                            size="small"
-                            @click="blackListUpdate(scope.row)">编辑</el-button>
-                    <el-button
-                            type="primary"
-                            size="small"
-                            @click="blackListDelete(scope.row.id)">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-        <el-pagination
-                style="margin-top: 25px"
-                background
-                @current-change="handleCurrentChange"
-                :current-page.sync="searchParams.page"
-                :page-size="15"
-                layout="total, prev, pager, next, jumper"
-                :total="TotalPage">
-        </el-pagination>
-
-        <el-dialog :title="title" :visible.sync="dialogFormVisible">
-            <el-form :model="form" ref="form" :rules="rules" label-width="80px">
-                <el-form-item label="打手昵称" prop="hatchet_man_name">
-                    <el-input v-model="form.hatchet_man_name" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="打手电话" prop="hatchet_man_phone">
-                    <el-input v-model.number="form.hatchet_man_phone" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="打手QQ" prop="hatchet_man_qq">
-                    <el-input v-model.number="form.hatchet_man_qq" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="备注" prop="content">
-                    <el-input type="textarea" v-model="form.content" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button v-if="isAdd" type="primary" @click="submitFormAdd('form')">确认</el-button>
-                    <el-button v-if="isUpdate" type="primary" @click="submitFormUpdate('form')">确认修改</el-button>
-                    <el-button @click="blackListCancel('form')">取消</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
     </div>
 </template>
 
@@ -111,7 +35,7 @@
                 this.isAdd=true;
                 this.isUpdate=false;
                 this.title='打手黑名单新增',
-                this.dialogFormVisible = true;
+                    this.dialogFormVisible = true;
                 this.form={
                     hatchet_man_name: '',
                     hatchet_man_phone: '',
@@ -124,7 +48,7 @@
                 this.isAdd=false;
                 this.isUpdate=true;
                 this.title='打手黑名单修改',
-                this.dialogFormVisible = true;
+                    this.dialogFormVisible = true;
                 this.form=JSON.parse(JSON.stringify(row));
             },
             // 取消按钮
