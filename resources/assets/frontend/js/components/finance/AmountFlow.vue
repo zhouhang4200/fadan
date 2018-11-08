@@ -1,44 +1,70 @@
 <template>
     <div class="main content amount-flow">
-        <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
+
+        <el-form :inline=true
+                 ref="form"
+                 :model="searchParams"
+                 class="search-form-inline"
+                 size="small">
             <el-row :gutter="16">
-                <el-col :span="5">
-                    <el-form-item label="订单">
+                <el-col :span="6">
+                    <el-form-item label="订单单号" prop="name">
                         <el-input v-model="searchParams.trade_no"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
-                    <el-form-item label="类型">
-                        <el-select v-model="searchParams.trade_type" placeholder="请选择">
-                            <el-option v-for="(value, key) of TradeTypeArr" :value="key" :key="key"  :label="value"></el-option>
+                <el-col :span="6">
+                    <el-form-item label="类型" prop="name">
+                        <el-select v-model="searchParams.game_id"
+                                   @change="handleSearchParamsGameId"
+                                   placeholder="请选择">
+                            <el-option key="0"
+                                       label="所有类型"
+                                       value="0">
+                            </el-option>
+                            <el-option
+                                    v-for="(value, key) of TradeTypeArr"
+                                    :value="key"
+                                    :key="key"
+                                    :label="value">
+                            </el-option>
                         </el-select>
                     </el-form-item>
-                    </el-col>
-                <el-col :span="5">
+                </el-col>
+
+                <el-col :span="6">
                     <el-form-item label="天猫单号">
                         <el-input v-model="searchParams.channel_order_trade_no"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="7">
-                    <el-form-item label="日期">
+
+                <el-col :span="6">
+                    <el-form-item label="发布时间" prop="name">
                         <el-date-picker
-                                v-model="searchParams.date"
+                                v-model="searchParams.created_at"
                                 type="daterange"
                                 align="right"
                                 unlink-panels
-                                format="yyyy-MM-dd"
-                                value-format="yyyy-MM-dd"
                                 range-separator="至"
                                 start-placeholder="开始日期"
-                                end-placeholder="结束日期">
+                                end-placeholder="结束日期"
+                                format="yyyy-MM-dd"
+                                value-format="yyyy-MM-dd"
+                                :picker-options="pickerOptions">
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
-                <el-form-item>
+                <el-form-item style="padding:0 8px">
                     <el-button type="primary" @click="handleSearch">查询</el-button>
+                    <el-button type="primary" @click="handleResetForm">重置</el-button>
                 </el-form-item>
             </el-row>
+
+            <el-row :gutter="16">
+
+            </el-row>
         </el-form>
+
+
         <el-table
                 :data="tableData"
                 border
@@ -126,10 +152,13 @@
                 this.searchParams.page = page;
                 this.handleTableData();
             },
+            // 重置表单
+            handleResetForm() {
+                this.$refs.form.resetFields;
+                this.handleTableData();
+            }
         },
         created () {
-            this.$store.commit('handleOpenMenu', '2');
-            this.$store.commit('handleOpenSubmenu', '2-3');
             this.handleTableData();
         },
         watch: {

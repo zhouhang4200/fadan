@@ -4,12 +4,10 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
 import ElementUI from 'element-ui';
-import * as Cookie from './util/cookieUtil';
 import '../iconfont/iconfont.css';
 import '../sass/app.scss';
 import api from './config/api'
 import router from './config/route';
-
 
 Vue.use(ElementUI, {size:"small"});
 Vue.use(Vuex);
@@ -37,10 +35,8 @@ const store = new Vuex.Store({
         // },
     }
 });
-
+// 挂载 api
 Vue.prototype.$api = api;
-Vue.prototype.$cookieStore = Cookie;
-
 // 布局
 Vue.component('App', require('./components/App.vue'));
 

@@ -122,9 +122,6 @@
             // getVisible(val) {
             //     this.visible = val;
             // }
-        },
-        mounted () {
-
         }
     }
 </script>

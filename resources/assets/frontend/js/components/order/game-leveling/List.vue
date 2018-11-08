@@ -74,7 +74,7 @@
                                 range-separator="至"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期"
-                                format="yyyy 年 MM 月 dd 日"
+                                format="yyyy-MM-dd"
                                 value-format="yyyy-MM-dd"
                                 :picker-options="pickerOptions">
                         </el-date-picker>
@@ -429,17 +429,6 @@
     }
     .el-table_empty .el-table__empty-block {
         width: auto !important;
-    }
-    .search-form-inline .el-select,
-    .search-form-inline .el-date-editor--daterange.el-input__inner,
-    .search-form-inline .el-form-item {
-        width:100%;
-    }
-    .search-form-inline .el-range-separator {
-        width:10%;
-    }
-    .search-form-inline .el-form-item__content {
-        width:80%;
     }
 </style>
 

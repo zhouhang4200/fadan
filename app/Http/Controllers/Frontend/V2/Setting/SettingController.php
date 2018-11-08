@@ -85,15 +85,6 @@ class SettingController extends Controller
     }
 
     /**
-     * 抓取商品配置页面
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function goods()
-    {
-        return view('frontend.v2.setting.goods');
-    }
-
-    /**
      * 抓取商品配置页面数据
      * @param GameRepository $gameRepository
      * @return mixed

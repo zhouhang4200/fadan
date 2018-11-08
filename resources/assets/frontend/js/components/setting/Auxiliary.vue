@@ -355,8 +355,6 @@
             }
         },
         created () {
-            this.$store.commit('handleOpenMenu', '4');
-            this.$store.commit('handleOpenSubmenu', '4-4');
             this.handleTableData();
         },
         data() {
@@ -406,10 +404,6 @@
                     channel:''
                 }
             }
-        },
-        mounted() {
-            this.$cookieStore.setCookie('menu', '4');
-            this.$cookieStore.setCookie('submenu', '4-4');
-        },
+        }
     }
 </script>

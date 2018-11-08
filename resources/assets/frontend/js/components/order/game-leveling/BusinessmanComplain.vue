@@ -44,12 +44,14 @@
                         </el-date-picker>
                     </el-form-item>
                 </el-col>
-                <el-button type="primary" @click="handleSearch">查询</el-button>
-                <el-button type="primary" @click="handleResetForm">重置</el-button>
+
+                <el-form-item style="padding:0 8px">
+                    <el-button type="primary" @click="handleSearch">查询</el-button>
+                    <el-button type="primary" @click="handleResetForm">重置</el-button>
+                </el-form-item>
             </el-row>
 
             <el-row :gutter="16">
-
             </el-row>
         </el-form>
 

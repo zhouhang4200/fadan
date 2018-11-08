@@ -21,12 +21,13 @@
                     active-text-color="#ffd04b"
                     :collapse="collapse">
 
-                <el-submenu v-for="item in menus" :index="item.path">
+                <el-submenu v-for="item in menus" :index="item.path" :key="item.id">
                     <template slot="title">
                         <i :class="item.icon"></i>
                         <span slot="title">{{ item.title }}</span>
                     </template>
                     <el-menu-item v-for="submenu in item.children"
+                                  :key="submenu.id"
                                   :index="item.path + submenu.path"
                                   v-if="submenu.menu === true">
                         {{ submenu.title }}
@@ -162,6 +163,18 @@
     .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner,
     .el-form-item.is-success .el-textarea__inner:focus {
         border-color:#DCDFE6;
+    }
+    /*搜索表单样式*/
+    .search-form-inline .el-select,
+    .search-form-inline .el-date-editor--daterange.el-input__inner,
+    .search-form-inline .el-form-item {
+        width:100%;
+    }
+    .search-form-inline .el-range-separator {
+        width:10%;
+    }
+    .search-form-inline .el-form-item__content {
+        width:80%;
     }
 </style>
 
