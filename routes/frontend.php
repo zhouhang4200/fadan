@@ -10,13 +10,13 @@
 |
 */
 
-Route::get('/{vue?}', function (){
-    return view('frontend.spa');
-})->where('vue', '[\/\w\.-]*');
+
 
 Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
 
-//    Route::get('spa', 'SpaController@index')->where('any', '.*');
+    Route::get('/{vue?}', function (){
+        return view('frontend.spa');
+    })->where('vue', '[\/\w\.-]*');
 
     Route::middleware(['auth'])->group(function () {
 
