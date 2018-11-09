@@ -469,7 +469,7 @@ class GameLevelingChannelOrderController extends Controller
                 $createOrderData['game_region_id'] = $gameLevelingChannelOrder->game_region_id;
                 $createOrderData['game_server_id'] = $gameLevelingChannelOrder->game_server_id;
                 $createOrderData['game_leveling_type_id'] = $gameLevelingChannelOrder->game_leveling_type_id;
-                $createOrderData['channel_order_trade_no'] = $gameLevelingChannelOrder->trade_no;
+                $createOrderData['channel_order_trade_no'] = '';
                 $createOrderData['amount'] = $gameLevelingChannelOrder->amount;
                 $createOrderData['security_deposit'] = $gameLevelingChannelOrder->security_deposit;
                 $createOrderData['efficiency_deposit'] = $gameLevelingChannelOrder->efficiency_deposit;
@@ -495,6 +495,7 @@ class GameLevelingChannelOrderController extends Controller
 
                 $gameLevelingChannelOrder->status = 1; // （未接单）已支付
                 $gameLevelingChannelOrder->payment_type = 1; // 支付渠道
+                $gameLevelingChannelOrder->channel_order_trade_no = $gameLevelingChannelOrder->trade_no; // 渠道订单
                 $gameLevelingChannelOrder->save();
             } else {
                 throw new Exception('订单支付失败');
@@ -615,6 +616,7 @@ class GameLevelingChannelOrderController extends Controller
 
                 $gameLevelingChannelOrder->status = 1; // （未接单）已支付
                 $gameLevelingChannelOrder->payment_type = 2; // 支付渠道
+                $gameLevelingChannelOrder->channel_order_trade_no = $gameLevelingChannelOrder->trade_no; // 渠道订单
                 $gameLevelingChannelOrder->save();
             } else {
                 throw new Exception('订单支付失败');
