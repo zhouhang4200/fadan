@@ -19,7 +19,7 @@ class PriceController extends Controller
      */
     public function index()
     {
-        $items = GameLevelingChannelPrice::filter(request()->all())->paginate(10);
+        $items = GameLevelingChannelPrice::filter(request()->all())->orderBy('sort')->paginate(10);
 
         return view('backend.game-leveling.channel.price.index')->with([
             'items' => $items,
