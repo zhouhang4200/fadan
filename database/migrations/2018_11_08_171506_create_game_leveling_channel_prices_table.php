@@ -18,10 +18,10 @@ class CreateGameLevelingChannelPricesTable extends Migration
             $table->integer('game_leveling_channel_game_id')->unsigned()->comment('关联渠道开通的游戏');
             $table->integer('sort')->unsigned()->comment('排序');
             $table->string('level')->comment('层级');
-            $table->decimal('price', 10, 4)->unsigned()->comment('层级价格');
+            $table->decimal('price', 10, 2)->unsigned()->comment('层级价格');
             $table->integer('hour')->unsigned()->comment('层级时间');
-            $table->decimal('security_deposit', 10, 4)->unsigned()->comment('该层级安全保证金');
-            $table->decimal('efficiency_deposit', 10, 4)->unsigned()->comment('该层级效率保证金');
+            $table->decimal('security_deposit', 10, 2)->unsigned()->comment('该层级安全保证金');
+            $table->decimal('efficiency_deposit', 10, 2)->unsigned()->comment('该层级效率保证金');
             $table->timestamps();
         });
     }

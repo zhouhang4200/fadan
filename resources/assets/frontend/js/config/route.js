@@ -3,42 +3,25 @@ import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);
 
-const Container = resolve => void(require(['../components/Container'], resolve));
+const App = resolve => void(require(['../components/App'], resolve));
 
 //router
 const router = new VueRouter({
     mode: 'history',
     routes: [
         {
-            name: "reg",
+            name: "login",
             menu: false,
-            path: "reg",
+            path: "/v2/login",
             meta:{title:'登录'},
-            component: resolve => void(require([ '../components/Login'], resolve)),
-        },
-        {
-            name: "home",
-            icon: "el-icon-goods",
-            path: '/',
-            menu:false,
-            // component: Container,
-            meta:{title:'首页'},
-            children: [
-                {
-                    name: "reg",
-                    menu: false,
-                    path: "reg",
-                    meta:{title:'登录'},
-                    component: resolve => void(require([ '../components/Login'], resolve)),
-                },
-            ],
+            component: resolve => void(require(['../components/Login'], resolve)),
         },
         {
             name: "order",
             icon: "el-icon-goods",
             path: '/v2/order/',
             redirect:'/v2/order/game-leveling',
-            component: Container,
+            component: App,
             // canReuse: false,
             meta:{title:'订单'},
             menu:true,
@@ -92,7 +75,7 @@ const router = new VueRouter({
             icon: "el-icon-date",
             path: '/v2/finance/',
             redirect:'/v2/finance/asset',
-            component: Container,
+            component: App,
             meta:{title:'财务'},
             menu:true,
             children: [
@@ -164,7 +147,7 @@ const router = new VueRouter({
             name: "account",
             icon: "el-icon-news",
             path: '/v2/account/',
-            component: Container,
+            component: App,
             redirect:'/v2/account/mine',
             meta:{title:'账号'},
             menu:true,
@@ -218,7 +201,7 @@ const router = new VueRouter({
             icon: "el-icon-setting",
             path: '/v2/setting/',
             redirect:'/v2/setting/message',
-            component: Container,
+            component: App,
             meta:{title:'设置'},
             menu:true,
             children: [
@@ -262,6 +245,14 @@ function canVisit(to) {
 
 //vue-router 前置拦截器
 router.beforeEach((to, from, next) => {
+
+    if(to.name == 'login' ) {
+        Vue.component('App', require('../components/Login.vue'));
+    } else if(to.name == 'register') {
+        Vue.component('App', require('../components/Register.vue'));
+    } else {
+        Vue.component('App', require('../components/Main.vue'));
+    }
 
     if (to.meta.title) {
         document.title = '淘宝发单平台 - ' + to.meta.title;
