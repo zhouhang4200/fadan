@@ -1,8 +1,7 @@
-@extends('mobile.layouts.app')
+@extends('channel.app')
 
-@section('title')
-    订单详情
-@endsection
+@section('title')订单详情@endsection
+
 @section('css')
     <link rel="stylesheet" href="/mobile/lib/css/function.css">
     <link rel="stylesheet" href="/mobile/css/order-info.css">
@@ -12,7 +11,7 @@
     <div class="header">
         <div class="weui-flex">
             <div class="weui-flex__item">订单详情</div>
-            <a href="{{ route('mobile.leveling.demand') }}" class="back iconfont icon-back"></a>
+            <a href="{{ route('channel.index') }}" class="back iconfont icon-back"></a>
         </div>
     </div>
 @endsection
@@ -20,17 +19,17 @@
     <div class="order-info">
         <div class="padding-20-30">
             <form>
-                <input type="hidden" name="original_price" value="{{ $mobileOrder->original_price }}">
-                <input type="hidden" name="security_deposit" value="{{ $mobileOrder->security_deposit }}">
-                <input type="hidden" name="efficiency_deposit" value="{{ $mobileOrder->efficiency_deposit }}">
+                <input type="hidden" name="original_price" value="{{ $gameLevelingChannelOrder->payment_amount }}">
+                <input type="hidden" name="security_deposit" value="{{ $gameLevelingChannelOrder->security_deposit }}">
+                <input type="hidden" name="efficiency_deposit" value="{{ $gameLevelingChannelOrder->efficiency_deposit }}">
                 <div class="order-info-title">
                     <h1>订单信息</h1>
                     <p class="price" id="price"></p>
                     <p style="text-align: center;color: #595959;height: 30px;line-height: 20px;">
-                        @if($mobileOrder->status == 0)
+                        @if($gameLevelingChannelOrder->status == 0)
                             未付款
                         @else
-                            {{ config('order.status_leveling')[$mobileOrder->status] }}
+                            {{ config('order.status_leveling')[$gameLevelingChannelOrder->status] }}
                         @endif
                     </p>
                 </div>
@@ -40,7 +39,7 @@
                             <div class="content">订单编号</div>
                         </div>
                         <div class="weui-flex__item">
-                            <div class="content">{{ $mobileOrder->no }}</div>
+                            <div class="content">{{ $gameLevelingChannelOrder->trade_no }}</div>
                         </div>
                     </div>
                     <div class="weui-flex">
@@ -48,7 +47,7 @@
                             <div class="content">下单时间</div>
                         </div>
                         <div class="weui-flex__item">
-                            <div class="content">{{ $mobileOrder->created_at }}</div>
+                            <div class="content">{{ $gameLevelingChannelOrder->created_at }}</div>
                         </div>
                     </div>
                     <div class="weui-flex">
@@ -56,10 +55,11 @@
                             <div class="content">完成时间</div>
                         </div>
                         <div class="weui-flex__item">
-                            <div class="content">{{ $orderDetail['checkout_time'] ?: '暂无' }}</div>
+                            <div class="content">--</div>
                         </div>
                     </div>
                 </div>
+            </form>
         </div>
     </div>
     <div class="order-info">
@@ -73,7 +73,7 @@
                         <div class="content">游戏区服</div>
                     </div>
                     <div class="weui-flex__item">
-                        <div class="content">{{ $mobileOrder->game_name }}/{{ $mobileOrder->region }}/{{ $mobileOrder->server }}</div>
+                        <div class="content">{{ $gameLevelingChannelOrder->game_name }}/{{ $gameLevelingChannelOrder->game_region_name }}/{{ $gameLevelingChannelOrder->game_server_name }}</div>
                     </div>
                 </div>
                 <div class="weui-flex  color_52">
@@ -81,7 +81,7 @@
                         <div class="content">账号</div>
                     </div>
                     <div class="weui-flex__item">
-                        <div class="content">{{ $mobileOrder->account }}</div>
+                        <div class="content">{{ $gameLevelingChannelOrder->game_account }}</div>
                     </div>
                 </div>
                 <div class="weui-flex  color_52">
@@ -89,7 +89,7 @@
                         <div class="content">密码</div>
                     </div>
                     <div class="weui-flex__item">
-                        <div class="content">{{ $mobileOrder->password }}</div>
+                        <div class="content">{{ $gameLevelingChannelOrder->game_password }}</div>
                     </div>
                 </div>
                 <div class="weui-flex  color_52">
@@ -97,7 +97,7 @@
                         <div class="content">角色名称</div>
                     </div>
                     <div class="weui-flex__item">
-                        <div class="content">{{ $mobileOrder->role }}</div>
+                        <div class="content">{{ $gameLevelingChannelOrder->game_role }}</div>
                     </div>
                 </div>
             </div>
@@ -114,7 +114,7 @@
                         <div class="content">代练目标</div>
                     </div>
                     <div class="weui-flex__item">
-                        <div class="content">{{ $mobileOrder->demand }}</div>
+                        <div class="content">{{ $gameLevelingChannelOrder->demand }}</div>
                     </div>
                 </div>
                 <div class="weui-flex  color_52">
@@ -122,7 +122,7 @@
                         <div class="content">代练类型</div>
                     </div>
                     <div class="weui-flex__item">
-                        <div class="content">{{ $mobileOrder->game_leveling_type }}</div>
+                        <div class="content">{{ $gameLevelingChannelOrder->game_leveling_type_name }}</div>
                     </div>
                 </div>
                 <div class="weui-flex  color_52">
@@ -138,11 +138,11 @@
                         <div class="content">预计耗时</div>
                     </div>
                     <div class="weui-flex__item">
-                        <div class="content">@if($mobileOrder->game_leveling_day)
-                                {{ $mobileOrder->game_leveling_day }}天
+                        <div class="content">@if($gameLevelingChannelOrder->day)
+                                {{ $gameLevelingChannelOrder->day }}天
                             @endif
-                            @if($mobileOrder->game_leveling_hour)
-                                {{ $mobileOrder->game_leveling_hour }}小时
+                            @if($gameLevelingChannelOrder->hour)
+                                {{ $gameLevelingChannelOrder->hour }}小时
                             @endif </div>
                     </div>
                 </div>
@@ -160,7 +160,7 @@
                         <div class="content">玩家电话</div>
                     </div>
                     <div class="weui-flex__item">
-                        <div class="content">{{ $mobileOrder->user_qq }}</div>
+                        <div class="content">{{ $gameLevelingChannelOrder->user_qq }}</div>
                     </div>
                 </div>
             </div>

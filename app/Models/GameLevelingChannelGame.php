@@ -31,15 +31,15 @@ class GameLevelingChannelGame extends Model
      */
     public function gameLevelingChannelPrices()
     {
-        $this->hasMany(GameLevelingChannelPrice::class);
+        return $this->hasMany(GameLevelingChannelPrice::class, 'game_leveling_channel_game_id', 'id');
     }
 
     /**
      * 游戏对应的扣
      */
-    public function gameLevelingChannelDiscount()
+    public function gameLevelingChannelDiscounts()
     {
-        $this->hasMany(GameLevelingChannelPrice::class);
+        return $this->hasMany(GameLevelingChannelDiscount::class, 'game_leveling_channel_game_id', 'id');
     }
 
     /**

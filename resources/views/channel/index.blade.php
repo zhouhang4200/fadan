@@ -1,8 +1,7 @@
-@extends('app')
+@extends('channel.app')
 
-@section('title')
-    我要下单
-@endsection
+@section('title') 我要下单@endsection
+
 @section('css')
     <link rel="stylesheet" href="/mobile/lib/css/mobileSelect.css">
     <link rel="stylesheet" href="/mobile/css/withdrawls.css">
@@ -27,7 +26,7 @@
         <!-- If we need pagination -->
         <div class="swiper-pagination"></div>
     </div>
-    <form action="{{ route('mobile.leveling.place-order') }}" method="GET">
+    <form action="{{ route('channel.place-order') }}" method="GET">
         {{ csrf_field() }}
         <input type="hidden" name="startLevel" value=""></input>
         <input type="hidden" name="endLevel" value=""></input>
@@ -78,7 +77,7 @@
                 </div>
                 <div class="weui-cell__bd">
                     <div class="operation operation3" style="cursor: pointer;" id="trigger3">必选</div>
-                    <select class="weui-select f-dn" name="game_leveling_level">
+                    <select class="weui-select f-dn" name="level">
                         <option selected="" value=""></option>
                     </select>
                 </div>
@@ -127,7 +126,7 @@
             callback: function (indexArr, data) {
                 $('select[name="game_name"] option:selected').text(data).val(data);
                 var game_name = $("select[name='game_name']").val();
-                $.post("{{ route('mobile.leveling.types') }}",{game_name:game_name},function(res) {
+                $.post("{{ route('channel.type') }}",{game_name:game_name},function(res) {
                     if(res.status == 1) {
                         mobileSelect2.updateWheel(0,res.message) //更改第2个轮子
                     }
@@ -135,7 +134,7 @@
             }
         });
 
-        $.post("{{ route('mobile.leveling.games') }}",{},function(res) {
+        $.post("{{ route('channel.game') }}",{},function(res) {
             if(res.status == 1) {
                 mobileSelect1.updateWheel(0,res.message) //更改第1个轮子
             }
@@ -156,7 +155,7 @@
                 $('select[name="game_leveling_type"] option:selected').text(data).val(data);
                 var game_name=$("select[name='game_name']").val();
                 var type=$("select[name='game_leveling_type']").val();
-                $.post("{{ route('mobile.leveling.targets') }}", {game_name:game_name, type:type}, function(res) {
+                $.post("{{ route('channel.target') }}", {game_name:game_name, type:type}, function(res) {
                     if(res.status == 1) {
                         var arr = []
                         for (var i in res.message) {
@@ -173,9 +172,9 @@
             trigger: '#trigger3',
             title: '代练目标',
             wheels: [{
-                data: ['请选择目标']
+                data: ['请选择']
             },{
-                data:['请选择目标']
+                data:['请选择']
             }],
             position: [0, 0],
             transitionEnd: function (indexArr, data) {
@@ -187,11 +186,11 @@
                     $.toast('代练目标不能相同', "text");
                     $('.operation3').text('')
                 } else {
-                    $('select[name="game_leveling_level"] option:selected').text( data).val( data);
+                    $('select[name="level"] option:selected').text( data).val( data);
                     var game_name=$("select[name='game_name']").val();
                     var type=$("select[name='game_leveling_type']").val();
-                    var level=$("select[name='game_leveling_level']").val();
-                    $.post("{{ route('mobile.leveling.compute') }}", {game_name:game_name,type:type,level:level}, function(res) {
+                    var level=$("select[name='level']").val();
+                    $.post("{{ route('channel.compute') }}", {game_name:game_name,type:type,level:level}, function(res) {
                         if(res.status == 1) {
                             $("input[name='price']").val(res.message.price);
                             $("input[name='payment']").val(res.message.payment);
@@ -262,7 +261,7 @@
             var day = $("input[name='game_leveling_day']").val();
             var hour = $("input[name='game_leveling_hour']").val();
 
-            $.post("{{ route('mobile.leveling.go') }}", {gameName:gameName, type:type, startLevel:startLevel, endLevel:endLevel, startNumber:startNumber, endNumber:endNumber, endLevel:endLevel, price:price, payment:payment, time:time, securityDeposit:securityDeposit, efficiencyDeposit:efficiencyDeposit, day:day, hour:hour}, function (res) {
+            $.post("{{ route('channel.go') }}", {gameName:gameName, type:type, startLevel:startLevel, endLevel:endLevel, startNumber:startNumber, endNumber:endNumber, endLevel:endLevel, price:price, payment:payment, time:time, securityDeposit:securityDeposit, efficiencyDeposit:efficiencyDeposit, day:day, hour:hour}, function (res) {
                 if (res.status != 1) {
                     // 弹出错误
                 } else {
