@@ -10,28 +10,28 @@ const router = new VueRouter({
     mode: 'history',
     routes: [
         {
-            name: "auth",
-            icon: "el-icon-goods",
-            path: '/v2/auth',
-            menu:false,
-            component: Container,
-            children: [
-                {
-                    name: "login",
-                    menu: true,
-                    path: "login",
-                    meta:{title:'登录'},
-                    component: resolve => void(require([ '../components/Login'], resolve)),
-                },
-            ]
+            name: "reg",
+            menu: false,
+            path: "reg",
+            meta:{title:'登录'},
+            component: resolve => void(require([ '../components/Login'], resolve)),
         },
         {
             name: "home",
             icon: "el-icon-goods",
             path: '/',
             menu:false,
-            redirect:'/v2/order/game-leveling',
+            // component: Container,
             meta:{title:'首页'},
+            children: [
+                {
+                    name: "reg",
+                    menu: false,
+                    path: "reg",
+                    meta:{title:'登录'},
+                    component: resolve => void(require([ '../components/Login'], resolve)),
+                },
+            ],
         },
         {
             name: "order",

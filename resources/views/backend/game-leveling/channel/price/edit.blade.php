@@ -83,9 +83,16 @@
                         </div>
 
                         <div class="form-group">
-                            <label  class="col-lg-1 control-label">到下一层级价格</label>
+                            <label  class="col-lg-1 control-label">层级</label>
                             <div class="col-lg-10">
                                 <input type="text" name="level" lay-verify="required" value="{{ $item->level }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label  class="col-lg-1 control-label">到下一层级价格</label>
+                            <div class="col-lg-10">
+                                <input type="text" name="price" lay-verify="required" value="{{ $item->level }}" autocomplete="off" placeholder="请输入" class="layui-input">
                             </div>
                         </div>
 
@@ -106,7 +113,7 @@
                         <div class="form-group">
                             <label  class="col-lg-1 control-label">该层级效率保证金</label>
                             <div class="col-lg-10">
-                                <input type="text" name="security_deposit" lay-verify="required" value="{{ $item->efficiency_deposit }}" autocomplete="off" placeholder="请输入" class="layui-input">
+                                <input type="text" name="efficiency_deposit" lay-verify="required" value="{{ $item->efficiency_deposit }}" autocomplete="off" placeholder="请输入" class="layui-input">
                             </div>
                         </div>
 

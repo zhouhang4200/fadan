@@ -45,6 +45,7 @@
                         @foreach($items as $item)
                             <tr role="row" class="odd even">
                                 <td>{{ $item->sort }}</td>
+                                <td>{{ $item->level }}</td>
                                 <td>{{ $item->price }}</td>
                                 <td>{{ $item->hour }}</td>
                                 <td>{{ $item->security_deposit }}</td>
