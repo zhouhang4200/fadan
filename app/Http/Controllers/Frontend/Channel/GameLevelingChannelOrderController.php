@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Channel;
 
+use App\Models\User;
 use DB;
 use Exception;
 use App\Models\Game;
