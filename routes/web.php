@@ -540,25 +540,25 @@ Route::namespace('Mobile')->prefix('mobile')->group(function () {
 });
 
 //  渠道订单
-Route::namespace('Channel')->prefix('channel')->group(function () {
-    Route::get('index', 'GameLevelingChannelController@index')->name('channel.index'); // 下单首页
-    Route::post('game', 'GameLevelingChannelController@game')->name('channel.game'); // 获取代练游戏
-    Route::post('type', 'GameLevelingChannelController@type')->name('channel.type'); // 获取代练类型
-    Route::post('target', 'GameLevelingChannelController@target')->name('channel.target'); // 获取代练目标
-    Route::post('compute-amount', 'GameLevelingChannelController@computeAmount')->name('channel.compute-amount'); // 计算价格和时间
-    Route::post('go', 'GameLevelingChannelController@go')->name('channel.go'); // 成功跳转
+Route::namespace('Frontend\Channel')->prefix('channel')->group(function () {
+    Route::get('index', 'GameLevelingChannelOrderController@index')->name('channel.index'); // 下单首页
+    Route::post('game', 'GameLevelingChannelOrderController@game')->name('channel.game'); // 获取代练游戏
+    Route::post('type', 'GameLevelingChannelOrderController@type')->name('channel.type'); // 获取代练类型
+    Route::post('target', 'GameLevelingChannelOrderController@target')->name('channel.target'); // 获取代练目标
+    Route::post('compute', 'GameLevelingChannelOrderController@compute')->name('channel.compute'); // 计算价格和时间
+    Route::post('go', 'GameLevelingChannelOrderController@go')->name('channel.go'); // 成功跳转
 
-    Route::get('place-order', 'GameLevelingChannelController@placeOrder')->name('channel.place-order'); // 下单配置界面
-    Route::post('region', 'GameLevelingChannelController@region')->name('channel.region'); // 区
-    Route::post('server', 'GameLevelingChannelController@server')->name('channel.server'); // 服
-    Route::post('pay', 'GameLevelingChannelController@pay')->name('channel.pay'); // 支付
+    Route::get('place-order', 'GameLevelingChannelOrderController@placeOrder')->name('channel.place-order'); // 下单配置界面
+    Route::post('region', 'GameLevelingChannelOrderController@region')->name('channel.region'); // 区
+    Route::post('server', 'GameLevelingChannelOrderController@server')->name('channel.server'); // 服
+    Route::post('pay', 'GameLevelingChannelOrderController@pay')->name('channel.pay'); // 支付
 
-    Route::any('alipay-notify', 'GameLevelingChannelController@alipayNotify')->name('channel.alipay-notify');
-    Route::any('alipay-return', 'GameLevelingChannelController@alipayReturn')->name('channel.alipay-return');
+    Route::any('alipay-notify', 'GameLevelingChannelOrderController@alipayNotify')->name('channel.alipay-notify');
+    Route::any('alipay-return', 'GameLevelingChannelOrderController@alipayReturn')->name('channel.alipay-return');
 
-    Route::any('wechat-notify-{no}', 'GameLevelingChannelController@wechatNotify')->name('channel.wechat-notify');
-    Route::any('wechat-return-{no}', 'GameLevelingChannelController@wechatReturn')->name('channel.wechat-return');
-    Route::get('show-{id}', 'GameLevelingChannelController@show')->name('channel.show'); // 详情页
+    Route::any('wechat-notify-{no}', 'GameLevelingChannelOrderController@wechatNotify')->name('channel.wechat-notify');
+    Route::any('wechat-return-{no}', 'GameLevelingChannelOrderController@wechatReturn')->name('channel.wechat-return');
+    Route::get('show-{id}', 'GameLevelingChannelOrderController@show')->name('channel.show'); // 详情页
 });
 
 Route::group(['namespace'  => 'Frontend\Steam','prefix'=>'exchange'], function () {

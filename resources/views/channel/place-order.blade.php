@@ -1,8 +1,7 @@
-@extends('mobile.layouts.app')
+@extends('channel.app')
 
-@section('title')
-我要代练
-@endsection
+@section('title')我要代练@endsection
+
 @section('css')
 <link rel="stylesheet" href="/mobile/lib/css/mobileSelect.css">
 <link rel="stylesheet" href="/mobile/css/withdrawls.css">
@@ -12,12 +11,12 @@
 <div class="header">
     <div class="weui-flex">
         <div class="weui-flex__item">填写代练订单</div>
-        <a href="{{ route('mobile.leveling.demand') }}" class="back iconfont icon-back"></a>
+        <a href="{{ route('channel.index') }}" class="back iconfont icon-back"></a>
     </div>
 </div>
 @endsection
 @section('content')
-<form action="{{ route('mobile.leveling.pay') }}" method="POST">
+<form action="{{ route('channel.pay') }}" method="POST">
     {{ csrf_field() }}
     <input type="hidden" name="game_name" value="{{ $gameName }}"></input>
     <input type="hidden" name="game_leveling_type" value="{{ $type }}"></input>
@@ -103,7 +102,7 @@
                 </label>
             </div>
             <div class="weui-cell__bd">
-                <input class="weui-input" type="text" name="password" placeholder="请输入" required>
+                <input class="weui-input" type="password" name="password" placeholder="请输入" required>
             </div>
         </div>
         <div class="weui-cell">
@@ -137,7 +136,7 @@
                 <i class="weui-icon-checked"></i>
             </div>
         </label>
-        <button type="submit" disabled class="weui-btn weui-btn_default" id="showTooltips">我要代练</a>
+        <button type="submit" disabled class="weui-btn weui-btn_default" id="showTooltips">我要代练</button>
     </div>
 </form>
 @endsection
@@ -168,6 +167,7 @@
             $.toast("请先选择区服信息",'text');
         }
     })
+
     var mobileSelect1 = new MobileSelect({
         trigger: '#region',
         title: '区',
@@ -182,7 +182,7 @@
             $('select[name="region"] option:selected').text(data).val(data);
             var region = $("select[name='region']").val();
 
-            $.post("{{ route('mobile.leveling.servers') }}",{region:region, game_name:game_name},function(res) {
+            $.post("{{ route('channel.server') }}",{region:region, game_name:game_name},function(res) {
                 if(res.status == 1) {
                     mobileSelect2.updateWheel(0,res.message) //更改第1个轮子
                 }
@@ -190,7 +190,7 @@
         }
     });
 
-    $.post("{{ route('mobile.leveling.regions') }}",{game_name:game_name, type:type},function(res) {
+    $.post("{{ route('channel.region') }}",{game_name:game_name, type:type},function(res) {
         if(res.status == 1) {
             mobileSelect1.updateWheel(0,res.message) //更改第1个轮子
         }

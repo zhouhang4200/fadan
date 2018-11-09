@@ -33,4 +33,9 @@ class GameLevelingChannelPrice extends Model
         }
         return $query;
     }
+
+    public function gameLevelingChannelGame()
+    {
+        return $this->belongsTo(GameLevelingChannelGame::class);
+    }
 }
