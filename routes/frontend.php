@@ -10,8 +10,6 @@
 |
 */
 
-
-
 Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
 
     Route::get('/{vue?}', function (){

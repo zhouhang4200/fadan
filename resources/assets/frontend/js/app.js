@@ -13,8 +13,6 @@ Vue.use(VueRouter);
 
 // 挂载 api
 Vue.prototype.$api = api;
-// 布局
-Vue.component('App', require('./components/App.vue'));
 
 const app = new Vue({
     el: '#app',
