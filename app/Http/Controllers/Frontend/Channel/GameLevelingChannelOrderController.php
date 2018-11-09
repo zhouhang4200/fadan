@@ -365,7 +365,8 @@ class GameLevelingChannelOrderController extends Controller
 
                 $basicConfig = config('alipay.base_config');
 
-                return Pay::alipay($basicConfig)->wap($orderConfig);
+                return Pay::alipay($basicConfig)->wap($orderConfig); // H5支付
+//                return Pay::alipay($basicConfig)->mp($orderConfig); // 公众号支付
             } elseif (request('pay_type') == 2) { // 微信
                 $orderConfig = [
                     'out_trade_no'     => $data['trade_no'],
@@ -497,6 +498,7 @@ class GameLevelingChannelOrderController extends Controller
                 $gameLevelingChannelOrder->payment_type = 1; // 支付渠道
                 $gameLevelingChannelOrder->save();
                 $gameLevelingOrder->channel_order_trade_no = $gameLevelingChannelOrder->trade_no; // 渠道订单
+                $gameLevelingOrder->channel_order_status = 1; // 渠道订单支付状态
                 $gameLevelingOrder->save();
             } else {
                 throw new Exception('订单支付失败');
@@ -618,6 +620,7 @@ class GameLevelingChannelOrderController extends Controller
                 $gameLevelingChannelOrder->payment_type = 1; // 支付渠道
                 $gameLevelingChannelOrder->save();
                 $gameLevelingOrder->channel_order_trade_no = $gameLevelingChannelOrder->trade_no; // 渠道订单
+                $gameLevelingOrder->channel_order_status = 1; // 渠道订单支付状态
                 $gameLevelingOrder->save();
             } else {
                 throw new Exception('订单支付失败');
