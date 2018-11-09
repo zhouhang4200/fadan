@@ -71,7 +71,7 @@ class GoodsController extends Controller
 
         try {
             unset($goodsData['file']);
-            $goodsData['user_id'] = Auth::user()->id;
+            $goodsData['user_id'] = auth('admin')->user()->id;
             SteamGoods::create($goodsData);
             return response()->ajax('1', '添加成功');
         } catch (Exception $exception) {
@@ -225,7 +225,7 @@ class GoodsController extends Controller
     public function insertGameName(Request $request)
     {
         $steamImportAccountAip = new SteamImportAccountAip();
-        $result = $steamImportAccountAip->insertGameName($request->game_name, Auth::user()->name);
+        $result = $steamImportAccountAip->insertGameName($request->game_name, auth('admin')->user()->name);
         if ($result->Code != 1) {
             return response()->ajax('0', $result->Message);
         }
@@ -236,7 +236,7 @@ class GoodsController extends Controller
     {
         try {
             $steamImportAccountAip = new SteamImportAccountAip();
-            $steamImportAccountAip->insertGameName($game_name, Auth::user()->name);
+            $steamImportAccountAip->insertGameName($game_name, auth('admin')->user()->name);
         } catch (\Exception $e) {
             Helper::log('add-game-name', [$e->getMessage(), ['游戏名称' => $game_name]]);
         }

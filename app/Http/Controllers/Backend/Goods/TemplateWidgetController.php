@@ -79,7 +79,7 @@ class TemplateWidgetController extends Controller
         $tpeAndName = explode('-', $data['field_type_and_name']);
         $data['field_name'] = $tpeAndName[0];
         $data['field_type'] = $tpeAndName[1];
-        $data['created_admin_user_id'] = Auth::user()->id;
+        $data['created_admin_user_id'] = auth('admin')->user()->id;
         $data['display'] = !isset($data['display']) ? 2 : 1;
 
         try {

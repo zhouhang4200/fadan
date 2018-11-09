@@ -140,7 +140,7 @@ class PlatformController extends Controller
             case 'cancel' :
                 try {
                     // 调用取消
-                    Order::handle(new Cancel($request->data['no'], 0, Auth::user()->id));
+                    Order::handle(new Cancel($request->data['no'], 0, auth('admin')->user()->id));
                     return response()->ajax(1, '操作成功');
                 } catch (CustomException $exception) {
                     return response()->ajax(1, $exception->getMessage());
@@ -184,7 +184,7 @@ class PlatformController extends Controller
             case 6:
                 // 处理售后
                 try {
-                    Order::handle(new AfterServiceComplete($order->no, Auth::user()->id, $request->amount, $request->remark));
+                    Order::handle(new AfterServiceComplete($order->no, auth('admin')->user()->id, $request->amount, $request->remark));
                 }
                 catch (CustomException $e) {
                     return response()->ajax(0, $e->getMessage());
@@ -218,7 +218,7 @@ class PlatformController extends Controller
             $orderInfo = OrderModel::where('no', $request->no)->first();
             if ($orderInfo) {
                 // 调用退回
-                Order::handle(new AskForAfterService($request->no, $orderInfo->creator_primary_user_id, Auth::user()->name . ' 从后台发起售后'));
+                Order::handle(new AskForAfterService($request->no, $orderInfo->creator_primary_user_id, auth('admin')->user()->name . ' 从后台发起售后'));
                 // 返回操作成功
                 return response()->ajax(0, '操作成功');
             } else {

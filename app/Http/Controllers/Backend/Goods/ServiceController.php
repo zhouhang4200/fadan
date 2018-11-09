@@ -39,7 +39,7 @@ class ServiceController extends Controller
     {
         try {
             $data = $request->data;
-            $data['updated_admin_user_id'] = Auth::user()->id;
+            $data['updated_admin_user_id'] = auth('admin')->user()->id;
             Service::where('id', $request->id)->update($data);
             return response()->json(['code' => 1, 'message' => '修改成功']);
         } catch (Exception $exception) {
@@ -55,8 +55,8 @@ class ServiceController extends Controller
     {
         try {
             $data = $request->data;
-            $data['created_admin_user_id'] = Auth::user()->id;
-            $data['updated_admin_user_id'] = Auth::user()->id;
+            $data['created_admin_user_id'] = auth('admin')->user()->id;
+            $data['updated_admin_user_id'] = auth('admin')->user()->id;
             Service::create($data);
             return response()->json(['code' => 1, 'message' => '添加成功']);
         } catch (Exception $exception) {
@@ -73,7 +73,7 @@ class ServiceController extends Controller
         $service = Service::find($request->id);
         if ($service) {
             $service->status = $request->status;
-            $service->created_admin_user_id = Auth::user()->id;
+            $service->created_admin_user_id =auth('admin')->user()->id;
             $service->save();
             return response()->json(['code' => 1, 'message' => '修改成功']);
         } else {

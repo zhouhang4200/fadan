@@ -155,7 +155,7 @@ class OrderApiNoticeController extends Controller
             $data = [];
             $data['order_no'] = $order->no;
             $data['user_id'] = $order->creator_user_id;
-            $data['admin_user_id'] = Auth::user()->id;
+            $data['admin_user_id'] = auth('admin')->user()->id;
             $data['type'] = 0;
             $data['name'] = '补充';
             $data['description'] = '此单为后台管理员手动操作的接口报警订单,操作类型为【完成验收】';
@@ -195,7 +195,7 @@ class OrderApiNoticeController extends Controller
             $data = [];
             $data['order_no'] = $order->no;
             $data['user_id'] = $order->creator_user_id;
-            $data['admin_user_id'] = Auth::user()->id;
+            $data['admin_user_id'] = auth('admin')->user()->id;
             $data['type'] = 0;
             $data['name'] = '补充';
             $data['description'] = '此单为后台管理员手动操作的接口报警订单,操作类型为【取消撤销】';
@@ -235,7 +235,7 @@ class OrderApiNoticeController extends Controller
             $data = [];
             $data['order_no'] = $order->no;
             $data['user_id'] = $order->creator_user_id;
-            $data['admin_user_id'] = Auth::user()->id;
+            $data['admin_user_id'] = auth('admin')->user()->id;
             $data['type'] = 0;
             $data['name'] = '补充';
             $data['description'] = '此单为后台管理员手动操作的接口报警订单,操作类型为【同意撤销】';
@@ -275,7 +275,7 @@ class OrderApiNoticeController extends Controller
             $data = [];
             $data['order_no'] = $order->no;
             $data['user_id'] = $order->creator_user_id;
-            $data['admin_user_id'] = Auth::user()->id;
+            $data['admin_user_id'] = auth('admin')->user()->id;
             $data['type'] = 0;
             $data['name'] = '补充';
             $data['description'] = '此单为后台管理员手动操作的接口报警订单,操作类型为【不同意撤销】';
@@ -315,7 +315,7 @@ class OrderApiNoticeController extends Controller
             $data = [];
             $data['order_no'] = $order->no;
             $data['user_id'] = $order->creator_user_id;
-            $data['admin_user_id'] = Auth::user()->id;
+            $data['admin_user_id'] = auth('admin')->user()->id;
             $data['type'] = 0;
             $data['name'] = '补充';
             $data['description'] = '此单为后台管理员手动操作的接口报警订单,操作类型为【取消仲裁】';
