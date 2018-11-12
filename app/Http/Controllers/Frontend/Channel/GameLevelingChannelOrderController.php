@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Channel;
 
+use App\Models\User;
 use DB;
 use Exception;
 use App\Models\Game;
@@ -364,7 +365,8 @@ class GameLevelingChannelOrderController extends Controller
 
                 $basicConfig = config('alipay.base_config');
 
-                return Pay::alipay($basicConfig)->wap($orderConfig);
+                return Pay::alipay($basicConfig)->wap($orderConfig); // H5支付
+//                return Pay::alipay($basicConfig)->mp($orderConfig); // 公众号支付
             } elseif (request('pay_type') == 2) { // 微信
                 $orderConfig = [
                     'out_trade_no'     => $data['trade_no'],
@@ -468,7 +470,7 @@ class GameLevelingChannelOrderController extends Controller
                 $createOrderData['game_region_id'] = $gameLevelingChannelOrder->game_region_id;
                 $createOrderData['game_server_id'] = $gameLevelingChannelOrder->game_server_id;
                 $createOrderData['game_leveling_type_id'] = $gameLevelingChannelOrder->game_leveling_type_id;
-                $createOrderData['channel_order_trade_no'] = $gameLevelingChannelOrder->trade_no;
+                $createOrderData['channel_order_trade_no'] = '';
                 $createOrderData['amount'] = $gameLevelingChannelOrder->amount;
                 $createOrderData['security_deposit'] = $gameLevelingChannelOrder->security_deposit;
                 $createOrderData['efficiency_deposit'] = $gameLevelingChannelOrder->efficiency_deposit;
@@ -490,11 +492,14 @@ class GameLevelingChannelOrderController extends Controller
 
                 $user = User::find(request('user_id', 2));
                 // 下单
-                GameLevelingOrder::placeOrder($user, $createOrderData);
+                $gameLevelingOrder = GameLevelingOrder::placeOrder($user, $createOrderData);
 
                 $gameLevelingChannelOrder->status = 1; // （未接单）已支付
                 $gameLevelingChannelOrder->payment_type = 1; // 支付渠道
                 $gameLevelingChannelOrder->save();
+                $gameLevelingOrder->channel_order_trade_no = $gameLevelingChannelOrder->trade_no; // 渠道订单
+                $gameLevelingOrder->channel_order_status = 1; // 渠道订单支付状态
+                $gameLevelingOrder->save();
             } else {
                 throw new Exception('订单支付失败');
             }
@@ -609,12 +614,14 @@ class GameLevelingChannelOrderController extends Controller
                 $createOrderData['requirement'] = $gameLevelingChannelOrder->requirement;
 
                 $user = User::find(request('user_id', 2));
-                // 下单
-                GameLevelingOrder::placeOrder($user, $createOrderData);
+                $gameLevelingOrder = GameLevelingOrder::placeOrder($user, $createOrderData); // 下单
 
                 $gameLevelingChannelOrder->status = 1; // （未接单）已支付
-                $gameLevelingChannelOrder->payment_type = 2; // 支付渠道
+                $gameLevelingChannelOrder->payment_type = 1; // 支付渠道
                 $gameLevelingChannelOrder->save();
+                $gameLevelingOrder->channel_order_trade_no = $gameLevelingChannelOrder->trade_no; // 渠道订单
+                $gameLevelingOrder->channel_order_status = 1; // 渠道订单支付状态
+                $gameLevelingOrder->save();
             } else {
                 throw new Exception('订单支付失败');
             }
