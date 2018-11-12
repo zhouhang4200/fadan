@@ -12,9 +12,16 @@ const router = new VueRouter({
         {
             name: "login",
             menu: false,
-            path: "/v2/login",
+            path: "/login",
             meta:{title:'登录'},
-            component: resolve => void(require(['../components/Login'], resolve)),
+            component: resolve => void(require(['../components/LoginRegister'], resolve)),
+        },
+        {
+            name: "register",
+            menu: false,
+            path: "/register",
+            meta:{title:'登录'},
+            component: resolve => void(require(['../components/LoginRegister'], resolve)),
         },
         {
             name: "order",
@@ -246,10 +253,8 @@ function canVisit(to) {
 //vue-router 前置拦截器
 router.beforeEach((to, from, next) => {
 
-    if(to.name == 'login' ) {
-        Vue.component('App', require('../components/Login.vue'));
-    } else if(to.name == 'register') {
-        Vue.component('App', require('../components/Register.vue'));
+    if(to.name == 'login' || to.name == 'register' ) {
+        Vue.component('App', require('../components/LoginRegister.vue'));
     } else {
         Vue.component('App', require('../components/Main.vue'));
     }

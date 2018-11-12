@@ -13,6 +13,9 @@ class Controller extends BaseController
     
     public function __construct()
     {
-        myLog('ip', [getClientIp()]);
+        if (php_sapi_name() != 'cli') {
+            myLog('ip', [getClientIp()]);
+        }
+
     }
 }

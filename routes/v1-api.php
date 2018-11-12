@@ -1,10 +1,10 @@
 <?php
 
 Route::prefix('v1')->namespace('V1')->group(function($router) {
-    Route::prefix('auth')->group(function($router) {
-        $router->post('login', 'Auth\AuthController@login');
-        $router->post('logout', 'OpenApi\Auth\AuthController@logout');
-    });
+//    Route::prefix('auth')->group(function($router) {
+//        $router->post('login', 'Auth\AuthController@login');
+//        $router->post('logout', 'OpenApi\Auth\AuthController@logout');
+//    });
 
     Route::middleware('open.api')->group(function($router) {
 

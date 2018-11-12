@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Http\Controllers\Api\ApiResponse;
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -73,6 +74,10 @@ class Handler extends ExceptionHandler
         // 用户认证的异常，我们需要返回 401 的 http code 和错误信息
         if ($exception instanceof TokenInvalidException  && stristr(request()->fullUrl(), 'api')) {
             return $this->failed('身份认证失败', 401);
+        }
+        // 前端分离分后无法用route 方法重定向，需用 redirect 重定向到前端的logo路由，
+        if ($exception instanceof AuthenticationException) {
+            return redirect('/login');
         }
         if (! $exception instanceof HttpExceptionInterface && stristr(request()->fullUrl(), 'api')) {
             return $this->internalError('服务器错误' . $exception->getFile(). $exception->getMessage());

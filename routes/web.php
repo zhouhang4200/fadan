@@ -561,23 +561,13 @@ Route::namespace('Frontend\Channel')->prefix('channel')->group(function () {
     Route::get('show-{id}', 'GameLevelingChannelOrderController@show')->name('channel.show'); // 详情页
 });
 
-Route::group(['namespace'  => 'Frontend\Steam','prefix'=>'exchange'], function () {
-    Route::get('/', 'ExchangeController@index')->name('exchange.index');
-    // 兑换登录
-    Route::post('login-exchange', 'ExchangeController@loginExchange')->name('exchange.login-exchange');
-    // 兑换登录
-    Route::post('info', 'ExchangeController@info')->name('exchange.info');
-    Route::get('login', 'ExchangeController@login')->name('exchange.login');;
-    Route::get('code', 'ExchangeController@code');
-});
-
 Route::namespace('Frontend\Auth')->group(function () {
 	 // 登录
-	Route::get('/login', 'LoginController@showLoginForm')->name('login');
+//	Route::get('/login', 'LoginController@showLoginForm')->name('login');
 	Route::post('/login', 'LoginController@login');
 	Route::post('/logout', 'LoginController@logout')->name('logout');
-	// 注册
-	Route::get('/register', 'RegisterController@showRegistrationForm')->name('register');
+//	// 注册
+//	Route::get('/register', 'RegisterController@showRegistrationForm')->name('register');
 	Route::post('/register', 'RegisterController@register');
 	// 密码找回
 	Route::get('/password/reset', 'ForgotPasswordController@showLinkRequestForm')->name('password.request');
@@ -586,4 +576,3 @@ Route::namespace('Frontend\Auth')->group(function () {
 	Route::post('/password/reset', 'ResetPasswordController@reset');
 });
 
-Route::get('test', 'TestController@index');

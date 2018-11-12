@@ -1,9 +1,12 @@
-import { post } from './axios'
+import { post, get } from './axios'
 
 // 获取订单数据
 export default {
     login(params) {
-        return post('/v2/order/game-leveling/data-list', params);
+        return post('/login', params);
+    },
+    register(params) {
+        return post('/register', params);
     },
     // 游戏
     games(params) {
@@ -347,5 +350,9 @@ export default {
     },
     SettingMessageStatus (params) {
         return post('/v2/setting/message-status', params)
+    },
+    // 获取极验参数
+    captcha() {
+        return get('/captcha/geetest?t=' + (new Date()).getTime());
     }
 }

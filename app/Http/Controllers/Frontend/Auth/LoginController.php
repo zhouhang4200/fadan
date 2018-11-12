@@ -64,8 +64,9 @@ class LoginController extends Controller
     /**
      * Handle a login request to the application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function login(Request $request)
     {
@@ -100,7 +101,12 @@ class LoginController extends Controller
 
         if ($this->attemptLogin($request)) {
             if ($this->sendLoginResponse($request)) {
-                return response()->ajax(1, 'success');
+
+                $indexUrl = route('frontend.workbench.index');
+                if (!Auth::user()->could('frontend.workbench.index')) {
+                    $indexUrl = route('/v2/order/game-leveling');
+                }
+                return response()->ajax(1, 'success', ['url' => $indexUrl]);
             }
         }
         // If the login attempt was unsuccessful we will increment the number of attempts

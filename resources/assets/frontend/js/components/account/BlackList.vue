@@ -111,7 +111,7 @@
             blackListAdd(){
                 this.isAdd=true;
                 this.isUpdate=false;
-                this.title='打手黑名单新增',
+                this.title='打手黑名单新增';
                 this.dialogFormVisible = true;
                 this.form={
                     hatchet_man_name: '',
@@ -124,7 +124,7 @@
             blackListUpdate(row) {
                 this.isAdd=false;
                 this.isUpdate=true;
-                this.title='打手黑名单修改',
+                this.title='打手黑名单修改';
                 this.dialogFormVisible = true;
                 this.form=JSON.parse(JSON.stringify(row));
             },

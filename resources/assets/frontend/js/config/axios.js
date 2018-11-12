@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import axios from 'axios'
-// import qs from 'qs'
 import {Message, MessageBox} from 'element-ui'
 
 // 响应时间

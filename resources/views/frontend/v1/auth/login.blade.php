@@ -157,6 +157,7 @@
                     geetest_validate:data.field.geetest_validate
                 }, function (result) {
                     if (result.status == 1) {
+
                         location.reload();
                     } else {
                         layer.msg(result.message);

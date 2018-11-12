@@ -114,7 +114,7 @@ class RegisterController extends Controller
         $validator = $this->validator($request->all());
 
         if ($validator->fails()) {
-            return response()->ajax(0, $validator->errors()->all()[0]);
+            return response()->ajax(0, 'error', [$validator->errors()]);
         }
 
         // 判断密码二次匹配
@@ -124,7 +124,7 @@ class RegisterController extends Controller
 
         event(new Registered($user = $this->create($request->all())));
 
-        $this->guard()->login($user);
+//        $this->guard()->login($user);
 
         return response()->ajax(1, '注册成功!');
 
