@@ -5,7 +5,12 @@ const { env } = require('minimist')(process.argv.slice(2));
 
 // 判断如果是admin那就执行 webpack.admin.js 构建后台项目，构建之后return就不会往下执行了
 if (env && env.admin) {
-    require(`${__dirname}/webpack.admin.mix.js`);
+    require(`${__dirname}/webpack.admin.js`);
+    return
+}
+// 判断如果是channel那就执行 webpack.channel.js 构建渠道项目，构建之后return就不会往下执行了
+if (env && env.channel) {
+    require(`${__dirname}/webpack.channel.js`);
     return
 }
 

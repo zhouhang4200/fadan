@@ -79,6 +79,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof AuthenticationException) {
             return redirect('/login');
         }
+        dd($exception);
         if (! $exception instanceof HttpExceptionInterface && stristr(request()->fullUrl(), 'api')) {
             return $this->internalError('服务器错误' . $exception->getFile(). $exception->getMessage());
         }

@@ -10,7 +10,20 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+# 登录、注册
+Route::namespace('Frontend\Auth')->group(function () {
+    // 登录
+    Route::post('/login', 'LoginController@login');
+    Route::post('/logout', 'LoginController@logout')->name('logout');
+    // 注册
+    Route::post('/register', 'RegisterController@register');
+    // 密码找回
+    Route::get('/password/reset', 'ForgotPasswordController@showLinkRequestForm')->name('password.request');
+    Route::post('/password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+    Route::get('/password/reset/{token}', 'ResetPasswordController@showResetForm')->name('password.reset');
+    Route::post('/password/reset', 'ResetPasswordController@reset');
+});
+# 需登录后访问的路由
 Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 首页
 	Route::get('/', 'HomeController@index')->name('frontend.index');
@@ -513,35 +526,10 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
         Route::get('show', 'BabyAdviserController@show')->name('frontend.baby.show')->middleware('new.permission:frontend.baby.show');
     });
 });
-
-//  手机端
-Route::namespace('Mobile')->prefix('mobile')->group(function () {
-    // 手机端标品下单
-    Route::prefix('leveling')->group(function () {
-        Route::get('demand', 'LevelingController@demand')->name('mobile.leveling.demand'); // 代练下单配置
-        Route::post('games', 'LevelingController@games')->name('mobile.leveling.games'); // 代练游戏
-        Route::post('types', 'LevelingController@types')->name('mobile.leveling.types'); // 代练类型
-        Route::post('targets', 'LevelingController@targets')->name('mobile.leveling.targets'); // 代练目标
-        Route::post('compute', 'LevelingController@compute')->name('mobile.leveling.compute'); // 计算价格和时间
-        Route::post('go', 'LevelingController@go')->name('mobile.leveling.go'); 
-
-        Route::get('place-order', 'LevelingController@placeOrder')->name('mobile.leveling.place-order'); // 下单配置界面
-        Route::post('regions', 'LevelingController@regions')->name('mobile.leveling.regions'); // 区
-        Route::post('servers', 'LevelingController@servers')->name('mobile.leveling.servers'); // 服
-        Route::post('pay', 'LevelingController@pay')->name('mobile.leveling.pay'); // 支付
-
-        Route::any('alipay/notify', 'LevelingController@alipayNotify')->name('mobile.leveling.alipay.notify');
-        Route::any('alipay/return', 'LevelingController@alipayReturn')->name('mobile.leveling.alipay.return');
-        
-        Route::any('wechat/notify/{no}', 'LevelingController@wechatNotify')->name('mobile.leveling.wechat.notify');
-        Route::any('wechat/return/{no}', 'LevelingController@wechatReturn')->name('mobile.leveling.wechat.return');
-        Route::get('show/{id}', 'LevelingController@show')->name('mobile.leveling.show'); // 详情页
-    }); 
-});
-
-//  渠道订单
-Route::namespace('Frontend\Channel')->prefix('channel')->group(function () {
-    Route::get('index', 'GameLevelingChannelOrderController@index')->name('channel.index'); // 下单首页
+# 渠道订单
+Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
+    Route::get('/{vue?}', function (){ return view('channel.spa');})->where('vue', '[\/\w\.-]*');
+//    Route::get('index', 'GameLevelingChannelOrderController@index')->name('channel.index'); // 下单首页
     Route::post('game', 'GameLevelingChannelOrderController@game')->name('channel.game'); // 获取代练游戏
     Route::post('type', 'GameLevelingChannelOrderController@type')->name('channel.type'); // 获取代练类型
     Route::post('target', 'GameLevelingChannelOrderController@target')->name('channel.target'); // 获取代练目标
@@ -560,19 +548,3 @@ Route::namespace('Frontend\Channel')->prefix('channel')->group(function () {
     Route::any('wechat-return-{no}', 'GameLevelingChannelOrderController@wechatReturn')->name('channel.wechat-return');
     Route::get('show-{id}', 'GameLevelingChannelOrderController@show')->name('channel.show'); // 详情页
 });
-
-Route::namespace('Frontend\Auth')->group(function () {
-	 // 登录
-//	Route::get('/login', 'LoginController@showLoginForm')->name('login');
-	Route::post('/login', 'LoginController@login');
-	Route::post('/logout', 'LoginController@logout')->name('logout');
-//	// 注册
-//	Route::get('/register', 'RegisterController@showRegistrationForm')->name('register');
-	Route::post('/register', 'RegisterController@register');
-	// 密码找回
-	Route::get('/password/reset', 'ForgotPasswordController@showLinkRequestForm')->name('password.request');
-	Route::post('/password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-	Route::get('/password/reset/{token}', 'ResetPasswordController@showResetForm')->name('password.reset');
-	Route::post('/password/reset', 'ResetPasswordController@reset');
-});
-

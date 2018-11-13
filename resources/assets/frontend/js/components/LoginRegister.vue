@@ -439,7 +439,7 @@
             border-radius: 0;
             border-bottom: 1px solid #f0f2f5
         }
-        .el-input__icon {
+        .el-input__prefix .el-input__icon {
             font-size: 26px;
         }
         .icon-youxiang {

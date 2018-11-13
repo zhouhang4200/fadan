@@ -76,6 +76,82 @@
     </div>
 </template>
 
+<script>
+    export default {
+        name:"Main",
+        data() {
+            return {
+                collapse: false,
+                menus:null,
+                openMenu:['1'],
+                menuMinHeight:'400px',
+                contentContainerStyle:{
+                    minHeight:'',
+                },
+                breadcrumbList: [],
+            }
+        },
+        computed: {
+            rotateIcon() {
+                return [
+                    'menu-icon',
+                    this.collapse ? 'rotate-icon' : ''
+                ];
+            },
+        },
+        methods: {
+            handleCollapse() {
+                if(this.collapse) {
+                    this.collapse = false;
+                    sessionStorage.setItem('collapse', '0');
+                }else {
+                    this.collapse = true;
+                    sessionStorage.setItem('collapse', '1');
+                }
+            },
+            handleContentContainerStyle() {
+                window.fullHeight = document.documentElement.clientHeight;
+                this.menuMinHeight = window.fullHeight + 'px';
+                return this.contentContainerStyle.minHeight = (window.fullHeight - 80) + 'px';
+            },
+            handleSelect(key, keyPath) {
+                sessionStorage.setItem('openMenu', keyPath[0]);
+            },
+            handleBreadcrumb() {
+                let matched = this.$route.matched;
+                let currentThis = this;
+                currentThis.breadcrumbList = [];
+                matched.forEach(function (it) {
+                    currentThis.breadcrumbList.push({
+                        name:it.meta.title,
+                        path:it.path
+                    });
+                });
+            }
+        },
+        created() {
+            window.addEventListener('resize', this.handleContentContainerStyle);
+            this.handleContentContainerStyle();
+            this.handleBreadcrumb();
+        },
+        beforeMount(){
+            this.openMenu[0] = sessionStorage.getItem('openMenu')
+        },
+        mounted() {
+            this.collapse = (sessionStorage.getItem('collapse') == 1 ? true : false);
+            this.menus = this.$router.options.routes;
+        },
+        watch: {
+            $route() {
+                this.handleBreadcrumb()
+            }
+        },
+        destroyed() {
+            window.removeEventListener('resize', this.handleContentContainerStyle)
+        },
+    };
+</script>
+
 <style lang="less">
     /*全局样式*/
     .main {
@@ -183,79 +259,3 @@
         width:80%;
     }
 </style>
-
-<script>
-    export default {
-        name:"Main",
-        data() {
-            return {
-                collapse: false,
-                menus:null,
-                openMenu:['1'],
-                menuMinHeight:'400px',
-                contentContainerStyle:{
-                    minHeight:'',
-                },
-                breadcrumbList: [],
-            }
-        },
-        computed: {
-            rotateIcon() {
-                return [
-                    'menu-icon',
-                    this.collapse ? 'rotate-icon' : ''
-                ];
-            },
-        },
-        methods: {
-            handleCollapse() {
-                if(this.collapse) {
-                    this.collapse = false;
-                    sessionStorage.setItem('collapse', '0');
-                }else {
-                    this.collapse = true;
-                    sessionStorage.setItem('collapse', '1');
-                }
-            },
-            handleContentContainerStyle() {
-                window.fullHeight = document.documentElement.clientHeight;
-                this.menuMinHeight = window.fullHeight + 'px';
-                return this.contentContainerStyle.minHeight = (window.fullHeight - 80) + 'px';
-            },
-            handleSelect(key, keyPath) {
-                sessionStorage.setItem('openMenu', keyPath[0]);
-            },
-            handleBreadcrumb() {
-                let matched = this.$route.matched;
-                let currentThis = this;
-                currentThis.breadcrumbList = [];
-                matched.forEach(function (it) {
-                    currentThis.breadcrumbList.push({
-                        name:it.meta.title,
-                        path:it.path
-                    });
-                });
-            }
-        },
-        created() {
-            window.addEventListener('resize', this.handleContentContainerStyle);
-            this.handleContentContainerStyle();
-            this.handleBreadcrumb();
-        },
-        beforeMount(){
-            this.openMenu[0] = sessionStorage.getItem('openMenu')
-        },
-        mounted() {
-            this.collapse = (sessionStorage.getItem('collapse') == 1 ? true : false);
-            this.menus = this.$router.options.routes;
-        },
-        watch: {
-            $route() {
-                this.handleBreadcrumb()
-            }
-        },
-        destroyed() {
-            window.removeEventListener('resize', this.handleContentContainerStyle)
-        },
-    };
-</script>

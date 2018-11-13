@@ -11,8 +11,12 @@ npm-debug.log
 yarn-error.log
 .env
 /storage/logs/
-/public/frontend/v2/fonts/
-/public/frontend/v2/mix-manifest.json
 /public/frontend/v2/js/
 /public/frontend/v2/css/
+/public/frontend/v2/fonts/
+/public/frontend/v2/mix-manifest.json
+/public/channel/js/
+/public/channel/css/
+/public/channel/fonts/
+/public/channel/mix-manifest.json
 !.gitignore
