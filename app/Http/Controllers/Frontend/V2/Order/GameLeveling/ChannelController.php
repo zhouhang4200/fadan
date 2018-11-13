@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
+use App\Models\GameLevelingOrder;
 use Exception;
 use Yansongda\Pay\Pay;
 use Illuminate\Support\Facades\DB;
@@ -51,6 +52,7 @@ class ChannelController extends Controller
                 ->first();
 
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
+                ->where('user_id', Auth::user()->getPrimaryUserId())
                 ->where('status', 6)
                 ->first();
 
@@ -69,8 +71,8 @@ class ChannelController extends Controller
                 $basicConfig = config('alipay.base_config');
 
                 $result = Pay::alipay($basicConfig)->refund($orderConfig);
-                myLog('result', [$result]);
-                if ($result && $result['code'] != 10000) {
+
+                if (!$result || $result['code'] != 10000) {
                     throw new Exception('支付失败!');
                 }
 //                return $result;
@@ -90,7 +92,7 @@ class ChannelController extends Controller
 
                 $result = Pay::wechat($basicConfig)->refund($orderConfig);
 
-                if ($result && $result['return_code'] !== 'SUCCESS') {
+                if (!$result || $result['return_code'] !== 'SUCCESS') {
                     throw new Exception('支付失败!');
                 }
 //                return $result;
@@ -109,11 +111,39 @@ class ChannelController extends Controller
      */
     public function refuseRefund()
     {
+        DB::beginTransaction();
         try {
+            // 申请退款状态改变
+            $gameLevelingChannelRefund = GameLevelingChannelRefund::where('game_leveling_channel_order_trade_no', request('trade_no'))
+                ->where('status', 6)
+                ->first();
 
+            $gameLevelingChannelRefund->refuse_refund_reason = request('refuse_refund_reason');
+            $gameLevelingChannelRefund->status = 2;
+            $gameLevelingChannelRefund->save();
+
+            // 渠道订单状态改变
+            $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
+                ->where('status', 6)
+                ->first();
+
+            $gameLevelingChannelOrder->status = 2;
+            $gameLevelingChannelOrder->save();
+
+            // 平台订单的渠道订单状态改变
+            $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
+                ->where('channel_order_status', 6)
+                ->get();
+
+            foreach ($gameLevelingOrders as $gameLevelingOrder) {
+                $gameLevelingOrder->channel_order_status = 2;
+                $gameLevelingOrder->save();
+            }
         } catch (Exception $e) {
+            DB::rollback();
             return response()->ajax(0, '操作失败：服务器错误!');
         }
+        DB::commit();
         return response()->ajax(1, '操作成功!');
     }
 

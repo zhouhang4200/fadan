@@ -160,11 +160,11 @@ export default {
         return post('/v2/order/game-leveling/channel', params)
     },
     // 渠道订单游戏
-    GameLevelingChannelOGame(params) {
+    GameLevelingChannelGame(params) {
         return post('/v2/order/game-leveling/channel/game', params)
     },
     // 渠道订单状态
-    GameLevelingChannelOStatus(params) {
+    GameLevelingChannelStatus(params) {
         return post('/v2/order/game-leveling/channel/status', params)
     },
     // 同意退款

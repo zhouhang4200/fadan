@@ -15,6 +15,7 @@ class CreateGameLevelingChannelUsersTable extends Migration
     {
         Schema::create('game_leveling_channel_users', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('user_id')->comment('渠道ID');
             $table->string('uuid', '60')->comment('渠道的用户唯一标识');
             $table->timestamps();
         });

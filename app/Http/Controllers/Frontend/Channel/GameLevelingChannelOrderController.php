@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Frontend\Channel;
 
-use App\Models\User;
 use DB;
 use Exception;
+use App\Models\User;
 use App\Models\Game;
 use Yansongda\Pay\Pay;
 use App\Models\GameServer;
@@ -14,9 +14,13 @@ use Illuminate\Http\Response;
 use App\Models\GameLevelingType;
 use App\Models\GameLevelingOrder;
 use App\Exceptions\DailianException;
-use App\Models\GameLevelingChannelGame;
-use App\Models\GameLevelingChannelOrder;
 use App\Http\Controllers\Controller;
+use App\Models\GameLevelingChannelGame;
+use App\Models\GameLevelingChannelUser;
+use App\Services\OrderOperateController;
+use App\Models\GameLevelingChannelOrder;
+use App\Models\GameLevelingChannelRefund;
+use App\Exceptions\GameLevelingOrderOperateException;
 
 class GameLevelingChannelOrderController extends Controller
 {
@@ -420,20 +424,19 @@ class GameLevelingChannelOrderController extends Controller
     {
         try {
             $basicConfig = config('alipay.base_config');
-
             $data = Pay::alipay($basicConfig)->verify();
 
-            $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $data->out_trade_no)->first();
-
+            // 支付验证成功跳到成功页面
             if ($data) {
+                $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $data->out_trade_no)->first();
                 return view('channel.success', compact('gameLevelingChannelOrder'));
-            } else {
-                return view('channel.demand');
             }
         } catch (Exception $e) {
             myLog('alipay-return-error', ['message' => $e->getMessage()]);
             return view('channel.index');
         }
+        // 支付验证失败跳到下单页面
+        return view('channel.demand');
     }
 
     /**
@@ -442,27 +445,26 @@ class GameLevelingChannelOrderController extends Controller
      */
     public function alipayNotify()
     {
-        myLog('test', [12231]);
         DB::beginTransaction();
         try {
             $basicConfig = config('alipay.base_config');
             $alipay = Pay::alipay($basicConfig);
-            $data = $alipay->verify(); // 是的，验签就这么简单！
+            $data = $alipay->verify();
 
             // 成功更新订单状态
             if (isset($data) && ($data->trade_status == 'TRADE_SUCCESS' || $data->trade_status == 'TRADE_FINISHED')) {
                 $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $data->out_trade_no)->first();
                 // 验证订单号
                 if (! isset($gameLevelingChannelOrder) || empty($gameLevelingChannelOrder)) {
-                    throw new DailianException('订单号错误');
+                    throw new DailianException('订单号错误！');
                 }
                 // 验证appid
                 if ($data->app_id != $basicConfig['app_id']) {
-                    throw new DailianException('APPID错误');
+                    throw new DailianException('APPID错误！');
                 }
                 // 验证价格
                 if ($data->total_amount != $gameLevelingChannelOrder->payment_amount) {
-                    throw new DailianException('支付价格不一致');
+                    throw new DailianException('支付价格不一致！');
                 }
 
                 $createOrderData = [];
@@ -494,17 +496,17 @@ class GameLevelingChannelOrderController extends Controller
                 // 下单
                 $gameLevelingOrder = GameLevelingOrder::placeOrder($user, $createOrderData);
 
-                $gameLevelingChannelOrder->status = 1; // （未接单）已支付
+                $gameLevelingChannelOrder->status = 2; // （未接单）已支付
                 $gameLevelingChannelOrder->payment_type = 1; // 支付渠道
                 $gameLevelingChannelOrder->save();
+
                 $gameLevelingOrder->channel_order_trade_no = $gameLevelingChannelOrder->trade_no; // 渠道订单
-                $gameLevelingOrder->channel_order_status = 1; // 渠道订单支付状态
+                $gameLevelingOrder->channel_order_status = 2; // 渠道订单支付状态
                 $gameLevelingOrder->save();
             } else {
                 throw new Exception('订单支付失败');
             }
         } catch (DailianException $e) {
-            // 退款逻辑
             DB::rollback();
             myLog('alipay-notify-error', ['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             return Response::create('fail');
@@ -544,17 +546,16 @@ class GameLevelingChannelOrderController extends Controller
     public function wechatReturn(Request $request)
     {
         try {
-//            sleep(5);
             $basicConfig = config('wechat.find_config');
             $data = Pay::wechat($basicConfig)->find(['out_trade_no' => $request->no]);
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $request->no)->first();
 
             if (isset($gameLevelingChannelOrder) && ! empty($gameLevelingChannelOrder) && isset($data) && ! empty($data) && $data->trade_state == 'SUCCESS') {
-//                return view('mobile.leveling.success', compact('mobileOrder'));
+//                return view('channel.success', compact('mobileOrder'));
                 myLog('wechat-return-success', ['data' => $data ?? '']);
             } else {
                 myLog('wechat-return-fail', ['data' => $data ?? '']);
-//                return view('mobile.leveling.demand');
+//                return view('channel.index');
             }
         } catch (Exception $e) {
             myLog('wechat-return-error', ['message' => $e->getMessage()]);
@@ -616,11 +617,11 @@ class GameLevelingChannelOrderController extends Controller
                 $user = User::find(request('user_id', 2));
                 $gameLevelingOrder = GameLevelingOrder::placeOrder($user, $createOrderData); // 下单
 
-                $gameLevelingChannelOrder->status = 1; // （未接单）已支付
-                $gameLevelingChannelOrder->payment_type = 1; // 支付渠道
+                $gameLevelingChannelOrder->status = 2; // （未接单）已支付
+                $gameLevelingChannelOrder->payment_type = 2; // 支付渠道
                 $gameLevelingChannelOrder->save();
                 $gameLevelingOrder->channel_order_trade_no = $gameLevelingChannelOrder->trade_no; // 渠道订单
-                $gameLevelingOrder->channel_order_status = 1; // 渠道订单支付状态
+                $gameLevelingOrder->channel_order_status = 2; // 渠道订单支付状态
                 $gameLevelingOrder->save();
             } else {
                 throw new Exception('订单支付失败');
@@ -637,5 +638,160 @@ class GameLevelingChannelOrderController extends Controller
         }
         DB::commit();
         return $weChat->success();
+    }
+
+    /**
+     * 渠道订单筛选
+     * @return mixed
+     */
+    public function gameLevelingChannelOrderList()
+    {
+        try {
+            $gameLevelingChannelOrders = GameLevelingChannelOrder::filter(['status' => request('status')])
+                ->where('game_leveling_channel_user_id', request('game_leveling_channel_user_id'))
+                ->where('user_id', request('user_id'))
+                ->oldest('created_at')
+                ->paginate(15);
+        } catch (Exception $e) {
+            return response()->ajax(0, '服务器异常!');
+        }
+        return response()->ajax(1, $gameLevelingChannelOrders);
+    }
+
+    /**
+     * 撤单
+     * @return mixed
+     */
+    public function deleteOrder()
+    {
+        DB::beginTransaction();
+        try {
+            // 当前操作人是否是订单持有者
+            $gameLevelingChannelUser = GameLevelingChannelUser::where('uuid', request('uuid'))
+                ->where('user_id', request('user_id'))
+                ->first();
+
+            if (!$gameLevelingChannelUser) {
+                throw new GameLevelingOrderOperateException('当前操作人不是该订单持有人!');
+            }
+
+            // 获取渠道主单号相同的所有发单器订单
+            $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
+                ->where('status', 1)
+                ->get();
+
+            // 遍历所有订单撤单
+            foreach ($gameLevelingOrders as $gameLevelingOrder) {
+                // 本地先撤单
+                $user = User::find(request('user_id')); // 订单操作人
+                OrderOperateController::init($user, $gameLevelingOrder)->delete();
+                // 该订单下单成功的接单平台
+                $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $gameLevelingOrder->trade_no)
+                    ->get();
+
+                // 撤单
+                if ($gameLevelingPlatforms->count() > 1) {
+                    foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
+                        call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['delete']], [$gameLevelingOrder]);
+                    }
+                }
+            }
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            return response()->ajax(0, $e->getMessage());
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->ajax(0, '操作失败：服务器异常!');
+        }
+        DB::commit();
+        return response()->ajax(1, '操作成功!');
+    }
+
+    /**
+     * 完成验收
+     * @return mixed
+     */
+    public function complete()
+    {
+        DB::beginTransaction();
+        try {
+            // 当前操作人是否是订单持有者
+            $gameLevelingChannelUser = GameLevelingChannelUser::where('uuid', request('uuid'))
+                ->where('user_id', request('user_id'))
+                ->first();
+
+            if (!$gameLevelingChannelUser) {
+                throw new GameLevelingOrderOperateException('当前操作人不是该订单持有人!');
+            }
+
+            // 确认验收
+            if ($gameLevelingOrder = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
+                $user = User::find(request('user_id')); // 订单操作人
+                OrderOperateController::init($user, $gameLevelingOrder)->complete();
+                call_user_func_array([config('gameleveling.controller')[$gameLevelingOrder->platform_id], config('gameleveling.action')['complete']], [$gameLevelingOrder]);
+            } else {
+                throw new GameLevelingOrderOperateException('订单不存在!');
+            }
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            return response()->ajax(0, $e->getMessage());
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->ajax(0, '订单异常！');
+        }
+        DB::commit();
+        return response()->ajax(1, '操作成功!');
+    }
+
+    /**
+     * 取消退款
+     * @return mixed
+     */
+    public function cancelRefund()
+    {
+        DB::beginTransaction();
+        try {
+            // 当前操作人是否是订单持有者
+            $gameLevelingChannelUser = GameLevelingChannelUser::where('uuid', request('uuid'))
+                ->where('user_id', request('user_id'))
+                ->first();
+
+            if (!$gameLevelingChannelUser) {
+                throw new GameLevelingOrderOperateException('当前操作人不是该订单持有人!');
+            }
+
+            // 渠道表状态更新
+            $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
+                ->where('status', 6)
+                ->where('user_id', request('user_id'))
+                ->first();
+
+            $gameLevelingChannelOrder->status = 2;
+            $gameLevelingChannelOrder->save();
+
+            // 申请退款表状态更新
+            $gameLevelingChannelRefund = GameLevelingChannelRefund::where('game_leveling_channel_order_trade_no', request('trade_no'))
+                ->where('status', 6)
+                ->first();
+
+            $gameLevelingChannelRefund->status = 2;
+            $gameLevelingChannelRefund->save();
+
+            // 发单平台表状态更新
+            $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
+                ->where('channel_order_status', 6)
+                ->where('user_id', request('user_id'))
+                ->get();
+
+            foreach ($gameLevelingOrders as $gameLevelingOrder) {
+                $gameLevelingOrder->channel_order_status = 2;
+                $gameLevelingOrder->save();
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->ajax(0, '订单异常！');
+        }
+        DB::commit();
+        return response()->ajax(1, '操作成功!');
     }
 }

@@ -62,23 +62,23 @@ class GameLevelingChannelOrder extends Model
      */
     public function scopeFilter($query, $filter = [])
     {
-        if ($filter['tradeNo']) {
+        if (isset($filter['tradeNo']) && !empty($filter['tradeNo'])) {
             $query->where('trade_no', $filter['tradeNo']);
         }
 
-        if ($filter['gameName']) {
+        if (isset($filter['gameName']) && !empty($filter['gameName'])) {
             $query->where('game_name', $filter['gameName']);
         }
 
-        if (isset($filter['status']) && ! empty($filter['status'])) {
+        if (isset($filter['status']) && !empty($filter['status'])) {
             $query->where('status', $filter['status']);
         }
 
-        if ($filter['startDate']) {
+        if (isset($filter['startDate']) && !empty($filter['startDate'])) {
             $query->where('created_at', '>=', $filter['startDate']);
         }
 
-        if ($filter['endDate']) {
+        if (isset($filter['endDate']) && !empty($filter['endDate'])) {
             $query->where('created_at', '<=', $filter['endDate']);
         }
         return $query;
