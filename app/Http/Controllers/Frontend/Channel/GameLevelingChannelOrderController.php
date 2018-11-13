@@ -644,25 +644,26 @@ class GameLevelingChannelOrderController extends Controller
      * 渠道订单筛选
      * @return mixed
      */
-    public function gameLevelingChannelOrderList()
+    public function orderList()
     {
         try {
             $gameLevelingChannelOrders = GameLevelingChannelOrder::filter(['status' => request('status')])
-                ->where('game_leveling_channel_user_id', request('game_leveling_channel_user_id'))
-                ->where('user_id', request('user_id'))
+                ->where('game_leveling_channel_user_id', request('game_leveling_channel_user_id', 2))
+                ->where('user_id', request('user_id', 2))
                 ->oldest('created_at')
-                ->paginate(15);
+                ->get();
         } catch (Exception $e) {
             return response()->ajax(0, '服务器异常!');
         }
-        return response()->ajax(1, $gameLevelingChannelOrders);
+        return $gameLevelingChannelOrders;
+//        return response()->ajax(1, $gameLevelingChannelOrders);
     }
 
     /**
      * 撤单
      * @return mixed
      */
-    public function deleteOrder()
+    public function delete()
     {
         DB::beginTransaction();
         try {
@@ -752,7 +753,7 @@ class GameLevelingChannelOrderController extends Controller
         DB::beginTransaction();
         try {
             // 当前操作人是否是订单持有者
-            $gameLevelingChannelUser = GameLevelingChannelUser::where('uuid', request('uuid'))
+            $gameLevelingChannelUser = GameLevelingChannelUser::where('uuid', request('game_leveling_channel_user_id'))
                 ->where('user_id', request('user_id'))
                 ->first();
 

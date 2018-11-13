@@ -529,10 +529,14 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 # 渠道订单
 Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
     Route::get('/{vue?}', function (){ return view('channel.spa');})->where('vue', '[\/\w\.-]*');
+//    Route::get('/order/list', function (){ return view('channel.spa');})->where('vue', '[\/\w\.-]*');
 //    Route::get('index', 'GameLevelingChannelOrderController@index')->name('channel.index'); // 下单首页
     Route::post('game', 'GameLevelingChannelOrderController@game')->name('channel.game'); // 获取代练游戏
     Route::post('type', 'GameLevelingChannelOrderController@type')->name('channel.type'); // 获取代练类型
-    Route::post('target', 'GameLevelingChannelOrderController@target')->name('channel.target'); // 获取代练目标
+    Route::post('order-list', 'GameLevelingChannelOrderController@orderList')->name('channel.order-list'); // 渠道订单列表
+    Route::post('complete', 'GameLevelingChannelOrderController@complete')->name('channel.complete'); // 完成验收
+    Route::post('delete', 'GameLevelingChannelOrderController@delete')->name('channel.delete'); // 撤单
+    Route::post('cancel-refund', 'GameLevelingChannelOrderController@cancelRefund')->name('channel.cancel-refund'); // 取消退款
     Route::post('compute', 'GameLevelingChannelOrderController@compute')->name('channel.compute'); // 计算价格和时间
     Route::post('go', 'GameLevelingChannelOrderController@go')->name('channel.go'); // 成功跳转
 

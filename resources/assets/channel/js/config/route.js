@@ -8,8 +8,8 @@ const router = new VueRouter({
     mode: 'history',
     routes: [
         {
-            path: '*',
-            redirect: '/order',
+            path: '/channel/order',
+            redirect: '/channel/order',
             component: () => import('../components/Main'),
             children: [
                 {
@@ -22,7 +22,7 @@ const router = new VueRouter({
                 },
                 {
                     name: "orderList",
-                    path: "order/list",
+                    path: "list",
                     meta:{
                         title:'订单列表'
                     },
