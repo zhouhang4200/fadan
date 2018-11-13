@@ -69,7 +69,7 @@ class ChannelController extends Controller
                 $basicConfig = config('alipay.base_config');
 
                 $result = Pay::alipay($basicConfig)->refund($orderConfig);
-                myLog('result', [$result]);
+
                 if ($result && $result['code'] != 10000) {
                     throw new Exception('支付失败!');
                 }
@@ -110,7 +110,13 @@ class ChannelController extends Controller
     public function refuseRefund()
     {
         try {
+            $gameLevelingChannelRefund = GameLevelingChannelRefund::where('game_leveling_channel_order_trade_no', request('trade_no'))
+                ->where('status', 6)
+                ->first();
 
+            $gameLevelingChannelRefund->refuse_refund_reason = request('refuse_refund_reason');
+            $gameLevelingChannelRefund->status = 2;
+            $gameLevelingChannelRefund->save();
         } catch (Exception $e) {
             return response()->ajax(0, '操作失败：服务器错误!');
         }

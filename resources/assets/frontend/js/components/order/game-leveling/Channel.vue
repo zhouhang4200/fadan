@@ -129,7 +129,7 @@
                             type="primary"
                             size="small"
                             v-if="scope.row.status === 6"
-                            @click="dialogRefuseRefundFormVisible = true">拒绝退款</el-button>
+                            @click="showRefuseRefund(scope.row.trade_no)">拒绝退款</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -142,7 +142,7 @@
                 layout="total, prev, pager, next, jumper"
                 :total="TotalPage">
         </el-pagination>
-        <el-dialog title="同意退款" modal="true" modal-append-to-body="true" :visible.sync="dialogAgreeRefundFormVisible">
+        <el-dialog title="同意退款" :modal=true :modal-append-to-body=true :visible.sync="dialogAgreeRefundFormVisible">
             <div style="font-size: 18px">
                 你确定同意用户全额退款（部分退款）申请吗？<br/>
                 退款金额：{{refund_amount}}<br/>
@@ -153,8 +153,13 @@
                 <el-button type="primary" @click="agreeRefund(trade_no)">确 定</el-button>
             </div>
         </el-dialog>
-        <el-dialog title="拒绝退款" :visible.sync="dialogRefuseRefundFormVisible">
-            <div style="font-size: 18px">你确定拒绝用户全额退款（部分退款）申请吗？</div>
+        <el-dialog title="拒绝退款" :modal=true :modal-append-to-body=true :visible.sync="dialogRefuseRefundFormVisible">
+            <el-form :model="form">
+                <div style="font-size: 18px;margin-bottom: 10px">你确定拒绝用户全额退款（部分退款）申请吗？</div>
+                <el-form-item>
+                    <el-input type="textarea" placeholder="请输入拒绝原因" v-model="form.refuse_refund_reason"></el-input>
+                </el-form-item>
+            </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogRefuseRefundFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="refuseRefund('agreeRefundForm')">确 定</el-button>
@@ -162,7 +167,11 @@
         </el-dialog>
     </div>
 </template>
-
+<style>
+    .el-textarea__inner {
+        min-height: 110px;
+    }
+</style>
 <script>
     export default {
         methods: {
@@ -172,6 +181,20 @@
                 this.$api.GameLevelingChannelOrderRefund({trade_no:tradeNo}).then(res => {
                     this.refund_amount = res.refund_amount;
                     this.refund_reason = res.refund_reason;
+                    this.trade_no=res.game_leveling_channel_order_trade_no;
+                }).catch(err => {
+                    this.$alert('获取数据失败, 请重试!', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                });
+            },
+            //显示拒绝退款弹窗
+            showRefuseRefund(tradeNo) {
+                this.dialogRefuseRefundFormVisible=true;
+                this.form.trade_no=tradeNo;
+                this.$api.GameLevelingChannelOrderRefund({trade_no:tradeNo}).then(res => {
                     this.trade_no=res.game_leveling_channel_order_trade_no;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
@@ -201,7 +224,7 @@
             },
             // 拒绝退款
             refuseRefund(formName) {
-                this.$api.GameLevelingChannelOrderAgreeRefund(this.form).then(res => {
+                this.$api.GameLevelingChannelOrderRefuseRefund(this.form).then(res => {
                     this.$message({
                         showClose: true,
                         type: res.status == 1 ? 'success' : 'error',
@@ -327,6 +350,10 @@
                     status:'',
                     date:'',
                     page:1
+                },
+                form:{
+                    trade_no:'',
+                    refuse_refund_reason:''
                 },
                 TotalPage:0,
                 tableData: [],
