@@ -420,20 +420,19 @@ class GameLevelingChannelOrderController extends Controller
     {
         try {
             $basicConfig = config('alipay.base_config');
-
             $data = Pay::alipay($basicConfig)->verify();
 
-            $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $data->out_trade_no)->first();
-
+            // 支付验证成功跳到成功页面
             if ($data) {
+                $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $data->out_trade_no)->first();
                 return view('channel.success', compact('gameLevelingChannelOrder'));
-            } else {
-                return view('channel.demand');
             }
         } catch (Exception $e) {
             myLog('alipay-return-error', ['message' => $e->getMessage()]);
             return view('channel.index');
         }
+        // 支付验证失败跳到下单页面
+        return view('channel.demand');
     }
 
     /**
@@ -442,27 +441,26 @@ class GameLevelingChannelOrderController extends Controller
      */
     public function alipayNotify()
     {
-        myLog('test', [12231]);
         DB::beginTransaction();
         try {
             $basicConfig = config('alipay.base_config');
             $alipay = Pay::alipay($basicConfig);
-            $data = $alipay->verify(); // 是的，验签就这么简单！
+            $data = $alipay->verify();
 
             // 成功更新订单状态
             if (isset($data) && ($data->trade_status == 'TRADE_SUCCESS' || $data->trade_status == 'TRADE_FINISHED')) {
                 $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $data->out_trade_no)->first();
                 // 验证订单号
                 if (! isset($gameLevelingChannelOrder) || empty($gameLevelingChannelOrder)) {
-                    throw new DailianException('订单号错误');
+                    throw new DailianException('订单号错误！');
                 }
                 // 验证appid
                 if ($data->app_id != $basicConfig['app_id']) {
-                    throw new DailianException('APPID错误');
+                    throw new DailianException('APPID错误！');
                 }
                 // 验证价格
                 if ($data->total_amount != $gameLevelingChannelOrder->payment_amount) {
-                    throw new DailianException('支付价格不一致');
+                    throw new DailianException('支付价格不一致！');
                 }
 
                 $createOrderData = [];
@@ -497,6 +495,7 @@ class GameLevelingChannelOrderController extends Controller
                 $gameLevelingChannelOrder->status = 1; // （未接单）已支付
                 $gameLevelingChannelOrder->payment_type = 1; // 支付渠道
                 $gameLevelingChannelOrder->save();
+
                 $gameLevelingOrder->channel_order_trade_no = $gameLevelingChannelOrder->trade_no; // 渠道订单
                 $gameLevelingOrder->channel_order_status = 1; // 渠道订单支付状态
                 $gameLevelingOrder->save();
@@ -504,7 +503,6 @@ class GameLevelingChannelOrderController extends Controller
                 throw new Exception('订单支付失败');
             }
         } catch (DailianException $e) {
-            // 退款逻辑
             DB::rollback();
             myLog('alipay-notify-error', ['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
             return Response::create('fail');
@@ -544,17 +542,16 @@ class GameLevelingChannelOrderController extends Controller
     public function wechatReturn(Request $request)
     {
         try {
-//            sleep(5);
             $basicConfig = config('wechat.find_config');
             $data = Pay::wechat($basicConfig)->find(['out_trade_no' => $request->no]);
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $request->no)->first();
 
             if (isset($gameLevelingChannelOrder) && ! empty($gameLevelingChannelOrder) && isset($data) && ! empty($data) && $data->trade_state == 'SUCCESS') {
-//                return view('mobile.leveling.success', compact('mobileOrder'));
+//                return view('channel.success', compact('mobileOrder'));
                 myLog('wechat-return-success', ['data' => $data ?? '']);
             } else {
                 myLog('wechat-return-fail', ['data' => $data ?? '']);
-//                return view('mobile.leveling.demand');
+//                return view('channel.index');
             }
         } catch (Exception $e) {
             myLog('wechat-return-error', ['message' => $e->getMessage()]);
