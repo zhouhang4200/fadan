@@ -51,6 +51,7 @@ class ChannelController extends Controller
                 ->first();
 
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
+                ->where('user_id', Auth::user()->getPrimaryUserId())
                 ->where('status', 6)
                 ->first();
 
@@ -70,7 +71,7 @@ class ChannelController extends Controller
 
                 $result = Pay::alipay($basicConfig)->refund($orderConfig);
 
-                if ($result && $result['code'] != 10000) {
+                if (!$result || $result['code'] != 10000) {
                     throw new Exception('支付失败!');
                 }
 //                return $result;
@@ -90,7 +91,7 @@ class ChannelController extends Controller
 
                 $result = Pay::wechat($basicConfig)->refund($orderConfig);
 
-                if ($result && $result['return_code'] !== 'SUCCESS') {
+                if (!$result || $result['return_code'] !== 'SUCCESS') {
                     throw new Exception('支付失败!');
                 }
 //                return $result;

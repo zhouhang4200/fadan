@@ -167,11 +167,7 @@
         </el-dialog>
     </div>
 </template>
-<style>
-    .el-textarea__inner {
-        min-height: 110px;
-    }
-</style>
+
 <script>
     export default {
         methods: {
@@ -253,10 +249,9 @@
                 });
                 this.handStatusCount();
             },
-
             // 获取渠道游戏
             handleGameData(){
-                this.$api.GameLevelingChannelOGame().then(res => {
+                this.$api.GameLevelingChannelGame().then(res => {
                     this.games = res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
@@ -269,7 +264,7 @@
             // 获取状态数量
             handStatusCount()
             {
-                this.$api.GameLevelingChannelOStatus(this.searchParams).then(res => {
+                this.$api.GameLevelingChannelStatus(this.searchParams).then(res => {
                     this.statusCount = res;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
