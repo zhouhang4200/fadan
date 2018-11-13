@@ -26,7 +26,9 @@
 <script src="/mobile/lib/js/jquery-2.1.4.js"></script>
 <script src="/mobile/lib/js/fastclick.js"></script>
 <script src="/mobile/lib/js/jquery-weui.js"></script>
+<script>
+    $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}});
+</script>
 @yield('js')
 </body>
-
 </html>

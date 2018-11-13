@@ -48,4 +48,44 @@ class GameLevelingChannelOrder extends Model
     {
         $this->belongsTo(GameLevelingChannelUser::class);
     }
+
+    public function gameLevelingOrders()
+    {
+        return $this->hasMany(GameLevelingOrder::class, 'channel_order_trade_no', 'trade_no');
+    }
+
+    /**
+     * 渠道列表筛选
+     * @param $query
+     * @param array $filter
+     * @return mixed
+     */
+    public function scopeFilter($query, $filter = [])
+    {
+        if ($filter['tradeNo']) {
+            $query->where('trade_no', $filter['tradeNo']);
+        }
+
+        if ($filter['gameName']) {
+            $query->where('game_name', $filter['gameName']);
+        }
+
+        if (isset($filter['status']) && ! empty($filter['status'])) {
+            $query->where('status', $filter['status']);
+        }
+
+        if ($filter['startDate']) {
+            $query->where('created_at', '>=', $filter['startDate']);
+        }
+
+        if ($filter['endDate']) {
+            $query->where('created_at', '<=', $filter['endDate']);
+        }
+        return $query;
+    }
+
+    public function gameLevelingChannelRefund()
+    {
+        return $this->hasOne(GameLevelingChannelRefund::class, 'game_leveling_channel_order_trade_no', 'trade_no');
+    }
 }

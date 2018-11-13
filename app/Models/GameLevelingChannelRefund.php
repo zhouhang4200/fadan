@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class GameLevelingChannelRefund extends Model
+{
+    public $fillable = ['game_leveling_channel_order_trade_no', 'payment_type', 'status', 'amount', 'payment_amount', 'refund_amount', 'refund_reason', 'refuse_refund_reason'];
+
+    public function gameLevelingChannelOrder()
+    {
+        return $this->belongsTo(GameLevelingChannelOrder::class, 'trade_no', 'game_leveling_channel_order_trade_no');
+    }
+}

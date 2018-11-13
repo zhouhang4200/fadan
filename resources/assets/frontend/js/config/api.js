@@ -155,6 +155,34 @@ export default {
     taobaoOrderStatusQuantity(params) {
         return post('/v2/order/game-leveling/taobao/status-quantity', params);
     },
+    // 渠道订单
+    GameLevelingChannelOrder(params) {
+        return post('/v2/order/game-leveling/channel', params)
+    },
+    // 渠道订单游戏
+    GameLevelingChannelOGame(params) {
+        return post('/v2/order/game-leveling/channel/game', params)
+    },
+    // 渠道订单状态
+    GameLevelingChannelOStatus(params) {
+        return post('/v2/order/game-leveling/channel/status', params)
+    },
+    // 同意退款
+    GameLevelingChannelOrderAgreeRefund(params) {
+        return post('/v2/order/game-leveling/channel/agree-refund', params)
+    },
+    // 拒绝退款
+    GameLevelingChannelOrderRefuseRefund(params) {
+        return post('/v2/order/game-leveling/channel/refuse-refund', params)
+    },
+    // 状态数量
+    GameLevelingChannelOrderStatusCount(params) {
+        return post('/v2/order/game-leveling/channel/status-count', params)
+    },
+    // 申请退款记录
+    GameLevelingChannelOrderRefund(params) {
+        return post('/v2/order/game-leveling/channel/refund', params)
+    },
     // 账号-实名认证
     AccountAuthenticationForm(params) {
         return post('/v2/account/authentication-form', params)

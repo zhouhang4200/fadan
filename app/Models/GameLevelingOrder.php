@@ -752,4 +752,9 @@ class GameLevelingOrder extends Model
 
         return $query;
     }
+
+    public function gameLevelingChannelOrder()
+    {
+        return $this->belongSto(GameLevelingChannelOrder::class, 'trade_no', 'channel_order_trade_no');
+    }
 }

@@ -34,6 +34,13 @@ const router = new VueRouter({
             menu:true,
             children: [
                 {
+                    name: "gameLevelingOrderChannel",
+                    menu: true,
+                    path: "game-leveling/channel",
+                    meta:{title:'渠道订单'},
+                    component: resolve => void(require([ '../components/order/game-leveling/channel'], resolve)),
+                },
+                {
                     name: "gameLevelingOrderTaobao",
                     menu: true,
                     path: "game-leveling/taobao",
@@ -74,7 +81,7 @@ const router = new VueRouter({
                     path: "game-leveling/repeat",
                     meta:{title:'订单重发'},
                     component: resolve => void(require([ '../components/order/game-leveling/Repeat'], resolve)),
-                },
+                }
             ]
         },
         {

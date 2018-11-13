@@ -27,8 +27,18 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
         Route::post('game-leveling-types', 'GameLevelingTypeController@index')->name('game-leveling-types');
         # 订单
         Route::prefix('order')->namespace('Order')->group(function () {
+            // 代练订单
             # 代练订单
             Route::prefix('game-leveling')->namespace('GameLeveling')->group(function () {
+                // 渠道订单
+                Route::post('channel', 'ChannelController@index')->name('order.channel');
+                Route::post('channel/agree-refund', 'ChannelController@agreeRefund')->name('order.channel.agree-refund');
+                Route::post('channel/refuse-refund', 'ChannelController@refuseRefund')->name('order.channel.refuse-refund');
+                Route::post('channel/status-count', 'ChannelController@statusCount')->name('order.channel.status-count');
+                Route::post('channel/game', 'ChannelController@game')->name('order.channel.game');
+                Route::post('channel/status', 'ChannelController@status')->name('order.channel.status');
+                Route::post('channel/refund', 'ChannelController@refund')->name('order.channel.refund');
+                // 获取订单
                 # 获取订单
                 Route::post('/', 'IndexController@index')->name('order.game-leveling');
                 # 订单状态数量
