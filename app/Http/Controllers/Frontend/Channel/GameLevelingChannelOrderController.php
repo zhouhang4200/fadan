@@ -652,6 +652,7 @@ class GameLevelingChannelOrderController extends Controller
                 ->oldest('created_at')
                 ->get();
         } catch (Exception $e) {
+            myLog('channel-order-list', [$e->getMessage(), $e->getLine()]);
             return response()->ajax(0, '服务器异常!');
         }
         return $gameLevelingChannelOrders;
@@ -683,8 +684,8 @@ class GameLevelingChannelOrderController extends Controller
             $gameLevelingChannelOrder->status = 4;
             $gameLevelingChannelOrder->save();
         } catch (Exception $e) {
-            myLog('test', [$e->getMessage(), $e->getLine()]);;
             DB::rollback();
+            myLog('channel-complete', [$e->getMessage(), $e->getLine()]);;
             return response()->ajax(0, '订单异常！');
         }
         DB::commit();
@@ -737,7 +738,7 @@ class GameLevelingChannelOrderController extends Controller
             }
         } catch (Exception $e) {
             DB::rollback();
-            myLog('test', [$e->getMessage(), $e->getLine()]);
+            myLog('channel-cancel-refund', [$e->getMessage(), $e->getLine()]);
             return response()->ajax(0, '订单异常！');
         }
         DB::commit();

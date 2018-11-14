@@ -9,9 +9,6 @@ export default {
     GameLevelingChannelOrderComplete(params) {
         return post('/channel/complete', params)
     },
-    GameLevelingChannelOrderDelete(params) {
-        return post('/channel/delete', params)
-    },
     GameLevelingChannelOrderCancelRefund(params) {
         return post('/channel/cancel-refund', params)
     },
