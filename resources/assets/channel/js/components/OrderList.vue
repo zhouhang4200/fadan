@@ -63,6 +63,7 @@
 </template>
 
 <script>
+    import { Toast } from 'vant'
     export default {
         name: "Order",
 
@@ -101,18 +102,20 @@
             },
             // 完成
             complete(item){
-                this.$api.GameLevelingChannelOrderComplete({user_id:item.user_id, trade_no:item.trade_no, game_leveling_channel_user_id:item.game_leveling_channel_user_id}).then(res => {
-                    this.$message({
-                        showClose: true,
-                        type: res.status == 1 ? 'success' : 'error',
-                        message: res.message
-                    });
+                this.$api.GameLevelingChannelOrderComplete({
+                    user_id:item.user_id,
+                    trade_no:item.trade_no,
+                    game_leveling_channel_user_id:item.game_leveling_channel_user_id
+                }).then(res => {
+                    if (res.status === 1) {
+                        Toast.success(res.message);
+                    } else {
+                        Toast.fail(res.message);
+                    }
+                    this.searchParams.status = 3;
+                    this.handleOrderList();
                 }).catch(err => {
-                    this.$alert('获取数据失败, 请重试!', '提示', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                        }
-                    });
+
                 });
             },
             // 申请退款
@@ -121,16 +124,24 @@
             },
             // 取消退款
             cancelRefund(item){
-                console.log(222);
-                this.$api.GameLevelingChannelOrderCancelRefund({user_id:item.user_id, trade_no:item.trade_no, game_leveling_channel_user_id:item.game_leveling_channel_user_id}).then(res => {
-                   console.log(res);
+                this.$api.GameLevelingChannelOrderCancelRefund({
+                    user_id:item.user_id,
+                    trade_no:item.trade_no,
+                    game_leveling_channel_user_id:item.game_leveling_channel_user_id
+                }).then(res => {
+                    if (res.status === 1) {
+                        Toast.success(res.message);
+                    } else {
+                        Toast.fail(res.message);
+                    }
+                    this.searchParams.status = 6;
+                    this.handleOrderList();
                 }).catch(err => {
 
                 });
             },
             // 点击获取各状态数据
             onClick(index, title) {
-                console.log(index)
                 if (index === 0) {
                     this.handleOrderList();
                 } else if(index === 1) {

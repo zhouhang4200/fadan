@@ -529,7 +529,6 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 # 渠道订单
 Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
     Route::get('/{vue?}', function (){ return view('channel.spa');})->where('vue', '[\/\w\.-]*');
-//    Route::get('/order/list', function (){ return view('channel.spa');})->where('vue', '[\/\w\.-]*');
 //    Route::get('index', 'GameLevelingChannelOrderController@index')->name('channel.index'); // 下单首页
     Route::post('game', 'GameLevelingChannelOrderController@game')->name('channel.game'); // 获取代练游戏
     Route::post('type', 'GameLevelingChannelOrderController@type')->name('channel.type'); // 获取代练类型
