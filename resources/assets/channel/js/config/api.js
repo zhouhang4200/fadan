@@ -14,5 +14,11 @@ export default {
     },
     getGames() {
         return post('/channel/game')
+    },
+    GameLevelingChannelOrderApplyRefund(params) {
+        return post('/channel/apply-refund', params)
+    },
+    GameLevelingChannelOrderApplyRefundShow(params) {
+        return post('/channel/apply-refund-show', params)
     }
 }

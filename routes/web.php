@@ -533,6 +533,8 @@ Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
     Route::post('game', 'GameLevelingChannelOrderController@game')->name('channel.game'); // 获取代练游戏
     Route::post('type', 'GameLevelingChannelOrderController@type')->name('channel.type'); // 获取代练类型
     Route::post('order-list', 'GameLevelingChannelOrderController@orderList')->name('channel.order-list'); // 渠道订单列表
+    Route::post('apply-refund', 'GameLevelingChannelOrderController@applyRefund')->name('channel.apply-refund'); // 申请退款
+    Route::post('apply-refund-show', 'GameLevelingChannelOrderController@applyRefundShow')->name('channel.apply-refund-show'); // 申请退款
     Route::post('complete', 'GameLevelingChannelOrderController@complete')->name('channel.complete'); // 完成验收
     Route::post('delete', 'GameLevelingChannelOrderController@delete')->name('channel.delete'); // 撤单
     Route::post('cancel-refund', 'GameLevelingChannelOrderController@cancelRefund')->name('channel.cancel-refund'); // 取消退款

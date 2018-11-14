@@ -39,7 +39,7 @@ const router = new VueRouter({
                     name: "orderRefund",
                     path: "refund",
                     meta:{
-                        title:'订单详情'
+                        title:'申请退款'
                     },
                     component: () => import('../components/OrderRefund'),
                 },

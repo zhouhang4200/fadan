@@ -53,7 +53,7 @@
                     </div>
                     <div slot="footer" style="text-align: right">
                         <van-button v-if="item.status === 3" size="small" @click="complete(item)">确认收货</van-button>
-                        <van-button v-if="item.status === 2" size="small" @click="applyRefund(item)">申请退款</van-button>
+                        <van-button v-if="item.status === 2" type="primary" size="small" @click="applyRefund(item)">申请退款</van-button>
                         <van-button v-if="item.status === 6" size="small" @click="cancelRefund(item)">取消退款</van-button>
                     </div>
                 </van-panel>
@@ -97,6 +97,10 @@
         },
 
         methods: {
+            // 申请退款按钮
+            applyRefund(item){
+                this.$router.push({name:'orderRefund', query:{trade_no:item.trade_no, user_id:item.user_id}})
+            },
             onClickLeft() {
                 this.$router.push({path: '/channel/order'})
             },
@@ -117,10 +121,6 @@
                 }).catch(err => {
 
                 });
-            },
-            // 申请退款
-            applyRefund(item){
-
             },
             // 取消退款
             cancelRefund(item){

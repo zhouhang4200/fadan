@@ -744,4 +744,71 @@ class GameLevelingChannelOrderController extends Controller
         DB::commit();
         return response()->ajax(1, '操作成功!');
     }
+
+    /**
+     * 申请退款
+     */
+    public function applyRefund()
+    {
+        myLog('test', [request()->all()]);
+        DB::beginTransaction();
+        try {
+            // 申请退款表状态更新
+            $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
+                ->where('status', 2)
+                ->where('user_id', request('user_id'))
+                ->first();
+            $gameLevelingChannelOrder->status = 6;
+            $gameLevelingChannelOrder->save();
+            // 申请退款
+            $data['game_leveling_channel_order_trade_no'] = $gameLevelingChannelOrder->trade_no;
+            $data['game_leveling_type_id'] = $gameLevelingChannelOrder->game_leveling_type_id;
+            $data['game_leveling_type_name'] = $gameLevelingChannelOrder->game_leveling_type_name;
+            $data['day'] = $gameLevelingChannelOrder->day;
+            $data['hour'] = $gameLevelingChannelOrder->hour;
+            $data['type'] = request('type');
+            $data['payment_type'] = $gameLevelingChannelOrder->payment_type;
+            $data['status'] = 6;
+            $data['amount'] = $gameLevelingChannelOrder->amount;
+            $data['payment_amount'] = $gameLevelingChannelOrder->payment_amount;
+            $data['refund_amount'] = request('refund_amount');
+            $data['pic1'] = '';
+            $data['pic2'] = '';
+            $data['pic3'] = '';
+            $data['refund_reason'] = request('refund_reason');
+            $data['refuse_refund_reason'] = '';
+
+            GameLevelingChannelRefund::create($data);
+            // 发单平台表状态更新
+            $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
+                ->where('channel_order_status', 6)
+                ->where('user_id', request('user_id'))
+                ->get();
+
+            foreach ($gameLevelingOrders as $gameLevelingOrder) {
+                $gameLevelingOrder->channel_order_status = 2;
+                $gameLevelingOrder->save();
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+        }
+        DB::commit();
+    }
+
+    /**
+     * 申请退款页面数据
+     * @return mixed
+     */
+    public function applyRefundShow()
+    {
+        try {
+            // 渠道表状态更新
+            return  GameLevelingChannelOrder::where('trade_no', request('trade_no'))
+                ->where('status', 2)
+                ->where('user_id', request('user_id'))
+                ->first();
+        } catch (Exception $e) {
+
+        }
+    }
 }

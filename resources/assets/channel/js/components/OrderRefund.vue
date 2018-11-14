@@ -22,21 +22,25 @@
                     <van-cell >
                         <template slot="title">
                             <span class="van-cell-text">代练目标</span>
+                            {{order.demand}}
                         </template>
                     </van-cell>
                     <van-cell >
                         <template slot="title">
                             <span class="van-cell-text">代练类型</span>
+                            {{order.game_leveling_type_name}}
                         </template>
                     </van-cell>
                     <van-cell >
                         <template slot="title">
                             <span class="van-cell-text">代练价格</span>
+                            {{order.payment_amount}}
                         </template>
                     </van-cell>
                     <van-cell >
                         <template slot="title">
                             <span class="van-cell-text">预计耗时</span>
+                            {{order.day ? order.day+'天' : ''}}{{order.hour ? order.hour+'小时' : ''}}
                         </template>
                     </van-cell>
                 </van-cell-group>
@@ -58,16 +62,15 @@
                             <van-cell title="部分退款" clickable @click="form.type = '2'">
                                 <van-radio name="2" />
                             </van-cell>
-                            <van-field v-model="form.amount" placeholder="请输入退款金额" v-show="form.type == 2"/>
+                            <van-field v-model="form.refund_amount" placeholder="请输入退款金额" v-show="form.type == 2"/>
                         </van-cell-group>
                     </van-radio-group>
 
                     <van-field
-                            v-model="form.remark"
-                            placeholder="请填写退款备注"
+                            v-model="form.refund_reason"
+                            placeholder="请填写退款原因"
                             type="textarea"
                     />
-
 
                 </van-cell-group>
                 <div class="image">
@@ -99,37 +102,56 @@
         name: "OrderRefund",
         data() {
             return {
-                order:{},
+                order:{
+                    demand:'',
+                    game_leveling_type_name:'',
+                    payment_amount:'',
+                    day:'',
+                    hour:'',
+                    user_id:'',
+                    trade_no:''
+                },
                 form: {
                     type:'1',
-                    amount:'',
-                    remark:'',
+                    refund_amount:'',
+                    refund_reason:'',
                     images: [],
                 },
             };
+        },
+        created() {
+            this.handleOrder();
         },
         mounted() {
 
         },
         computed: {
             displayUpload() {
-                if (this.form.images.length < 3) {
-                    return true;
-                }
+                // if (this.form.images.length < 3) {
+                //     return true;
+                // }
             }
         },
         methods: {
+            // 页面数据
             handleOrder() {
-                // 获取订单数据
+                this.$api.GameLevelingChannelOrderApplyRefundShow({
+                    user_id:this.$route.query.user_id,
+                    trade_no:this.$route.query.trade_no
+                }).then(res => {
+                  this.order=res;
+                }).catch(err => {
+
+                });
             },
             onClickLeft() {
                 this.$router.push({path: '/channel/order'})
             },
             onChange(value) {
                 if (value == 1) {
-                    this.form.amount = '100';
+                    this.form.refund_amount = '';
                 } else {
-                    this.form.amount = '';
+                    this.form.refund_amount = '';
                 }
             },
             onDeleteImage(index) {
@@ -138,8 +160,17 @@
             onRead(file) {
                 this.form.images.push(file.content);
             },
+            // 表单提交
             onSubmitForm() {
-                this.$toast('提交')
+                this.$api.GameLevelingChannelOrderApplyRefund(this.form).then(res => {
+                    if (res.status === 1) {
+                        Toast.success(res.message);
+                    } else {
+                        Toast.fail(res.message);
+                    }
+                }).catch(err => {
+
+                });
             }
         }
     }
