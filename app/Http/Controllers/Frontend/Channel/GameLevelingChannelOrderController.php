@@ -41,13 +41,12 @@ class GameLevelingChannelOrderController extends Controller
     {
         try {
             $games = GameLevelingChannelGame::where('user_id', request('user_id', 2))
-                ->pluck('game_name')
-                ->unique()
+                ->pluck('game_name', 'game_id')
                 ->toArray();
         } catch (\Exception $e) {
             return response()->ajax(0, '数据异常');
         }
-        return response()->ajax(1, $games);
+        return response()->ajax(1, '', [$games]);
     }
 
     /**
@@ -57,7 +56,7 @@ class GameLevelingChannelOrderController extends Controller
     public function type()
     {
         try {
-            $types = GameLevelingChannelGame::where('game_name', request('game_name'))
+            $types = GameLevelingChannelGame::where('game_id', request('game_id'))
                 ->where('user_id', request('user_id', 2))
                 ->pluck('game_leveling_type_name')
                 ->unique()

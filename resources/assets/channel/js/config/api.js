@@ -14,5 +14,8 @@ export default {
     },
     GameLevelingChannelOrderCancelRefund(params) {
         return post('/channel/cancel-refund', params)
+    },
+    getGames() {
+        return post('/channel/game')
     }
 }

@@ -14,7 +14,7 @@ const router = new VueRouter({
             children: [
                 {
                     name: "order",
-                    path: "order",
+                    path: "/",
                     meta:{
                         title:'下单'
                     },
@@ -27,6 +27,22 @@ const router = new VueRouter({
                         title:'订单列表'
                     },
                     component: () => import('../components/OrderList'),
+                },
+                {
+                    name: "orderDetail",
+                    path: "detail",
+                    meta:{
+                        title:'订单详情'
+                    },
+                    component: () => import('../components/OrderDetail'),
+                },
+                {
+                    name: "orderRefund",
+                    path: "refund",
+                    meta:{
+                        title:'订单详情'
+                    },
+                    component: () => import('../components/OrderRefund'),
                 },
             ]
         },

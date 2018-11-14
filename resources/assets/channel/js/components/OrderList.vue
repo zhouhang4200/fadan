@@ -1,80 +1,70 @@
 <template>
     <div class="order-list">
         <van-nav-bar
+                :fixed=true
                 title="订单列表"
                 left-text="返回"
                 left-arrow
+                @click-left="onClickLeft"
         />
-
-        <van-tabs color="#198cff" @click="onClick">
-            <van-tab title="全部"></van-tab>
-            <van-tab title="进行中"></van-tab>
-            <van-tab title="待收货"></van-tab>
-            <van-tab title="完成"></van-tab>
-            <van-tab title="退款中"></van-tab>
-            <van-tab title="已退款"></van-tab>
-        </van-tabs>
-        <van-list
-                v-model="loading"
-                :finished="finished"
-                @load="onLoad"
-        >
-            <van-panel
-                    icon="van-icon van-icon-clock"
-                    title="标题"
-                    desc="描述信息"
-                    status="状态"
-                    v-for="item in list"
-                    :key="item.id"
-                    :title="item.title"
+        <div style="margin-top: 46px">
+            <van-tabs
+                    color="#198cff"
+                    @click="onClick"
+                    sticky
+                    :offset-top=0
             >
-                <div slot="header" class="van-cell van-panel__header">
-                    <img src="/channel/images/time.png" class="game-icon">
-                    <div class="van-cell__title"><span>等级：{{item.demand}}</span>
-                        <div class="van-cell__label">{{item.created_at}}</div>
+                <van-tab title="全部"></van-tab>
+                <van-tab title="进行中"></van-tab>
+                <van-tab title="待收货"></van-tab>
+                <van-tab title="完成"></van-tab>
+                <van-tab title="退款中"></van-tab>
+                <van-tab title="已退款"></van-tab>
+            </van-tabs>
+            <van-list
+                    v-model="loading"
+                    :finished="finished"
+                    @load="onLoad"
+            >
+                <van-panel
+                        v-for="item in list"
+                        :key="item.id"
+                        :title="item.title"
+                        style="margin: 10px 10px;border: 1px solid #eee;border-radius: 8px;"
+                >
+                    <div slot="header" class="van-cell van-panel__header">
+                        <img src="/channel/images/time.png" class="game-icon">
+                        <div class="van-cell__title">
+                            <span>等级：{{item.demand}}</span>
+                            <div class="van-cell__label">{{item.created_at}}</div>
+                        </div>
+                        <div class="van-cell__value"><span>{{status[item.status]}}</span></div>
                     </div>
-                    <div class="van-cell__value"><span>{{status[item.status]}}</span></div>
-                </div>
-
-                <div style="padding: 15px 30px;background: #f6f7f8">
-                    <div class="">
-
+                    <div style="padding: 15px 30px;background: #f6f7f8">
+                        <div class="">
+                            游戏区服：{{item.game_name}}/{{item.game_region_name}}/{{item.game_server_name}}
+                        </div>
+                        <div class="">
+                            角色名称：{{item.game_role}}
+                        </div>
                     </div>
-                    <div class="">
-
+                    <div style="padding:5px  15px;text-align: right;font-size: 12px">
+                        代练价格：￥{{ item.payment_amount }}
                     </div>
-                </div>
-                <div style="padding: 15px 30px;background: #f6f7f8">
-                    <div class="">
-                        游戏区服：{{item.game_name}}/{{item.game_region_name}}/{{item.game_server_name}}
+                    <div slot="footer" style="text-align: right">
+                        <van-button v-if="item.status === 3" size="small" @click="complete(item)">确认收货</van-button>
+                        <van-button v-if="item.status === 2" size="small" @click="applyRefund(item)">申请退款</van-button>
+                        <van-button v-if="item.status === 6" size="small" @click="cancelRefund(item)">取消退款</van-button>
                     </div>
-                    <div class="">
-                        角色名称：{{item.game_role}}
-                    </div>
-                </div>
-                <div style="padding:5px  15px;text-align: right;font-size: 12px">
-                    代练价格：￥{{ item.payment_amount }}
-                </div>
-                <div slot="footer" style="text-align: right">
-                    <van-button v-if="item.status === 3" size="small" @click="complete(item)">确认收货</van-button>
-                    <van-button v-if="item.status === 2" size="small" @click="applyRefund(item)">申请退款</van-button>
-                    <van-button v-if="item.status === 6" size="small" @click="cancelRefund(item)">取消退款</van-button>
-                </div>
-            </van-panel>
-        </van-list>
-
+                </van-panel>
+            </van-list>
+        </div>
     </div>
 </template>
 
 <script>
     export default {
         name: "Order",
-
-        mixins: [],
-
-        components: {},
-
-        props: {},
 
         data() {
             return {
@@ -95,10 +85,6 @@
             };
         },
 
-        computed: {},
-
-        watch: {},
-
         created() {
             this.handleOrderList();
         },
@@ -110,6 +96,9 @@
         },
 
         methods: {
+            onClickLeft() {
+                this.$router.push({path: '/channel/order'})
+            },
             // 完成
             complete(item){
                 this.$api.GameLevelingChannelOrderComplete({user_id:item.user_id, trade_no:item.trade_no, game_leveling_channel_user_id:item.game_leveling_channel_user_id}).then(res => {
@@ -173,9 +162,6 @@
                     });
                 });
             },
-            onClickLeft() {
-                this.$router.push({path: '/channel/order'})
-            },
             onLoad() {
                 // 异步更新数据
                 setTimeout(() => {
@@ -202,6 +188,9 @@
             line-height: 33px;
             margin-top: 5px;
             margin-right: 10px;
+        }
+        .van-cell {
+            border-radius: 8px;
         }
     }
 </style>

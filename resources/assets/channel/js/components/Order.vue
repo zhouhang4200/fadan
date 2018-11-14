@@ -1,48 +1,43 @@
 <template>
     <div class="order">
         <van-nav-bar
+                :fixed=true
                 title="丸子代练"
                 left-text="返回"
                 left-arrow
                 @click-left="onClickLeft"
-                @click-right="onClickRight"
         />
-        <img class="order-poster" src="/channel/images/banner.jpg">
-        <van-cell-group class="goods-cell-group">
-            <!--<van-cell value="进入店铺" icon="shop" is-link>-->
-                <!--<template slot="title">-->
-                    <!--<span class="van-cell-text">有赞的店</span>-->
-                    <!--<van-tag class="goods-tag" type="danger">官方</van-tag>-->
-                <!--</template>-->
-            <!--</van-cell>-->
-            <van-cell title="游戏" is-link @click="onClickGame" />
-            <van-cell title="代练类型" is-link @click="onClickGame" />
-            <van-cell title="代练目示" is-link @click="onClickGame" />
+        <div style="margin-top: 46px">
+            <img class="order-poster" src="/channel/images/banner.jpg">
+            <van-cell-group class="goods-cell-group">
+                <van-cell title="游戏" is-link @click="onClickGame" />
+                <van-cell title="代练类型" is-link @click="onClickGame" />
+                <van-cell title="代练目示" is-link @click="onClickGame" />
+            </van-cell-group>
 
-        </van-cell-group>
+            <div class="pic-box" style="margin: 30px 30px">
+                <van-row >
+                    <van-col span="12">
+                        <div class="pic" style="height: 60px">
+                            <img src="/mobile/lib/images/pic.png">
+                            <div class="new-pic">待评估</div>
+                            <div class="old-pic a">代练价格
+                            </div>
+                        </div>
+                    </van-col>
+                    <van-col span="12">
+                        <div class="time">
+                            <img src="/mobile/lib/images/time.png" alt="">
+                            <div class="time">待评估</div>
+                            <div class="old-pic">预计耗时</div>
+                        </div>
+                    </van-col>
+                </van-row>
+            </div>
 
-       <div class="pic-box" style="margin: 30px 30px">
-           <van-row >
-               <van-col span="12">
-                   <div class="pic" style="height: 60px">
-                       <img src="/mobile/lib/images/pic.png">
-                       <div class="new-pic">待评估</div>
-                       <div class="old-pic a">代练价格
-                       </div>
-                   </div>
-               </van-col>
-               <van-col span="12">
-                   <div class="time">
-                       <img src="/mobile/lib/images/time.png" alt="">
-                       <div class="time">待评估</div>
-                       <div class="old-pic">预计耗时</div>
-                   </div>
-               </van-col>
-           </van-row>
-       </div>
-
-        <div style="margin: 30px">
-            <van-button size="normal" type="primary" style="width: 100%">我要代练</van-button>
+            <div style="margin: 30px">
+                <van-button size="normal" type="primary" style="width: 100%">我要代练</van-button>
+            </div>
         </div>
 
         <van-popup
@@ -51,7 +46,7 @@
             <van-picker
                     show-toolbar
                     title="请选择游戏"
-                    :columns="columns"
+                    :columns="games"
                     @change="onChange" />
         </van-popup>
     </div>
@@ -70,7 +65,7 @@
         data() {
             return {
                 gameShow:false,
-                columns: ['杭州', '宁波', '温州', '嘉兴', '湖州']
+                games: [],
             };
         },
 
@@ -80,11 +75,18 @@
 
         created() {},
 
-        mounted() {},
+        mounted() {
+            this.getGames();
+        },
 
         destroyed() {},
 
         methods: {
+            getGames() {
+                this.$api.getGames().then(res => {
+                   this.games = res.content;
+                });
+            },
             onClickGame() {
                 this.gameShow = true;
             },
