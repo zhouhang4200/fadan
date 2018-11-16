@@ -1,14 +1,6 @@
 <template>
     <div class="order-pay-success">
 
-        <van-nav-bar
-                :fixed=true
-                title="支付成功"
-                left-text="返回"
-                left-arrow
-                @click-left="onClickLeft"
-        />
-
         <div style="margin:0 auto;padding: 50% 0;text-align: center;">
             <van-icon
                     name="checked"

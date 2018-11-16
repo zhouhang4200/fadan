@@ -226,7 +226,7 @@ class GameLevelingChannelOrderController extends Controller
             'game_password' => request('game_password'),
             'game_role' => request('game_role'),
             'player_phone' => request('player_phone'),
-            'player_qq' => $amountTimeDeposit->user_qq,
+            'player_qq' => request('player_qq'),
             'payment_type' => request('payment_type'),
             'title' => $game->name . '-' . $gameLevelingType->name . '-' . $amountTimeDeposit->current_level->name . '-' . $amountTimeDeposit->target_level->name,
             'day' => $amountTimeDeposit->day,

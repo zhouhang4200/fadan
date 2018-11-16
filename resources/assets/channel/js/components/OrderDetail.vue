@@ -1,14 +1,6 @@
 <template>
     <div class="order-list">
 
-        <van-nav-bar
-                :fixed=true
-                title="订单详情"
-                left-text="返回"
-                left-arrow
-                @click-left="onClickLeft"
-        />
-
         <div style="margin-top: 46px">
             <section class="van-doc-demo-block">
                 <h2 class="van-doc-demo-block__title">
@@ -61,6 +53,7 @@
                 </van-cell-group>
             </section>
         </div>
+
         <van-goods-action >
 
             <van-goods-action-big-btn icon="">
@@ -79,6 +72,7 @@
             </van-goods-action-big-btn>
 
         </van-goods-action>
+
     </div>
 </template>
 

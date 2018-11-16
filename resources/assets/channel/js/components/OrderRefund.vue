@@ -1,14 +1,6 @@
 <template>
     <div class="order-refund">
 
-        <van-nav-bar
-                :fixed=true
-                title="订单退款"
-                left-text="返回"
-                left-arrow
-                :to="$router.back(-1)"
-        />
-
         <div style="margin-top: 46px">
             <section class="van-doc-demo-block">
                 <h2 class="van-doc-demo-block__title">

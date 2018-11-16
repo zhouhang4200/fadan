@@ -1,14 +1,6 @@
 <template>
     <div class="order">
 
-        <van-nav-bar
-                :fixed=true
-                title="丸子代练"
-                left-text="返回"
-                left-arrow
-                @click-left="onClickLeft"
-        />
-
         <div style="padding-top: 46px">
 
             <img class="order-poster" src="/channel/images/banner.jpg">

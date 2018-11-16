@@ -1,12 +1,6 @@
 <template>
     <div class="order-list">
-        <van-nav-bar
-                :fixed=true
-                title="订单列表"
-                left-text="返回"
-                left-arrow
-                @click-left="onClickLeft"
-        />
+
         <div style="margin-top: 46px">
             <van-tabs
                     color="#198cff"
@@ -59,6 +53,7 @@
                 </van-panel>
             </van-list>
         </div>
+
     </div>
 </template>
 

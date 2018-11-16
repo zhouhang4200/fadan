@@ -1,181 +1,181 @@
 <template>
-    <div class="order-create">
+    <div class="order-create" style="padding:46px 0;">
 
-        <van-nav-bar
-                :fixed=true
-                title="丸子代练"
-                left-text="返回"
-                left-arrow
-                @click-left="onClickLeft"
-        />
-
-        <div style="padding: 46px 0">
-            <div class="pic-box">
-                <van-row>
-                    <van-col span="12">
-                        <div class="pic" style="height: 60px">
-                            <div class="title">{{ game }}</div>
-                            <img src="/mobile/lib/images/pic.png">
-                            <div class="new-pic">{{ amount }}</div>
-                            <div class="old-pic a" v-html="discount">
-                            </div>
+        <div class="pic-box">
+            <van-row>
+                <van-col span="12">
+                    <div class="pic" style="height: 60px">
+                        <div class="title">{{ game }}</div>
+                        <img src="/mobile/lib/images/pic.png">
+                        <div class="new-pic">{{ amount }}</div>
+                        <div class="old-pic a" v-html="discount">
                         </div>
-                    </van-col>
-                    <van-col span="12">
-                        <div class="time">
-                            <div class="title">{{ level }}</div>
-                            <img src="/mobile/lib/images/time.png" alt="">
-                            <div class="time">{{ time }}</div>
-                            <div class="old-pic">预计耗时</div>
-                        </div>
-                    </van-col>
-                </van-row>
-            </div>
+                    </div>
+                </van-col>
+                <van-col span="12">
+                    <div class="time">
+                        <div class="title">{{ level }}</div>
+                        <img src="/mobile/lib/images/time.png" alt="">
+                        <div class="time">{{ time }}</div>
+                        <div class="old-pic">预计耗时</div>
+                    </div>
+                </van-col>
+            </van-row>
+        </div>
 
-            <section class="van-doc-demo-block">
-                <h2 class="van-doc-demo-block__title">
-                    <van-icon
-                            name="pending-orders"
-                            style="font-size: 18px;vertical-align: middle;"
-                    />
-                    订单信息
-                </h2>
+        <section class="van-doc-demo-block">
+            <h2 class="van-doc-demo-block__title">
+                <van-icon
+                        name="pending-orders"
+                        style="font-size: 18px;vertical-align: middle;"
+                />
+                订单信息
+            </h2>
 
-                <van-cell-group class="goods-cell-group">
+            <van-cell-group class="goods-cell-group">
 
-                    <van-field
-                            :value="gameRegion"
-                            v-model="gameRegion"
-                            label="游戏区"
-                            placeholder="请选择游戏区"
-                            is-link
-                            readonly
-                            @click.prevent.self="gameRegionOptionsShow = true"
-                            name="gameRegion"
-                            :error-message="errors.first('gameRegion')"
-                            v-validate="{ required: true}"
-                            data-vv-as="游戏区"
-                    />
+                <van-field
+                        :value="gameRegion"
+                        v-model="gameRegion"
+                        label="游戏区"
+                        placeholder="请选择游戏区"
+                        is-link
+                        readonly
+                        @click.prevent.self="gameRegionOptionsShow = true"
+                        name="gameRegion"
+                        :error-message="errors.first('gameRegion')"
+                        v-validate="{ required: true}"
+                        data-vv-as="游戏区"
+                />
 
-                    <van-field
-                            :value="gameServer"
-                            v-model="gameServer"
-                            label="游戏服"
-                            placeholder="请选择游戏服"
-                            is-link
-                            readonly
-                            @click.prevent.self="gameServerOptionsShow = true"
-                            name="gameServer"
-                            :error-message="errors.first('gameServer')"
-                            v-validate="{ required: true}"
-                            data-vv-as="游戏服"
-                    />
+                <van-field
+                        :value="gameServer"
+                        v-model="gameServer"
+                        label="游戏服"
+                        placeholder="请选择游戏服"
+                        is-link
+                        readonly
+                        @click.prevent.self="gameServerOptionsShow = true"
+                        name="gameServer"
+                        :error-message="errors.first('gameServer')"
+                        v-validate="{ required: true}"
+                        data-vv-as="游戏服"
+                />
 
-                    <van-field
-                            label="游戏角色"
-                            :value="form.game_role"
-                            v-model="form.game_role"
-                            placeholder="请输入角色名称"
-                            name="game_role"
-                            :error-message="errors.first('game_role')"
-                            v-validate="{ required: true}"
-                            data-vv-as="角色名称"
-                    />
+                <van-field
+                        label="游戏角色"
+                        :value="form.game_role"
+                        v-model="form.game_role"
+                        placeholder="请输入角色名称"
+                        name="game_role"
+                        :error-message="errors.first('game_role')"
+                        v-validate="{ required: true}"
+                        data-vv-as="角色名称"
+                />
 
-                    <van-field
-                            label="游戏账号"
-                            :value="form.game_account"
-                            v-model="form.game_account"
-                            placeholder="请输入游戏账号"
-                            name="game_account"
-                            :error-message="errors.first('game_account')"
-                            v-validate="{ required: true}"
-                            data-vv-as="游戏账号"
-                    />
+                <van-field
+                        label="游戏账号"
+                        :value="form.game_account"
+                        v-model="form.game_account"
+                        placeholder="请输入游戏账号"
+                        name="game_account"
+                        :error-message="errors.first('game_account')"
+                        v-validate="{ required: true}"
+                        data-vv-as="游戏账号"
+                />
 
-                    <van-field
-                            label="游戏密码"
-                            :value="form.game_password"
-                            v-model="form.game_password"
-                            placeholder="请输入游戏密码"
-                            name="game_password"
-                            :error-message="errors.first('game_password')"
-                            v-validate="{ required: true}"
-                            data-vv-as="游戏密码"
-                    />
+                <van-field
+                        label="游戏密码"
+                        :value="form.game_password"
+                        v-model="form.game_password"
+                        placeholder="请输入游戏密码"
+                        name="game_password"
+                        :error-message="errors.first('game_password')"
+                        v-validate="{ required: true}"
+                        data-vv-as="游戏密码"
+                />
 
-                    <van-field
-                            label="联系电话"
-                            :value="form.player_phone"
-                            v-model="form.player_phone"
-                            placeholder="请输入联系电话"
-                            name="player_phone"
-                            :error-message="errors.first('player_phone')"
-                            v-validate="'required|phone'"
-                            data-vv-as="联系电话"
-                    />
+                <van-field
+                        label="联系电话"
+                        :value="form.player_phone"
+                        v-model="form.player_phone"
+                        placeholder="请输入联系电话"
+                        name="player_phone"
+                        :error-message="errors.first('player_phone')"
+                        v-validate="'required|phone'"
+                        data-vv-as="联系电话"
+                />
+
+                <van-field
+                        label="联系QQ"
+                        :value="form.player_qq"
+                        v-model="form.player_qq"
+                        placeholder="请输入联系QQ"
+                        name="player_qq"
+                        :error-message="errors.first('player_qq')"
+                        v-validate="'required'"
+                        data-vv-as="联系QQ"
+                />
+
+            </van-cell-group>
+        </section>
+
+        <section class="van-doc-demo-block">
+
+            <h2 class="van-doc-demo-block__title">
+
+                <van-icon
+                        name="cash-back-record"
+                        style="font-size: 21px;vertical-align: bottom;"
+                />
+                支付方式
+            </h2>
+            <van-radio-group v-model="form.payment_type">
+
+                <van-cell-group>
+
+                    <van-cell
+                            title="微信"
+                            clickable
+                            @click="form.payment_type = '2'"
+                    >
+                        <van-icon
+                                slot="icon"
+                                name="wechat"
+                                class="van-cell__left-icon"
+                                style="font-size:30px;color:#4b0"
+                        />
+                        <van-radio name="2" />
+                    </van-cell>
+
+                    <van-cell
+                            title="支付宝"
+                            clickable
+                            @click="form.payment_type = '1'"
+                    >
+                        <van-icon
+                                slot="icon"
+                                name="alipay"
+                                class="van-cell__left-icon"
+                                style="font-size:30px;color:#1989fa"
+                        />
+                        <van-radio name="1" />
+                    </van-cell>
 
                 </van-cell-group>
-            </section>
 
-            <section class="van-doc-demo-block">
+            </van-radio-group>
+        </section>
 
-                <h2 class="van-doc-demo-block__title">
-
-                    <van-icon
-                            name="cash-back-record"
-                            style="font-size: 21px;vertical-align: bottom;"
-                    />
-                    支付方式
-                </h2>
-                <van-radio-group v-model="form.payment_type">
-
-                    <van-cell-group>
-
-                        <van-cell
-                                title="微信"
-                                clickable
-                                @click="form.payment_type = '2'"
-                        >
-                            <van-icon
-                                    slot="icon"
-                                    name="wechat"
-                                    class="van-cell__left-icon"
-                                    style="font-size:30px;color:#4b0"
-                            />
-                            <van-radio name="2" />
-                        </van-cell>
-
-                        <van-cell
-                                title="支付宝"
-                                clickable
-                                @click="form.payment_type = '1'"
-                        >
-                            <van-icon
-                                    slot="icon"
-                                    name="alipay"
-                                    class="van-cell__left-icon"
-                                    style="font-size:30px;color:#1989fa"
-                            />
-                            <van-radio name="1" />
-                        </van-cell>
-
-                    </van-cell-group>
-
-                </van-radio-group>
-            </section>
-
-
-            <div style="margin: 30px">
-                <van-button
-                        size="normal"
-                        type="primary"
-                        style="width: 100%"
-                        @click="onSubmitForm"
-                >
-                    立刻支付
-                </van-button>
-            </div>
+        <div style="padding:15px 30px 10px">
+            <van-button
+                    size="normal"
+                    type="primary"
+                    style="width: 100%"
+                    @click="onSubmitForm"
+            >
+                立刻支付
+            </van-button>
         </div>
 
         <van-popup
@@ -227,6 +227,8 @@
                   game_account:'',
                   game_password:'',
                   game_role:'',
+                  player_phone:'',
+                  player_qq:'',
                   game_id:this.$route.query.game,
                   game_leveling_type_id:this.$route.query.type,
                   current_level_id:this.$route.query.current,
