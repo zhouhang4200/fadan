@@ -257,8 +257,8 @@ class GameLevelingChannelOrderController extends Controller
             // 下单
             $app = Factory::payment(config('wechat.payment.default'));
             $result = $app->order->unify([
-                'body' => $order->goods_name,
-                'detail' => $order->game_name . '-' . $order->activity_title,
+                'body' => $order->title,
+                'detail' => '丸子代练',
                 'out_trade_no' => $order->trade_no,
                 'total_fee' => bcmul($order->amount, 100, 0),
                 'trade_type' => 'JSAPI',
