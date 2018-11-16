@@ -530,7 +530,8 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
 //Route::prefix('channel')->middleware(['channel.user'])->namespace('Frontend\Channel')->group(function () {
 
-    Route::middleware(['wechat.oauth:snsapi_userinfo', 'channel.user'])->group(function () {
+    Route::middleware(['channel.user'])->group(function () {
+//    Route::middleware(['wechat.oauth:snsapi_userinfo', 'channel.user'])->group(function () {
         #　视图挂载页
         Route::get('/{vue?}', function (){ return view('channel.spa');})->where('vue', '[\/\w\.-]*');
         #　获取代练游戏

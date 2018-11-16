@@ -140,7 +140,23 @@
 
         data() {
             return {
-                order: {},
+                order: {
+                    trade_no:'',
+                    created_at:'',
+                    game_region_name:'',
+                    game_server_name:'',
+                    game_account:'',
+                    game_password:'',
+                    game_role:'',
+                    title:'',
+                    game_leveling_type_name:'',
+                    payment_amount:'',
+                    day:'',
+                    hour:'',
+                    player_phone:'',
+                    player_qq:'',
+                    status:''
+                },
                 loading: false,
                 finished: false
             };
