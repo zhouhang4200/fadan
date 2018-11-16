@@ -658,6 +658,7 @@ class GameLevelingChannelOrderController extends Controller
                 ->where('game_leveling_channel_user_id', session('channel_user_id'))
                 ->where('user_id', session('user_id'))
                 ->oldest('id')
+                ->where('status', '!=', 1)
                 ->get();
         } catch (Exception $e) {
             myLog('channel-order-list', [$e->getMessage(), $e->getLine()]);
