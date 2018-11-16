@@ -37,7 +37,7 @@ const router = new VueRouter({
                 },
                 {
                     name: "orderDetail",
-                    path: "detail",
+                    path: "detail/:trade_no",
                     meta:{
                         title:'订单详情'
                     },
@@ -45,11 +45,19 @@ const router = new VueRouter({
                 },
                 {
                     name: "orderRefund",
-                    path: "refund",
+                    path: "refund/:trade_no",
                     meta:{
                         title:'申请退款'
                     },
                     component: () => import('../components/OrderRefund'),
+                },
+                {
+                    name: "paySuccess",
+                    path: "pay/success/:trade_no",
+                    meta:{
+                        title:'付款成功'
+                    },
+                    component: () => import('../components/OrderPaySuccess'),
                 },
             ]
         },

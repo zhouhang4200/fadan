@@ -1,5 +1,6 @@
 <template>
     <div class="order-create">
+
         <van-nav-bar
                 :fixed=true
                 title="丸子代练"
@@ -7,6 +8,7 @@
                 left-arrow
                 @click-left="onClickLeft"
         />
+
         <div style="padding: 46px 0">
             <div class="pic-box">
                 <van-row>
@@ -15,7 +17,7 @@
                             <div class="title">{{ game }}</div>
                             <img src="/mobile/lib/images/pic.png">
                             <div class="new-pic">{{ amount }}</div>
-                            <div class="old-pic a" 　v-html="discount">
+                            <div class="old-pic a" v-html="discount">
                             </div>
                         </div>
                     </van-col>
@@ -117,7 +119,9 @@
             </section>
 
             <section class="van-doc-demo-block">
+
                 <h2 class="van-doc-demo-block__title">
+
                     <van-icon
                             name="cash-back-record"
                             style="font-size: 21px;vertical-align: bottom;"
@@ -125,16 +129,39 @@
                     支付方式
                 </h2>
                 <van-radio-group v-model="form.payment_type">
+
                     <van-cell-group>
-                        <van-cell title="微信" clickable @click="form.payment_type = '2'">
-                            <van-icon slot="icon" name="wechat" class="van-cell__left-icon" style="font-size:30px;color:#4b0"/>
+
+                        <van-cell
+                                title="微信"
+                                clickable
+                                @click="form.payment_type = '2'"
+                        >
+                            <van-icon
+                                    slot="icon"
+                                    name="wechat"
+                                    class="van-cell__left-icon"
+                                    style="font-size:30px;color:#4b0"
+                            />
                             <van-radio name="2" />
                         </van-cell>
-                        <van-cell title="支付宝" clickable @click="form.payment_type = '1'">
-                            <van-icon slot="icon" name="alipay" class="van-cell__left-icon" style="font-size:30px;color:#1989fa"/>
+
+                        <van-cell
+                                title="支付宝"
+                                clickable
+                                @click="form.payment_type = '1'"
+                        >
+                            <van-icon
+                                    slot="icon"
+                                    name="alipay"
+                                    class="van-cell__left-icon"
+                                    style="font-size:30px;color:#1989fa"
+                            />
                             <van-radio name="1" />
                         </van-cell>
+
                     </van-cell-group>
+
                 </van-radio-group>
             </section>
 
@@ -178,10 +205,10 @@
     </div>
 </template>
 
-
 <script>
     export default {
         name: "orderCreate",
+
         data() {
           return {
               gameServerOptionsShow:false,
@@ -194,7 +221,7 @@
               game:'',
               level:'',
               form: {
-                  payment_type:'1',
+                  payment_type:'2',
                   game_region_id:0,
                   game_server_id:0,
                   game_account:'',
@@ -209,10 +236,12 @@
               gameServerOptions:[],
           }
         },
+
         mounted() {
             this.getGameRegionOptions();
             this.getGameLevelingAmountTime();
         },
+
         methods: {
             onClickLeft() {
                 this.$router.back(-1)
@@ -254,18 +283,31 @@
             },
             onSubmitForm(){
                 this.$validator.validateAll().then((result) => {
-                    console.log(result);
                     if (result) {
                         this.$api.gameLevelingChannelOrderCreate(this.form).then(res => {
-                            var span = document.createElement("span");
-                            span.innerHTML = res.content;
-                            document.body.appendChild(span);
-                            document.forms[0].submit();
+                            if (res.content.type == 1) {
+                                var span = document.createElement("span");
+                                span.innerHTML = res.content;
+                                document.body.appendChild(span);
+                                document.forms[0].submit();
+                            } else {
+                                WeixinJSBridge.invoke(
+                                    'getBrandWCPayRequest', res.content.par,
+                                    function(res){
+                                        if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                                            // 使用以上方式判断前端返回,微信团队郑重提示：
+                                            // res.err_msg将在用户支付成功后返回
+                                            // ok，但并不保证它绝对可靠。
+                                        }
+                                    }
+                                );
+                            }
                         });
                     }
                 });
             }
         }
+
     }
 </script>
 

@@ -62,16 +62,22 @@
             </section>
         </div>
         <van-goods-action >
-            <van-goods-action-big-btn icon="" @click="sorry">
+
+            <van-goods-action-big-btn icon="">
                 <van-icon
                         name="chat"
                         style="font-size: 20px;vertical-align: middle;"
                 />
                 联系客服
             </van-goods-action-big-btn>
-            <van-goods-action-big-btn primary @click="sorry">
+
+            <van-goods-action-big-btn
+                    primary
+                    :to="{name:'orderRefund', param:{trade_no:$route.params.trade_no}}"
+            >
                 申请退款
             </van-goods-action-big-btn>
+
         </van-goods-action>
     </div>
 </template>
@@ -80,31 +86,12 @@
     export default {
         name: "OrderDetail",
 
-        mixins: [],
-
-        components: {},
-
-        props: {},
-
         data() {
             return {
                 list: [],
                 loading: false,
                 finished: false
             };
-        },
-
-        computed: {},
-
-        watch: {},
-
-        created() {
-        },
-
-        mounted() {
-        },
-
-        destroyed() {
         },
 
         methods: {

@@ -547,6 +547,9 @@ Route::prefix('channel')->middleware(['channel.user'])->namespace('Frontend\Chan
     # 创建订单
     Route::post('store', 'GameLevelingChannelOrderController@store')->name('channel.game-leveling.store');
 
+    # 微信支付回调
+    Route::any('pay/wx/notify/{trade_no?}', 'GameLevelingChannelOrderController@wechatNotify')->name('channel.game-leveling.wx.pay.notify');
+
 
 
 //    Route::get('index', 'GameLevelingChannelOrderController@index')->name('channel.index'); // 下单首页

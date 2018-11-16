@@ -8,7 +8,7 @@
     <title>@yield('title')</title>
     {{--<link rel="stylesheet" href="{{mix('/css/theme.css', 'channel')}}">--}}
 </head>
-<body>
+<body style="background: #fafafa">
 <div id="app">
     <router-view></router-view>
 </div>
