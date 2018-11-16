@@ -26,7 +26,7 @@
                         :title="item.title"
                         style="margin: 10px 10px;border: 1px solid #eee;border-radius: 8px;"
                 >
-                    <div slot="header" class="van-cell van-panel__header">
+                    <div slot="header" class="van-cell van-panel__header" @click="orderShow(item)">
                         <img src="/channel/images/time.png" class="game-icon">
                         <div class="van-cell__title">
                             <span>等级：{{item.demand}}</span>
@@ -90,6 +90,10 @@
         },
 
         methods: {
+            // 详情页
+            orderShow(item){
+                this.$router.push({name:'orderDetail', query:{trade_no:item.trade_no, user_id:item.user_id}})
+            },
             // 申请退款按钮
             applyRefund(item){
                 this.$router.push({name:'orderRefund', query:{trade_no:item.trade_no, user_id:item.user_id}})

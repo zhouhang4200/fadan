@@ -11,11 +11,16 @@
                     订单信息
                 </h2>
                 <van-cell-group>
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
+                    <van-field
+                            :value="order.trade_no"
+                            label="订单编号"
+                            disabled
+                    />
+                    <van-field
+                            :value="order.created_at"
+                            label="下单时间"
+                            disabled
+                    />
                 </van-cell-group>
             </section>
 
@@ -28,11 +33,26 @@
                     账号信息
                 </h2>
                 <van-cell-group>
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
+                    <van-field
+                            :value="order.game_region_name+'/'+order.game_server_name"
+                            label="游戏区服"
+                            disabled
+                    />
+                    <van-field
+                            :value="order.game_account"
+                            label="账号"
+                            disabled
+                    />
+                    <van-field
+                            :value="order.game_password"
+                            label="密码"
+                            disabled
+                    />
+                    <van-field
+                            :value="order.game_role"
+                            label="角色名称"
+                            disabled
+                    />
                 </van-cell-group>
             </section>
 
@@ -45,11 +65,48 @@
                     代练信息
                 </h2>
                 <van-cell-group>
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
-                    <van-cell value="内容" />
+                    <van-field
+                            :value="order.title"
+                            label="代练目标"
+                            disabled
+                    />
+                    <van-field
+                            :value="order.game_leveling_type_name"
+                            label="代练类型"
+                            disabled
+                    />
+                    <van-field
+                            :value="order.payment_amount"
+                            label="代练价格"
+                            disabled
+                    />
+                    <van-field
+                            :value="order.day+'天'+order.hour+'小时'"
+                            label="预计耗时"
+                            disabled
+                    />
+                </van-cell-group>
+            </section>
+
+            <section class="van-doc-demo-block">
+                <h2 class="van-doc-demo-block__title">
+                    <van-icon
+                            name="completed"
+                            style="font-size: 18px;vertical-align: middle;"
+                    />
+                    联系信息
+                </h2>
+                <van-cell-group>
+                    <van-field
+                            :value="order.player_phone"
+                            label="玩家电话"
+                            disabled
+                    />
+                    <van-field
+                            :value="order.player_qq"
+                            label="玩家QQ"
+                            disabled
+                    />
                 </van-cell-group>
             </section>
         </div>
@@ -66,6 +123,7 @@
 
             <van-goods-action-big-btn
                     primary
+                    v-if="order.status == 2"
                     :to="{name:'orderRefund', param:{trade_no:$route.params.trade_no}}"
             >
                 申请退款
@@ -82,13 +140,26 @@
 
         data() {
             return {
-                list: [],
+                order: {},
                 loading: false,
                 finished: false
             };
         },
-
+        created() {
+            this.handleOrder();
+        },
         methods: {
+            // 页面数据
+            handleOrder() {
+                this.$api.GameLevelingChannelOrderShow({
+                    user_id:this.$route.query.user_id,
+                    trade_no:this.$route.query.trade_no
+                }).then(res => {
+                    this.order=res;
+                }).catch(err => {
+
+                });
+            },
             onClickLeft() {
                 this.$router.push({path: '/channel/order'})
             },

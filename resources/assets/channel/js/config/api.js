@@ -39,7 +39,7 @@ export default {
     GameLevelingChannelOrderApplyRefund(params) {
         return post('/channel/apply-refund', params)
     },
-    GameLevelingChannelOrderApplyRefundShow(params) {
-        return post('/channel/apply-refund-show', params)
+    GameLevelingChannelOrderShow(params) {
+        return post('/channel/show', params)
     }
 }

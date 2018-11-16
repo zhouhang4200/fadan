@@ -608,19 +608,19 @@ class GameLevelingChannelOrderController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
      */
-    public function show(Request $request)
-    {
-        try {
-            $gameLevelingChannelOrder = GameLevelingChannelOrder::find(request('id'));
-
-            $gameLevelingOrder = GameLevelingOrder::where('channel_order_trade_no', $gameLevelingChannelOrder->trade_no)
-                ->with('gameLevelingOrderDetail')
-                ->first();
-        } catch (Exception $e) {
-            return '暂无相关信息!';
-        }
-        return view('channel.show', compact('gameLevelingChannelOrder', 'gameLevelingOrder'));
-    }
+//    public function show(Request $request)
+//    {
+//        try {
+//            $gameLevelingChannelOrder = GameLevelingChannelOrder::find(request('id'));
+//
+//            $gameLevelingOrder = GameLevelingOrder::where('channel_order_trade_no', $gameLevelingChannelOrder->trade_no)
+//                ->with('gameLevelingOrderDetail')
+//                ->first();
+//        } catch (Exception $e) {
+//            return '暂无相关信息!';
+//        }
+//        return view('channel.show', compact('gameLevelingChannelOrder', 'gameLevelingOrder'));
+//    }
 
     /**
      * 微信同步通知
@@ -852,19 +852,17 @@ class GameLevelingChannelOrderController extends Controller
      * 申请退款页面数据
      * @return mixed
      */
-    public function applyRefundShow()
+    public function show()
     {
         try {
             // 渠道表状态更新
             return GameLevelingChannelOrder::where('trade_no', request('trade_no'))
-                ->where('status', 2)
                 ->where('user_id', session('user_id'))
                 ->first();
         } catch (Exception $e) {
-
+            myLog('channel-order-show-error', [$e->getMessage(), $e->getLine()]);
         }
     }
-
 
     /**
      * 渠道下单首页 没用
