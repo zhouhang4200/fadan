@@ -293,7 +293,7 @@ class GameLevelingChannelOrderController extends Controller
                     try {
                         $order->payment_at = date('Y-m-d H:i:s');
                         $order->payment_amount = bcdiv($message['total_fee'], 100, 2);
-                        $order->stattus = 2;
+                        $order->status = 2;
                         $order->save();
 
                         $user = User::find($order->user_id);
