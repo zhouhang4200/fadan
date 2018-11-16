@@ -303,6 +303,7 @@ class GameLevelingChannelOrderController extends Controller
                         $gameLevelingOrder->channel_order_status = 2; // 渠道订单支付状态
                         $gameLevelingOrder->save();
                     } catch (\Exception $exception) {
+                        myLog('weChatNotify', [$exception->getLine(), $exception->getMessage()]);
                         DB::rollback();
                     }
 
