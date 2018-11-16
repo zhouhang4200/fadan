@@ -37,7 +37,7 @@ class GameLevelingChannelOrderController extends Controller
     public function game()
     {
         try {
-            $games = GameLevelingChannelGame::where('user_id', request('user_id', 2))
+            $games = GameLevelingChannelGame::where('user_id', session('user_id'))
                 ->pluck('game_name')
                 ->unique()
                 ->toArray();
@@ -53,9 +53,10 @@ class GameLevelingChannelOrderController extends Controller
      */
     public function games()
     {
+        
         try {
             $games = GameLevelingChannelGame::selectRaw('game_name as text, game_id as id, user_id')
-                ->where('user_id', request('user_id', 2))
+                ->where('user_id', session('user_id'))
                 ->groupBy('game_id')
                 ->get()
                 ->map(function ($item, $key) {
@@ -110,7 +111,7 @@ class GameLevelingChannelOrderController extends Controller
         try {
             $types = GameLevelingChannelGame::selectRaw('game_leveling_type_name as text, game_leveling_type_id as id, user_id')
                 ->where('game_id', request('game_id'))
-                ->where('user_id', request('user_id', 2))
+                ->where('user_id', session('user_id'))
                 ->get()
                 ->map(function ($item, $key) {
                     return collect($item)->except(['user_id']);
@@ -130,7 +131,7 @@ class GameLevelingChannelOrderController extends Controller
         try {
             // 渠道游戏
             $gameLevelingChannelGame = GameLevelingChannelGame::where('game_id', request('game_id'))
-                ->where('user_id', request('user_id', 2))
+                ->where('user_id', session('user_id'))
                 ->where('game_leveling_type_id', request('game_leveling_type_id'))
                 ->first();
 
@@ -166,7 +167,7 @@ class GameLevelingChannelOrderController extends Controller
     {
         # 获取代练价格时间保证金
         $amountTimeDeposit = GameLevelingChannelOrder::amountTimeDepositCompute(
-            session()->get('user_id'),
+            session('user_id'),
             request('game_id'),
             request('game_leveling_type_id'),
             request('game_leveling_current_level_id'),
@@ -211,7 +212,7 @@ class GameLevelingChannelOrderController extends Controller
         # 创建订单
         $order = GameLevelingChannelOrder::create([
             'trade_no' => generateOrderNo(),
-            'user_id' => session()->get('user_id'),
+            'user_id' => session('user_id'),
             'user_qq' => $amountTimeDeposit->user_qq,
             'game_id' => $game->id,
             'game_name' => $game->name,
@@ -221,7 +222,7 @@ class GameLevelingChannelOrderController extends Controller
             'game_server_name' => $server->name,
             'game_leveling_type_id' => $gameLevelingType->id,
             'game_leveling_type_name' => $gameLevelingType->name,
-            'game_leveling_channel_user_id' => request()->session()->get('channel_user_id'),
+            'game_leveling_channel_user_id' => session('channel_user_id'),
             'game_account' => request('game_account'),
             'game_password' => request('game_password'),
             'game_role' => request('game_role'),
@@ -707,7 +708,7 @@ class GameLevelingChannelOrderController extends Controller
         try {
             // 当前操作人是否是订单持有者
             $gameLevelingChannelUser = GameLevelingChannelUser::where('uuid', request('game_leveling_channel_user_id'))
-                ->where('user_id', request('user_id'))
+                ->where('user_id', session('user_id'))
                 ->first();
 
             if (!$gameLevelingChannelUser) {
@@ -717,7 +718,7 @@ class GameLevelingChannelOrderController extends Controller
             // 渠道表状态更新
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
                 ->where('status', 3)
-                ->where('user_id', request('user_id'))
+                ->where('user_id', session('user_id'))
                 ->first();
 
             $gameLevelingChannelOrder->status = 4;
@@ -741,7 +742,7 @@ class GameLevelingChannelOrderController extends Controller
         try {
             // 当前操作人是否是订单持有者
             $gameLevelingChannelUser = GameLevelingChannelUser::where('uuid', request('game_leveling_channel_user_id'))
-                ->where('user_id', request('user_id'))
+                ->where('user_id', session('user_id'))
                 ->first();
 
             if (!$gameLevelingChannelUser) {
@@ -751,7 +752,7 @@ class GameLevelingChannelOrderController extends Controller
             // 渠道表状态更新
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
                 ->where('status', 6)
-                ->where('user_id', request('user_id'))
+                ->where('user_id', session('user_id'))
                 ->first();
 
             $gameLevelingChannelOrder->status = 2;
@@ -768,7 +769,7 @@ class GameLevelingChannelOrderController extends Controller
             // 发单平台表状态更新
             $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
                 ->where('channel_order_status', 6)
-                ->where('user_id', request('user_id'))
+                ->where('user_id', session('user_id'))
                 ->get();
 
             foreach ($gameLevelingOrders as $gameLevelingOrder) {
@@ -795,7 +796,7 @@ class GameLevelingChannelOrderController extends Controller
             // 申请退款表状态更新
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
                 ->where('status', 2)
-                ->where('user_id', request('user_id'))
+                ->where('user_id', session('user_id'))
                 ->first();
 
             if (!$gameLevelingChannelOrder) {
@@ -865,7 +866,7 @@ class GameLevelingChannelOrderController extends Controller
             // 发单平台表状态更新
             $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
                 ->where('channel_order_status', 2)
-                ->where('user_id', request('user_id'))
+                ->where('user_id', session('user_id'))
                 ->get();
 
             foreach ($gameLevelingOrders as $gameLevelingOrder) {
@@ -891,7 +892,7 @@ class GameLevelingChannelOrderController extends Controller
             // 渠道表状态更新
             return GameLevelingChannelOrder::where('trade_no', request('trade_no'))
                 ->where('status', 2)
-                ->where('user_id', request('user_id'))
+                ->where('user_id', session('user_id'))
                 ->first();
         } catch (Exception $e) {
 
