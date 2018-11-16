@@ -16,11 +16,9 @@
                 <van-tab title="已退款"></van-tab>
             </van-tabs>
             <van-list
-                    v-model="loading"
-                    :finished="finished"
-                    @load="onLoad"
             >
                 <van-panel
+                        v-if="list"
                         v-for="item in list"
                         :key="item.id"
                         :title="item.title"
@@ -36,7 +34,7 @@
                     </div>
                     <div style="padding: 15px 30px;background: #f6f7f8">
                         <div class="">
-                            游戏区服：{{item.game_name}}/{{item.game_region_name}}/{{item.game_server_name}}
+                            游戏区服：{{item.game_name ? item.game_name+'/' : ''}}{{item.game_region_name ? item.game_region_name +'/' : ''}}{{item.game_server_name}}
                         </div>
                         <div class="">
                             角色名称：{{item.game_role}}
@@ -58,10 +56,9 @@
 </template>
 
 <script>
-    import { Toast } from 'vant'
+    import { Toast } from 'vant';
     export default {
         name: "Order",
-
         data() {
             return {
                 status:{
@@ -76,8 +73,6 @@
                     status:''
                 },
                 list: [],
-                loading: false,
-                finished: false
             };
         },
 
@@ -138,6 +133,7 @@
             // 点击获取各状态数据
             onClick(index, title) {
                 if (index === 0) {
+                    this.searchParams.status = 0;
                     this.handleOrderList();
                 } else if(index === 1) {
                     this.searchParams.status = 2;
@@ -161,27 +157,7 @@
                 this.$api.GameLevelingChannelOrderList(this.searchParams).then(res => {
                     this.list = res;
                 }).catch(err => {
-                    this.$alert('获取数据失败, 请重试!', '提示', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                        }
-                    });
                 });
-            },
-            onLoad() {
-                // 异步更新数据
-                setTimeout(() => {
-                    for (let i = 0; i < 10; i++) {
-                        this.list.push(this.list.length + 1);
-                    }
-                    // 加载状态结束
-                    this.loading = false;
-
-                    // 数据全部加载完成
-                    if (this.list.length >= 40) {
-                        this.finished = true;
-                    }
-                }, 500);
             }
         }
     }

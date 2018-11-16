@@ -125,9 +125,9 @@
         },
         computed: {
             displayUpload() {
-                // if (this.form.images.length < 3) {
-                //     return true;
-                // }
+                if (this.form.images.length < 3) {
+                    return true;
+                }
             }
         },
         methods: {

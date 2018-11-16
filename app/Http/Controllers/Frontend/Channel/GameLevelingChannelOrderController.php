@@ -789,6 +789,7 @@ class GameLevelingChannelOrderController extends Controller
      */
     public function applyRefund()
     {
+        myLog('test', [request('images')]);
         DB::beginTransaction();
         try {
             // 申请退款表状态更新
@@ -827,6 +828,21 @@ class GameLevelingChannelOrderController extends Controller
             $gameLevelingChannelOrder->status = 6;
             $gameLevelingChannelOrder->save();
 
+            // 图片
+            $pic1 = '';
+            $pic2 = '';
+            $pic3 = '';
+            if (request('images') && is_array(request('images'))) {
+                foreach (request('images') as $key => $image) {
+                    if ($key === 0) {
+                        $pic1 = base64ToImg($image, 'apply-refund');
+                    } elseif ($key === 1) {
+                        $pic2 = base64ToImg($image, 'apply-refund');
+                    } elseif ($key === 2) {
+                        $pic3 = base64ToImg($image, 'apply-refund');
+                    }
+                }
+            }
             // 申请退款
             $data['game_leveling_channel_order_trade_no'] = $gameLevelingChannelOrder->trade_no;
             $data['game_leveling_type_id'] = $gameLevelingChannelOrder->game_leveling_type_id;
@@ -839,9 +855,9 @@ class GameLevelingChannelOrderController extends Controller
             $data['amount'] = $gameLevelingChannelOrder->amount;
             $data['payment_amount'] = $gameLevelingChannelOrder->payment_amount;
             $data['refund_amount'] = request('type') == 1 ? $gameLevelingChannelOrder->payment_amount : request('refund_amount');
-            $data['pic1'] = '';
-            $data['pic2'] = '';
-            $data['pic3'] = '';
+            $data['pic1'] = $pic1;
+            $data['pic2'] = $pic2;
+            $data['pic3'] = $pic3;
             $data['refund_reason'] = request('refund_reason');
             $data['refuse_refund_reason'] = '';
 

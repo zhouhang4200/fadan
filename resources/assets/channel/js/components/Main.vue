@@ -22,7 +22,7 @@
 
             <van-tabbar-item
                     icon="records"
-                    :to="{ path: '/channel/order/list' }"
+                    :to="{ path: '/channel/order/list'}"
             >
                 订单
             </van-tabbar-item>

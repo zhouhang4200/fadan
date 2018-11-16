@@ -16,6 +16,7 @@ class CreateGamesTable extends Migration
         Schema::create('games', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 60);
+            $table->string('icon')->default('')->comment('图标');
             $table->integer('sortord')->default(9999);
             $table->tinyInteger('status')->default(0);
             $table->integer('created_admin_user_id');

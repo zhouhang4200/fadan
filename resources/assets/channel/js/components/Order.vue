@@ -86,7 +86,6 @@
                 >
                     我要代练
                 </van-button>
-
             </div>
         </div>
 
