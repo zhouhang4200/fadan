@@ -127,11 +127,11 @@
                 <van-radio-group v-model="form.payment_type">
                     <van-cell-group>
                         <van-cell title="微信" clickable @click="form.payment_type = '2'">
-                            <van-icon　slot="icon" name="wechat" class="van-cell__left-icon" style="font-size:30px;color:#4b0"/>
+                            <van-icon slot="icon" name="wechat" class="van-cell__left-icon" style="font-size:30px;color:#4b0"/>
                             <van-radio name="2" />
                         </van-cell>
                         <van-cell title="支付宝" clickable @click="form.payment_type = '1'">
-                            <van-icon　slot="icon" name="alipay" class="van-cell__left-icon" style="font-size:30px;color:#1989fa"/>
+                            <van-icon slot="icon" name="alipay" class="van-cell__left-icon" style="font-size:30px;color:#1989fa"/>
                             <van-radio name="1" />
                         </van-cell>
                     </van-cell-group>
@@ -177,7 +177,6 @@
 
     </div>
 </template>
-
 
 <script>
     export default {
@@ -254,7 +253,6 @@
             },
             onSubmitForm(){
                 this.$validator.validateAll().then((result) => {
-                    console.log(result);
                     if (result) {
                         this.$api.gameLevelingChannelOrderCreate(this.form).then(res => {
                             var span = document.createElement("span");

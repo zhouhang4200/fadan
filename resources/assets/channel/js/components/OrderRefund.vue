@@ -62,13 +62,19 @@
                             <van-cell title="部分退款" clickable @click="form.type = '2'">
                                 <van-radio name="2" />
                             </van-cell>
-                            <van-field v-model="form.refund_amount" placeholder="请输入退款金额" v-show="form.type == 2"/>
+                            <van-field v-model="form.refund_amount"
+                                       placeholder="请输入退款金额"
+                                       v-show="form.type == 2"/>
                         </van-cell-group>
                     </van-radio-group>
 
                     <van-field
                             v-model="form.refund_reason"
                             placeholder="请填写退款原因"
+                            v-validate="{ required: true}"
+                            name="refund_reason"
+                            :error-message="errors.first('refund_reason')"
+                            data-vv-as="退款原因"
                             type="textarea"
                     />
 
@@ -98,6 +104,7 @@
 </template>
 
 <script>
+    import { Toast } from 'vant'
     export default {
         name: "OrderRefund",
         data() {
@@ -113,6 +120,8 @@
                 },
                 form: {
                     type:'1',
+                    user_id:'',
+                    trade_no:'',
                     refund_amount:'',
                     refund_reason:'',
                     images: [],
@@ -135,6 +144,8 @@
         methods: {
             // 页面数据
             handleOrder() {
+                this.form.trade_no=this.$route.query.trade_no;
+                this.form.user_id=this.$route.query.user_id;
                 this.$api.GameLevelingChannelOrderApplyRefundShow({
                     user_id:this.$route.query.user_id,
                     trade_no:this.$route.query.trade_no
@@ -148,11 +159,6 @@
                 this.$router.push({path: '/channel/order'})
             },
             onChange(value) {
-                if (value == 1) {
-                    this.form.refund_amount = '';
-                } else {
-                    this.form.refund_amount = '';
-                }
             },
             onDeleteImage(index) {
                 this.form.images.splice(index, 1);
@@ -162,14 +168,19 @@
             },
             // 表单提交
             onSubmitForm() {
-                this.$api.GameLevelingChannelOrderApplyRefund(this.form).then(res => {
-                    if (res.status === 1) {
-                        Toast.success(res.message);
-                    } else {
-                        Toast.fail(res.message);
+                this.$validator.validateAll().then((result) => {
+                    if (result) {
+                        this.$api.GameLevelingChannelOrderApplyRefund(this.form).then(res => {
+                            if (res.status === 1) {
+                                Toast.success(res.message);
+                                this.$router.push({name:'orderList'})
+                            } else {
+                                Toast.fail(res.message);
+                            }
+                        }).catch(err => {
+                            Toast.fail('表单数据异常!');
+                        });
                     }
-                }).catch(err => {
-
                 });
             }
         }

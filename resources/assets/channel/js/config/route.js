@@ -58,7 +58,6 @@ const router = new VueRouter({
 
 //vue-router 前置拦截器
 router.beforeEach((to, from, next) => {
-
     if (to.meta.title) {
         document.title = '淘宝发单平台 - ' + to.meta.title;
     }
