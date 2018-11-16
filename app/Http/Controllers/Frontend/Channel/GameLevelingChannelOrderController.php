@@ -789,7 +789,6 @@ class GameLevelingChannelOrderController extends Controller
      */
     public function applyRefund()
     {
-        myLog('test', [request('images')]);
         DB::beginTransaction();
         try {
             // 申请退款表状态更新
