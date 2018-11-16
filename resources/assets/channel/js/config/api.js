@@ -30,7 +30,7 @@ export default {
     },
     // 计算代练价格与时间
     gameLevelingAmountTime(params) {
-        return post('/channel/gameLeveling-amount-time', params)
+        return post('/channel/game-leveling-amount-time', params)
     },
     // 创建订单
     gameLevelingChannelOrderCreate(params) {

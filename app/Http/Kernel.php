@@ -80,6 +80,9 @@ class Kernel extends HttpKernel
         'auth.admin' => \App\Http\Middleware\AuthAdmin::class,
         // open api
         'open.api' => \App\Http\Middleware\OpenApi::class,
+        # 渠道用户与渠道用户的C端用户验证
         'channel.user' => \App\Http\Middleware\ChannelUser::class,
+        # 微信中间件
+        'wechat.oauth' => \Overtrue\LaravelWeChat\Middleware\OAuthAuthenticate::class,
     ];
 }
