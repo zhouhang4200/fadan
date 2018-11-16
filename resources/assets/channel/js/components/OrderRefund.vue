@@ -14,7 +14,7 @@
                     <van-cell >
                         <template slot="title">
                             <span class="van-cell-text">代练目标</span>
-                            {{order.demand}}
+                            {{order.title}}
                         </template>
                     </van-cell>
                     <van-cell >
@@ -102,7 +102,7 @@
         data() {
             return {
                 order:{
-                    demand:'',
+                    title:'',
                     game_leveling_type_name:'',
                     payment_amount:'',
                     day:'',
