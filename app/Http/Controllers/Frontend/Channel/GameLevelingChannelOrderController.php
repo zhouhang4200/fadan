@@ -272,6 +272,50 @@ class GameLevelingChannelOrderController extends Controller
         }
     }
 
+    /**
+     * 微信回调
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws EasyWeChat\Kernel\Exceptions\Exception
+     */
+    public function weChatNotify()
+    {
+        $app = Factory::payment(config('wechat.payment.default'));
+        $response = $app->handlePaidNotify(function ($message, $fail) {
+            // 业务逻辑
+            if (is_array($message) && isset($message['result_code']) == 'SUCCESS') {
+                $order = GameLevelingChannelOrder::where('trade_no', $message['out_trade_no'])
+                    ->where('status', 1)
+                    ->first();
+
+                if ($order) {
+                    DB::beginTransaction();
+
+                    try {
+                        $order->payment_at = date('Y-m-d H:i:s');
+                        $order->payment_amount = bcdiv($message['total_fee'], 100, 2);
+                        $order->stattus = 2;
+                        $order->save();
+
+                        $user = User::find($order->user_id);
+                        $gameLevelingOrder = GameLevelingOrder::placeOrder($user, $order->toArray()); // 下单
+                        # 更新渠道订单状态
+                        $gameLevelingOrder->channel_order_trade_no = $order->trade_no; // 渠道订单
+                        $gameLevelingOrder->channel_order_status = 2; // 渠道订单支付状态
+                        $gameLevelingOrder->save();
+                    } catch (\Exception $exception) {
+                        DB::rollback();
+                    }
+
+                    DB::commit();
+                }
+                return true;
+            }
+            // 错误消息
+            $fail('Order not exists');
+        });
+
+        return $response;
+    }
 
 
 
@@ -600,83 +644,6 @@ class GameLevelingChannelOrderController extends Controller
             myLog('wechat-return-error', ['message' => $e->getMessage()]);
             return view('channel.index');
         }
-    }
-
-    /**
-     * 微信异步通知
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function wechatNotify(Request $request)
-    {
-        DB::beginTransaction();
-        try {
-            $basicConfig = config('wechat.base_config');
-            $basicConfig['notify_url'] = config('wechat.base_config.notify_url') . '/' . $request->no ?? '';
-            $weChat = Pay::wechat($basicConfig);
-            $data = $weChat->verify();
-
-            // 成功更新订单状态
-            if (isset($data) && $data->return_code == 'SUCCESS') {
-                $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $data->out_trade_no)->first();
-                // 验证订单号
-                if (!isset($gameLevelingChannelOrder) || empty($gameLevelingChannelOrder)) {
-                    throw new DailianException('订单不存在');
-                }
-                // 验证app_id
-                if ($data->appid != $basicConfig['app_id']) {
-                    throw new DailianException('APPID错误');
-                }
-
-                $createOrderData = [];
-                $createOrderData['game_id'] = $gameLevelingChannelOrder->game_id;
-                $createOrderData['game_region_id'] = $gameLevelingChannelOrder->game_region_id;
-                $createOrderData['game_server_id'] = $gameLevelingChannelOrder->game_server_id;
-                $createOrderData['game_leveling_type_id'] = $gameLevelingChannelOrder->game_leveling_type_id;
-                $createOrderData['channel_order_trade_no'] = $gameLevelingChannelOrder->trade_no;
-                $createOrderData['amount'] = $gameLevelingChannelOrder->amount;
-                $createOrderData['security_deposit'] = $gameLevelingChannelOrder->security_deposit;
-                $createOrderData['efficiency_deposit'] = $gameLevelingChannelOrder->efficiency_deposit;
-                $createOrderData['title'] = $gameLevelingChannelOrder->title;
-                $createOrderData['day'] = $gameLevelingChannelOrder->day;
-                $createOrderData['hour'] = $gameLevelingChannelOrder->hour;
-                $createOrderData['game_account'] = $gameLevelingChannelOrder->game_account;
-                $createOrderData['game_password'] = $gameLevelingChannelOrder->game_password;
-                $createOrderData['game_role'] = $gameLevelingChannelOrder->game_role;
-                $createOrderData['seller_nick'] = '';
-                $createOrderData['buyer_nick'] = '';
-                $createOrderData['price_increase_step'] = '';
-                $createOrderData['price_ceiling'] = '';
-                $createOrderData['user_phone'] = '';
-                $createOrderData['user_qq'] = $gameLevelingChannelOrder->user_qq;
-                $createOrderData['player_phone'] = $gameLevelingChannelOrder->player_phone;
-                $createOrderData['explain'] = $gameLevelingChannelOrder->explain;
-                $createOrderData['requirement'] = $gameLevelingChannelOrder->requirement;
-
-                $user = User::find(request('user_id', 2));
-                $gameLevelingOrder = GameLevelingOrder::placeOrder($user, $createOrderData); // 下单
-
-                $gameLevelingChannelOrder->status = 2; // （未接单）已支付
-                $gameLevelingChannelOrder->payment_type = 2; // 支付渠道
-                $gameLevelingChannelOrder->save();
-                $gameLevelingOrder->channel_order_trade_no = $gameLevelingChannelOrder->trade_no; // 渠道订单
-                $gameLevelingOrder->channel_order_status = 2; // 渠道订单支付状态
-                $gameLevelingOrder->save();
-            } else {
-                throw new Exception('订单支付失败');
-            }
-        } catch (DailianException $e) {
-            // 退款逻辑
-            DB::rollback();
-            myLog('wechat-notify-error', ['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            return Response::create('fail');
-        } catch (Exception $e) {
-            DB::rollback();
-            myLog('wechat-notify-error', ['message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-            return Response::create('fail');
-        }
-        DB::commit();
-        return $weChat->success();
     }
 
     /**

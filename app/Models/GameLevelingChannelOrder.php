@@ -14,6 +14,7 @@ class GameLevelingChannelOrder extends Model
         'supply_amount',
         'discount_amount',
         'payment_amount',
+        'payment_at',
         'refund_amount',
         'payment_type',
         'status',

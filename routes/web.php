@@ -548,7 +548,7 @@ Route::prefix('channel')->middleware(['wechat.oauth:snsapi_userinfo', 'channel.u
     Route::post('store', 'GameLevelingChannelOrderController@store')->name('channel.game-leveling.store');
 
     # 微信支付回调
-    Route::any('pay/wx/notify/{trade_no?}', 'GameLevelingChannelOrderController@wechatNotify')->name('channel.game-leveling.wx.pay.notify');
+    Route::any('pay/wx/notify/{trade_no?}', 'GameLevelingChannelOrderController@weChatNotify')->name('channel.game-leveling.wx.pay.notify');
 
 
 
