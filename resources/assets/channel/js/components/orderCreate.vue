@@ -158,7 +158,9 @@
                     show-toolbar
                     title="请选择游戏区"
                     :columns="gameRegionOptions"
-                    @confirm="onConfirmGameRegion"/>
+                    @cancel="gameRegionOptionsShow = false"
+                    @confirm="onConfirmGameRegion"
+            />
         </van-popup>
 
         <van-popup
@@ -168,7 +170,9 @@
                     show-toolbar
                     title="请选择游戏服类型"
                     :columns="gameServerOptions"
-                    @confirm="onConfirmGameServer"/>
+                    @cancel="gameServerOptionsShow = false"
+                    @confirm="onConfirmGameServer"
+            />
         </van-popup>
 
     </div>
@@ -261,7 +265,6 @@
                     }
                 });
             }
-
         }
     }
 </script>

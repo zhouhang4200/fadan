@@ -102,7 +102,9 @@
                     show-toolbar
                     title="请选择游戏"
                     :columns="gamesOptions"
-                    @confirm="onConfirmGame"/>
+                    @cancel="gamesShow = false"
+                    @confirm="onConfirmGame"
+            />
         </van-popup>
 
         <van-popup
@@ -111,19 +113,24 @@
             <van-picker
                     show-toolbar
                     title="请选择代练类型"
+                    @cancel="gameLevelingTypesShow = false"
                     :columns="gameLevelingTypeOptions"
-                    @confirm="onConfirmGameLevelingType"/>
+                    @confirm="onConfirmGameLevelingType"
+            />
         </van-popup>
 
         <van-popup
                 v-model="gameLevelingLevelShow"
-                position="bottom">
+                position="bottom"
+        >
             <van-picker
                     show-toolbar
                     title="当前段位　　　　　　　目标段位"
                     :columns="gameLevelingLevelOptions"
+                    @cancel="gameLevelingLevelShow = false"
                     @change="onChangeGameLevelingLevel"
-                    @confirm="onConfirmGameLevelingLevel"/>
+                    @confirm="onConfirmGameLevelingLevel"
+            />
         </van-popup>
     </div>
 </template>

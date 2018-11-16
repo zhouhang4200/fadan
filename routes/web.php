@@ -527,7 +527,8 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
     });
 });
 # 渠道订单
-Route::prefix('channel')->middleware(['wechat.oauth:snsapi_userinfo', 'channel.user'])->namespace('Frontend\Channel')->group(function () {
+//Route::prefix('channel')->middleware(['wechat.oauth:snsapi_userinfo', 'channel.user'])->namespace('Frontend\Channel')->group(function () {
+Route::prefix('channel')->middleware(['channel.user'])->namespace('Frontend\Channel')->group(function () {
     #　视图挂载页
     Route::get('/{vue?}', function (){ return view('channel.spa');})->where('vue', '[\/\w\.-]*');
 
