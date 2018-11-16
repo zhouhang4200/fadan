@@ -15,7 +15,7 @@ const router = new VueRouter({
                     name: "order",
                     path: "/",
                     meta:{
-                        title:'下单'
+                        title:'丸子代练'
                     },
                     component: () => import('../components/Order'),
                 },
@@ -66,8 +66,10 @@ const router = new VueRouter({
 
 //vue-router 前置拦截器
 router.beforeEach((to, from, next) => {
-    if (to.meta.title) {
-        document.title = '淘宝发单平台 - ' + to.meta.title;
+    if (to.meta.title && to.name != 'order') {
+        document.title = '丸子代练 - ' + to.meta.title;
+    } else {
+        document.title = to.meta.title;
     }
     next();
 });
