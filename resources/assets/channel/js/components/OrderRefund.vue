@@ -6,7 +6,7 @@
                 title="订单退款"
                 left-text="返回"
                 left-arrow
-                @click-left="onClickLeft"
+                :to="$router.back(-1)"
         />
 
         <div style="margin-top: 46px">
@@ -130,9 +130,6 @@
         },
         created() {
             this.handleOrder();
-        },
-        mounted() {
-
         },
         computed: {
             displayUpload() {

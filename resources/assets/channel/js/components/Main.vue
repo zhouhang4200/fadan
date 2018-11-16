@@ -1,5 +1,5 @@
 <template>
-    <div id="app" style="background: #fafafa">
+    <div id="main">
         <router-view/>
         <van-tabbar v-model="active" v-if="display">
             <van-tabbar-item icon="wap-home" :to="{ path: '/channel/order' }">首页</van-tabbar-item>
@@ -14,15 +14,11 @@
         data() {
             return {
                 active: 0,
-                icon: {
-                    normal: '//img.yzcdn.cn/icon-normal.png',
-                    active: '//img.yzcdn.cn/icon-active.png'
-                }
             }
         },
         computed: {
             display() {
-                if (this.$route.name != 'orderDetail' && this.$route.name != 'orderRefund') {
+                if (this.$route.name != 'orderDetail' && this.$route.name != 'orderRefund' && this.$route.name != 'paySuccess') {
                     return true;
                 }
             }

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Frontend\Channel;
 
 use DB;
 use Exception;
+use EasyWeChat;
 use App\Models\User;
 use App\Models\Game;
 use Yansongda\Pay\Pay;
+use EasyWeChat\Factory;
 use App\Models\GameServer;
 use App\Models\GameRegion;
 use Illuminate\Http\Request;
@@ -182,6 +184,7 @@ class GameLevelingChannelOrderController extends Controller
     /**
      * 创建订单并返回支付信息
      * @return \Yansongda\Pay\Gateways\Alipay\WapGateway|\Yansongda\Pay\Gateways\Wechat\WapGateway
+     * @throws EasyWeChat\Kernel\Exceptions\InvalidConfigException
      */
     public function store()
     {
@@ -247,18 +250,24 @@ class GameLevelingChannelOrderController extends Controller
             ]);
             return response()->ajax(1, 'success', ['type' => 1, 'par' => $payPar->getContent()]);
         } elseif ($order->payment_type == 2) {
+            // 获取授权信息
+            $wxAuthInfo = session('wechat.oauth_user.default');
 
-            $basicConfig = config('wechat.base_config');
-            $basicConfig['notify_url'] = config('wechat.base_config.notify_url') . '/' . $order->trade_no ?? '';
-            $basicConfig['return_url'] = config('wechat.return_url') . '/' . $order->trade_no ?? '';
-
-            $payPar = Pay::wechat($basicConfig)->wap([
+            // 下单
+            $app = Factory::payment(config('wechat.payment.default'));
+            $result = $app->order->unify([
+                'body' => $order->goods_name,
+                'detail' => $order->game_name . '-' . $order->activity_title,
                 'out_trade_no' => $order->trade_no,
-                'total_fee' => bcmul($order->amount, 100, 0), // 单位分
-                'body' => '代练订单支付',
-                'spbill_create_ip' => static::getIp(),
+                'total_fee' => bcmul($order->amount, 100, 0),
+                'trade_type' => 'JSAPI',
+                'openid' => $wxAuthInfo->getId(),
+                'notify_url' => route('channel.game-leveling.wx.pay.notify', ['trade_no' => $order->trade_no]),
+                'return_url' => url('/channel/order/pay/success', ['trade_no' => $order->trade_no]),
             ]);
-            return response()->ajax(1, 'success', ['type' => 2, 'par' => $payPar->getContent()]);
+            $payPar = $app->jssdk->bridgeConfig($result['prepay_id'], false);
+
+            return response()->ajax(1, 'success', ['type' => 2, 'par' => $payPar]);
         }
     }
 

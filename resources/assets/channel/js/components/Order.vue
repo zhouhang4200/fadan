@@ -1,5 +1,6 @@
 <template>
     <div class="order">
+
         <van-nav-bar
                 :fixed=true
                 title="丸子代练"
@@ -9,7 +10,9 @@
         />
 
         <div style="padding-top: 46px">
+
             <img class="order-poster" src="/channel/images/banner.jpg">
+
             <van-cell-group class="goods-cell-group">
 
                 <van-field
@@ -132,6 +135,7 @@
                     @confirm="onConfirmGameLevelingLevel"
             />
         </van-popup>
+
     </div>
 </template>
 
