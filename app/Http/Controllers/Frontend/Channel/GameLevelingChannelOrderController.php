@@ -655,9 +655,9 @@ class GameLevelingChannelOrderController extends Controller
     {
         try {
             $gameLevelingChannelOrders = GameLevelingChannelOrder::filter(['status' => request('status')])
-                ->where('game_leveling_channel_user_id', request('game_leveling_channel_user_id', 2))
-                ->where('user_id', request('user_id', 2))
-                ->oldest('created_at')
+                ->where('game_leveling_channel_user_id', session('channel_user_id'))
+                ->where('user_id', session('user_id'))
+                ->oldest('id')
                 ->get();
         } catch (Exception $e) {
             myLog('channel-order-list', [$e->getMessage(), $e->getLine()]);
@@ -675,9 +675,7 @@ class GameLevelingChannelOrderController extends Controller
         DB::beginTransaction();
         try {
             // 当前操作人是否是订单持有者
-            $gameLevelingChannelUser = GameLevelingChannelUser::where('uuid', request('game_leveling_channel_user_id'))
-                ->where('user_id', session('user_id'))
-                ->first();
+            $gameLevelingChannelUser = GameLevelingChannelUser::find(session('channel_user_id'));
 
             if (!$gameLevelingChannelUser) {
                 throw new GameLevelingOrderOperateException('当前操作人不是该订单持有人!');
@@ -709,7 +707,7 @@ class GameLevelingChannelOrderController extends Controller
         DB::beginTransaction();
         try {
             // 当前操作人是否是订单持有者
-            $gameLevelingChannelUser = GameLevelingChannelUser::where('uuid', request('game_leveling_channel_user_id'))
+            $gameLevelingChannelUser = GameLevelingChannelUser::where('id', session('channel_user_id'))
                 ->where('user_id', session('user_id'))
                 ->first();
 
