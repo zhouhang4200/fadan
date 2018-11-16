@@ -263,7 +263,7 @@ class GameLevelingChannelOrderController extends Controller
                 'total_fee' => bcmul($order->amount, 100, 0),
                 'trade_type' => 'JSAPI',
                 'openid' => $wxAuthInfo->getId(),
-                'notify_url' => route('channel.game-leveling.wx.pay.notify', ['trade_no' => $order->trade_no]),
+                'notify_url' => route('channel.game-leveling.wx.pay.notify'),
                 'return_url' => url('/channel/order/pay/success', ['trade_no' => $order->trade_no]),
             ]);
             $payPar = $app->jssdk->bridgeConfig($result['prepay_id'], false);
@@ -293,7 +293,7 @@ class GameLevelingChannelOrderController extends Controller
                     try {
                         $order->payment_at = date('Y-m-d H:i:s');
                         $order->payment_amount = bcdiv($message['total_fee'], 100, 2);
-                        $order->stattus = 2;
+                        $order->status = 2;
                         $order->save();
 
                         $user = User::find($order->user_id);
@@ -303,6 +303,7 @@ class GameLevelingChannelOrderController extends Controller
                         $gameLevelingOrder->channel_order_status = 2; // 渠道订单支付状态
                         $gameLevelingOrder->save();
                     } catch (\Exception $exception) {
+                        myLog('weChatNotify', [$exception->getLine(), $exception->getMessage()]);
                         DB::rollback();
                     }
 
@@ -654,9 +655,10 @@ class GameLevelingChannelOrderController extends Controller
     {
         try {
             $gameLevelingChannelOrders = GameLevelingChannelOrder::filter(['status' => request('status')])
-                ->where('game_leveling_channel_user_id', request('game_leveling_channel_user_id', 2))
-                ->where('user_id', request('user_id', 2))
-                ->oldest('created_at')
+                ->where('game_leveling_channel_user_id', session('channel_user_id'))
+                ->where('user_id', session('user_id'))
+                ->oldest('id')
+                ->where('status', '!=', 1)
                 ->get();
         } catch (Exception $e) {
             myLog('channel-order-list', [$e->getMessage(), $e->getLine()]);
@@ -674,9 +676,7 @@ class GameLevelingChannelOrderController extends Controller
         DB::beginTransaction();
         try {
             // 当前操作人是否是订单持有者
-            $gameLevelingChannelUser = GameLevelingChannelUser::where('uuid', request('game_leveling_channel_user_id'))
-                ->where('user_id', session('user_id'))
-                ->first();
+            $gameLevelingChannelUser = GameLevelingChannelUser::find(session('channel_user_id'));
 
             if (!$gameLevelingChannelUser) {
                 throw new GameLevelingOrderOperateException('当前操作人不是该订单持有人!');
@@ -708,7 +708,7 @@ class GameLevelingChannelOrderController extends Controller
         DB::beginTransaction();
         try {
             // 当前操作人是否是订单持有者
-            $gameLevelingChannelUser = GameLevelingChannelUser::where('uuid', request('game_leveling_channel_user_id'))
+            $gameLevelingChannelUser = GameLevelingChannelUser::where('id', session('channel_user_id'))
                 ->where('user_id', session('user_id'))
                 ->first();
 
