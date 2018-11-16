@@ -104,7 +104,7 @@ class LoginController extends Controller
 
                 $indexUrl = route('frontend.workbench.index');
                 if (!Auth::user()->could('frontend.workbench.index')) {
-                    $indexUrl = route('/v2/order/game-leveling');
+                    $indexUrl = url('/v2/order/game-leveling');
                 }
                 return response()->ajax(1, 'success', ['url' => $indexUrl]);
             }

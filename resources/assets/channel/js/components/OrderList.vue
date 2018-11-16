@@ -2,6 +2,7 @@
     <div class="order-list">
 
         <div style="margin-top: 46px">
+
             <van-tabs
                     color="#198cff"
                     @click="onClick"
@@ -15,6 +16,7 @@
                 <van-tab title="退款中"></van-tab>
                 <van-tab title="已退款"></van-tab>
             </van-tabs>
+
             <van-list
                     v-model="loading"
                     :finished="finished"
@@ -52,6 +54,7 @@
                     </div>
                 </van-panel>
             </van-list>
+
         </div>
 
     </div>
