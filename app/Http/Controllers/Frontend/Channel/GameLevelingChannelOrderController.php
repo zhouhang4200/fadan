@@ -263,7 +263,7 @@ class GameLevelingChannelOrderController extends Controller
                 'total_fee' => bcmul($order->amount, 100, 0),
                 'trade_type' => 'JSAPI',
                 'openid' => $wxAuthInfo->getId(),
-                'notify_url' => route('channel.game-leveling.wx.pay.notify', ['trade_no' => $order->trade_no]),
+                'notify_url' => route('channel.game-leveling.wx.pay.notify'),
                 'return_url' => url('/channel/order/pay/success', ['trade_no' => $order->trade_no]),
             ]);
             $payPar = $app->jssdk->bridgeConfig($result['prepay_id'], false);

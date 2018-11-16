@@ -577,6 +577,6 @@ Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
     });
 
     # 微信支付回调
-    Route::any('pay/wx/notify/{trade_no?}', 'GameLevelingChannelOrderController@weChatNotify')->name('channel.game-leveling.wx.pay.notify');
+    Route::any('pay/wx/notify', 'GameLevelingChannelOrderController@weChatNotify')->name('channel.game-leveling.wx.pay.notify');
 });
 
