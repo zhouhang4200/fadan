@@ -14,7 +14,7 @@
             <van-goods-action-big-btn
                     :to="{name:'orderDetail', param:{trade_no:$route.params.trade_no}}"
             >
-                订单详情
+                 订单详情
             </van-goods-action-big-btn>
 
             <van-goods-action-big-btn
@@ -37,5 +37,6 @@
                 this.$router.push({path: '/channel/order'})
             },
         },
+
     }
 </script>

@@ -259,6 +259,15 @@
                 this.amount = '待评估';
                 this.time = '待评估';
                 this.discount = '代练价格';
+            },
+            // $router.back(-1)
+            test() {
+                this.$router.push({
+                    name:'paySuccess',
+                    query:{
+                        'trade_no' : 'sd'
+                    }
+                })
             }
         }
     }

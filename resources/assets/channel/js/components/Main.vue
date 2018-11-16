@@ -47,6 +47,17 @@
                 }
             }
         },
+        methods: {
+            // $router.back(-1)
+            test() {
+                this.$router.push({
+                    name:'orderRefund',
+                    param:{
+                        'trade_on' : 'sd'
+                    }
+                })
+            }
+        }
     }
 </script>
 

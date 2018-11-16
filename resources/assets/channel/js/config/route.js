@@ -37,7 +37,7 @@ const router = new VueRouter({
                 },
                 {
                     name: "orderDetail",
-                    path: "detail/:trade_no",
+                    path: "detail",
                     meta:{
                         title:'订单详情'
                     },
@@ -53,7 +53,7 @@ const router = new VueRouter({
                 },
                 {
                     name: "paySuccess",
-                    path: "pay/success/:trade_no",
+                    path: "pay/success",
                     meta:{
                         title:'付款成功'
                     },
