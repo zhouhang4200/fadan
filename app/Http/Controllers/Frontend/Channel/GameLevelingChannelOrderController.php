@@ -249,7 +249,7 @@ class GameLevelingChannelOrderController extends Controller
                 'total_amount' => $order->amount,
                 'subject' => '代练订单支付',
             ]);
-            return response()->ajax(1, 'success', ['type' => 1, 'par' => $payPar->getContent()]);
+            return response()->ajax(1, 'success', ['type' => 1, 'trade_no' => $order->trade_no, 'par' => $payPar->getContent()]);
         } elseif ($order->payment_type == 2) {
             // 获取授权信息
             $wxAuthInfo = session('wechat.oauth_user.default');
@@ -268,7 +268,7 @@ class GameLevelingChannelOrderController extends Controller
             ]);
             $payPar = $app->jssdk->bridgeConfig($result['prepay_id'], false);
 
-            return response()->ajax(1, 'success', ['type' => 2, 'par' => $payPar]);
+            return response()->ajax(1, 'success', ['type' => 2, 'trade_no' => $order->trade_no, 'par' => $payPar]);
         }
     }
 

@@ -301,8 +301,11 @@
                                             // res.err_msg将在用户支付成功后返回
                                             // ok，但并不保证它绝对可靠。
                                             this.$router.push({
-                                                name:'paySuccess'
-                                            })
+                                                name:'paySuccess',
+                                                query:{
+                                                    'trade_no' : res.content.trade_no
+                                                }
+                                            });
                                         }
                                     }
                                 );
