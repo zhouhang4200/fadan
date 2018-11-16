@@ -789,7 +789,6 @@ class GameLevelingChannelOrderController extends Controller
      */
     public function applyRefund()
     {
-        myLog('test', [request()->all()]);
         DB::beginTransaction();
         try {
             // 申请退款表状态更新
@@ -797,8 +796,37 @@ class GameLevelingChannelOrderController extends Controller
                 ->where('status', 2)
                 ->where('user_id', request('user_id'))
                 ->first();
+
+            if (!$gameLevelingChannelOrder) {
+                return response()->ajax(0, '订单不存在!');
+            }
+
+            if (!request('refund_reason')) {
+                return response()->ajax(0, '请输入退款原因!');
+            }
+
+            if (!request('type')) {
+                return response()->ajax(0, '请选择退款类型!');
+            }
+
+            if (request('type') == 2 && !request('refund_amount')) {
+                return response()->ajax(0, '请填写退款金额!');
+            }
+
+            if (request('type') == 2 && !is_numeric(request('refund_amount'))) {
+                return response()->ajax(0, '退款金额必须填写数字值!');
+            }
+
+            if (request('type') == 2 && request('refund_amount') < 0.01) {
+                return response()->ajax(0, '退款金额必须大于一分钱!');
+            }
+
+            if (request('type') == 2 && request('refund_amount') && $gameLevelingChannelOrder->payment_amount < request('refund_amount')) {
+                return response()->ajax(0, '申请退款金额不得大于订单实际支付金额!');
+            }
             $gameLevelingChannelOrder->status = 6;
             $gameLevelingChannelOrder->save();
+
             // 申请退款
             $data['game_leveling_channel_order_trade_no'] = $gameLevelingChannelOrder->trade_no;
             $data['game_leveling_type_id'] = $gameLevelingChannelOrder->game_leveling_type_id;
@@ -810,28 +838,31 @@ class GameLevelingChannelOrderController extends Controller
             $data['status'] = 6;
             $data['amount'] = $gameLevelingChannelOrder->amount;
             $data['payment_amount'] = $gameLevelingChannelOrder->payment_amount;
-            $data['refund_amount'] = request('refund_amount');
+            $data['refund_amount'] = request('type') == 1 ? $gameLevelingChannelOrder->payment_amount : request('refund_amount');
             $data['pic1'] = '';
             $data['pic2'] = '';
             $data['pic3'] = '';
             $data['refund_reason'] = request('refund_reason');
             $data['refuse_refund_reason'] = '';
 
-            GameLevelingChannelRefund::create($data);
+            GameLevelingChannelRefund::updateOrCreate(['game_leveling_channel_order_trade_no' => request('trade_no')], $data);
             // 发单平台表状态更新
             $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
-                ->where('channel_order_status', 6)
+                ->where('channel_order_status', 2)
                 ->where('user_id', request('user_id'))
                 ->get();
 
             foreach ($gameLevelingOrders as $gameLevelingOrder) {
-                $gameLevelingOrder->channel_order_status = 2;
+                $gameLevelingOrder->channel_order_status = 6;
                 $gameLevelingOrder->save();
             }
         } catch (Exception $e) {
+            myLog('channel-apply-refund-error', ['trade_no' => $gameLevelingChannelOrder->trade_no ?? '', 'message' => $e->getMessage(), 'line' => $e->getLine()]);
             DB::rollback();
+            return response()->ajax(0, '操作失败：服务器异常!');
         }
         DB::commit();
+        return response()->ajax(1, '操作成功!');
     }
 
     /**
