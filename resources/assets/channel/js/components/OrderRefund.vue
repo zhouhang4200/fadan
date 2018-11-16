@@ -135,7 +135,7 @@
             handleOrder() {
                 this.form.trade_no=this.$route.query.trade_no;
                 this.form.user_id=this.$route.query.user_id;
-                this.$api.GameLevelingChannelOrderApplyRefundShow({
+                this.$api.GameLevelingChannelOrderShow({
                     user_id:this.$route.query.user_id,
                     trade_no:this.$route.query.trade_no
                 }).then(res => {

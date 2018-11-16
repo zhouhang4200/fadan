@@ -558,7 +558,7 @@ Route::prefix('channel')->middleware(['wechat.oauth:snsapi_userinfo', 'channel.u
     Route::post('target', 'GameLevelingChannelOrderController@target')->name('channel.target'); // 获取代练类型
     Route::post('order-list', 'GameLevelingChannelOrderController@orderList')->name('channel.order-list'); // 渠道订单列表
     Route::post('apply-refund', 'GameLevelingChannelOrderController@applyRefund')->name('channel.apply-refund'); // 申请退款
-    Route::post('apply-refund-show', 'GameLevelingChannelOrderController@applyRefundShow')->name('channel.apply-refund-show'); // 申请退款
+    Route::post('show', 'GameLevelingChannelOrderController@show')->name('channel.show'); // 申请退款
     # 确认收货
     Route::post('complete', 'GameLevelingChannelOrderController@complete')->name('channel.complete'); //
     Route::post('delete', 'GameLevelingChannelOrderController@delete')->name('channel.delete'); // 撤单
