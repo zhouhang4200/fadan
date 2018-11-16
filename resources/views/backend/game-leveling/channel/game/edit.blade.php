@@ -115,14 +115,14 @@
                         <div class="form-group">
                             <label for="" class="col-lg-1 control-label">代练说明</label>
                             <div class="col-lg-10">
-                                <textarea placeholder="请输入内容" name="instructions"  lay-verify="required" class="layui-textarea">{{ $item->instructions }}</textarea>
+                                <textarea placeholder="请输入内容" name="explain"  lay-verify="required" class="layui-textarea">{{ $item->explain }}</textarea>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="" class="col-lg-1 control-label">代练要求</label>
                             <div class="col-lg-10">
-                                <textarea placeholder="请输入内容" name="requirements"  lay-verify="required" class="layui-textarea">{{ $item->instructions }}</textarea>
+                                <textarea placeholder="请输入内容" name="requirement"  lay-verify="required" class="layui-textarea">{{ $item->requirement }}</textarea>
                             </div>
                         </div>
 

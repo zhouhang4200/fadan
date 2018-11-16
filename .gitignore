@@ -20,3 +20,4 @@ yarn-error.log
 /public/channel/fonts/
 /public/channel/mix-manifest.json
 !.gitignore
+/app/Console/Commands/DevCommand.php

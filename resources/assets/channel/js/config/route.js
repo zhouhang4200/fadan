@@ -20,6 +20,14 @@ const router = new VueRouter({
                     component: () => import('../components/Order'),
                 },
                 {
+                    name: "orderCreate",
+                    path: "create",
+                    meta:{
+                        title:'填写订单信息'
+                    },
+                    component: () => import('../components/orderCreate'),
+                },
+                {
                     name: "orderList",
                     path: "list",
                     meta:{

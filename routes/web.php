@@ -527,23 +527,44 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
     });
 });
 # 渠道订单
-Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
+Route::prefix('channel')->middleware(['channel.user'])->namespace('Frontend\Channel')->group(function () {
+    #　视图挂载页
     Route::get('/{vue?}', function (){ return view('channel.spa');})->where('vue', '[\/\w\.-]*');
+
+    #　获取代练游戏
+    Route::post('games', 'GameLevelingChannelOrderController@games');
+    #　获取游戏区
+    Route::post('game-regions', 'GameLevelingChannelOrderController@regions');
+    # 获取游戏服
+    Route::post('game-servers', 'GameLevelingChannelOrderController@servers');
+    # 获取代练类型
+    Route::post('game-leveling-types', 'GameLevelingChannelOrderController@gameLevelingTypes');
+    # 获取代练等级
+    Route::post('game-leveling-levels', 'GameLevelingChannelOrderController@gameLevelingLevels');
+    # 计算代练价格和时间
+    Route::post('gameLeveling-amount-time', 'GameLevelingChannelOrderController@gameLevelingAmountTime');
+    # 创建订单
+    Route::post('store', 'GameLevelingChannelOrderController@store')->name('channel.game-leveling.store');
+
+
+
 //    Route::get('index', 'GameLevelingChannelOrderController@index')->name('channel.index'); // 下单首页
     Route::post('game', 'GameLevelingChannelOrderController@game')->name('channel.game'); // 获取代练游戏
     Route::post('type', 'GameLevelingChannelOrderController@type')->name('channel.type'); // 获取代练类型
+    Route::post('target', 'GameLevelingChannelOrderController@target')->name('channel.target'); // 获取代练类型
     Route::post('order-list', 'GameLevelingChannelOrderController@orderList')->name('channel.order-list'); // 渠道订单列表
     Route::post('apply-refund', 'GameLevelingChannelOrderController@applyRefund')->name('channel.apply-refund'); // 申请退款
     Route::post('apply-refund-show', 'GameLevelingChannelOrderController@applyRefundShow')->name('channel.apply-refund-show'); // 申请退款
-    Route::post('complete', 'GameLevelingChannelOrderController@complete')->name('channel.complete'); // 完成验收
+    # 确认收货
+    Route::post('complete', 'GameLevelingChannelOrderController@complete')->name('channel.complete'); //
     Route::post('delete', 'GameLevelingChannelOrderController@delete')->name('channel.delete'); // 撤单
-    Route::post('cancel-refund', 'GameLevelingChannelOrderController@cancelRefund')->name('channel.cancel-refund'); // 取消退款
-    Route::post('compute', 'GameLevelingChannelOrderController@compute')->name('channel.compute'); // 计算价格和时间
+    #　取消退款
+    Route::post('cancel-refund', 'GameLevelingChannelOrderController@cancelRefund')->name('channel.cancel-refund'); //
+
     Route::post('go', 'GameLevelingChannelOrderController@go')->name('channel.go'); // 成功跳转
 
     Route::get('place-order', 'GameLevelingChannelOrderController@placeOrder')->name('channel.place-order'); // 下单配置界面
-    Route::post('region', 'GameLevelingChannelOrderController@region')->name('channel.region'); // 区
-    Route::post('server', 'GameLevelingChannelOrderController@server')->name('channel.server'); // 服
+
     Route::post('pay', 'GameLevelingChannelOrderController@pay')->name('channel.pay'); // 支付
 
     Route::any('alipay-notify', 'GameLevelingChannelOrderController@alipayNotify')->name('channel.alipay-notify');

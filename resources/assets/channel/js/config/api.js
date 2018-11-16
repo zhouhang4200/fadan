@@ -12,8 +12,29 @@ export default {
     GameLevelingChannelOrderCancelRefund(params) {
         return post('/channel/cancel-refund', params)
     },
-    getGames() {
-        return post('/channel/game')
+    games() {
+        return post('/channel/games')
+    },
+    gameRegions(params) {
+        return post('/channel/game-regions', params)
+    },
+    gameServers(params) {
+        return post('/channel/game-servers', params)
+    },
+    gameLevelingTypes(params) {
+        return post('/channel/game-leveling-types', params)
+    },
+    //　获取代练等级
+    gameLevelingLevels(params) {
+        return post('/channel/game-leveling-levels', params)
+    },
+    // 计算代练价格与时间
+    gameLevelingAmountTime(params) {
+        return post('/channel/gameLeveling-amount-time', params)
+    },
+    // 创建订单
+    gameLevelingChannelOrderCreate(params) {
+        return post('/channel/store', params)
     },
     GameLevelingChannelOrderApplyRefund(params) {
         return post('/channel/apply-refund', params)

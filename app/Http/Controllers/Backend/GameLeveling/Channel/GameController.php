@@ -68,8 +68,8 @@ class GameController extends Controller
                 'game_name' => $gameInfo[1],
                 'game_leveling_type_id' => $typeInfo[0],
                 'game_leveling_type_name' => $typeInfo[1],
-                'instructions' => request('instructions'),
-                'requirements' => request('requirements'),
+                'explain' => request('explain'),
+                'requirement' => request('requirement'),
                 'user_qq' => request('user_qq'),
                 'rebate' => request('rebate'),
             ]);
@@ -125,8 +125,8 @@ class GameController extends Controller
             $gameLevelingChannelGame->game_leveling_type_name = $typeInfo[1];
             $gameLevelingChannelGame->user_id = request('user_id');
             $gameLevelingChannelGame->rebate = request('rebate');
-            $gameLevelingChannelGame->instructions = request('instructions');
-            $gameLevelingChannelGame->requirements = request('requirements');
+            $gameLevelingChannelGame->explain = request('explain');
+            $gameLevelingChannelGame->requirement = request('requirement');
             $gameLevelingChannelGame->user_qq = request('user_qq');
             $gameLevelingChannelGame->save();
 

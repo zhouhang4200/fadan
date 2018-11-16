@@ -80,5 +80,6 @@ class Kernel extends HttpKernel
         'auth.admin' => \App\Http\Middleware\AuthAdmin::class,
         // open api
         'open.api' => \App\Http\Middleware\OpenApi::class,
+        'channel.user' => \App\Http\Middleware\ChannelUser::class,
     ];
 }

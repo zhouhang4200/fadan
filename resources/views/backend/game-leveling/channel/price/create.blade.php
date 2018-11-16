@@ -74,7 +74,7 @@
                     <form class="form-horizontal layui-form" role="form" method="post" action="{{ route('game-leveling.channel.price.store') }}" enctype="multipart/form-data">
                         {{ csrf_field() }}
 
-                        <input type="hidden" name="game_leveling_channel_game_id" value="{{ request('id') }}">
+                        <input type="hidden" name="game_leveling_channel_game_id" value="{{ request('game_leveling_channel_game_id') }}">
                         <div class="form-group">
                             <label  class="col-lg-1 control-label">序号</label>
                             <div class="col-lg-10">

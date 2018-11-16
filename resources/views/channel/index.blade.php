@@ -135,6 +135,7 @@
         });
 
         $.post("{{ route('channel.game') }}",{},function(res) {
+
             if(res.status == 1) {
                 mobileSelect1.updateWheel(0,res.message) //更改第1个轮子
             }

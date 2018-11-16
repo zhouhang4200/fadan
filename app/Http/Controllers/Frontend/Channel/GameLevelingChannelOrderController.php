@@ -17,22 +17,17 @@ use App\Exceptions\DailianException;
 use App\Http\Controllers\Controller;
 use App\Models\GameLevelingChannelGame;
 use App\Models\GameLevelingChannelUser;
-use App\Services\OrderOperateController;
 use App\Models\GameLevelingChannelOrder;
 use App\Models\GameLevelingChannelRefund;
 use App\Exceptions\GameLevelingOrderOperateException;
 
+/**
+ * 游戏代练渠道订单
+ * Class GameLevelingChannelOrderController
+ * @package App\Http\Controllers\Frontend\Channel
+ */
 class GameLevelingChannelOrderController extends Controller
 {
-    /**
-     * 渠道下单首页
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function index()
-    {
-        return view('channel.index');
-    }
-
     /**
      * 获取所有的代练游戏
      * @return mixed
@@ -41,200 +36,235 @@ class GameLevelingChannelOrderController extends Controller
     {
         try {
             $games = GameLevelingChannelGame::where('user_id', request('user_id', 2))
-                ->pluck('game_name', 'game_id')
+                ->pluck('game_name')
+                ->unique()
                 ->toArray();
         } catch (\Exception $e) {
             return response()->ajax(0, '数据异常');
         }
-        return response()->ajax(1, '', [$games]);
+        return response()->ajax(1, $games);
     }
 
     /**
-     * 获取代练类型
+     * 获取所有的代练游戏
      * @return mixed
      */
-    public function type()
+    public function games()
     {
         try {
-            $types = GameLevelingChannelGame::where('game_id', request('game_id'))
+            $games = GameLevelingChannelGame::selectRaw('game_name as text, game_id as id, user_id')
                 ->where('user_id', request('user_id', 2))
-                ->pluck('game_leveling_type_name')
-                ->unique()
+                ->groupBy('game_id')
+                ->get()
+                ->map(function ($item, $key) {
+                    return collect($item)->except(['user_id']);
+                });
+        } catch (\Exception $e) {
+            return response()->ajax(0, '数据异常' . $e->getMessage());
+        }
+        return response()->ajax(1, '', $games);
+    }
+
+    /**
+     * 获取游戏的区
+     * @return mixed
+     */
+    public function regions()
+    {
+        try {
+            $regions = GameRegion::selectRaw('name as text, id')
+                ->where('game_id', request('game_id'))
+                ->get()
                 ->toArray();
+
+            return response()->ajax(1, '', $regions);
+        } catch (Exception $e) {
+            return response()->ajax(0, '服务器错误');
+        }
+    }
+
+    /**
+     * 获取区的服
+     * @param Request $request
+     * @return mixed
+     */
+    public function servers(Request $request)
+    {
+        try {
+            $servers = GameServer::selectRaw('name as text, id')
+                ->where('game_region_id', request('region_id'))->get();
+            return response()->ajax(1, '', $servers);
+        } catch (Exception $e) {
+            return response()->ajax(0, '', $e->getMessage());
+        }
+    }
+
+    /**
+     * 游戏代练类型
+     * @return mixed
+     */
+    public function gameLevelingTypes()
+    {
+        try {
+            $types = GameLevelingChannelGame::selectRaw('game_leveling_type_name as text, game_leveling_type_id as id, user_id')
+                ->where('game_id', request('game_id'))
+                ->where('user_id', request('user_id', 2))
+                ->get()
+                ->map(function ($item, $key) {
+                    return collect($item)->except(['user_id']);
+                });
         } catch (\Exception $e) {
             return response()->ajax(0, []);
         }
-        return response()->ajax(1, $types);
+        return response()->ajax(1, '', $types);
     }
 
     /**
-     * 代练目标
-     * @return array
+     * 游戏代练等级
+     * @return mixed
      */
-    public function target()
+    public function gameLevelingLevels()
     {
         try {
             // 渠道游戏
-            $gameLevelingChannelGame = GameLevelingChannelGame::where('game_name', request('game_name'))
+            $gameLevelingChannelGame = GameLevelingChannelGame::where('game_id', request('game_id'))
                 ->where('user_id', request('user_id', 2))
-                ->where('game_leveling_type_name', request('type'))
+                ->where('game_leveling_type_id', request('game_leveling_type_id'))
                 ->first();
 
-            $targets = $gameLevelingChannelGame->gameLevelingChannelPrices->pluck('level', 'sort')->toArray();
+            $targets = $gameLevelingChannelGame->gameLevelingChannelPrices->toArray();
+
+            $levels = [];
+            foreach ($targets as $key => $item) {
+                $nextLevelArr = $gameLevelingChannelGame->gameLevelingChannelPrices->where('id', '>', $item['id'])->toArray();
+                $nextLevels = [];
+                foreach ($nextLevelArr as $i) {
+                    $nextLevels[] = [
+                        'text' => $i['level'],
+                        'index' => $i['id'],
+                    ];
+                }
+                $levels[] = [
+                    'text' => $item['level'],
+                    'index' => $item['id'],
+                    'level' => $nextLevels
+                ];
+            }
         } catch (Exception $e) {
-            response()->ajax(1, []);
+            return response()->ajax(0, $e->getMessage());
         }
-        return response()->ajax(1, $targets);
+        return response()->ajax(1, '', $levels);
     }
 
     /**
      * 自动计算下单价格和时间等信息
      * @return mixed
      */
-    public function compute()
+    public function gameLevelingAmountTime()
     {
-        try {
-            $gameName = request('game_name');
-            $type = request('type');
-            $level = request('level');
+        # 获取代练价格时间保证金
+        $amountTimeDeposit = GameLevelingChannelOrder::amountTimeDepositCompute(
+            session()->get('user_id'),
+            request('game_id'),
+            request('game_leveling_type_id'),
+            request('game_leveling_current_level_id'),
+            request('game_leveling_target_level_id'));
 
-            if (empty($gameName) || empty($type) || empty($level)) {
-                return response()->ajax(0, '游戏或类型缺失');
-            }
-
-            $arrTarget = explode(',', $level);
-
-            if (! is_array($arrTarget) || count($arrTarget) < 2) {
-                return response()->ajax(0, '请正确选择代练目标');
-            }
-            $startLevel = $arrTarget[0];
-            $endLevel = $arrTarget[1];
-
-            // 渠道游戏
-            $gameLevelingChannelGame = GameLevelingChannelGame::where('game_name', request('game_name'))
-                ->where('user_id', request('user_id', 2))
-                ->where('game_leveling_type_name', request('type'))
-                ->first();
-
-            // 找到层级
-            $startNumber = $gameLevelingChannelGame->gameLevelingChannelPrices()
-                ->where('level', $startLevel)
-                ->value('sort');
-
-            $endNumber = $gameLevelingChannelGame->gameLevelingChannelPrices()
-                ->where('level', $endLevel)
-                ->value('sort');
-
-            if (empty($startNumber) || empty($endNumber)) {
-                return response()->ajax(0, '请正确选择代练目标');
-            }
-
-            if ($startNumber >= $endNumber) {
-                return response()->ajax(0, '请正确选择代练目标');
-            }
-
-            $price = $gameLevelingChannelGame->gameLevelingChannelPrices()
-                ->where('sort', '>=', $startNumber)
-                ->where('sort', '<', $endNumber)
-                ->sum('price');
-
-            $time = $gameLevelingChannelGame->gameLevelingChannelPrices()
-                ->where('sort', '>=', $startNumber)
-                ->where('sort', '<', $endNumber)
-                ->sum('hour');
-
-            $count = $gameLevelingChannelGame->gameLevelingChannelPrices()
-                ->where('sort', '>=', $startNumber)
-                ->where('sort', '<', $endNumber)
-                ->count();
-
-            $rebate = $gameLevelingChannelGame->gameLevelingChannelDiscounts()
-                    ->where('level', '<=', $count)
-                    ->min('discount') ?? 100;
-            // dd($rebate);
-            $staticRebate =$gameLevelingChannelGame->rebate ?? 100;
-
-            $securityDeposit = $gameLevelingChannelGame->gameLevelingChannelPrices()
-                ->where('sort', '>=', $startNumber)
-                ->where('sort', '<', $endNumber)
-                ->sum('security_deposit');
-
-            $efficiencyDeposit = $gameLevelingChannelGame->gameLevelingChannelPrices()
-                ->where('sort', '>=', $startNumber)
-                ->where('sort', '<', $endNumber)
-                ->sum('efficiency_deposit');
-
-            $day = intval(bcdiv($time, 60, 0))+0;
-            $hour = intval($time%60)+0;
-
-            // 玩家支付价格(来源价格）
-            $payment = bcmul($price, $rebate*0.01, 2)+0;
-
-            if ($price*$rebate*0.01 > 0 && $price*$rebate*0.01 < 0.01) {
-                $payment = 0.01;
-            }
-            // 优惠之前的价格
-            $showPrice = bcmul($payment, 1.5, 2)+0;
-
-            if($showPrice > 0 && $showPrice < 0.01) {
-                $showPrice = 0.01;
-            }
-            // 发单平台价格
-            $price = bcmul($payment, $staticRebate*0.01, 2)+0;
-
-            if($payment*$staticRebate*0.01 > 0 && $payment*$staticRebate*0.01 < 0.01) {
-                $price = 0.01;
-            }
-            // 展示的需要代练的时间
-            $showTime = sec2Time($time*3600);
-            // dd($day, $hour, $securityDeposit, $efficiencyDeposit);
-        } catch (\Exception $e) {
-            myLog('error', [$e->getMessage()]);
-            return response()->ajax(0, '服务器错误');
-        }
-        return response()->ajax(1, ['showPrice' => $showPrice, 'payment' => $payment, 'price' => $price, 'showTime' => $showTime, 'startNumber' =>$startNumber, 'endNumber' => $endNumber, 'startLevel' => $startLevel, 'endLevel' => $endLevel, 'time' => $time, 'securityDeposit' => $securityDeposit, 'efficiencyDeposit' => $efficiencyDeposit,
-            'day' => $day, 'hour' => $hour
+        return response()->ajax(1, 'success', [
+            'amount' => $amountTimeDeposit->fake_amount,
+            'discount_amount' => $amountTimeDeposit->amount,
+            'time' => $amountTimeDeposit->show_time,
+            'game' => $amountTimeDeposit->game_name . '-' . $amountTimeDeposit->game_leveling_type_name,
+            'level' => $amountTimeDeposit->current_level->level . '-' . $amountTimeDeposit->target_level->level,
         ]);
     }
 
     /**
-     * 获取游戏区
-     * @return mixed
+     * 创建订单并返回支付信息
+     * @return \Yansongda\Pay\Gateways\Alipay\WapGateway|\Yansongda\Pay\Gateways\Wechat\WapGateway
      */
-    public function region()
+    public function store()
     {
-        try {
-            $gameId = Game::where('name', request('game_name'))->value('id');
+        #　获取游戏
+        $game = Game::find(request('game_id'));
 
-            $regions = GameRegion::where('game_id', $gameId)
-                ->pluck('name')
-                ->toArray();
+        #　获取区
+        $region = GameRegion::find(request('game_region_id'));
 
-            return response()->ajax(1, $regions);
-        } catch (Exception $e) {
-            return response()->ajax(0, '服务器错误');
+        #　获取服
+        $server = GameServer::find(request('game_server_id'));
+
+        # 游戏代练类型
+        $gameLevelingType = GameLevelingType::find(request('game_leveling_type_id'));
+
+        # 获取代练价格时间保证金
+        $amountTimeDeposit = GameLevelingChannelOrder::amountTimeDepositCompute(
+            session()->get('user_id'),
+            $game->id,
+            $gameLevelingType->id,
+            request('current_level_id'),
+            request('target_level_id'));
+
+        # 创建订单
+        $order = GameLevelingChannelOrder::create([
+            'trade_no' => generateOrderNo(),
+            'user_id' => session()->get('user_id'),
+            'user_qq' => $amountTimeDeposit->user_qq,
+            'game_id' => $game->id,
+            'game_name' => $game->name,
+            'game_region_id' => $region->id,
+            'game_region_name' => $region->id,
+            'game_server_id' => $server->id,
+            'game_server_name' => $server->name,
+            'game_leveling_type_id' => $gameLevelingType->id,
+            'game_leveling_type_name' => $gameLevelingType->name,
+            'game_leveling_channel_user_id' => request()->session()->get('channel_user_id'),
+            'game_account' => request('game_account'),
+            'game_password' => request('game_password'),
+            'game_role' => request('game_role'),
+            'player_phone' => request('player_phone'),
+            'player_qq' => $amountTimeDeposit->user_qq,
+            'payment_type' => request('payment_type'),
+            'title' => $game->name . '-' . $gameLevelingType->name . '-' . $amountTimeDeposit->current_level->name . '-' . $amountTimeDeposit->target_level->name,
+            'day' => $amountTimeDeposit->day,
+            'hour' => $amountTimeDeposit->hour,
+            'amount' => $amountTimeDeposit->amount,
+            'supply_amount' => $amountTimeDeposit->supply_amount,
+            'security_deposit' => $amountTimeDeposit->security_deposit,
+            'efficiency_deposit' => $amountTimeDeposit->efficiency_deposit,
+            'explain' => $amountTimeDeposit->explain,
+            'requirement' => $amountTimeDeposit->requirement,
+            'demand' => $amountTimeDeposit->current_level->name . '-' . $amountTimeDeposit->target_level->name,
+        ]);
+
+        # 获取支付信息 1 支付宝 2 微信
+        if ($order->payment_type == 1) {
+            # H5支付
+            $payPar = Pay::alipay(config('alipay.base_config'))->wap([
+                'out_trade_no' => $order->trade_no,
+                'total_amount' => $order->amount,
+                'subject' => '代练订单支付',
+            ]);
+            return response()->ajax(1, 'success', ['type' => 1, 'par' => $payPar->getContent()]);
+        } elseif ($order->payment_type == 2) {
+
+            $basicConfig = config('wechat.base_config');
+            $basicConfig['notify_url'] = config('wechat.base_config.notify_url') . '/' . $order->trade_no ?? '';
+            $basicConfig['return_url'] = config('wechat.return_url') . '/' . $order->trade_no ?? '';
+
+            $payPar = Pay::wechat($basicConfig)->wap([
+                'out_trade_no' => $order->trade_no,
+                'total_fee' => bcmul($order->amount, 100, 0), // 单位分
+                'body' => '代练订单支付',
+                'spbill_create_ip' => static::getIp(),
+            ]);
+            return response()->ajax(1, 'success', ['type' => 2, 'par' => $payPar->getContent()]);
         }
     }
 
-    /**
-     * 区的服
-     * @param Request $request
-     * @return mixed
-     */
-    public function server(Request $request)
-    {
-        try {
-            $gameId = Game::where('name', request('game_name'))->value('id');
-            $region = GameRegion::where('game_id', $gameId)
-                ->where('name', request('region'))
-                ->first();
 
-            $servers = $region->gameServers->pluck('name')->toArray();
-            return response()->ajax(1, $servers);
-        } catch (Exception $e) {
-            return response()->ajax(0, '服务器错误');
-        }
-    }
+
+
 
     /**
      * 跳转到下单页面
@@ -284,7 +314,7 @@ class GameLevelingChannelOrderController extends Controller
         $day = $data['game_leveling_day'];
         $hour = $data['game_leveling_hour'];
 
-        if (empty($gameName) || empty($type) || ! is_numeric($data['price']) || ! is_numeric($data['payment'])) {
+        if (empty($gameName) || empty($type) || !is_numeric($data['price']) || !is_numeric($data['payment'])) {
             return response()->ajax(0, '请重新选择游戏');
         }
 
@@ -328,7 +358,7 @@ class GameLevelingChannelOrderController extends Controller
             $data['status'] = 0; // 未支付
             $data['day'] = request('game_leveling_day', 0);
             $data['hour'] = request('game_leveling_hour', 0);
-            $data['amount'] = request('price', 0)+0;
+            $data['amount'] = request('price', 0) + 0;
             $data['discount_amount'] = 0;
             $data['refund_amount'] = 0;
             $data['payment_type'] = request('pay_type', 0);
@@ -340,7 +370,7 @@ class GameLevelingChannelOrderController extends Controller
             $data['game_leveling_type_name'] = request('game_leveling_type');
             $data['game_leveling_type_id'] = $gameLevelingType->id;
             $data['demand'] = request('demand', '');
-            $data['payment_amount'] = request('payment', 0)+0; // 实际支付金额
+            $data['payment_amount'] = request('payment', 0) + 0; // 实际支付金额
             $data['user_id'] = request('user_id', 2);
             $data['user_qq'] = '';
             $data['game_leveling_channel_user_id'] = 2;
@@ -350,9 +380,9 @@ class GameLevelingChannelOrderController extends Controller
             $data['game_account'] = request('account', '');
             $data['game_password'] = request('password', '');
             $data['user_qq'] = $gameLevelingChannelGame->user_qq;
-            $data['title'] = request('game_name').'-'.request('game_leveling_type').'-'.request('startLevel').'-'.request('endLevel');
-            $data['security_deposit'] = request('security_deposit',0)+0;
-            $data['efficiency_deposit'] = request('efficiency_deposit',0)+0;
+            $data['title'] = request('game_name') . '-' . request('game_leveling_type') . '-' . request('startLevel') . '-' . request('endLevel');
+            $data['security_deposit'] = request('security_deposit', 0) + 0;
+            $data['efficiency_deposit'] = request('efficiency_deposit', 0) + 0;
             $data['requirement'] = $gameLevelingChannelGame->requirements;
             $data['explain'] = $gameLevelingChannelGame->instructions;
             $data['remark'] = '';
@@ -363,7 +393,7 @@ class GameLevelingChannelOrderController extends Controller
                 $orderConfig = [
                     'out_trade_no' => $data['trade_no'],
                     'total_amount' => $data['payment_amount'],
-                    'subject'      => '代练订单支付',
+                    'subject' => '代练订单支付',
                 ];
 
                 $basicConfig = config('alipay.base_config');
@@ -372,15 +402,15 @@ class GameLevelingChannelOrderController extends Controller
 //                return Pay::alipay($basicConfig)->mp($orderConfig); // 公众号支付
             } elseif (request('pay_type') == 2) { // 微信
                 $orderConfig = [
-                    'out_trade_no'     => $data['trade_no'],
-                    'total_fee'        => $data['payment_amount']*100, // 单位分
-                    'body'             => '代练订单支付',
+                    'out_trade_no' => $data['trade_no'],
+                    'total_fee' => $data['payment_amount'] * 100, // 单位分
+                    'body' => '代练订单支付',
                     'spbill_create_ip' => static::getIp(),
                 ];
 
                 $basicConfig = config('wechat.base_config');
-                $basicConfig['notify_url'] = config('wechat.base_config.notify_url').'/'.$data['trade_no'] ?? '';
-                $basicConfig['return_url'] = config('wechat.return_url').'/'.$data['trade_no'] ?? '';
+                $basicConfig['notify_url'] = config('wechat.base_config.notify_url') . '/' . $data['trade_no'] ?? '';
+                $basicConfig['return_url'] = config('wechat.return_url') . '/' . $data['trade_no'] ?? '';
                 // dd($basicConfig);
                 return Pay::wechat($basicConfig)->wap($orderConfig);
             }
@@ -402,16 +432,16 @@ class GameLevelingChannelOrderController extends Controller
      */
     public static function getIp()
     {
-        if(getenv('HTTP_CLIENT_IP') && strcasecmp(getenv('HTTP_CLIENT_IP'), 'unknown')) {
+        if (getenv('HTTP_CLIENT_IP') && strcasecmp(getenv('HTTP_CLIENT_IP'), 'unknown')) {
             $ip = getenv('HTTP_CLIENT_IP');
-        } elseif(getenv('HTTP_X_FORWARDED_FOR') && strcasecmp(getenv('HTTP_X_FORWARDED_FOR'), 'unknown')) {
+        } elseif (getenv('HTTP_X_FORWARDED_FOR') && strcasecmp(getenv('HTTP_X_FORWARDED_FOR'), 'unknown')) {
             $ip = getenv('HTTP_X_FORWARDED_FOR');
-        } elseif(getenv('REMOTE_ADDR') && strcasecmp(getenv('REMOTE_ADDR'), 'unknown')) {
+        } elseif (getenv('REMOTE_ADDR') && strcasecmp(getenv('REMOTE_ADDR'), 'unknown')) {
             $ip = getenv('REMOTE_ADDR');
-        } elseif(isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], 'unknown')) {
+        } elseif (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], 'unknown')) {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
-        return preg_match ( '/[\d\.]{7,15}/', $ip, $matches ) ? $matches [0] : '';
+        return preg_match('/[\d\.]{7,15}/', $ip, $matches) ? $matches [0] : '';
     }
 
     /**
@@ -454,7 +484,7 @@ class GameLevelingChannelOrderController extends Controller
             if (isset($data) && ($data->trade_status == 'TRADE_SUCCESS' || $data->trade_status == 'TRADE_FINISHED')) {
                 $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $data->out_trade_no)->first();
                 // 验证订单号
-                if (! isset($gameLevelingChannelOrder) || empty($gameLevelingChannelOrder)) {
+                if (!isset($gameLevelingChannelOrder) || empty($gameLevelingChannelOrder)) {
                     throw new DailianException('订单号错误！');
                 }
                 // 验证appid
@@ -549,7 +579,7 @@ class GameLevelingChannelOrderController extends Controller
             $data = Pay::wechat($basicConfig)->find(['out_trade_no' => $request->no]);
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $request->no)->first();
 
-            if (isset($gameLevelingChannelOrder) && ! empty($gameLevelingChannelOrder) && isset($data) && ! empty($data) && $data->trade_state == 'SUCCESS') {
+            if (isset($gameLevelingChannelOrder) && !empty($gameLevelingChannelOrder) && isset($data) && !empty($data) && $data->trade_state == 'SUCCESS') {
 //                return view('channel.success', compact('mobileOrder'));
                 myLog('wechat-return-success', ['data' => $data ?? '']);
             } else {
@@ -572,7 +602,7 @@ class GameLevelingChannelOrderController extends Controller
         DB::beginTransaction();
         try {
             $basicConfig = config('wechat.base_config');
-            $basicConfig['notify_url'] = config('wechat.base_config.notify_url').'/'.$request->no ?? '';
+            $basicConfig['notify_url'] = config('wechat.base_config.notify_url') . '/' . $request->no ?? '';
             $weChat = Pay::wechat($basicConfig);
             $data = $weChat->verify();
 
@@ -580,7 +610,7 @@ class GameLevelingChannelOrderController extends Controller
             if (isset($data) && $data->return_code == 'SUCCESS') {
                 $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', $data->out_trade_no)->first();
                 // 验证订单号
-                if (! isset($gameLevelingChannelOrder) || empty($gameLevelingChannelOrder)) {
+                if (!isset($gameLevelingChannelOrder) || empty($gameLevelingChannelOrder)) {
                     throw new DailianException('订单不存在');
                 }
                 // 验证app_id
@@ -803,12 +833,60 @@ class GameLevelingChannelOrderController extends Controller
     {
         try {
             // 渠道表状态更新
-            return  GameLevelingChannelOrder::where('trade_no', request('trade_no'))
+            return GameLevelingChannelOrder::where('trade_no', request('trade_no'))
                 ->where('status', 2)
                 ->where('user_id', request('user_id'))
                 ->first();
         } catch (Exception $e) {
 
         }
+    }
+
+
+    /**
+     * 渠道下单首页 没用
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function index()
+    {
+        return view('channel.index');
+    }
+
+    /**
+     * 获取代练类型 没用
+     * @return mixed
+     */
+    public function type()
+    {
+        try {
+            $types = GameLevelingChannelGame::where('game_name', request('game_name'))
+                ->where('user_id', request('user_id', 2))
+                ->pluck('game_leveling_type_name')
+                ->unique()
+                ->toArray();
+        } catch (\Exception $e) {
+            return response()->ajax(0, []);
+        }
+        return response()->ajax(1, $types);
+    }
+
+    /**
+     * 代练目标 没用
+     * @return array
+     */
+    public function target()
+    {
+        try {
+            // 渠道游戏
+            $gameLevelingChannelGame = GameLevelingChannelGame::where('game_name', request('game_name'))
+                ->where('user_id', request('user_id', 2))
+                ->where('game_leveling_type_name', request('type'))
+                ->first();
+
+            $targets = $gameLevelingChannelGame->gameLevelingChannelPrices->pluck('level', 'sort')->toArray();
+        } catch (Exception $e) {
+            response()->ajax(0, '');
+        }
+        return response()->ajax(1, '', $targets);
     }
 }

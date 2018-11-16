@@ -54,7 +54,7 @@
                                 <td>{{ $item->rebate }} </td>
                                 <td>
                                     <a href="{{ route('game-leveling.channel.game.edit', ['id' => $item->id]) }}" class="btn btn-success">编辑</a>
-                                    <a href="{{ route('game-leveling.channel.price.index', ['id' => $item->id]) }}" class="btn btn-success">价格公式</a>
+                                    <a href="{{ route('game-leveling.channel.price.index', ['game_leveling_channel_game_id' => $item->id]) }}" class="btn btn-success">价格公式</a>
                                     <a href="{{ route('game-leveling.channel.discount.index', ['id' => $item->id]) }}" class="btn btn-success">折扣</a>
                                     <button type="button" class="btn btn-danger" data-url="{{ route('game-leveling.channel.game.delete', ['id' => $item->id]) }}" lay-submit lay-filter="delete-item">删除</button>
                                 </td>

@@ -15,7 +15,8 @@ class GameLevelingChannelUser extends Model
      * @var array
      */
     public $fillable = [
-        'uuid'
+        'user_id',
+        'uuid',
     ];
 
     /**

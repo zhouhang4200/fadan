@@ -20,7 +20,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="search">搜索</button>
-                                    <a href="{{ route('game-leveling.channel.price.create', ['id' => request('id')]) }}" class="layui-btn layui-btn-normal" type="button" id="create" >新增</a>
+                                    <a href="{{ route('game-leveling.channel.price.create', ['game_leveling_channel_game_id' => request('game_leveling_channel_game_id')]) }}" class="layui-btn layui-btn-normal" type="button" id="create" >新增</a>
                                 </div>
                             </div>
                         </form>
