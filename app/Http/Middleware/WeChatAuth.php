@@ -52,7 +52,7 @@ class WeChatAuth
                 return redirect()->to($this->getTargetUrl($request));
             }
 
-            session()->forget($sessionKey);
+//            session()->forget($sessionKey);
 
             return $officialAccount->oauth->scopes($scopes)->redirect($request->fullUrl());
         }
