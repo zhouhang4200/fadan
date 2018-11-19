@@ -38,7 +38,7 @@ const router = new VueRouter({
                     menu: true,
                     path: "game-leveling/channel",
                     meta:{title:'渠道订单'},
-                    component: resolve => void(require([ '../components/order/game-leveling/channel'], resolve)),
+                    component: resolve => void(require([ '../components/order/game-leveling/Channel'], resolve)),
                 },
                 {
                     name: "gameLevelingOrderTaobao",

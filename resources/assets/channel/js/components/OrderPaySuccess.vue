@@ -31,7 +31,9 @@
 
 <script>
     export default {
+
         name: "OrderPaySuccess",
+
         methods: {
             onClickLeft() {
                 this.$router.push({path: '/channel/order'})
