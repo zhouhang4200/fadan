@@ -529,8 +529,8 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 # 渠道订单
 Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
 
-    Route::middleware(['channel.user'])->group(function () {
-//    Route::middleware(['wechat.oauth', 'channel.user'])->group(function () {
+//    Route::middleware(['channel.user'])->group(function () {
+    Route::middleware(['wechat.oauth', 'channel.user'])->group(function () {
         #　视图挂载页
         Route::any('/{vue?}', function (){
             return view('channel.spa');
