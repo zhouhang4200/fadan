@@ -45,8 +45,6 @@ class WeChatAuth
                 $request->session()->put($sessionKey, $user ?? []);
                 $isNewSession = true;
 
-                myLog('session', [$sessionKey, 'uri' => $request->fullUrl(), 'id' => $request->session()->getId(), $user? '1' :2]);
-
                 Event::fire(new WeChatUserAuthorized($request->session()->get($sessionKey), $isNewSession, $account));
 
                 return redirect()->to($this->getTargetUrl($request));
