@@ -1,6 +1,5 @@
 <template>
     <div class="order-list">
-
         <div style="margin-top: 46px">
             <section class="van-doc-demo-block">
                 <h2 class="van-doc-demo-block__title">
@@ -128,16 +127,13 @@
             >
                 申请退款
             </van-goods-action-big-btn>
-
         </van-goods-action>
-
     </div>
 </template>
 
 <script>
     export default {
         name: "OrderDetail",
-
         data() {
             return {
                 order: {
@@ -178,21 +174,6 @@
             },
             onClickLeft() {
                 this.$router.push({path: '/channel/order'})
-            },
-            onLoad() {
-                // 异步更新数据
-                setTimeout(() => {
-                    for (let i = 0; i < 10; i++) {
-                        this.list.push(this.list.length + 1);
-                    }
-                    // 加载状态结束
-                    this.loading = false;
-
-                    // 数据全部加载完成
-                    if (this.list.length >= 40) {
-                        this.finished = true;
-                    }
-                }, 500);
             }
         },
 
