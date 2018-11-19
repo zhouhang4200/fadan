@@ -291,7 +291,7 @@
                     if (result) {
                         var currentThis = this;
                         this.$api.gameLevelingChannelOrderCreate(this.form).then(res => {
-
+                            var storeRes = res;
                             if (res.content.type == 1) {
                                 var span = document.createElement("span");
                                 span.innerHTML = res.content;
@@ -299,13 +299,13 @@
                                 document.forms[0].submit();
                             } else {
                                 WeixinJSBridge.invoke(
-                                    'getBrandWCPayRequest', res.content.par,
+                                    'getBrandWCPayRequest', storeRes.content.par,
                                     function(result){
                                         if(result.err_msg == "get_brand_wcpay_request:ok" ) {
                                             currentThis.$router.push({
                                                 name:'paySuccess',
                                                 query:{
-                                                    'trade_no' : res.content.trade_no
+                                                    'trade_no' : 'a' + storeRes.content.trade_no
                                                 }
                                             });
                                         }
