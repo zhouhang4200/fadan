@@ -533,7 +533,7 @@ Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
     Route::middleware(['wechat.oauth', 'channel.user'])->group(function () {
 
         #　视图挂载页
-        Route::any('/{vue?}', function (){
+        Route::get('/{vue?}', function (){
             return view('channel.spa');
         })->where('vue', '[\/\w\.-]*');
         #　获取代练游戏
@@ -581,11 +581,3 @@ Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
     # 微信支付回调
     Route::any('pay/wx/notify', 'GameLevelingChannelOrderController@weChatNotify')->name('channel.game-leveling.wx.pay.notify');
 });
-
-Route::prefix('ww')->middleware(['wechat.oauth'])->group(function () {
-    Route::get('/s', function(){
-        dd(session('wechat.oauth_user.default'));
-    });
-});
-
-

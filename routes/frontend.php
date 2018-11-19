@@ -12,9 +12,9 @@
 
 Route::get('/captcha/geetest', '\Germey\Geetest\GeetestController@getGeetest');
 
-//Route::get('/{vue?}', function (){
-//    return view('frontend.spa');
-//})->where('vue', '[\/\w\.-]*');
+Route::get('/{vue?}', function (){
+    return view('frontend.spa');
+})->where('vue', '[\/\w\.-]*');
 
 Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
     # 需登录后可访问

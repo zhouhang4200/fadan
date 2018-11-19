@@ -35,14 +35,12 @@ class ChannelUser
             if ($user) {
                 $request->session()->put('user_id', $user->id);
             } else {
-//                abort(404);
-                myLog('channel', [1]);
+                abort(404);
             }
         }
         # 如果请求中没有from，而session 中也没有用户ID, 则抛404
         if (!$request->session()->get('user_id')) {
-//            abort(404);
-            myLog('channel', [2]);
+            abort(404);
         }
 
         # 渠道终端用户ID
@@ -62,8 +60,7 @@ class ChannelUser
         }
         # 如果请求中没有uuid，而session 中也没有用户uuid, 则抛404
         if (!$request->session()->get('channel_user_id')) {
-//            abort(404);
-            myLog('channel', [3]);
+            abort(404);
         }
         return $next($request);
     }
