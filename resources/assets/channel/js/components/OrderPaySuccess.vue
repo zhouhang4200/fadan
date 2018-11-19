@@ -12,7 +12,7 @@
 
         <van-goods-action >
             <van-goods-action-big-btn
-                    :to="{name:'orderDetail', param:{trade_no:$route.params.trade_no}}"
+                    :to="{name:'orderDetail', param:{trade_no:$route.query.trade_no}}"
             >
                  订单详情
             </van-goods-action-big-btn>
