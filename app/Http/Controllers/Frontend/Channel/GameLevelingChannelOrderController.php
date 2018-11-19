@@ -266,6 +266,7 @@ class GameLevelingChannelOrderController extends Controller
                 'notify_url' => route('channel.game-leveling.wx.pay.notify'),
                 'return_url' => url('/channel/order/pay/success', ['trade_no' => $order->trade_no]),
             ]);
+//            return url('/channel/order/pay/success', ['trade_no' => $order->trade_no]);
             $payPar = $app->jssdk->bridgeConfig($result['prepay_id'], false);
 
             return response()->ajax(1, 'success', ['type' => 2, 'trade_no' => $order->trade_no, 'par' => $payPar]);

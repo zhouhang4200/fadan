@@ -230,8 +230,8 @@
                 this.initAmountTime();
             },
             onChangeGameLevelingLevel(picker, values) {
-                let indexs = picker.getIndexes();
-                picker.setColumnValues(1, this.levels[indexs[0]].level);
+                let index = picker.getIndexes();
+                picker.setColumnValues(1, this.levels[index[0]].level);
             },
             onConfirmGameLevelingLevel(values) {
                 this.gameLevelingTarget = values[0].text + ' - ' + values[1].text;

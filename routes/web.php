@@ -529,8 +529,8 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 # 渠道订单
 Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
 
-//    Route::middleware(['channel.user'])->group(function () {
-    Route::middleware(['wechat.oauth:snsapi_userinfo', 'channel.user'])->group(function () {
+    Route::middleware(['channel.user'])->group(function () {
+//    Route::middleware(['wechat.oauth:snsapi_userinfo', 'channel.user'])->group(function () {
         #　视图挂载页
         Route::get('/{vue?}', function (){ return view('channel.spa');})->where('vue', '[\/\w\.-]*');
         #　获取代练游戏
@@ -549,7 +549,6 @@ Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
         Route::post('store', 'GameLevelingChannelOrderController@store')->name('channel.game-leveling.store');
 
 
-//    Route::get('index', 'GameLevelingChannelOrderController@index')->name('channel.index'); // 下单首页
         Route::post('game', 'GameLevelingChannelOrderController@game')->name('channel.game'); // 获取代练游戏
         Route::post('type', 'GameLevelingChannelOrderController@type')->name('channel.type'); // 获取代练类型
         Route::post('target', 'GameLevelingChannelOrderController@target')->name('channel.target'); // 获取代练类型
