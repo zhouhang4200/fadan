@@ -614,12 +614,13 @@ Route::middleware(['auth.admin'])->namespace('Backend')->group(function () {
         });
         // 服
         Route::prefix('server')->group(function () {
-            Route::get('/', 'GameController@regionIndex')->name('admin.server.index');
+            Route::get('/', 'GameController@serverIndex')->name('admin.server.index');
             Route::get('create', 'GameController@serverCreate')->name('admin.server.create');
             Route::post('store', 'GameController@serverStore')->name('admin.server.store');
             Route::get('edit', 'GameController@serverEdit')->name('admin.server.edit');
             Route::post('update', 'GameController@serverUpdate')->name('admin.server.update');
             Route::post('delete', 'GameController@serverDelete')->name('admin.server.delete');
+            Route::post('region', 'GameController@serverRegion')->name('admin.server.region');
         });
         // 代练类型
         Route::prefix('leveling')->group(function () {

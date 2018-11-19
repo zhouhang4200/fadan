@@ -8,7 +8,7 @@ class GameServer extends Model
 {
     public $fillable = [
         'name',
-        'region_id',
+        'game_region_id',
         'initials',
     ];
 
@@ -18,5 +18,19 @@ class GameServer extends Model
      */
     public function gameRegion() {
         return $this->belongsTo(GameRegion::class);
+    }
+
+    /**
+     * 游戏服条件搜索
+     * @param $query
+     * @param array $filter
+     * @return mixed
+     */
+    public static function scopeFilter($query, $filter = [])
+    {
+        if ($filter['name']) {
+            $query->where('name', $filter['name']);
+        }
+        return $query;
     }
 }

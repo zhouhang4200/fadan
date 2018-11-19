@@ -4,31 +4,27 @@
         <tr>
             <th>ID</th>
             <th>游戏名</th>
+            <th>区名</th>
+            <th>服务器名</th>
             {{--<th>类型</th>--}}
             {{--<th>类别</th>--}}
             <th>创建时间</th>
             <th>更新时间</th>
-            <th>是否显示</th>
             <th width="15%">操作</th>
         </tr>
         </thead>
         <tbody>
-        @forelse($games as $game)
+        @forelse($servers as $server)
             <tr>
-                <td>{{ $game->id }}</td>
-                <td>{{ $game->name }}</td>
-                <td>{{ $game->created_at }}</td>
-                <td>{{ $game->updated_at }}</td>
+                <td>{{ $server->id }}</td>
+                <td>{{ $server->gameRegion->game->name }}</td>
+                <td>{{ $server->gameRegion->name }}</td>
+                <td>{{ $server->name }}</td>
+                <td>{{ $server->created_at }}</td>
+                <td>{{ $server->updated_at }}</td>
                 <td>
-                    <div class="layui-form-item" pane="">
-                        <div class="layui-input-block">
-                            <input type="checkbox" {{ $game->status == 1 ? 'checked' : '' }} lay-id="{{ $game->id }}" name="status" lay-skin="switch" lay-filter="switchTest" title="">
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('admin.game.edit', ['id' => $game->id]) }}">修改</a>
-                    <button class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="delete" lay-data="{{ $game->id }}">删除</button>
+                    <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('admin.server.edit', ['id' => $server->id]) }}">修改</a>
+                    <button class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="delete" lay-data="{{ $server->id }}">删除</button>
                 </td>
             </tr>
         @empty

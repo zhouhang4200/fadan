@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 游戏列表')
+@section('title', ' | 游戏服列表')
 
 @section('css')
     <style>
@@ -17,18 +17,18 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">游戏列表</li>
+                            <li class="layui-this" lay-id="add">游戏服列表</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="" action="" >
                                 <div class="layui-inline" style="float:left">
                                     <div class="layui-form-item">
-                                        <label class="layui-form-label" style="width: 100px; padding-left: 0px;">游戏名</label>
+                                        <label class="layui-form-label" style="width: 100px; padding-left: 0px;">服名</label>
                                         <div class="layui-input-inline">
                                             <select name="name" lay-verify="" lay-search="">
                                                 <option value="">输入或选择</option>
-                                                @forelse($allGames as $allGame)
-                                                    <option value="{{ $allGame->name }}" {{ $allGame->name == $name ? 'selected' : '' }}>{{ $allGame->name }}</option>
+                                                @forelse($allServers as $allServer)
+                                                    <option value="{{ $allServer->name }}" {{ $allServer->name == $name ? 'selected' : '' }}>{{ $allServer->name }}</option>
                                                 @empty
                                                 @endforelse
                                             </select>
@@ -38,14 +38,14 @@
                                 <div style="float: left">
                                     <div class="layui-inline" >
                                         <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查询</button>
-                                        <a href="{{ route('admin.game.create') }}" style="color:#fff; float:right;" class="layui-btn layui-btn-normal layui-btn-small">新增</a>
+                                        <a href="{{ route('admin.server.create') }}" style="color:#fff; float:right;" class="layui-btn layui-btn-normal layui-btn-small">新增</a>
                                     </div>
                                 </div>
                             </form>
 
-                            <div class="layui-tab-item layui-show" lay-size="sm" id="game">
-                                @include('backend.game.list')
-                                {!! $games->appends([
+                            <div class="layui-tab-item layui-show" lay-size="sm" id="server">
+                                @include('backend.game.server.list')
+                                {!! $servers->appends([
                                     'name' => $name
                                 ])->render() !!}
                             </div>
@@ -79,24 +79,6 @@
                 return data!=null?decodeURIComponent(data[2]):null;
             }
 
-            //监听指定开关
-            form.on('switch(switchTest)', function(data){
-                var status = this.checked ? 1 : 0;
-                var id = this.getAttribute('lay-id');
-                var s=window.location.search; //先截取当前url中“?”及后面的字符串
-                var page=s.getAddrVal('page');
-
-                $.post("{{ route('admin.game.status') }}", {status:status, id:id}, function (result) {
-                    layer.msg(result.message);
-                    if (result.status > 0) {
-                        $.get("{{ route('admin.game.index') }}?page="+page, function (result) {
-                            $('#game').html(result);
-                            form.render();
-                        }, 'json');
-                    }
-                });
-            });
-
             // 删除
             form.on('submit(delete)', function (data) {
                 var id = data.elem.getAttribute('lay-data');
@@ -110,18 +92,18 @@
                 }, function(index, layers){
                     $.ajax({
                         type: 'post',
-                        url: "{{ route('admin.game.delete') }}",
+                        url: "{{ route('admin.server.delete') }}",
                         data:{id:id},
                         success: function (data) {
                             layer.msg(data.message);
                             if (page) {
-                                $.get("{{ route('admin.game.index') }}?page="+page, function (result) {
-                                    $('#game').html(result);
+                                $.get("{{ route('admin.server.index') }}?page="+page, function (result) {
+                                    $('#server').html(result);
                                     form.render();
                                 }, 'json');
                             } else {
-                                $.get("{{ route('admin.game.index') }}", function (result) {
-                                    $('#game').html(result);
+                                $.get("{{ route('admin.server.index') }}", function (result) {
+                                    $('#server').html(result);
                                     form.render();
                                 }, 'json');
                             }

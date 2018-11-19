@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 游戏列表')
+@section('title', ' | 游戏服添加')
 
 @section('css')
     <style>
@@ -17,28 +17,34 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">游戏列表</li>
+                            <li class="layui-this" lay-id="add">游戏服添加</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="" action="">
                                 {!! csrf_field() !!}
                                 <div class="layui-form-item">
-                                    <label class="layui-form-label">*游戏名</label>
+                                    <label class="layui-form-label">*游戏</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="name" lay-verify="required" value="" autocomplete="off" placeholder="" class="layui-input">
+                                        <select name="game_id" lay-verify="" lay-filter="game_id"  lay-search="">
+                                            <option value="">输入或选择</option>
+                                            @forelse($games as $game)
+                                                <option value="{{ $game->id }}">{{ $game->name }}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
-                                    <label class="layui-form-label">*图标</label>
+                                    <label class="layui-form-label">*游戏区</label>
                                     <div class="layui-input-block">
-                                        <div class="layui-upload">
-                                            <button type="button" class="layui-btn layui-btn-normal" class="layui-btn" id="test1">上传图片</button>
-                                            <div class="layui-upload-list">
-                                                <img class="layui-upload-img" id="demo1" style="width: 200px;height: 200px">
-                                                <p id="demoText"></p>
-                                            </div>
-                                        </div>
-                                            <input type="hidden" name="icon" id="icon" value="" placeholder="" autocomplete="off" class="layui-input">
+                                        <select name="game_region_id" lay-verify="" lay-search="" id="game_region_id">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">*游戏服</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="name" lay-verify="required" value="" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
@@ -70,38 +76,32 @@
                     ,'填写格式不正确，必须为数字'
                 ]
             });
-
-            //普通图片上传
-            var uploadInst = upload.render({
-                elem: '#test1'
-                ,url: "{{ route('admin.game.upload') }}"
-                ,before: function(obj){
-                    //预读本地文件示例，不支持ie8
-                    obj.preview(function(index, file, result){
-                        $('#demo1').attr('src', result); //图片链接（base64）
-                    });
-                }
-                ,done: function(res){
-                    if (res.status == 1) {
-                        $("#icon").val(res.message);
+            // 游戏区
+            form.on('select(game_id)', function (data) {
+                $.post('{{ route('admin.server.region') }}', {game_id:data.value}, function(result){
+                    if (result.status == 1) {
+                        var region = '';
+                        $.each(result.message, function (i, item) {
+                            region += "<option value='"+i+"'>"+item+"</option>";
+                        })
+                        $('#game_region_id').html('<option value="请选择"></option>' + region);
+                        form.render('select');
                     } else {
-                        return layer.msg('上传失败!');
+                        layer.alert(result.message);
                     }
-                }
-                ,error: function(){
-                    return layer.msg('上传失败!');
-                }
+                }, 'json');
+
             });
 
             // 取消按钮
             $('.cancel').click(function () {
-                window.location.href="{{ route('admin.game.index') }}";
+                window.location.href="{{ route('admin.server.index') }}";
             });
             // 新增
             form.on('submit(store)', function (data) {
-                $.post("{{ route('admin.game.store') }}", {
+                $.post("{{ route('admin.server.store') }}", {
                     name:data.field.name,
-                    icon:data.field.icon
+                    game_region_id:data.field.game_region_id
                 }, function (result) {
                     layer.msg(result.message);
                 });
