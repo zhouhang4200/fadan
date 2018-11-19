@@ -531,6 +531,7 @@ Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
 
 //    Route::middleware(['channel.user'])->group(function () {
     Route::middleware(['wechat.oauth', 'channel.user'])->group(function () {
+
         #　视图挂载页
         Route::any('/{vue?}', function (){
             return view('channel.spa');
@@ -580,4 +581,11 @@ Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
     # 微信支付回调
     Route::any('pay/wx/notify', 'GameLevelingChannelOrderController@weChatNotify')->name('channel.game-leveling.wx.pay.notify');
 });
+
+Route::prefix('ww')->middleware(['wechat.oauth'])->group(function () {
+    Route::get('/s', function(){
+        dd(session('wechat.oauth_user.default'));
+    });
+});
+
 
