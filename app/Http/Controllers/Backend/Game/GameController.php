@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Backend\Game;
 
+use Exception;
+use Carbon\Carbon;
+use App\Models\Game;
 use App\Models\GameRegion;
 use App\Models\GameServer;
-use Exception;
-use App\Models\Game;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Overtrue\LaravelPinyin\Facades\Pinyin;
 
 class GameController extends Controller
 {
@@ -24,6 +26,15 @@ class GameController extends Controller
         $allGames = Game::get();
 
         $games = Game::filter(['name' => $name])->latest('id')->paginate(15);
+
+        // 删除的时候页面不刷新
+        if (request()->ajax()) {
+            return response()->json(view()->make('backend.game.list', [
+                'games' => $games,
+                'name' => $name,
+                'allGames' => $allGames
+            ])->render());
+        }
 
         return view('backend.game.index', compact('games', 'name', 'allGames'));
     }
@@ -173,5 +184,162 @@ class GameController extends Controller
             return response()->ajax(0, '上传失败!');
         }
         return response()->ajax(0, '上传失败!');
+    }
+
+    /**
+     * 游戏区配置
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function regionIndex()
+    {
+        $name = request('name');
+        $allRegions = GameRegion::get();
+
+        $regions = GameRegion::filter(['name' => request('name')])->latest('id')->paginate(15);
+
+        // 删除的时候页面不刷新
+        if (request()->ajax()) {
+            return response()->json(view()->make('backend.game.region.list', [
+                'regions' => $regions,
+                'name' => $name,
+                'allRegions' => $allRegions
+            ])->render());
+        }
+
+        return view('backend.game.region.index', compact('allRegions', 'regions', 'name'));
+    }
+
+    /**
+     * 游戏区新增
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function regionCreate()
+    {
+        $games = Game::latest('id')->get();
+        return view('backend.game.region.create', compact('games'));
+    }
+
+    /**
+     * 新增区
+     * @return mixed
+     */
+    public function regionStore()
+    {
+        try {
+            $regionNames = explode(',', request('name'));
+
+            $data = [];
+            foreach ($regionNames as $regionName) {
+                // 是否多次添加
+                $region = GameRegion::where('game_id', request('game_id'))
+                    ->where('name', $regionName)
+                    ->first();
+
+                if (! $region) {
+                    $data[] = [
+                        'game_id' => request('game_id'),
+                        'name' => $regionName,
+                        'initials' => substr(Pinyin::permalink($regionName), 0, 1),
+                        'created_at' => Carbon::now()->toDateTimeString(),
+                        'updated_at' => Carbon::now()->toDateTimeString(),
+                    ];
+                }
+            }
+            GameRegion::insert($data);
+        } catch (Exception $e) {
+            myLog('region-store-error', [$e->getMessage(), $e->getLine()]);
+            return response()->ajax(0, '操作失败!');
+        }
+        return response()->ajax(1, '操作成功!');
+    }
+
+    /**
+     * 游戏区编辑
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function regionEdit()
+    {
+        $region = GameRegion::find(request('id'));
+        $games = Game::get();
+        return view('backend.game.region.edit', compact('region', 'games'));
+    }
+
+    /**
+     * 游戏区修改
+     * @return mixed
+     */
+    public function regionUpdate()
+    {
+        try {
+            $gameRegion = GameRegion::find(request('id'));
+
+            $gameRegion->game_id = request('game_id');
+            $gameRegion->name = request('name');
+            $gameRegion->initials = substr(Pinyin::permalink(request('name')), 0, 1);
+            $gameRegion->save();
+        } catch (Exception $e) {
+            return response()->ajax(0, '操作失败!');
+        }
+        return response()->ajax(1, '操作成功!');
+    }
+
+    /**
+     * 游戏区删除
+     * @return mixed
+     */
+    public function regionDelete()
+    {
+        try {
+            $gameRegion = GameRegion::find(request('id'));
+            $gameRegion->delete();
+        } catch (Exception $e) {
+            return response()->ajax(0, '操作失败!');
+        }
+        return response()->ajax(1, '操作成功!');
+    }
+
+    public function serverIndex()
+    {
+
+    }
+
+    public function serverCreate()
+    {
+
+    }
+
+    public function serverStore()
+    {
+        try {
+
+        } catch (Exception $e) {
+            return response()->ajax(0, '操作失败!');
+        }
+        return response()->ajax(1, '操作成功!');
+    }
+
+    public function serverEdit()
+    {
+
+    }
+
+    public function serverUpdate()
+    {
+        try {
+
+        } catch (Exception $e) {
+            return response()->ajax(0, '操作失败!');
+        }
+        return response()->ajax(1, '操作成功!');
+    }
+
+    public function serverDelete()
+    {
+        try {
+
+        } catch (Exception $e) {
+            return response()->ajax(0, '操作失败!');
+        }
+        return response()->ajax(1, '操作成功!');
     }
 }

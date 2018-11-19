@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 游戏修改')
+@section('title', ' | 游戏列表')
 
 @section('css')
     <style>
@@ -17,7 +17,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">游戏修改</li>
+                            <li class="layui-this" lay-id="add">游戏列表</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="" action="">
