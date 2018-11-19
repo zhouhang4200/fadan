@@ -148,19 +148,19 @@
                         <van-radio name="2" />
                     </van-cell>
 
-                    <van-cell
-                            title="支付宝"
-                            clickable
-                            @click="form.payment_type = '1'"
-                    >
-                        <van-icon
-                                slot="icon"
-                                name="alipay"
-                                class="van-cell__left-icon"
-                                style="font-size:30px;color:#1989fa"
-                        />
-                        <van-radio name="1" />
-                    </van-cell>
+                    <!--<van-cell-->
+                            <!--title="支付宝"-->
+                            <!--clickable-->
+                            <!--@click="form.payment_type = '1'"-->
+                    <!--&gt;-->
+                        <!--<van-icon-->
+                                <!--slot="icon"-->
+                                <!--name="alipay"-->
+                                <!--class="van-cell__left-icon"-->
+                                <!--style="font-size:30px;color:#1989fa"-->
+                        <!--/>-->
+                        <!--<van-radio name="1" />-->
+                    <!--</van-cell>-->
 
                 </van-cell-group>
 
