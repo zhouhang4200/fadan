@@ -28,11 +28,12 @@ class Game extends Model
     protected $historyLimit = 50000;
 
     public $fillable = [
-      'name',
-      'sortord',
-      'status',
-      'created_admin_user_id',
-      'updated_admin_user_id',
+        'name',
+        'sortord',
+        'status',
+        'icon',
+        'created_admin_user_id',
+        'updated_admin_user_id',
     ];
 
     /**

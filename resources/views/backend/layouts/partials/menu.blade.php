@@ -540,6 +540,26 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </ul>
                     </li>
 
+                    <li @if(explode('.', Route::currentRouteName())[1] == 'game') class="open active" @endif>
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>游戏管理</span>
+                            <i class="fa fa-chevron-circle-right drop-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li>
+                                <a href="{{ route('admin.game.index') }}" @if($currentRouteName == 'admin.game.index') class="active" @endif>
+                                    游戏列表
+                                </a>
+                                {{--<a href="{{ route('admin.game.index') }}" @if($currentRouteName == 'admin.game.index') class="active" @endif>--}}
+                                    {{--区列表--}}
+                                {{--</a>--}}
+                                {{--<a href="{{ route('admin.game.index') }}" @if($currentRouteName == 'admin.game.index') class="active" @endif>--}}
+                                    {{--服列表--}}
+                                {{--</a>--}}
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

@@ -592,4 +592,15 @@ Route::middleware(['auth.admin'])->namespace('Backend')->group(function () {
             Route::post('discount/delete', 'DiscountController@delete')->name('game-leveling.channel.discount.delete');
         });
     });
+    // 游戏管理
+    Route::namespace('Game')->prefix('game')->group(function (){
+        Route::get('/', 'GameController@index')->name('admin.game.index');
+        Route::get('create', 'GameController@create')->name('admin.game.create');
+        Route::post('store', 'GameController@store')->name('admin.game.store');
+        Route::get('edit', 'GameController@edit')->name('admin.game.edit');
+        Route::post('update', 'GameController@update')->name('admin.game.update');
+        Route::post('delete', 'GameController@delete')->name('admin.game.delete');
+        Route::post('status', 'GameController@status')->name('admin.game.status');
+        Route::post('upload', 'GameController@upload')->name('admin.game.upload');
+    });
 });
