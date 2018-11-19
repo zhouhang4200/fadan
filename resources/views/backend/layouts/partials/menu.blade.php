@@ -540,7 +540,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </ul>
                     </li>
 
-                    <li @if(explode('.', Route::currentRouteName())[1] == 'game') class="open active" @endif>
+                    <li @if(in_array(explode('.', Route::currentRouteName())[1], ['game', 'server', 'region'])) class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>游戏管理</span>
@@ -551,12 +551,12 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                                 <a href="{{ route('admin.game.index') }}" @if($currentRouteName == 'admin.game.index') class="active" @endif>
                                     游戏列表
                                 </a>
-                                {{--<a href="{{ route('admin.game.index') }}" @if($currentRouteName == 'admin.game.index') class="active" @endif>--}}
-                                    {{--区列表--}}
-                                {{--</a>--}}
-                                {{--<a href="{{ route('admin.game.index') }}" @if($currentRouteName == 'admin.game.index') class="active" @endif>--}}
-                                    {{--服列表--}}
-                                {{--</a>--}}
+                                <a href="{{ route('admin.region.index') }}" @if($currentRouteName == 'admin.region.index') class="active" @endif>
+                                    区列表
+                                </a>
+                                <a href="{{ route('admin.server.index') }}" @if($currentRouteName == 'admin.server.index') class="active" @endif>
+                                    服列表
+                                </a>
                             </li>
                         </ul>
                     </li>

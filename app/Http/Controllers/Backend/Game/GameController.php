@@ -157,14 +157,14 @@ class GameController extends Controller
         try {
             if (request()->hasFile('file')) {
                 $file = request()->file('file');
-                $path = public_path("/resources/game/".date('Ymd')."/");
+                $path = public_path("/resources/game/" . date('Ymd') . "/");
                 $extension = $file->getClientOriginalExtension();
 
-                if ($extension && ! in_array(strtolower($extension), ['png', 'jpg', 'jpeg', 'gif'])) {
+                if ($extension && !in_array(strtolower($extension), ['png', 'jpg', 'jpeg', 'gif'])) {
                     return response()->ajax(0, '上传失败!');
                 }
 
-                if (! $file->isValid()) {
+                if (!$file->isValid()) {
                     return response()->ajax(0, '上传失败!');
                 }
 
@@ -172,7 +172,7 @@ class GameController extends Controller
                     mkdir($path, 0755, true);
                 }
                 $randNum = rand(1, 100000000) . rand(1, 100000000);
-                $fileName = time().substr($randNum, 0, 6).'.'.$extension;
+                $fileName = time() . substr($randNum, 0, 6) . '.' . $extension;
                 $path = $file->move($path, $fileName);
                 $path = strstr($path, '/resources');
                 $path = str_replace('\\', '/', $path);
@@ -235,7 +235,7 @@ class GameController extends Controller
                     ->where('name', $regionName)
                     ->first();
 
-                if (! $region) {
+                if (!$region) {
                     $data[] = [
                         'game_id' => request('game_id'),
                         'name' => $regionName,
@@ -289,57 +289,131 @@ class GameController extends Controller
      */
     public function regionDelete()
     {
+        DB::beginTransaction();
         try {
             $gameRegion = GameRegion::find(request('id'));
+
+            $gameServerIds = GameServer::where('game_region_id', $gameRegion->id)->pluck('id')->toArray();
+            GameServer::destroy($gameServerIds);
+
             $gameRegion->delete();
         } catch (Exception $e) {
+            DB::rollback();
             return response()->ajax(0, '操作失败!');
         }
+        DB::commit();
         return response()->ajax(1, '操作成功!');
     }
 
+    /**
+     * 游戏服列表
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+     */
     public function serverIndex()
     {
+        $name = request('name');
+        $allServers = GameServer::get();
 
+        $servers = GameServer::filter(['name' => request('name')])->latest('id')->paginate(15);
+
+        // 删除的时候页面不刷新
+        if (request()->ajax()) {
+            return response()->json(view()->make('backend.game.server.list', [
+                'servers' => $servers,
+                'name' => $name,
+                'allServers' => $allServers
+            ])->render());
+        }
+
+        return view('backend.game.server.index', compact('allServers', 'servers', 'name'));
     }
 
+    /**
+     * 游戏服添加
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function serverCreate()
     {
+        $games = Game::latest('id')->get();
 
+        return view('backend.game.server.create', compact('games'));
     }
 
+    /**
+     * 游戏服新增
+     * @return mixed
+     */
     public function serverStore()
     {
         try {
-
+            GameServer::create([
+                'game_region_id' => request('game_region_id'),
+                'name' => request('name'),
+                'initials' => substr(Pinyin::permalink(request('name')), 0, 1),
+            ]);
         } catch (Exception $e) {
             return response()->ajax(0, '操作失败!');
         }
         return response()->ajax(1, '操作成功!');
     }
 
+    /**
+     * 游戏服编辑
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function serverEdit()
     {
-
+        $games = Game::latest('id')->get();
+        $server = GameServer::find(request('id'));
+        $regions = GameRegion::where('game_id', $server->gameRegion->game->id)->get();
+        return view('backend.game.server.edit', compact('games', 'server', 'regions'));
     }
 
+    /**
+     * 游戏服编辑
+     * @return mixed
+     */
     public function serverUpdate()
     {
         try {
+            $server = GameServer::find(request('id'));
 
+            $server->name = request('name');
+            $server->game_region_id = request('game_region_id');
+            $server->initials = substr(Pinyin::permalink(request('name')), 0, 1);
+            $server->save();
         } catch (Exception $e) {
             return response()->ajax(0, '操作失败!');
         }
         return response()->ajax(1, '操作成功!');
     }
 
+    /**
+     * 游戏服删除
+     * @return mixed
+     */
     public function serverDelete()
     {
         try {
-
+            GameServer::destroy(request('id'));
         } catch (Exception $e) {
             return response()->ajax(0, '操作失败!');
         }
         return response()->ajax(1, '操作成功!');
+    }
+
+    /**
+     * 游戏服的区
+     * @return mixed
+     */
+    public function serverRegion()
+    {
+        try {
+            $regions = GameRegion::where('game_id', request('game_id'))->pluck('name', 'id');
+            myLog('test', [$regions]);
+        } catch (Exception $e) {
+            return response()->ajax(0, '操作失败!');
+        }
+        return response()->ajax(1, $regions);
     }
 }
