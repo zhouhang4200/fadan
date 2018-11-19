@@ -594,6 +594,7 @@ Route::middleware(['auth.admin'])->namespace('Backend')->group(function () {
     });
     // 游戏管理
     Route::namespace('Game')->prefix('game')->group(function (){
+        // 游戏
         Route::get('/', 'GameController@index')->name('admin.game.index');
         Route::get('create', 'GameController@create')->name('admin.game.create');
         Route::post('store', 'GameController@store')->name('admin.game.store');
@@ -602,5 +603,32 @@ Route::middleware(['auth.admin'])->namespace('Backend')->group(function () {
         Route::post('delete', 'GameController@delete')->name('admin.game.delete');
         Route::post('status', 'GameController@status')->name('admin.game.status');
         Route::post('upload', 'GameController@upload')->name('admin.game.upload');
+        // 区
+        Route::prefix('region')->group(function () {
+            Route::get('/', 'GameController@regionIndex')->name('admin.region.index');
+            Route::get('create', 'GameController@regionCreate')->name('admin.region.create');
+            Route::post('store', 'GameController@regionStore')->name('admin.region.store');
+            Route::get('edit', 'GameController@regionEdit')->name('admin.region.edit');
+            Route::post('update', 'GameController@regionUpdate')->name('admin.region.update');
+            Route::post('delete', 'GameController@regionDelete')->name('admin.region.delete');
+        });
+        // 服
+        Route::prefix('server')->group(function () {
+            Route::get('/', 'GameController@regionIndex')->name('admin.server.index');
+            Route::get('create', 'GameController@serverCreate')->name('admin.server.create');
+            Route::post('store', 'GameController@serverStore')->name('admin.server.store');
+            Route::get('edit', 'GameController@serverEdit')->name('admin.server.edit');
+            Route::post('update', 'GameController@serverUpdate')->name('admin.server.update');
+            Route::post('delete', 'GameController@serverDelete')->name('admin.server.delete');
+        });
+        // 代练类型
+        Route::prefix('leveling')->group(function () {
+            Route::get('/', 'GameController@levelingIndex')->name('admin.leveling.index');
+            Route::get('create', 'GameController@levelingCreate')->name('admin.leveling.create');
+            Route::post('store', 'GameController@levelingStore')->name('admin.leveling.store');
+            Route::get('edit', 'GameController@levelingEdit')->name('admin.leveling.edit');
+            Route::post('update', 'GameController@levelingUpdate')->name('admin.leveling.update');
+            Route::post('delete', 'GameController@levelingDelete')->name('admin.leveling.delete');
+        });
     });
 });

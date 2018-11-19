@@ -190,6 +190,7 @@ return [
         App\Providers\ResponseMacroServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        Overtrue\LaravelPinyin\ServiceProvider::class,
     ],
 
     /*
@@ -248,6 +249,7 @@ return [
         // 权重
         'Weight' => App\Extensions\Weight\Facade::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
+        'Pinyin' => Overtrue\LaravelPinyin\Facades\Pinyin::class,
     ],
 
     'time_url' => env('TIME_URL', 'http://js.qsios.com/time.php'),

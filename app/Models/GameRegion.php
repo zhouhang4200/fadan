@@ -29,4 +29,18 @@ class GameRegion extends Model
     {
         return $this->hasMany(GameServer::class);
     }
+
+    /**
+     * 后台条件查询
+     * @param $query
+     * @param array $filter
+     * @return mixed
+     */
+    public static function scopeFilter($query, $filter = [])
+    {
+        if ($filter['name']) {
+            $query->where('name', $filter['name']);
+        }
+        return $query;
+    }
 }

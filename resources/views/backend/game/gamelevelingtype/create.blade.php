@@ -1,6 +1,6 @@
 @extends('backend.layouts.main')
 
-@section('title', ' | 游戏修改')
+@section('title', ' | 游戏列表')
 
 @section('css')
     <style>
@@ -17,7 +17,7 @@
                 <div class="main-box-body clearfix">
                     <div class="layui-tab layui-tab-brief" lay-filter="widgetTab">
                         <ul class="layui-tab-title">
-                            <li class="layui-this" lay-id="add">游戏修改</li>
+                            <li class="layui-this" lay-id="add">游戏列表</li>
                         </ul>
                         <div class="layui-tab-content">
                             <form class="layui-form" method="" action="">
@@ -25,7 +25,7 @@
                                 <div class="layui-form-item">
                                     <label class="layui-form-label">*游戏名</label>
                                     <div class="layui-input-block">
-                                        <input type="text" name="name" lay-verify="required" value="{{ $game->name }}" autocomplete="off" placeholder="" class="layui-input">
+                                        <input type="text" name="name" lay-verify="required" value="" autocomplete="off" placeholder="" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
@@ -34,17 +34,16 @@
                                         <div class="layui-upload">
                                             <button type="button" class="layui-btn layui-btn-normal" class="layui-btn" id="test1">上传图片</button>
                                             <div class="layui-upload-list">
-                                                <img class="layui-upload-img" id="demo1" src="{{ $game->icon }}" style="width: 200px;height: 200px">
+                                                <img class="layui-upload-img" id="demo1" style="width: 200px;height: 200px">
                                                 <p id="demoText"></p>
                                             </div>
                                         </div>
-                                        <input type="hidden" name="icon" id="icon" value="{{ $game->icon }}" placeholder="" autocomplete="off" class="layui-input">
-                                        <input type="hidden" name="id" value="{{ $game->id }}" placeholder="" autocomplete="off" class="layui-input">
+                                            <input type="hidden" name="icon" id="icon" value="" placeholder="" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
                                     <div class="layui-input-block">
-                                        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="update">确认</button>
+                                        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="store">确认</button>
                                         <button type="button" class="layui-btn layui-btn-normal cancel" >取消</button>
                                     </div>
                                 </div>
@@ -65,10 +64,13 @@
             var $ = layui.jquery;
             var upload = layui.upload;
 
-            // 取消按钮
-            $('.cancel').click(function () {
-                window.location.href="{{ route('admin.game.index') }}";
+            form.verify({
+                number: [
+                    /^[0-9]+$/
+                    ,'填写格式不正确，必须为数字'
+                ]
             });
+
             //普通图片上传
             var uploadInst = upload.render({
                 elem: '#test1'
@@ -90,12 +92,16 @@
                     return layer.msg('上传失败!');
                 }
             });
-            // 修改
-            form.on('submit(update)', function (data) {
-                $.post("{{ route('admin.game.update') }}", {
+
+            // 取消按钮
+            $('.cancel').click(function () {
+                window.location.href="{{ route('admin.game.index') }}";
+            });
+            // 新增
+            form.on('submit(store)', function (data) {
+                $.post("{{ route('admin.game.store') }}", {
                     name:data.field.name,
-                    icon:data.field.icon,
-                    id:data.field.id
+                    icon:data.field.icon
                 }, function (result) {
                     layer.msg(result.message);
                 });
