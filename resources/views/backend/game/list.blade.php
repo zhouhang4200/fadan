@@ -36,3 +36,6 @@
         </tbody>
     </table>
 </form>
+{!! $games->appends([
+                                    'name' => $name
+                                ])->render() !!}
