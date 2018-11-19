@@ -414,12 +414,17 @@ class SettingController extends Controller
     {
         $games = Game::get();
 
-        foreach ($games as $k => $game) {
-            $orderSendChannel = OrderSendChannel::where('user_id', Auth::user()->getPrimaryUserId())
-                ->where('game_id', $game->id)
-                ->first();
+        $orderSendChannels = OrderSendChannel::where('user_id', Auth::user()->getPrimaryUserId())
+            ->pluck('game_id');
 
-            if ($orderSendChannel) {
+        $orderSendChannels = $orderSendChannels ? $orderSendChannels->toArray() : [];
+
+        foreach ($games as $k => $game) {
+            if (in_array($game->id, $orderSendChannels)) {
+                $orderSendChannel = OrderSendChannel::where('user_id', Auth::user()->getPrimaryUserId())
+                    ->where('game_id', $game->id)
+                    ->first();
+
                 $game->hasModel = explode('-', $orderSendChannel->third);
                 $arr = [];
                 foreach ($game->hasModel as $v) {
@@ -430,7 +435,7 @@ class SettingController extends Controller
             } else {
                 $game->hasModel = [1, 3, 4, 5];
             }
-            myLog('test', [$game->hasModel]);
+
             $game->allChannel = [
                 ['id' => 1, 'name' => 'show91平台'],
                 ['id' => 3, 'name' => '蚂蚁代练'],
