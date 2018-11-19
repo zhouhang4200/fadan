@@ -24,14 +24,8 @@
                                 <div class="layui-inline" style="float:left">
                                     <div class="layui-form-item">
                                         <label class="layui-form-label" style="width: 100px; padding-left: 0px;">服名</label>
-                                        <div class="layui-input-inline">
-                                            <select name="name" lay-verify="" lay-search="">
-                                                <option value="">输入或选择</option>
-                                                @forelse($allServers as $allServer)
-                                                    <option value="{{ $allServer->name }}" {{ $allServer->name == $name ? 'selected' : '' }}>{{ $allServer->name }}</option>
-                                                @empty
-                                                @endforelse
-                                            </select>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="name" value="{{ $name }}" autocomplete="off"  class="layui-input">
                                         </div>
                                     </div>
                                 </div>

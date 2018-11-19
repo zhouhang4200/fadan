@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Game;
 
+use App\Models\GameLevelingType;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
@@ -23,8 +24,6 @@ class GameController extends Controller
     {
         $name = request('name');
 
-        $allGames = Game::get();
-
         $games = Game::filter(['name' => $name])->latest('id')->paginate(15);
 
         // 删除的时候页面不刷新
@@ -32,11 +31,10 @@ class GameController extends Controller
             return response()->json(view()->make('backend.game.list', [
                 'games' => $games,
                 'name' => $name,
-                'allGames' => $allGames
             ])->render());
         }
 
-        return view('backend.game.index', compact('games', 'name', 'allGames'));
+        return view('backend.game.index', compact('games', 'name'));
     }
 
     /**
@@ -193,7 +191,6 @@ class GameController extends Controller
     public function regionIndex()
     {
         $name = request('name');
-        $allRegions = GameRegion::get();
 
         $regions = GameRegion::filter(['name' => request('name')])->latest('id')->paginate(15);
 
@@ -202,11 +199,10 @@ class GameController extends Controller
             return response()->json(view()->make('backend.game.region.list', [
                 'regions' => $regions,
                 'name' => $name,
-                'allRegions' => $allRegions
             ])->render());
         }
 
-        return view('backend.game.region.index', compact('allRegions', 'regions', 'name'));
+        return view('backend.game.region.index', compact('regions', 'name'));
     }
 
     /**
@@ -312,7 +308,6 @@ class GameController extends Controller
     public function serverIndex()
     {
         $name = request('name');
-        $allServers = GameServer::get();
 
         $servers = GameServer::filter(['name' => request('name')])->latest('id')->paginate(15);
 
@@ -321,11 +316,10 @@ class GameController extends Controller
             return response()->json(view()->make('backend.game.server.list', [
                 'servers' => $servers,
                 'name' => $name,
-                'allServers' => $allServers
             ])->render());
         }
 
-        return view('backend.game.server.index', compact('allServers', 'servers', 'name'));
+        return view('backend.game.server.index', compact('servers', 'name'));
     }
 
     /**
@@ -410,10 +404,115 @@ class GameController extends Controller
     {
         try {
             $regions = GameRegion::where('game_id', request('game_id'))->pluck('name', 'id');
-            myLog('test', [$regions]);
         } catch (Exception $e) {
             return response()->ajax(0, '操作失败!');
         }
         return response()->ajax(1, $regions);
+    }
+
+    /**
+     * 代练类型列表页
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+     */
+    public function levelingIndex()
+    {
+        $name = request('name');
+
+        $types = GameLevelingType::filter(['name' => request('name')])->latest('id')->paginate(15);
+
+        // 删除的时候页面不刷新
+        if (request()->ajax()) {
+            return response()->json(view()->make('backend.game.gamelevelingtype.list', [
+                'types' => $types,
+                'name' => $name,
+            ])->render());
+        }
+
+        return view('backend.game.gamelevelingtype.index', compact('types', 'name'));
+    }
+
+    /**
+     * 代练类型添加
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function levelingCreate()
+    {
+        $games = Game::latest('id')->get();
+
+        return view('backend.game.gamelevelingtype.create', compact('games'));
+    }
+
+    /**
+     * 代练类型新增
+     * @return mixed
+     */
+    public function levelingStore()
+    {
+        try {
+            $names = explode(',', request('name'));
+
+            $data = [];
+            foreach ($names as $name) {
+                // 去重
+                if (!GameLevelingType::where('game_id', request('game_id'))->where('name', $name)->first()) {
+                    $data[] = [
+                        'game_id' => request('game_id'),
+                        'name' => $name,
+                        'poundage' => request('poundage', 0),
+                        'created_at' => Carbon::now()->toDateTimeString(),
+                        'updated_at' => Carbon::now()->toDateTimeString(),
+                    ];
+                }
+            }
+            GameLevelingType::insert($data);
+        } catch (Exception $e) {
+            return response()->ajax(0, '操作失败!');
+        }
+        return response()->ajax(1, '操作成功!');
+    }
+
+    /**
+     * 代练类型修改
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function levelingEdit()
+    {
+        $type = GameLevelingType::find(request('id'));
+        $games = Game::latest('id')->get();
+
+        return view('backend.game.gamelevelingtype.edit', compact('games', 'type'));
+    }
+
+    /**
+     * 代练类型修改
+     * @return mixed
+     */
+    public function levelingUpdate()
+    {
+        try {
+            $type = GameLevelingType::find(request('id'));
+
+            $type->name = request('name');
+            $type->game_id = request('game_id');
+            $type->poundage = request('poundage');
+            $type->save();
+        } catch (Exception $e) {
+            return response()->ajax(0, '操作失败!');
+        }
+        return response()->ajax(1, '操作成功!');
+    }
+
+    /**
+     * 代练类型删除
+     * @return mixed
+     */
+    public function levelingDelete()
+    {
+        try {
+            GameLevelingType::destroy(request('id'));
+        } catch (Exception $e) {
+            return response()->ajax(0, '操作失败!');
+        }
+        return response()->ajax(1, '操作成功!');
     }
 }

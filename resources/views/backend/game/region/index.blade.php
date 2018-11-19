@@ -24,14 +24,8 @@
                                 <div class="layui-inline" style="float:left">
                                     <div class="layui-form-item">
                                         <label class="layui-form-label" style="width: 100px; padding-left: 0px;">区名</label>
-                                        <div class="layui-input-inline">
-                                            <select name="name" lay-verify="" lay-search="">
-                                                <option value="">输入或选择</option>
-                                                @forelse($allRegions as $allRegion)
-                                                    <option value="{{ $allRegion->name }}" {{ $allRegion->name == $name ? 'selected' : '' }}>{{ $allRegion->name }}</option>
-                                                @empty
-                                                @endforelse
-                                            </select>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="name" value="{{ $name }}" autocomplete="off"  class="layui-input">
                                         </div>
                                     </div>
                                 </div>
