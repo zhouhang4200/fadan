@@ -256,17 +256,18 @@ class GameLevelingChannelOrderController extends Controller
 
             // 下单
             $app = Factory::payment(config('wechat.payment.default'));
-            $result = $app->order->unify([
-                'body' => $order->title,
-                'detail' => '丸子代练',
-                'out_trade_no' => $order->trade_no,
-                'total_fee' => bcmul($order->amount, 100, 0),
-                'trade_type' => 'JSAPI',
-                'openid' => $wxAuthInfo->getId(),
-                'notify_url' => route('channel.game-leveling.wx.pay.notify'),
-                'return_url' => url('/channel/order/pay/success', ['trade_no' => $order->trade_no]),
-            ]);
-//            return url('/channel/order/pay/success', ['trade_no' => $order->trade_no]);
+//            $result = $app->order->unify([
+//                'body' => $order->title,
+//                'detail' => '丸子代练',
+//                'out_trade_no' => $order->trade_no,
+//                'total_fee' => bcmul($order->amount, 100, 0),
+//                'trade_type' => 'JSAPI',
+//                'openid' => $wxAuthInfo->getId(),
+//                'notify_url' => route('channel.game-leveling.wx.pay.notify'),
+//                'return_url' => url('/channel/order/pay/success', ['trade_no' => $order->trade_no]),
+//            ]);
+            return response()->ajax(1, 'success', ['type' => 2, 'trade_no' => $order->trade_no, 'par' => $order->trade_no]);
+
             $payPar = $app->jssdk->bridgeConfig($result['prepay_id'], false);
 
             return response()->ajax(1, 'success', ['type' => 2, 'trade_no' => $order->trade_no, 'par' => $payPar]);

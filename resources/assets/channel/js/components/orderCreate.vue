@@ -206,6 +206,9 @@
 </template>
 
 <script>
+    function f() {
+
+    }
     export default {
         name: "orderCreate",
 
@@ -284,10 +287,12 @@
                 this.gameServerOptionsShow = false;
             },
             onSubmitForm(){
-                let currentThis = this;
+
                 this.$validator.validateAll().then((result) => {
                     if (result) {
+                        var currentThis = this;
                         this.$api.gameLevelingChannelOrderCreate(this.form).then(res => {
+
                             if (res.content.type == 1) {
                                 var span = document.createElement("span");
                                 span.innerHTML = res.content;
