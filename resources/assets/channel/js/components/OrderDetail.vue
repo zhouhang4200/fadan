@@ -123,7 +123,7 @@
             <van-goods-action-big-btn
                     primary
                     v-if="order.status == 2"
-                    :to="{name:'orderRefund', param:{trade_no:$route.params.trade_no}}"
+                    :to="{name:'orderRefund', param:{trade_no:$route.query.trade_no}}"
             >
                 申请退款
             </van-goods-action-big-btn>
@@ -164,7 +164,6 @@
             // 页面数据
             handleOrder() {
                 this.$api.GameLevelingChannelOrderShow({
-                    user_id:this.$route.query.user_id,
                     trade_no:this.$route.query.trade_no
                 }).then(res => {
                     this.order=res;

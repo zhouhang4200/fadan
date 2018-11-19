@@ -531,7 +531,6 @@ Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
 
 //    Route::middleware(['channel.user'])->group(function () {
     Route::middleware(['wechat.oauth', 'channel.user'])->group(function () {
-
         #　视图挂载页
         Route::get('/{vue?}', function (){
             return view('channel.spa');
@@ -550,34 +549,17 @@ Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
         Route::post('game-leveling-amount-time', 'GameLevelingChannelOrderController@gameLevelingAmountTime');
         # 创建订单
         Route::post('store', 'GameLevelingChannelOrderController@store')->name('channel.game-leveling.store');
-
-
-        Route::post('game', 'GameLevelingChannelOrderController@game')->name('channel.game'); // 获取代练游戏
-        Route::post('type', 'GameLevelingChannelOrderController@type')->name('channel.type'); // 获取代练类型
-        Route::post('target', 'GameLevelingChannelOrderController@target')->name('channel.target'); // 获取代练类型
-        Route::post('order-list', 'GameLevelingChannelOrderController@orderList')->name('channel.order-list'); // 渠道订单列表
-        Route::post('apply-refund', 'GameLevelingChannelOrderController@applyRefund')->name('channel.apply-refund'); // 申请退款
-        Route::post('show', 'GameLevelingChannelOrderController@show')->name('channel.show'); // 申请退款
+        # 详情页
+        Route::post('show', 'GameLevelingChannelOrderController@show')->name('channel.show');
+        # 渠道订单列表
+        Route::post('order-list', 'GameLevelingChannelOrderController@orderList')->name('channel.order-list');
         # 确认收货
-        Route::post('complete', 'GameLevelingChannelOrderController@complete')->name('channel.complete'); //
-        Route::post('delete', 'GameLevelingChannelOrderController@delete')->name('channel.delete'); // 撤单
+        Route::post('complete', 'GameLevelingChannelOrderController@complete')->name('channel.complete');
+        # 申请退款
+        Route::post('apply-refund', 'GameLevelingChannelOrderController@applyRefund')->name('channel.apply-refund');
         #　取消退款
         Route::post('cancel-refund', 'GameLevelingChannelOrderController@cancelRefund')->name('channel.cancel-refund'); //
-
-        Route::post('go', 'GameLevelingChannelOrderController@go')->name('channel.go'); // 成功跳转
-
-        Route::get('place-order', 'GameLevelingChannelOrderController@placeOrder')->name('channel.place-order'); // 下单配置界面
-
-        Route::post('pay', 'GameLevelingChannelOrderController@pay')->name('channel.pay'); // 支付
-
-        Route::any('alipay-notify', 'GameLevelingChannelOrderController@alipayNotify')->name('channel.alipay-notify');
-        Route::any('alipay-return', 'GameLevelingChannelOrderController@alipayReturn')->name('channel.alipay-return');
-
-        Route::any('wechat-notify-{no}', 'GameLevelingChannelOrderController@wechatNotify')->name('channel.wechat-notify');
-        Route::any('wechat-return-{no}', 'GameLevelingChannelOrderController@wechatReturn')->name('channel.wechat-return');
-        Route::get('show-{id}', 'GameLevelingChannelOrderController@show')->name('channel.show'); // 详情页
     });
-
     # 微信支付回调
     Route::any('pay/wx/notify', 'GameLevelingChannelOrderController@weChatNotify')->name('channel.game-leveling.wx.pay.notify');
 });
