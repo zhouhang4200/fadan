@@ -32,3 +32,6 @@
         </tbody>
     </table>
 </form>
+{!! $servers->appends([
+                                    'name' => $name
+                                ])->render() !!}

@@ -39,9 +39,6 @@
 
                             <div class="layui-tab-item layui-show" lay-size="sm" id="game">
                                 @include('backend.game.list')
-                                {!! $games->appends([
-                                    'name' => $name
-                                ])->render() !!}
                             </div>
                         </div>
                     </div>

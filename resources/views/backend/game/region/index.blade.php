@@ -39,9 +39,7 @@
 
                             <div class="layui-tab-item layui-show" lay-size="sm" id="region">
                                 @include('backend.game.region.list')
-                                {!! $regions->appends([
-                                    'name' => $name
-                                ])->render() !!}
+
                             </div>
                         </div>
                     </div>

@@ -30,3 +30,6 @@
         </tbody>
     </table>
 </form>
+{!! $regions->appends([
+                                    'name' => $name
+                                ])->render() !!}

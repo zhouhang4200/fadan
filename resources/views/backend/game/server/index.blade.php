@@ -39,9 +39,7 @@
 
                             <div class="layui-tab-item layui-show" lay-size="sm" id="server">
                                 @include('backend.game.server.list')
-                                {!! $servers->appends([
-                                    'name' => $name
-                                ])->render() !!}
+
                             </div>
                         </div>
                     </div>

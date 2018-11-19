@@ -39,9 +39,7 @@
 
                             <div class="layui-tab-item layui-show" lay-size="sm" id="leveling">
                                 @include('backend.game.gamelevelingtype.list')
-                                {!! $types->appends([
-                                    'name' => $name
-                                ])->render() !!}
+
                             </div>
                         </div>
                     </div>

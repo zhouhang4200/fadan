@@ -30,3 +30,6 @@
         </tbody>
     </table>
 </form>
+{!! $types->appends([
+                                    'name' => $name
+                                ])->render() !!}
