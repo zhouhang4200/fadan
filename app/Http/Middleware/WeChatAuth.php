@@ -36,16 +36,16 @@ class WeChatAuth
             $scopes = array_map('trim', explode(',', $scopes));
         }
 
-        $session = $request->session()->get($sessionKey, []);
+        $session = $request->session()->get($sessionKey);
 
-        myLog('session', ['uri' => $request->fullUrl(), 'id' => session()->getId(), 'se' => $session]);
+        myLog('session', ['uri' => $request->fullUrl(), 'id' => $request->session()->getId(), 'se' => $session]);
         if (!$session) {
             if ($request->has('code')) {
                 $user = $officialAccount->oauth->user();
-                $request->session()->put([$sessionKey => $user ?? []]);
+                $request->session()->put($sessionKey, $user ?? []);
                 $isNewSession = true;
 
-                myLog('session', ['uri' => $request->fullUrl(), 'id' => session()->getId(), $user]);
+                myLog('session', ['uri' => $request->fullUrl(), 'id' => $request->session()->getId(), $user]);
 
                 Event::fire(new WeChatUserAuthorized($request->session()->get($sessionKey), $isNewSession, $account));
 
