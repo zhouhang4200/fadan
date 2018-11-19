@@ -305,7 +305,7 @@
                                             currentThis.$router.push({
                                                 name:'paySuccess',
                                                 query:{
-                                                    'trade_no' : 'a' + storeRes.content.trade_no
+                                                    'trade_no' : storeRes.content.trade_no
                                                 }
                                             });
                                         }
