@@ -83,6 +83,7 @@ class Kernel extends HttpKernel
         # 渠道用户与渠道用户的C端用户验证
         'channel.user' => \App\Http\Middleware\ChannelUser::class,
         # 微信中间件
-        'wechat.oauth' => \Overtrue\LaravelWeChat\Middleware\OAuthAuthenticate::class,
+//        'wechat.oauth' => \Overtrue\LaravelWeChat\Middleware\OAuthAuthenticate::class,
+        'wechat.oauth' => \App\Http\Middleware\WeChatAuth::class,
     ];
 }
