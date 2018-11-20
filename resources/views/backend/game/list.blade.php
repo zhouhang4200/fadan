@@ -23,8 +23,8 @@
                     </div>
                 </td>
                 <td>
-                    <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('admin.game.edit', ['id' => $game->id]) }}">修改</a>
-                    <button class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="delete" lay-data="{{ $game->id }}">删除</button>
+                    <a class="layui-btn layui-btn-normal" href="{{ route('admin.game.edit', ['id' => $game->id]) }}">修改</a>
+                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="delete" lay-data="{{ $game->id }}">删除</button>
                 </td>
             </tr>
         @empty
@@ -32,6 +32,4 @@
         </tbody>
     </table>
 </form>
-{!! $games->appends([
-                                    'name' => $name
-                                ])->render() !!}
+{!! $games->appends(['name' => $name])->render() !!}

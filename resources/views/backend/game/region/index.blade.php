@@ -31,8 +31,8 @@
                                 </div>
                                 <div style="float: left">
                                     <div class="layui-inline" >
-                                        <button class="layui-btn layui-btn-normal layui-btn-small" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查询</button>
-                                        <a href="{{ route('admin.region.create') }}" style="color:#fff; float:right;" class="layui-btn layui-btn-normal layui-btn-small">新增</a>
+                                        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1" style="margin-left: 10px">查询</button>
+                                        <a href="{{ route('admin.region.create') }}" style="color:#fff; float:right;" class="layui-btn layui-btn-normal">新增</a>
                                     </div>
                                 </div>
                             </form>

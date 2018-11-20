@@ -21,8 +21,8 @@
                 <td>{{ $region->created_at }}</td>
                 <td>{{ $region->updated_at }}</td>
                 <td>
-                    <a class="layui-btn layui-btn-normal layui-btn-mini" href="{{ route('admin.region.edit', ['id' => $region->id]) }}">修改</a>
-                    <button class="layui-btn layui-btn-normal layui-btn-mini" lay-submit="" lay-filter="delete" lay-data="{{ $region->id }}">删除</button>
+                    <a class="layui-btn layui-btn-normal" href="{{ route('admin.region.edit', ['id' => $region->id]) }}">修改</a>
+                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="delete" lay-data="{{ $region->id }}">删除</button>
                 </td>
             </tr>
         @empty
@@ -30,6 +30,4 @@
         </tbody>
     </table>
 </form>
-{!! $regions->appends([
-                                    'name' => $name
-                                ])->render() !!}
+{!! $regions->appends(['name' => $name])->render() !!}
