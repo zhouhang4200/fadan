@@ -9,7 +9,7 @@
                     sticky
                     :offset-top=0
             >
-                <van-tab title="全部"></van-tab>
+                <van-tab title="全部" status="1"></van-tab>
                 <van-tab title="进行中"></van-tab>
                 <van-tab title="待收货"></van-tab>
                 <van-tab title="完成"></van-tab>
@@ -17,10 +17,13 @@
                 <van-tab title="已退款"></van-tab>
             </van-tabs>
 
-            <van-list
-            >
+
+            <van-pull-refresh
+                    v-show="! noData"
+                    v-model="loading"
+                    @refresh="onLoadData">
+
                 <van-panel
-                        v-if="list"
                         v-for="item in list"
                         :key="item.id"
                         :title="item.title"
@@ -46,12 +49,21 @@
                         代练价格：￥{{ item.payment_amount }}
                     </div>
                     <div slot="footer" style="text-align: right">
-                        <van-button v-if="item.status === 3" size="small" @click="complete(item)">确认收货</van-button>
-                        <van-button v-if="item.status === 2" type="primary" size="small" @click="applyRefund(item)">申请退款</van-button>
-                        <van-button v-if="item.status === 6" size="small" @click="cancelRefund(item)">取消退款</van-button>
+                        <van-button v-if="item.status === 3" type="primary" size="small" @click="complete(item)">确认收货</van-button>
+                        <van-button v-if="item.status === 2" type="danger" size="small" @click="applyRefund(item)">申请退款</van-button>
+                        <van-button v-if="item.status === 6" type="primary" size="small" @click="cancelRefund(item)">取消退款</van-button>
                     </div>
                 </van-panel>
-            </van-list>
+
+            </van-pull-refresh>
+
+            <div v-show="noData" style="padding-top: 120px;text-align: center;">
+                <van-icon  name="cart-o" style="font-size: 90px;color:#e4e4e4;" />
+                <p>暂时没有订单</p>
+                <router-link :to="{name:'order'}">
+                    <van-button  type="primary" size="small" >立刻下单</van-button>
+                </router-link>
+            </div>
 
         </div>
 
@@ -73,20 +85,16 @@
                     7:'已退款',
                 },
                 searchParams:{
-                    status:''
+                    status:0
                 },
                 list: [],
+                loading:false,
+                noData:false,
             };
         },
 
-        created() {
-            this.handleOrderList();
-        },
-
         mounted() {
-        },
-
-        destroyed() {
+            this.onLoadData();
         },
 
         methods: {
@@ -141,29 +149,33 @@
             onClick(index, title) {
                 if (index === 0) {
                     this.searchParams.status = 0;
-                    this.handleOrderList();
+                    this.onLoadData();
                 } else if(index === 1) {
                     this.searchParams.status = 2;
-                    this.handleOrderList();
+                    this.onLoadData();
                 } else if (index === 2) {
                     this.searchParams.status = 3;
-                    this.handleOrderList();
+                    this.onLoadData();
                 } else if (index === 3) {
                     this.searchParams.status = 4;
-                    this.handleOrderList();
+                    this.onLoadData();
                 } else if (index === 4) {
                     this.searchParams.status = 6;
-                    this.handleOrderList();
+                    this.onLoadData();
                 } else if (index  === 5) {
                     this.searchParams.status = 7;
-                    this.handleOrderList();
+                    this.onLoadData();
                 }
             },
             // 列表数据
-            handleOrderList () {
+            onLoadData () {
                 this.$api.GameLevelingChannelOrderList(this.searchParams).then(res => {
+                    this.noData = res.length == 0 ? true : false;
                     this.list = res;
+                    this.loading = false;
+                    this.finished = true;
                 }).catch(err => {
+
                 });
             }
         }
