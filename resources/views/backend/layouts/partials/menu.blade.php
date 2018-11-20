@@ -540,7 +540,7 @@ $currentOneLevelMenu = explode('.', Route::currentRouteName())[0];
                         </ul>
                     </li>
 
-                    <li @if(in_array(explode('.', Route::currentRouteName())[1], ['game', 'server', 'region', 'leveling'])) class="open active" @endif>
+                    <li @if(request()->route()->getAction()['namespace'] == 'App\Http\Controllers\Backend\Game') class="open active" @endif>
                         <a href="#" class="dropdown-toggle">
                             <i class="fa fa-shopping-cart"></i>
                             <span>游戏管理</span>
