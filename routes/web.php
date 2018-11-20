@@ -23,6 +23,7 @@ Route::namespace('Frontend\Auth')->group(function () {
     Route::get('/password/reset/{token}', 'ResetPasswordController@showResetForm')->name('password.reset');
     Route::post('/password/reset', 'ResetPasswordController@reset');
 });
+
 # 需登录后访问的路由
 Route::middleware(['auth'])->namespace('Frontend')->group(function () {
 	// 首页
@@ -526,6 +527,7 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
         Route::get('show', 'BabyAdviserController@show')->name('frontend.baby.show')->middleware('new.permission:frontend.baby.show');
     });
 });
+
 # 渠道订单
 Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
 
