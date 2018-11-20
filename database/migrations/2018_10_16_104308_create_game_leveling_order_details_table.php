@@ -40,6 +40,7 @@ class CreateGameLevelingOrderDetailsTable extends Migration
             $table->string('take_parent_qq', 60)->nullable()->default('')->comment('接单主用户QQ');
             $table->text('explain')->comment('代练说明');
             $table->text('requirement')->comment('代练要求');
+            $table->string('customer_remark', 200)->comment('客服备注');
             $table->timestamps();
         });
     }
