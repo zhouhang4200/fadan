@@ -4,8 +4,6 @@
         <tr>
             <th>ID</th>
             <th>游戏名</th>
-            {{--<th>类型</th>--}}
-            {{--<th>类别</th>--}}
             <th>创建时间</th>
             <th>更新时间</th>
             <th>是否显示</th>
@@ -21,9 +19,7 @@
                 <td>{{ $game->updated_at }}</td>
                 <td>
                     <div class="layui-form-item" pane="">
-                        <div class="layui-input-block">
-                            <input type="checkbox" {{ $game->status == 1 ? 'checked' : '' }} lay-id="{{ $game->id }}" name="status" lay-skin="switch" lay-filter="switchTest" title="">
-                        </div>
+                        <input type="checkbox" {{ $game->status == 1 ? 'checked' : '' }} lay-id="{{ $game->id }}" name="status" lay-skin="switch" lay-filter="switchTest" title="">
                     </div>
                 </td>
                 <td>

@@ -7,6 +7,12 @@
         .layui-table th, td{
             text-align: center;
         }
+        .layui-form-switch i {
+            top:1px !important;
+        }
+        .layui-form-switch {
+            margin-top: 18px !important;
+        }
     </style>
 @endsection
 
