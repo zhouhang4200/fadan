@@ -271,25 +271,11 @@ router.beforeEach((to, from, next) => {
     }
 
     if (to.path == '/login') {
-        // store.commit('setStateValue', { 'is_login': false, 'admin_data': { username: '', permission_text: '' } });
-        next();
-        return false;
+        if (sessionStorage.getItem('login')) {
+            window.location.href = sessionStorage.getItem('login');
+        }
     }
 
-    // if (!store.state.is_login) {
-    //     // // 获取登录信息
-    //     // axios.get('/backend/login-status').then(response => {
-    //     //     let { status, data, message } = response.data;
-    //     //     if (status && Object.keys(data).length > 0) {
-    //     //         store.commit('setStateValue', { 'is_login': true, 'admin_data': data.list });
-    //     //         next();
-    //     //         return false;
-    //     //     } else {
-    //     //         next({ path: '/login' });
-    //     //         return false;
-    //     //     }
-    //     // });
-    // }
     next();
 });
 // 后置拦截器
