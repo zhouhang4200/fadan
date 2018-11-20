@@ -271,7 +271,7 @@ router.beforeEach((to, from, next) => {
     }
 
     if (to.path == '/login') {
-        if (sessionStorage.getItem('login')) {
+        if (sessionStorage.getItem('login') == '') {
             window.location.href = sessionStorage.getItem('login');
         }
     }

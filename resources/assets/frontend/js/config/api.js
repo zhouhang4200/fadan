@@ -1,9 +1,12 @@
-import { post, get } from './axios'
+import { post, get } from './axios';
 
 // 获取订单数据
 export default {
     login(params) {
         return post('/login', params);
+    },
+    logout(params) {
+        return post('/logout', params);
     },
     register(params) {
         return post('/register', params);
@@ -124,8 +127,8 @@ export default {
         return post('/v2/order/game-leveling/complete', params);
     },
     // 游戏代练 淘宝订单
-    gameLevelingOrdertTaobaoOrder(params) {
-        return post('/v2/order/game-leveling/taobao-order', params)
+    gameLevelingOrderTaobaoOrder(params) {
+        return post('/v2/order/game-leveling/taobao-order', params);
     },
     // 游戏代练 商户投诉订单
     businessmanComplain(params) {
