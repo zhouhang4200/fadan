@@ -21,6 +21,7 @@ class AccountController extends Controller
 
     /**
      * 我的账号
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function mine()
@@ -30,6 +31,7 @@ class AccountController extends Controller
 
     /**
      * 我的账号接口
+     *
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
     public function mineForm()
@@ -39,6 +41,7 @@ class AccountController extends Controller
 
     /**
      * 我的账号修改
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function mineUpdate()
@@ -60,6 +63,7 @@ class AccountController extends Controller
 
     /**
      * 登录记录
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function loginHistory()
@@ -69,6 +73,7 @@ class AccountController extends Controller
 
     /**
      * 登录记录接口
+     *
      * @return mixed
      */
     public function loginHistoryDataList()
@@ -87,6 +92,7 @@ class AccountController extends Controller
 
     /**
      * 员工管理
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function employee()
@@ -96,6 +102,7 @@ class AccountController extends Controller
 
     /**
      * 子员工
+     *
      * @return mixed
      */
     public function employeeUser()
@@ -104,7 +111,8 @@ class AccountController extends Controller
     }
 
     /**
-     * 岗位
+     * 员工岗位
+     *
      * @return mixed
      */
     public function employeeStation()
@@ -114,6 +122,7 @@ class AccountController extends Controller
 
     /**
      * 员工管理接口
+     *
      * @return mixed
      */
     public function employeeDataList()
@@ -143,6 +152,7 @@ class AccountController extends Controller
 
     /**
      * 员工管理开关
+     *
      * @return mixed
      */
     public function employeeSwitch()
@@ -159,6 +169,7 @@ class AccountController extends Controller
 
     /**
      * 员工岗位删除
+     *
      * @return mixed
      */
     public function employeeDelete()
@@ -180,6 +191,7 @@ class AccountController extends Controller
 
     /**
      * 员工新增接口
+     *
      * @return mixed
      */
     public function employeeAdd()
@@ -221,6 +233,7 @@ class AccountController extends Controller
 
     /**
      * 员工修改
+     *
      * @return mixed
      */
     public function employeeUpdate()
@@ -257,6 +270,7 @@ class AccountController extends Controller
 
     /**
      * 黑名单
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function blackList()
@@ -266,6 +280,7 @@ class AccountController extends Controller
 
     /**
      * 打手昵称
+     *
      * @return mixed
      */
     public function blackListName()
@@ -275,6 +290,7 @@ class AccountController extends Controller
 
     /**
      * 打手黑名单新增
+     *
      * @return mixed
      */
     public function blackListAdd()
@@ -298,6 +314,7 @@ class AccountController extends Controller
 
     /**
      * 打手黑名单修改
+     *
      * @return mixed
      */
     public function blackListUpdate()
@@ -323,6 +340,7 @@ class AccountController extends Controller
 
     /**
      * 打手黑名单接口
+     *
      * @return mixed
      */
     public function blackListDataList()
@@ -341,6 +359,7 @@ class AccountController extends Controller
 
     /**
      * 打手黑名单删除
+     *
      * @return mixed
      */
     public function blackListDelete()
@@ -359,6 +378,7 @@ class AccountController extends Controller
 
     /**
      * 实名认证
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function authentication()
@@ -368,6 +388,7 @@ class AccountController extends Controller
 
     /**
      * 图片上传
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function authenticationUpload()
@@ -411,6 +432,7 @@ class AccountController extends Controller
 
     /**
      * 实名认证新增
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function authenticationAdd()
@@ -458,6 +480,7 @@ class AccountController extends Controller
 
     /**
      * 实名认证修改
+     *
      * @return mixed
      */
     public function authenticationUpdate()
@@ -499,6 +522,7 @@ class AccountController extends Controller
 
     /**
      * 页面数据
+     *
      * @return mixed
      */
     public function authenticationForm()
@@ -508,6 +532,7 @@ class AccountController extends Controller
 
     /**
      * 岗位管理
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function station()
@@ -517,6 +542,7 @@ class AccountController extends Controller
 
     /**
      * 岗位列表接口
+     *
      * @return mixed
      */
     public function stationDataList()
@@ -534,6 +560,7 @@ class AccountController extends Controller
 
     /**
      * 用户所有的权限
+     *
      * @return mixed
      */
     public function stationPermission()
@@ -550,6 +577,7 @@ class AccountController extends Controller
 
     /**
      * 岗位表单接口
+     *
      * @return mixed
      */
     public function stationForm()
@@ -576,6 +604,7 @@ class AccountController extends Controller
 
     /**
      * 岗位添加
+     *
      * @return mixed
      */
     public function stationAdd()
@@ -606,14 +635,13 @@ class AccountController extends Controller
 
     /**
      * 岗位修改
+     *
      * @return mixed
      */
     public function stationUpdate()
     {
         try {
-//            myLog('test', [request('checkedPermission')]);
             if (request('checkedPermission')) {
-//                $permission = explode(',', request('checkedPermission'));
                 $permission =request('checkedPermission');
                 // 主账号
                 $user = User::find(Auth::user()->getPrimaryUserId());
@@ -652,6 +680,7 @@ class AccountController extends Controller
 
     /**
      * 岗位删除
+     *
      * @return mixed
      */
     public function stationDelete()

@@ -17,6 +17,10 @@ use App\Http\Controllers\Controller;
  */
 class DataController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
     	try {
@@ -228,6 +232,10 @@ class DataController extends Controller
 		}
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function show(Request $request)
     {
     	$startDate = $request->startDate;
@@ -366,6 +374,10 @@ class DataController extends Controller
     	return view('frontend.v1.data.index', compact('datas', 'startDate', 'endDate', 'alls', 'game', 'allReceives', 'dataReceives', 'allSends', 'dataSends', 'resourceGame', 'receiveGame', 'sendGame'));
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function money(Request $request)
     {
     	$startDate = $request->startDate;

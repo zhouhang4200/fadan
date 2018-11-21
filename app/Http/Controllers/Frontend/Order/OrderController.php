@@ -54,7 +54,8 @@ class OrderController extends Controller
             return $this->exportReceive($filters);
         }
 
-        return view('frontend.v1.order.receive', compact('status', 'orders', 'services', 'games', 'serviceId', 'gameId', 'startDate', 'endDate', 'fullUrl'));
+        return view('frontend.v1.order.receive',
+            compact('status', 'orders', 'services', 'games', 'serviceId', 'gameId', 'startDate', 'endDate', 'fullUrl'));
     }
 
     /**
@@ -89,13 +90,14 @@ class OrderController extends Controller
             return $this->exportSend($filters);
         }
 
-        return view('frontend.v1.order.send', compact('status', 'orders', 'services', 'games', 'serviceId', 'gameId', 'startDate', 'endDate', 'fullUrl'));
+        return view('frontend.v1.order.send',
+            compact('status', 'orders', 'services', 'games', 'serviceId', 'gameId', 'startDate', 'endDate', 'fullUrl'));
     }
 
     /**
      * 发送订单导出
-     * @param  [type] $filters [description]
-     * @return xmls
+     *
+     * @param array $filters
      */
     public function exportSend($filters = [])
     {
@@ -155,10 +157,10 @@ class OrderController extends Controller
         }
     }
 
-     /**
+    /**
      * 接送订单导出
-     * @param  [type] $filters [description]
-     * @return xmls
+     *
+     * @param array $filters
      */
     public function exportReceive($filters = [])
     {

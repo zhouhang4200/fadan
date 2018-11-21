@@ -16,6 +16,7 @@ class StatisticController extends Controller
 {
     /**
      * 员工统计
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function employee()
@@ -25,6 +26,7 @@ class StatisticController extends Controller
 
     /**
      * 员工统计接口
+     *
      */
     public function employeeDataList()
     {
@@ -61,15 +63,21 @@ class StatisticController extends Controller
 
     /**
      * 员工统计下所有的员工和主账号
+     *
      * @return mixed
      */
     public function employeeUser()
     {
-        return User::whereIn('id', User::where('parent_id', Auth::user()->getPrimaryUserId())->pluck('id')->merge(Auth::user()->getPrimaryUserId())->unique())->get()->toArray();
+        return User::whereIn('id', User::where('parent_id', Auth::user()->getPrimaryUserId())
+            ->pluck('id')
+            ->merge(Auth::user()->getPrimaryUserId())->unique())
+            ->get()
+            ->toArray();
     }
 
     /**
      * 订单统计
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function order()
@@ -79,16 +87,19 @@ class StatisticController extends Controller
 
     /**
      * 订单统计接口
+     *
      * @return mixed
      */
     public function orderDataList()
     {
         $startDate = request('date')[0];
         $endDate = request('date')[1];
+
         $userIds = User::whereIn('id', User::where('parent_id', Auth::user()->getPrimaryUserId())->pluck('id')->merge(Auth::user()->getPrimaryUserId())->unique())
             ->pluck('id');
 
         $filter = compact( 'startDate', 'endDate');
+
         return OrderStatistic::whereIn('user_id', $userIds)
             ->filter($filter)
             ->select(DB::raw('
@@ -113,6 +124,7 @@ class StatisticController extends Controller
 
     /**
      * 短信统计
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function message()
@@ -122,6 +134,7 @@ class StatisticController extends Controller
 
     /**
      * 短信统计接口
+     *
      * @return LengthAwarePaginator
      */
     public function messageDataList()
@@ -157,16 +170,19 @@ class StatisticController extends Controller
 
     /**
      * 短信详情页
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function messageShow()
     {
         $date = request('date');
+
         return view('frontend.v2.statistic.message-show', compact('date'));
     }
 
     /**
      * 短信详情接口
+     *
      * @return mixed
      */
     public function messageShowDataList()

@@ -10,6 +10,10 @@ use App\Models\HatchetManBlacklist;
 
 class HatchetManBlacklistController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+     */
  	public function index(Request $request)
  	{
  		$hatchetManName = $request->hatchet_man_name;
@@ -17,7 +21,7 @@ class HatchetManBlacklistController extends Controller
  		$hatchetManQq = $request->hatchet_man_qq;
 
  		$hatchetMans = HatchetManBlacklist::where('user_id', Auth::user()->getPrimaryUserId())->get();
- 		 // 筛选
+
     	$filters = compact('hatchetManName', 'hatchetManPhone', 'hatchetManQq');
 
  		$hatchetManBlacklists = HatchetManBlacklist::where('user_id', Auth::user()->getPrimaryUserId())
@@ -31,14 +35,23 @@ class HatchetManBlacklistController extends Controller
             ])->render());
         }
 
-    	return view('frontend.v1.user.hatchet-man-blacklist.index', compact('hatchetManName', 'hatchetManPhone', 'hatchetManQq', 'hatchetManBlacklists', 'hatchetMans'));
+    	return view('frontend.v1.user.hatchet-man-blacklist.index',
+            compact('hatchetManName', 'hatchetManPhone', 'hatchetManQq', 'hatchetManBlacklists', 'hatchetMans'));
  	}
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
  	public function create(Request $request)
  	{
  		return view('frontend.v1.user.hatchet-man-blacklist.create');
  	}
 
+    /**
+     * @param Request $request
+     * @return mixed
+     */
  	public function store(Request $request)
  	{
  		if (! isset($request->data['hatchet_man_name']) || ! isset($request->data['hatchet_man_qq']) || ! isset($request->data['hatchet_man_phone'])) {
@@ -58,6 +71,10 @@ class HatchetManBlacklistController extends Controller
  		return response()->ajax(1, '添加成功');
  	}
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
  	public function edit(Request $request)
  	{
  		$hatchetManBlacklist = HatchetManBlacklist::find($request->id);
@@ -65,6 +82,10 @@ class HatchetManBlacklistController extends Controller
  		return view('frontend.v1.user.hatchet-man-blacklist.edit', compact('hatchetManBlacklist'));
  	}
 
+    /**
+     * @param Request $request
+     * @return mixed
+     */
  	public function update(Request $request)
  	{
  		if (! isset($request->data['hatchet_man_name']) || ! isset($request->data['hatchet_man_qq']) || ! isset($request->data['hatchet_man_phone'])) {
@@ -90,6 +111,10 @@ class HatchetManBlacklistController extends Controller
  		return response()->ajax(1, '编辑成功');
  	}
 
+    /**
+     * @param Request $request
+     * @return mixed
+     */
  	public function delete(Request $request)
  	{
  		if (! isset($request->id)) {

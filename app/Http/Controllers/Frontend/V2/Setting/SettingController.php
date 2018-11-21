@@ -20,6 +20,7 @@ class SettingController extends Controller
 {
     /**
      * 短信管理页面
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function message()
@@ -29,6 +30,7 @@ class SettingController extends Controller
 
     /**
      * 短信管理开关设置
+     *
      * @return mixed
      */
     public function messageStatus()
@@ -54,6 +56,7 @@ class SettingController extends Controller
 
     /**
      * 短信管理表单数据
+     *
      * @return mixed
      */
     public function messageDataList()
@@ -63,6 +66,7 @@ class SettingController extends Controller
 
     /**
      * 短信管理修改
+     *
      * @return mixed
      */
     public function messageUpdate()
@@ -86,6 +90,7 @@ class SettingController extends Controller
 
     /**
      * 抓取商品配置页面数据
+     *
      * @param GameRepository $gameRepository
      * @return mixed
      */
@@ -102,6 +107,7 @@ class SettingController extends Controller
 
     /**
      * 抓取商品开关设置
+     *
      * @return mixed
      */
     public function goodsDelivery()
@@ -120,6 +126,7 @@ class SettingController extends Controller
 
     /**
      * 抓取商品添加
+     *
      * @param ServiceRepository $serviceRepository
      * @return mixed
      */
@@ -163,6 +170,7 @@ class SettingController extends Controller
 
     /**
      * 抓取商品游戏
+     *
      * @return mixed
      */
     public function goodsGame()
@@ -172,6 +180,7 @@ class SettingController extends Controller
 
     /**
      * 抓取商品旺旺
+     *
      * @return mixed
      */
     public function goodsSellerNick()
@@ -181,6 +190,7 @@ class SettingController extends Controller
 
     /**
      * 抓取商品修改
+     *
      * @return mixed
      */
     public function goodsUpdate()
@@ -207,6 +217,7 @@ class SettingController extends Controller
 
     /**
      * 抓取商品删除
+     *
      * @return mixed
      */
     public function goodsDelete()
@@ -221,6 +232,7 @@ class SettingController extends Controller
 
     /**
      * 店铺授权页面
+     *
      * @return \Illuminate\Auth\Access\Response|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function authorizeIndex()
@@ -230,6 +242,7 @@ class SettingController extends Controller
 
     /**
      * 店铺授权数据
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function authorizeDataList()
@@ -262,14 +275,15 @@ class SettingController extends Controller
                     $bindResult = 1;
                 }
             }
-            return response()->json(['status' => 1, 'data' => $taoBaoShopAuth, 'bind' => $bindResult]);
         } catch (Exception $e) {
             return response()->ajax(0, '获取数据失败：数据异常!');
         }
+        return response()->json(['status' => 1, 'data' => $taoBaoShopAuth, 'bind' => $bindResult]);
     }
 
     /**
      * 店铺授权地址
+     *
      * @return string
      */
     public function authorizeUrl()
@@ -280,6 +294,7 @@ class SettingController extends Controller
 
     /**
      * 店铺授权删除
+     *
      * @return mixed
      */
     public function authorizeDelete()
@@ -296,6 +311,7 @@ class SettingController extends Controller
 
     /**
      * 代练发单辅助页面
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function auxiliary()
@@ -305,6 +321,7 @@ class SettingController extends Controller
 
     /**
      * 订单数据
+     *
      * @return mixed
      */
     public function markupDataList()
@@ -316,6 +333,7 @@ class SettingController extends Controller
 
     /**
      * 自动加价添加
+     *
      * @return mixed
      */
     public function markupAdd()
@@ -345,17 +363,16 @@ class SettingController extends Controller
             $data['markup_frequency'] = is_numeric(request('markup_frequency')) ? intval(request('markup_frequency')) : 0;
             $data['markup_number'] = is_numeric(request('markup_number')) ? intval(request('markup_number')) : 0;
 
-            // 保存
             OrderAutoMarkup::create($data);
-
-            return response()->ajax(1, '添加成功!');
         } catch (Exception $e) {
             return response()->ajax(0, '添加失败：服务器异常!');
         }
+        return response()->ajax(1, '添加成功!');
     }
 
     /**
      * 自动加价修改
+     *
      * @return mixed
      */
     public function markupUpdate()
@@ -364,10 +381,12 @@ class SettingController extends Controller
             $orderAutoMarkup = OrderAutoMarkup::find(request('id'));
             $requestMarkupAmount = is_numeric(request('markup_amount')) ? round(request('markup_amount'), 2) : 0;
             $requestMarkupMoney = is_numeric(request('markup_money')) ? round(request('markup_money'), 2) : 0;
+
             // 如果填的值不合法则
             if (!$requestMarkupAmount || !$requestMarkupMoney) {
                 return response()->ajax(0, '添加失败：发单价或增加金额必须为数字且大于0!');
             }
+
             // 查看发单价是否有重复
             $sameMarkupAmount = OrderAutoMarkup::where('user_id', $orderAutoMarkup->user_id)
                 ->where('markup_amount', $requestMarkupAmount)
@@ -376,6 +395,7 @@ class SettingController extends Controller
             if ($sameMarkupAmount > 0 && $orderAutoMarkup->markup_amount != $requestMarkupAmount) {
                 return response()->ajax(0, '修改失败：发单价已存在');
             }
+
             // 数据
             $orderAutoMarkup->markup_amount = $requestMarkupAmount;
             $orderAutoMarkup->markup_time = request('markup_time', 0);
@@ -383,9 +403,8 @@ class SettingController extends Controller
             $orderAutoMarkup->markup_money = is_numeric(request('markup_money')) ? round(request('markup_money'), 2) : 0;
             $orderAutoMarkup->markup_frequency = is_numeric(request('markup_frequency')) ? intval(request('markup_frequency')) : 0;
             $orderAutoMarkup->markup_number = is_numeric(request('markup_number')) ? intval(request('markup_number')) : 0;
-            // 保存
-            $res = $orderAutoMarkup->save();
 
+            $orderAutoMarkup->save();
         } catch (Exception $e) {
             return response()->ajax(0, '修改失败：服务器异常!');
         }
@@ -394,6 +413,7 @@ class SettingController extends Controller
 
     /**
      * 自动加价删除
+     *
      * @return mixed
      */
     public function markupDelete()
@@ -408,6 +428,7 @@ class SettingController extends Controller
 
     /**
      * 渠道设置
+     *
      * @return mixed
      */
     public function channelDataList()
@@ -448,6 +469,7 @@ class SettingController extends Controller
 
     /**
      * 多选框事件
+     *
      * @return mixed
      */
     public function channelSwitch()
@@ -463,6 +485,7 @@ class SettingController extends Controller
             if (! $thirds) {
                 return response()->ajax(0, '设置失败：请至少选择一个平台！');
             }
+
             // 如果已经存在设置过的平台
             $orderSendChannel = OrderSendChannel::where('user_id', $userId)->where('game_id', $gameId)->first();
 
@@ -477,7 +500,6 @@ class SettingController extends Controller
                 $data['third'] = implode($diffThirds, '-');
                 OrderSendChannel::updateOrCreate(['user_id' => $userId, 'game_id' => $gameId], $data);
             }
-
         } catch (Exception $e) {
             return response()->ajax(1, '设置失败：服务器异常！');
         }

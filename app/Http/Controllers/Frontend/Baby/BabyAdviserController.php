@@ -17,8 +17,9 @@ class BabyAdviserController extends Controller
 {
     /**
      * 宝贝外包订单
-     * @param  Request $request [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
@@ -47,10 +48,6 @@ class BabyAdviserController extends Controller
         ");
 
         $groupBy = 'game_id';
-
-        // if (isset($goodsId) && ! empty($goodsId)) {
-        //     $groupBy = 'num_iid';
-        // }
 
         // 根据日期获取数据
 		$datas = OrderBasicData::filterBaby($filters)
@@ -103,17 +100,20 @@ class BabyAdviserController extends Controller
 
     /**
      * 宝贝外包订单导出
-     * @param  string $datas [description]
-     * @param  string $total [description]
-     * @return [type]        [description]
+     *
+     * @param string $datas
+     * @param string $total
+     * @return mixed
      */
     public function export($datas = '', $total = '')
     {
 		if (empty($datas) || empty($total)) {
 			return response()->ajax(0, '暂无数据');
 		}
+
 		$datas = $datas->toArray()['data'];
 		$total = $total->toArray();
+
         // 标题
         $title = [
             '发布时间',
@@ -130,6 +130,7 @@ class BabyAdviserController extends Controller
             '手续费',
             '利润',
         ];
+
         // 数组分割,反转
         $chunkDatas = array_chunk($datas, 1000);
 
@@ -183,8 +184,9 @@ class BabyAdviserController extends Controller
 
     /**
      * 宝贝运营状况
-     * @param  Request $request [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show(Request $request)
     {
@@ -238,7 +240,7 @@ class BabyAdviserController extends Controller
                 "))
             ->groupBy($groupBy)
             ->paginate(15);
-// dd($datas);
+
         $total = TaobaoTrade::filterBaby($filters)
             ->where('user_id', $userId)
             ->where('service_id', 4)
@@ -266,6 +268,11 @@ class BabyAdviserController extends Controller
         return view('frontend.v1.baby.show', compact('games', 'datas', 'total', 'gameId', 'startDate', 'endDate', 'userId', 'fullUrl', 'goodsId', 'goodses'));
     }
 
+    /**
+     * @param string $datas
+     * @param string $total
+     * @return mixed
+     */
     public function showExport($datas = '', $total = '')
     {
         if (empty($datas) || empty($total)) {

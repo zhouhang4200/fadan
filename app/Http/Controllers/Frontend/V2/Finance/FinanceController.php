@@ -23,6 +23,7 @@ class FinanceController extends Controller
 {
     /**
      * 我的资产
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function myAsset()
@@ -32,6 +33,7 @@ class FinanceController extends Controller
 
     /**
      * 我的资产接口数据
+     *
      * @return mixed
      */
     public function myAssetDataList()
@@ -68,6 +70,7 @@ class FinanceController extends Controller
 
     /**
      * 资产日报
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function dailyAsset()
@@ -77,6 +80,7 @@ class FinanceController extends Controller
 
     /**
      * 资产日报接口
+     *
      * @return mixed
      */
     public function dailyAssetDataList()
@@ -90,6 +94,7 @@ class FinanceController extends Controller
 
     /**
      * 资金流水
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function amountFlow()
@@ -99,6 +104,7 @@ class FinanceController extends Controller
 
     /**
      * 新资金流水接口数据
+     *
      * @param Request $request
      * @return mixed
      */
@@ -117,6 +123,7 @@ class FinanceController extends Controller
 
     /**
      * 我的提现
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function myWithdraw()
@@ -126,6 +133,7 @@ class FinanceController extends Controller
 
     /**
      * 我的提现接口
+     *
      * @return mixed
      */
     public function myWithdrawDataList()
@@ -140,6 +148,7 @@ class FinanceController extends Controller
 
     /**
      * 可提现金额
+     *
      * @return mixed
      */
     public function canWithdraw()
@@ -149,14 +158,13 @@ class FinanceController extends Controller
 
     /**
      * 发送提现申请
+     *
      * @param UserWithdrawOrderRepository $repository
      * @return \Illuminate\Http\JsonResponse
      */
     public function createWithdraw(UserWithdrawOrderRepository $repository)
     {
-        $bool = event(new Punish(Auth::user()->getPrimaryUserId()));
-
-        if ($bool) {
+        if (event(new Punish(Auth::user()->getPrimaryUserId()))) {
             return response()->json(['status' => 0, 'message' => '提现申请失败：您还有罚单没有交清，请先交清罚单哦!']);
         }
 
@@ -170,6 +178,7 @@ class FinanceController extends Controller
 
     /**
      * 财务订单
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function order()
@@ -179,6 +188,7 @@ class FinanceController extends Controller
 
     /**
      * 游戏接口
+     *
      * @return mixed
      */
     public function game()
@@ -188,6 +198,7 @@ class FinanceController extends Controller
 
     /**
      * 财务订单接口
+     *
      * @return mixed
      */
     public function orderDataList()
@@ -220,7 +231,6 @@ class FinanceController extends Controller
             $order->poundage = $order->getPoundage();
             $order->profit = $order->getProfit();
         }
-
         return $orders;
     }
 }
