@@ -378,6 +378,7 @@
                         this.formLogin.password = encrypt(this.formLogin.password);
                         this.$api.login(this.formLogin).then(res => {
                             if (res.status == 1) {
+                                sessionStorage.setItem('login', res.content.url);
                                 sessionStorage.setItem('openMenu', '/v2/order/');
                                 window.location.href = res.content.url;
                             } else {

@@ -10,11 +10,11 @@
 |
 */
 
+
+# v2 spa 版
 Route::get('/captcha/geetest', '\Germey\Geetest\GeetestController@getGeetest');
 
-Route::get('/{vue?}', function (){
-    return view('frontend.spa');
-})->where('vue', '[\/\w\.-]*');
+Route::get('/{vue?}', 'Frontend\V2\SpaController@index')->where('vue', '[\/\w\.-]*');
 
 Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
     # 需登录后可访问
@@ -237,4 +237,3 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
         });
     });
 });
-

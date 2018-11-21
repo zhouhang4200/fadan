@@ -5,9 +5,9 @@ import VueRouter from 'vue-router';
 import ElementUI from 'element-ui';
 import '../iconfont/iconfont.css';
 import '../sass/app.scss';
-import "./static/gt.js"
-import "./static/encrypt.js"
-import api from './config/api'
+import "./static/gt.js";
+import "./static/encrypt.js";
+import api from './config/api';
 import router from './config/route';
 
 Vue.use(ElementUI, {size:"small"});

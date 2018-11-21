@@ -52,7 +52,7 @@
                                 我的工作台
                             </template>
                             <el-menu-item index="2-1">修改密码</el-menu-item>
-                            <el-menu-item index="2-3">{{ $route.name }}</el-menu-item>
+                            <el-menu-item index="2-2" @click="handleLogout">退出</el-menu-item>
                         </el-submenu>
                     </el-menu>
                 </el-header>
@@ -126,6 +126,20 @@
                         name:it.meta.title,
                         path:it.path
                     });
+                });
+            },
+            handleLogout() {
+                this.$confirm('确认要退出?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$api.logout().then(res => {
+                        sessionStorage.setItem('login', ' ');
+                        window.location.href = '/login';
+                    })
+                }).catch(() => {
+
                 });
             }
         },
