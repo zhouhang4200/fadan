@@ -47,7 +47,7 @@
                     width="200">
                 <template slot-scope="scope">
                     <router-link :to="{name:'financeStatisticMessageShow', params: {date:scope.row.date}}">
-                        <el-button type="primary" size="small" >详情</el-button>
+                        <el-button v-if="scope.row.date !== '总计'" type="primary" size="small" >详情</el-button>
                     </router-link>
                 </template>
             </el-table-column>

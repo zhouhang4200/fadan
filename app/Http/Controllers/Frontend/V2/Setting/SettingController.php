@@ -81,7 +81,6 @@ class SettingController extends Controller
             $template->name = request('name');
             $template->contents = request('contents');
             $template->save();
-
         } catch (Exception $e) {
             return response()->ajax(0, '修改失败：服务器异常!');
         }
@@ -265,7 +264,7 @@ class SettingController extends Controller
                             ->where('user_id', auth()->user()->getPrimaryUserId())
                             ->first();
 
-                        if ( !$userExist) {
+                        if (!$userExist) {
                             TaobaoShopAuthorization::create([
                                 'wang_wang'  => $wangWang,
                                 'user_id'  => auth()->user()->getPrimaryUserId(),
@@ -289,6 +288,7 @@ class SettingController extends Controller
     public function authorizeUrl()
     {
         $callBack = route('frontend.setting.tb-auth.store') . '?id=' .  auth()->user()->id . '&sign=' . md5(auth()->user()->id . auth()->user()->name);
+
         return 'http://api.kamennet.com/API/CallBack/TOP/SiteInfo_New.aspx?SitID=90347&Sign=b7753b8d55ba79fcf2d190de120a5229&CallBack=' . urlencode($callBack);
     }
 
@@ -342,10 +342,12 @@ class SettingController extends Controller
             $data['user_id'] = Auth::user()->getPrimaryUserId();
             $requestMarkupAmount = is_numeric(request('markup_amount')) ? round(request('markup_amount'), 2) : 0;
             $requestMarkupMoney = is_numeric(request('markup_money')) ? round(request('markup_money'), 2) : 0;
+
             // 如果填的值不合法则
-            if (! $requestMarkupAmount || !$requestMarkupMoney) {
+            if (!$requestMarkupAmount || !$requestMarkupMoney) {
                 return response()->ajax(0, '添加失败：发单价或增加金额必须为数字且大于0!');
             }
+
             // 查看发单价是否有重复
             $sameMarkupAmount = OrderAutoMarkup::where('user_id', Auth::user()->getPrimaryUserId())
                 ->where('markup_amount', $requestMarkupAmount)
@@ -447,11 +449,14 @@ class SettingController extends Controller
                     ->first();
 
                 $game->hasModel = explode('-', $orderSendChannel->third);
+
                 $arr = [];
                 foreach ($game->hasModel as $v) {
                     $arr[] = (int)$v;
                 }
+
                 $diffThirds = array_diff([1, 3, 4, 5], $arr); //黑名单
+
                 $game->hasModel = $diffThirds;
             } else {
                 $game->hasModel = [1, 3, 4, 5];
@@ -461,7 +466,7 @@ class SettingController extends Controller
                 ['id' => 1, 'name' => 'show91平台'],
                 ['id' => 3, 'name' => '蚂蚁代练'],
                 ['id' => 4, 'name' => 'dd373平台'],
-                ['id' => 5, 'name' => '丸子代练']
+                ['id' => 5, 'name' => '丸子代练'],
             ];
         }
         return $games;
@@ -482,7 +487,7 @@ class SettingController extends Controller
             $realThirds = config('leveling.third'); // 所有
 
             // 至少选一个游戏
-            if (! $thirds) {
+            if (!$thirds) {
                 return response()->ajax(0, '设置失败：请至少选择一个平台！');
             }
 
@@ -498,6 +503,7 @@ class SettingController extends Controller
                 $data['game_id'] = $gameId;
                 $data['game_name'] = $gameName;
                 $data['third'] = implode($diffThirds, '-');
+
                 OrderSendChannel::updateOrCreate(['user_id' => $userId, 'game_id' => $gameId], $data);
             }
         } catch (Exception $e) {

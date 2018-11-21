@@ -21,6 +21,7 @@ class ChannelController extends Controller
 {
     /**
      * 渠道表单数据
+     *
      * @return mixed
      */
     public function index()
@@ -41,6 +42,7 @@ class ChannelController extends Controller
 
     /**
      * 同意退款
+     *
      * @return mixed
      */
     public function agreeRefund()
@@ -75,7 +77,6 @@ class ChannelController extends Controller
                 if (!$result || $result['code'] != 10000) {
                     throw new Exception('支付失败!');
                 }
-//                return $result;
             }
 
             // 微信
@@ -95,7 +96,6 @@ class ChannelController extends Controller
                 if (!$result || $result['return_code'] !== 'SUCCESS') {
                     throw new Exception('支付失败!');
                 }
-//                return $result;
             }
         } catch (Exception $e) {
             DB::rollback();
@@ -107,6 +107,7 @@ class ChannelController extends Controller
 
     /**
      * 拒绝退款
+     *
      * @return mixed
      */
     public function refuseRefund()
@@ -149,6 +150,7 @@ class ChannelController extends Controller
 
     /**
      * 渠道游戏
+     *
      * @return mixed
      */
     public function game()
@@ -162,6 +164,7 @@ class ChannelController extends Controller
 
     /**
      * 渠道订单状态数量
+     *
      * @return mixed
      */
     public function status()
@@ -174,7 +177,6 @@ class ChannelController extends Controller
             $filter = compact('tradeNo', 'gameName', 'startDate', 'endDate');
 
             return GameLevelingChannelOrder::filter($filter)
-                ->where('user_id', Auth::user()->getPrimaryUserId())
                 ->selectRaw('status, count(1) as statusCount')
                 ->groupBy('status')
                 ->pluck('statusCount', 'status')
@@ -186,6 +188,7 @@ class ChannelController extends Controller
 
     /**
      * 申请退款记录
+     *
      * @return mixed
      */
     public function refund()
@@ -195,7 +198,7 @@ class ChannelController extends Controller
                 ->where('game_leveling_channel_order_trade_no', request('trade_no'))
                 ->first();
         } catch (Exception $e) {
-
+            return [];
         }
     }
 }

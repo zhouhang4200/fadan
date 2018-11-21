@@ -30,19 +30,20 @@
                         <el-button type="primary" @click="dialogFormVisible = true">余额提现</el-button>
                     </el-form-item>
                 </el-col>
+
                 <el-dialog title="余额提现" :visible.sync="dialogFormVisible">
-                <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="demo-ruleForm">
-                            <el-form-item label="提现金额" prop="fee">
-                                <el-input type="text" v-model.number="ruleForm.fee" @CanWithdraw="CanWithdraw" :placeholder="placeString"></el-input>
-                            </el-form-item>
-                            <el-form-item label="备注说明">
-                                <el-input type="text" v-model="ruleForm.remark" placeholder="可为空"></el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-                                <el-button @click="resetForm('ruleForm')">重置</el-button>
-                            </el-form-item>
-                        </el-form>
+                    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="demo-ruleForm" label-width="80px">
+                        <el-form-item label="提现金额" prop="fee">
+                            <el-input type="text" v-model.number="ruleForm.fee" @CanWithdraw="CanWithdraw" :placeholder="placeString"></el-input>
+                        </el-form-item>
+                        <el-form-item label="备注说明" prop="remark">
+                            <el-input type="text" v-model="ruleForm.remark" placeholder="可以不填写"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                            <el-button @click="resetForm('ruleForm')">重置</el-button>
+                        </el-form-item>
+                    </el-form>
                 </el-dialog>
             </el-row>
         </el-form>
