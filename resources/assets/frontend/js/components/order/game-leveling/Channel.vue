@@ -64,6 +64,7 @@
         <el-table
                 :data="tableData"
                 :height="tableHeight"
+                v-loading="loading"
                 border
                 style="width: 100%; margin-top: 1px">
             <el-table-column
@@ -240,6 +241,7 @@
                 this.$api.GameLevelingChannelOrder(this.searchParams).then(res => {
                     this.tableData = res.data;
                     this.TotalPage = res.total;
+                    this.loading=false;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -301,6 +303,7 @@
         },
         data(){
             return {
+                loading: true,
                 status_leveling:{
                     1:'未接单',
                     13:'代练中',
