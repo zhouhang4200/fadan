@@ -74,7 +74,7 @@ class SettingController extends Controller
         try {
             $template = SmsTemplate::where(['user_id'=> Auth::user()->getPrimaryUserId(), 'id'=> request('id')])->first();
 
-            if (! $template) {
+            if (!$template) {
                 return response()->ajax(0, '修改失败：模板不存在!');
             }
 
@@ -222,7 +222,9 @@ class SettingController extends Controller
     public function goodsDelete()
     {
         try {
-            AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())->where('id', request('id'))->delete();
+            AutomaticallyGrabGoods::where('user_id', Auth::user()->getPrimaryUserId())
+                ->where('id', request('id'))
+                ->delete();
         } catch (Exception $e) {
             return response()->ajax(0, '删除失败：服务器异常！');
         }

@@ -78,10 +78,10 @@ class AccountController extends Controller
      */
     public function loginHistoryDataList()
     {
-        $startDate = request('date')[0];
-        $endDate = request('date')[1];
+        $startDate = request('date') ? request('date')[0] : '';
+        $endDate = request('date') ? request('date')[1] : '';
 
-        $filter = compact( 'startDate', 'endDate');
+        $filter = compact('startDate', 'endDate');
 
         return LoginHistory::where('user_id', Auth::user()->id)
             ->newfilter($filter)
@@ -131,7 +131,7 @@ class AccountController extends Controller
         $name = request('name');
         $station = request('station');
 
-        $filter = compact( 'userName', 'name', 'station');
+        $filter = compact('userName','name', 'station');
 
         $users = User::staffManagementFilter($filter)
             ->with('newRoles')
@@ -203,7 +203,7 @@ class AccountController extends Controller
             if ($isSingle) {
                 return response()->ajax(0, '添加失败：账号名已存在!');
             }
-            myLog('test', [request('station')]);
+
             // 数据
             $data['api_token'] = Str::random(25);
             $data['username'] = request('username');
@@ -329,7 +329,7 @@ class AccountController extends Controller
             $blackList->hatchet_man_name = request('hatchet_man_name');
             $blackList->hatchet_man_phone = request('hatchet_man_phone');
             $blackList->hatchet_man_qq = request('hatchet_man_qq');
-            $blackList->content = request('content', '无');
+            $blackList->content = request('content','无');
 
             $blackList->save();
         } catch (Exception $e) {
@@ -350,7 +350,7 @@ class AccountController extends Controller
         $hatchetManQq = request('hatchet_man_qq');
 
         // 筛选
-        $filters = compact('hatchetManName', 'hatchetManPhone', 'hatchetManQq');
+        $filters = compact('hatchetManName','hatchetManPhone', 'hatchetManQq');
 
         return HatchetManBlacklist::where('user_id', Auth::user()->getPrimaryUserId())
             ->filter($filters)
@@ -364,7 +364,7 @@ class AccountController extends Controller
      */
     public function blackListDelete()
     {
-        if (! request('id')) {
+        if (!request('id')) {
             return response()->ajax(0, '删除失败：该条记录未找到！');
         }
         $del = HatchetManBlacklist::destroy(request('id'));
@@ -403,11 +403,11 @@ class AccountController extends Controller
                 return response()->ajax(0, '图片上传失败：参数缺失！');
             }
 
-            if ($extension && ! in_array(strtolower($extension), static::$extensions)) {
+            if ($extension && !in_array(strtolower($extension), static::$extensions)) {
                 return response()->ajax(0, '图片上传失败：图片格式不正确!');
             }
 
-            if (! $file->isValid()) {
+            if (!$file->isValid()) {
                 return response()->ajax(0, '图片上传失败：无效的图片！');
             }
 
@@ -571,8 +571,10 @@ class AccountController extends Controller
         $permissionIds = $user->getUserPermissions()->pluck('id');
 
         return NewModule::whereHas('newPermissions', function ($query) use ($permissionIds) {
-            $query->whereIn('id', $permissionIds);
-        })->with('newPermissions')->select('id', 'name as alias')->get();
+                    $query->whereIn('id', $permissionIds);
+                })->with('newPermissions')
+                ->select('id', 'name as alias')
+                ->get();
     }
 
     /**

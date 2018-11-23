@@ -31,12 +31,17 @@ class StatisticController extends Controller
     public function employeeDataList()
     {
         $userName = request('username', '');
-        $startDate = request('date')[0];
-        $endDate = request('date')[1];
+        $startDate = request('date')[0] ?? '';
+        $endDate = request('date')[1] ?? '';
 
         $filter = compact('userName', 'startDate', 'endDate');
 
-        $userIds = User::whereIn('id', User::where('parent_id', Auth::user()->getPrimaryUserId())->pluck('id')->merge(Auth::user()->getPrimaryUserId())->unique())
+        $allIds = User::where('parent_id', Auth::user()->getPrimaryUserId())
+            ->pluck('id')
+            ->merge(Auth::user()->getPrimaryUserId())
+            ->unique();
+
+        $userIds = User::whereIn('id', $allIds)
             ->pluck('id');
 
         $query = EmployeeStatistic::whereIn('employee_statistics.user_id', $userIds)
@@ -92,13 +97,18 @@ class StatisticController extends Controller
      */
     public function orderDataList()
     {
-        $startDate = request('date')[0];
-        $endDate = request('date')[1];
+        $startDate = request('date')[0] ?? '';
+        $endDate = request('date')[1] ?? '';
 
-        $userIds = User::whereIn('id', User::where('parent_id', Auth::user()->getPrimaryUserId())->pluck('id')->merge(Auth::user()->getPrimaryUserId())->unique())
+        $allIds = User::where('parent_id', Auth::user()->getPrimaryUserId())
+            ->pluck('id')
+            ->merge(Auth::user()->getPrimaryUserId())
+            ->unique();
+
+        $userIds = User::whereIn('id', $allIds)
             ->pluck('id');
 
-        $filter = compact( 'startDate', 'endDate');
+        $filter = compact('startDate', 'endDate');
 
         return OrderStatistic::whereIn('user_id', $userIds)
             ->filter($filter)
@@ -139,10 +149,11 @@ class StatisticController extends Controller
      */
     public function messageDataList()
     {
-        $startDate = request('date')[0];
-        $endDate = request('date')[1];
+        $startDate = request('date')[0] ?? '';
+        $endDate = request('date')[1] ?? '';
 
-        $smsSendRecords = SmsSendRecord::select(DB::raw('id, date, user_id, count(1) as count'))->where('user_id', Auth::user()->getPrimaryUserId())
+        $smsSendRecords = SmsSendRecord::select(DB::raw('id, date, user_id, count(1) as count'))
+            ->where('user_id', Auth::user()->getPrimaryUserId())
             ->filter(compact('startDate', 'endDate'))
             ->orderBy('date', 'desc')
             ->groupBy('date')
@@ -163,7 +174,7 @@ class StatisticController extends Controller
         array_push($smsSendRecords, ['id' => 0, 'user_id' => 0, 'date' => '总计', 'count' => $pageCount]);
 
         return new LengthAwarePaginator($smsSendRecords, $count, 15, request('page', 1), [
-            'path'     => Paginator::resolveCurrentPath(),
+            'path' => Paginator::resolveCurrentPath(),
             'pageName' => 'page',
         ]);
     }
