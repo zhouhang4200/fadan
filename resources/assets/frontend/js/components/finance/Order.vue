@@ -2,30 +2,30 @@
     <div class="main content amount-flow">
         <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
             <el-row :gutter="16">
-                <el-col :span="4">
+                <el-col :span="5">
                     <el-form-item label="单号">
                         <el-input v-model="searchParams.trade_no"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="5">
                     <el-form-item label="游戏">
                         <el-select v-model="searchParams.game_id" placeholder="请选择">
                             <el-option v-for="(value, key) of GameArr" :value="key" :key="key" :label="value"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                     <el-form-item label="店铺名称">
                         <el-input v-model="searchParams.seller_nick"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                     <el-form-item label="接单平台">
                         <el-input v-model="searchParams.platform_id"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="5">
-                    <el-form-item label="订单状态">
+                    <el-form-item label="状态">
                         <el-select v-model="searchParams.status" placeholder="请选择">
                             <el-option v-for="(value, key) of StatusArr" :value="key" :key="key" :label="value"></el-option>
                         </el-select>

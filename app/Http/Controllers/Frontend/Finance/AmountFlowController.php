@@ -30,7 +30,8 @@ class AmountFlowController extends Controller
 
         $dataList = $userAmountFlowRepository->getList($tradeNo, $tradeType, $tradeSubType,$timeStart, $timeEnd, $foreignOrderNo);
 
-        return view('frontend.v1.finance.amount-flow.index', compact('dataList', 'tradeNo', 'tradeType', 'tradeSubType', 'timeStart', 'timeEnd', 'foreignOrderNo'));
+        return view('frontend.v1.finance.amount-flow.index',
+            compact('dataList', 'tradeNo', 'tradeType', 'tradeSubType', 'timeStart', 'timeEnd', 'foreignOrderNo'));
     }
 
     /**

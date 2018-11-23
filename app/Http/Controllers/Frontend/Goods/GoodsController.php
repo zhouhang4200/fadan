@@ -36,7 +36,8 @@ class GoodsController extends Controller
         $games  = $gameRepository->available();
         $goods  = $userGoodsRepository->getList($serviceId, $gameId, $foreignGoodsId, $name);
 
-        return view('frontend.v1.goods.index', compact('goods', 'services', 'serviceId', 'games', 'gameId', 'foreignGoodsId', 'name'));
+        return view('frontend.v1.goods.index',
+            compact('goods', 'services', 'serviceId', 'games', 'gameId', 'foreignGoodsId', 'name'));
     }
 
     /**
@@ -44,7 +45,7 @@ class GoodsController extends Controller
      * @param GameRepository $gameRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(  ServiceRepository $serviceRepository, GameRepository $gameRepository )
+    public function create(ServiceRepository $serviceRepository, GameRepository $gameRepository )
     {
         $services = $serviceRepository->available();
         $games = $gameRepository->available();

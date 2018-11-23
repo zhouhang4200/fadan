@@ -2,27 +2,26 @@
 
 namespace App\Http\Controllers\Frontend\V2\Finance;
 
-use App\Events\Punish;
+use Exception;
 use App\Models\Game;
-use App\Models\GameLevelingChannelOrder;
-use App\Models\GameLevelingOrder;
-use App\Models\GameLevelingOrderRelationChannel;
+use App\Events\Punish;
 use App\Models\UserAsset;
-use App\Repositories\Frontend\GameRepository;
-use App\Repositories\Frontend\OrderRepository;
 use Illuminate\Http\Request;
 use App\Models\UserAssetDaily;
 use App\Models\UserAmountFlow;
+use App\Models\GameLevelingOrder;
 use App\Models\UserWithdrawOrder;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Models\TaobaoTrade;
+use App\Models\GameLevelingChannelOrder;
+use App\Models\GameLevelingOrderRelationChannel;
 use App\Repositories\Frontend\UserWithdrawOrderRepository;
 
 class FinanceController extends Controller
 {
     /**
      * 我的资产
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function myAsset()
@@ -32,6 +31,7 @@ class FinanceController extends Controller
 
     /**
      * 我的资产接口数据
+     *
      * @return mixed
      */
     public function myAssetDataList()
@@ -68,6 +68,7 @@ class FinanceController extends Controller
 
     /**
      * 资产日报
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function dailyAsset()
@@ -77,12 +78,13 @@ class FinanceController extends Controller
 
     /**
      * 资产日报接口
+     *
      * @return mixed
      */
     public function dailyAssetDataList()
     {
-        $startDate = request('date')[0];
-        $endDate = request('date')[1];
+        $startDate = request('date')[0] ?? '';
+        $endDate = request('date')[1] ?? '';
         $filter = compact('startDate', 'endDate');
 
         return UserAssetDaily::filter($filter)->paginate(15);
@@ -90,6 +92,7 @@ class FinanceController extends Controller
 
     /**
      * 资金流水
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function amountFlow()
@@ -99,24 +102,28 @@ class FinanceController extends Controller
 
     /**
      * 新资金流水接口数据
+     *
      * @param Request $request
      * @return mixed
      */
     public function amountFlowDataList(Request $request)
     {
-        $tradeNo = trim($request->trade_no);
-        $tradeType = $request->trade_type;
-        $tradeSubType = $request->trade_sub_type;
-        $startDate = $request->date[0];
-        $endDate = $request->date[1];
-        $foreignOrderNo = $request->channel_order_trade_no;
+        $tradeNo = trim($request->trade_no ?? '');
+        $tradeType = $request->trade_type ?? '';
+        $tradeSubType = $request->trade_sub_type ?? '';
+        $startDate = $request->date[0] ?? '';
+        $endDate = $request->date[1] ?? '';
+        $foreignOrderNo = $request->channel_order_trade_no ?? '';
         $filter = compact('tradeNo', 'tradeType', 'tradeSubType', 'startDate', 'endDate', 'foreignOrderNo');
 
-        return UserAmountFlow::filter($filter)->where('user_id', Auth::user()->getPrimaryUserId())->with('order')->paginate(15);
+        return UserAmountFlow::filter($filter)->where('user_id', Auth::user()->getPrimaryUserId())
+            ->with('order')
+            ->paginate(15);
     }
 
     /**
      * 我的提现
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function myWithdraw()
@@ -126,12 +133,13 @@ class FinanceController extends Controller
 
     /**
      * 我的提现接口
+     *
      * @return mixed
      */
     public function myWithdrawDataList()
     {
-        $startDate = request('date')[0];
-        $endDate = request('date')[1];
+        $startDate = request('date')[0] ?? '';
+        $endDate = request('date')[1] ?? '';
         $status = request('status');
         $filter = compact('startDate', 'endDate', 'status');
 
@@ -140,6 +148,7 @@ class FinanceController extends Controller
 
     /**
      * 可提现金额
+     *
      * @return mixed
      */
     public function canWithdraw()
@@ -149,20 +158,19 @@ class FinanceController extends Controller
 
     /**
      * 发送提现申请
+     *
      * @param UserWithdrawOrderRepository $repository
      * @return \Illuminate\Http\JsonResponse
      */
     public function createWithdraw(UserWithdrawOrderRepository $repository)
     {
-        $bool = event(new Punish(Auth::user()->getPrimaryUserId()));
-
-        if ($bool) {
+        if (event(new Punish(Auth::user()->getPrimaryUserId()))) {
             return response()->json(['status' => 0, 'message' => '提现申请失败：您还有罚单没有交清，请先交清罚单哦!']);
         }
 
         try {
             $repository->store(request('fee', 0), trim(request('remark', '无')) ?: config('withdraw.status')[1]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->ajax(0, $e->getMessage());
         }
         return response()->ajax(1, '发送成功!');
@@ -170,6 +178,7 @@ class FinanceController extends Controller
 
     /**
      * 财务订单
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function order()
@@ -179,6 +188,7 @@ class FinanceController extends Controller
 
     /**
      * 游戏接口
+     *
      * @return mixed
      */
     public function game()
@@ -188,6 +198,7 @@ class FinanceController extends Controller
 
     /**
      * 财务订单接口
+     *
      * @return mixed
      */
     public function orderDataList()
@@ -195,8 +206,8 @@ class FinanceController extends Controller
         $tradeNo = request('trade_no');
         $gameId = request('game_id', 0);
         $status = request('status', 0);
-        $startDate = request('date')[0];
-        $endDate = request('date')[1];
+        $startDate = request('date')[0] ?? '';
+        $endDate = request('date')[1] ?? '';
         $platformId = request('platform_id', 0);
         $sellerNick = request('seller_nick', '');
 
@@ -210,6 +221,7 @@ class FinanceController extends Controller
                 ->where('game_leveling_channel_order_trade_no', '!=', $order->channel_order_trade_no)
                 ->pluck('game_leveling_channel_order_trade_no')
                 ->unique();
+
             $order->source_order_no = $sourceOrders->count() > 0 ? $sourceOrders : '';
             $order->taobao_amount = GameLevelingChannelOrder::where('trade_no', $order->trade_no)->sum('payment_amount');
             $order->taobao_refund = GameLevelingChannelOrder::where('trade_no', $order->trade_no)->sum('refund_amount');
@@ -220,7 +232,6 @@ class FinanceController extends Controller
             $order->poundage = $order->getPoundage();
             $order->profit = $order->getProfit();
         }
-
         return $orders;
     }
 }

@@ -19,8 +19,9 @@ class PunishController extends Controller
 {
     /**
      * 奖惩列表
-     * @param  Request $request [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
@@ -28,8 +29,10 @@ class PunishController extends Controller
     	$endDate = $request->endDate;
     	$type = $request->type;
         $status = $request->status;
+
         // 生成数组
     	$filters = compact('startDate', 'endDate', 'type', 'status');
+
         // 页面数据
     	$punishes = PunishOrReward::homeFilter($filters)
             ->where('user_id', Auth::id())
@@ -38,19 +41,23 @@ class PunishController extends Controller
         $punishType = config('punish.type');
         $punishStatus = config('punish.status');
 
-    	return view('frontend.punish.index', compact('startDate', 'endDate', 'punishes', 'type', 'status', 'punishType', 'punishStatus'));
+    	return view('frontend.punish.index',
+            compact('startDate', 'endDate', 'punishes', 'type', 'status', 'punishType', 'punishStatus'));
     }
 
     /**
      * 确认扣款
-     * @param  Request $request [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \App\Exceptions\AssetException
      */
     public function payment(Request $request)
     {
     	try {
             DB::beginTransaction();
             $punish = PunishOrReward::lockForUpdate()->find($request->id);
+
             if ($punish->confirm == 1) {
                 throw new Exception('该单据已处理过');
             }
@@ -67,6 +74,7 @@ class PunishController extends Controller
 
                     $punish->status = 2;
                     $punish->confirm = 1;
+
                     if (!$punish->save()) {
                         DB::rollback();
                         throw new Exception('操作失败');
@@ -170,8 +178,9 @@ class PunishController extends Controller
 
     /**
      * 申诉操作
-     * @param  Request $request [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request
+     * @return mixed
      */
     public function complain(Request $request)
     {
@@ -196,7 +205,6 @@ class PunishController extends Controller
             }
 
             return response()->ajax(1);
-
         } catch (Exception $exception) {
             return response()->ajax(0, $exception->getMessage());
         }

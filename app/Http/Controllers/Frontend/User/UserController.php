@@ -11,6 +11,11 @@ class UserController extends Controller
 {
 	protected static $extensions = ['png', 'jpg', 'jpeg', 'gif'];
 
+    /**
+     * 个人资料
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function persional()
     {
         if (Auth::user()->parent_id== 0) {
@@ -20,11 +25,13 @@ class UserController extends Controller
         }
         return view('frontend.v1.user.persional.edit', compact('user'));
     }
-	/**
-	 * 修改资料
-	 * @param  Request $request [description]
-	 * @return [type]           [description]
-	 */
+
+    /**
+     * 修改资料
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updatePersional(Request $request)
     {
         if (Auth::user()->parent_id== 0) {
@@ -45,10 +52,11 @@ class UserController extends Controller
         return response()->json(['code' => 2, 'message' => '修改失败!']);
     }
 
-     /**
+    /**
      * 点击图片 ajax 上传
-     * @param  Illuminate\Http\Request
-     * @return json
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function uploadImages(Request $request)
     {
@@ -63,9 +71,10 @@ class UserController extends Controller
 
     /**
      * 图片上传，返回图片路径
-     * @param  Symfony\Component\HttpFoundation\File\UploadedFile $file 
-     * @param  $path string
-     * @return string
+     *
+     * @param UploadedFile $file
+     * @param $path
+     * @return \Illuminate\Http\JsonResponse|mixed
      */
     public function uploadImage(UploadedFile $file, $path)
     {   
@@ -92,8 +101,9 @@ class UserController extends Controller
 
     /**
      * 修改头像
-     * @param  Request $request [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function updateVoucher(Request $request)
     {

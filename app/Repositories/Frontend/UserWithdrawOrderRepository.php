@@ -34,8 +34,12 @@ class UserWithdrawOrderRepository
     }
 
     /**
-     * 申请提现
-     * @return mixed
+     *  申请提现
+     *
+     * @param $fee
+     * @param $remark
+     * @throws Exception
+     * @throws \App\Exceptions\AssetException
      */
     public function store($fee, $remark)
     {
@@ -47,8 +51,7 @@ class UserWithdrawOrderRepository
         // 资产冻结
         try {
             Asset::handle(new Freeze($fee, Freeze::TRADE_SUBTYPE_WITHDRAW, $withdrawNo, $remark, $primaryUserId));
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
 

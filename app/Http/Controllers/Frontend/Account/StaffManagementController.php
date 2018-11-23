@@ -16,8 +16,9 @@ class StaffManagementController extends Controller
 {
     /**
      * 员工管理列表
-     * @param  Request $request [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
      */
     public function index(Request $request)
     {
@@ -33,7 +34,7 @@ class StaffManagementController extends Controller
 
         //状态1是封号，0是正常
     	$users = User::staffManagementFilter($filters)
-            ->paginate(config('frontend.page'));
+            ->paginate(15);
 
         // 删除的时候页面不刷新
         if ($request->ajax()) {
@@ -47,8 +48,9 @@ class StaffManagementController extends Controller
 
     /**
      * 员工编辑
-     * @param  [type] $id [description]
-     * @return [type]     [description]
+     *
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function edit($id)
     {
@@ -61,9 +63,9 @@ class StaffManagementController extends Controller
 
     /**
      * 员工岗位修改
-     * @param  Request $request [description]
-     * @param  [type]  $id      [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request
+     * @return mixed
      */
     public function update(Request $request)
     {
@@ -96,8 +98,9 @@ class StaffManagementController extends Controller
 
     /**
      * 禁止员工登录
-     * @param  Request $request [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request
+     * @return mixed
      */
     public function forbidden(Request $request)
     {
@@ -116,8 +119,9 @@ class StaffManagementController extends Controller
 
     /**
      * 员工删除
-     * @param  Request $request [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request
+     * @return mixed
      */
     public function delete(Request $request)
     {
@@ -135,7 +139,8 @@ class StaffManagementController extends Controller
 
     /**
      * 员工添加
-     * @return [type] [description]
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
     {
@@ -147,17 +152,17 @@ class StaffManagementController extends Controller
 
     /**
      * 员工保存
-     * @param  Request $request [description]
-     * @return [type]           [description]
+     *
+     * @param Request $request
+     * @return mixed
      */
     public function store(Request $request)
     {
         // 判断账号是否唯一
-        $isSingle = User::where('name', $request->data['name'])->withTrashed()->first();
-
-        if ($isSingle) {
+        if (User::where('name', $request->data['name'])->withTrashed()->first()) {
             return response()->ajax(0, '账号名已存在!');
         }
+
         // 数据
         $data = $request->data;
         $data['api_token'] = Str::random(25);
@@ -168,9 +173,11 @@ class StaffManagementController extends Controller
         $data['app_secret'] = str_random(60);
         $data['voucher'] = "/frontend/v1/images/default-avatar.png";
         $roleIds = $request->roles ?: [];
+
         // 添加子账号同时添加角色
         $user = User::create($data);
         $user->newRoles()->sync($roleIds);
+
         // 清除缓存
         Cache::forget('newPermissions:user:'.$user->id);
 

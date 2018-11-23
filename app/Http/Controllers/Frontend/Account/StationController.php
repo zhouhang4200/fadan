@@ -14,11 +14,12 @@ use App\Http\Controllers\Controller;
 
 class StationController extends Controller
 {
-	/**
-	 * 岗位列表
-	 * @param  Request $request [description]
-	 * @return [type]           [description]
-	 */
+    /**
+     * 岗位列表
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
     	$userRoles = NewRole::where('user_id', Auth::user()->getPrimaryUserId())
@@ -40,7 +41,6 @@ class StationController extends Controller
      */
     public function create()
     {
-    	// 主账号
         $user = User::find(Auth::user()->getPrimaryUserId());
         // 清除缓存
         Cache::forget('newPermissions:user:'.$user->id);
@@ -66,7 +66,6 @@ class StationController extends Controller
      */
     public function store(Request $request)
     {
-    	// 传送勾选的权限
         if (count($request->ids) > 0) {
             $data['name'] = $request->data['name'];
             $data['alias'] = $request->data['name'];
@@ -80,8 +79,7 @@ class StationController extends Controller
                 foreach ($newRole->newUsers as $childUser) {
                     Cache::forget('newPermissions:user:'.$childUser->id);
                 }
-            }    
-
+            }
             return response()->ajax(1, '添加成功!');
         } else {
         	return response()->ajax(1, '请先勾选权限！');
@@ -91,8 +89,8 @@ class StationController extends Controller
     /**
      * 岗位编辑
      *
-     * @param  \App\Models\RbacGroup  $rbacGroup
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function edit($id)
     {
@@ -117,17 +115,13 @@ class StationController extends Controller
             foreach ($userRole->newUsers as $childUser) {
                 Cache::forget('newPermissions:user:'.$childUser->id);
             }
-        }      
-                       
+        }
         return view('frontend.v1.user.station.edit', compact('userRole', 'modulePermissions'));
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\RbacGroup  $rbacGroup
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return mixed
      */
     public function update(Request $request)
     {
@@ -165,10 +159,8 @@ class StationController extends Controller
     }
 
     /**
-     * 删除岗位
-     *
-     * @param  \App\Models\RbacGroup  $rbacGroup
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return mixed
      */
     public function destroy(Request $request)
     {

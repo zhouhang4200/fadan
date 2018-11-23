@@ -2,6 +2,8 @@
 
 namespace App\Services\GameLevelingPlatform;
 
+use App\Models\GameLevelingOrderComplain;
+use App\Models\GameLevelingOrderConsult;
 use Exception;
 use GuzzleHttp\Client;
 use App\Models\GameLevelingOrder;
@@ -12,6 +14,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
 {
     /**
      * 表单请求
+     *
      * @param $options
      * @param $url
      * @param $functionName
@@ -75,13 +78,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
 
             return json_decode($result, true);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '表单请求', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '表单请求',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new Exception($e->getMessage());
         }
     }
 
     /**
      * 普通请求
+     *
      * @param $options
      * @param $url
      * @param $functionName
@@ -137,13 +146,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             }
             return json_decode($result, true);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '请求', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '请求',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new Exception($e->getMessage());
         }
     }
 
     /**
      * 上架
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -156,7 +171,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
                 ->where('platform_id', 1)
                 ->first();
 
-            if (! $gameLevelingPlatform) {
+            if (!$gameLevelingPlatform) {
                 return true;
             }
 
@@ -171,17 +186,28 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             return true;
         } catch (GameLevelingOrderOperateException $e) {
             static::delete($order);
-            myLog('show91-platform-error', ['方法' => '上架', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '上架',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }  catch (Exception $e) {
             static::delete($order);
-            myLog('show91-platform-error', ['方法' => '上架', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '上架',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 下架
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -193,7 +219,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             ->where('platform_id', 1)
             ->first();
 
-        if (! $gameLevelingPlatform) {
+        if (!$gameLevelingPlatform) {
             return true;
         }
 
@@ -209,11 +235,21 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             return true;
         } catch (GameLevelingOrderOperateException $e) {
             static::delete($order);
-            myLog('show91-platform-error', ['方法' => '下架', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '下架',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }  catch (Exception $e) {
             static::delete($order);
-            myLog('show91-platform-error', ['方法' => '下架', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '下架',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
@@ -221,6 +257,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 申请协商
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -243,13 +280,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.show91.url')['applyConsult'], 'applyConsult', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '申请协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '申请协商',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 取消协商
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -265,13 +308,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.show91.url')['cancelConsult'], 'cancelConsult', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '取消协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '取消协商',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 同意协商
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -289,13 +338,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             $result = static::normalRequest($options, config('gameleveling.show91.url')['agreeConsult'], 'agreeConsult', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '同意协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '同意协商',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 不同意协商
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -313,13 +368,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.show91.url')['rejectConsult'], 'rejectConsult', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '不同意协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '不同意协商',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 申请仲裁
+     *
      * @param GameLevelingOrder $order
      * @param array $pic
      * @throws GameLevelingOrderOperateException
@@ -345,13 +406,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::formDataRequest($options, config('gameleveling.show91.url')['applyComplain'], 'applyComplain', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '申请仲裁', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '申请仲裁',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 取消仲裁
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -367,13 +434,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.show91.url')['cancelComplain'], 'cancelComplain', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '取消仲裁', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '取消仲裁',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 完成
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -390,13 +463,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.show91.url')['complete'], 'complete', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '订单完成',  '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '订单完成',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 撤单
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -423,13 +502,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
 
             return true;
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '删除订单', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '删除订单',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 修改订单
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -482,13 +567,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
 
             myLog('show91-platform-modify-order-result', ['请求参数' => $options, '地址' => config('gameleveling.show91.url')['updateOrder'], '结果' => $result ?? '']);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '修改订单', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '修改订单',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 加时
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -501,7 +592,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
                 ->where('platform_id', 1)
                 ->first();
 
-            if (! $gameLevelingPlatform) {
+            if (!$gameLevelingPlatform) {
                 return true;
             }
 
@@ -516,13 +607,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.show91.url')['addTime'], 'addTime', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '订单加时', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '订单加时',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 加款
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -549,13 +646,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.show91.url')['addAmount'], 'addAmount', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '订单加款', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '订单加款',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 获取订单详情
+     *
      * @param GameLevelingOrder $order
      * @return bool|mixed
      * @throws GameLevelingOrderOperateException
@@ -580,13 +683,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             return static::normalRequest($options, config('gameleveling.show91.url')['orderInfo'], 'orderInfo', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '订单详情', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '订单详情',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 获取订单截图
+     *
      * @param GameLevelingOrder $order
      * @return array
      * @throws GameLevelingOrderOperateException
@@ -617,13 +726,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
                 return [];
             }
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '订单详情', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '订单详情',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 获取留言
+     *
      * @param GameLevelingOrder $order
      * @return array|string
      * @throws GameLevelingOrderOperateException
@@ -662,13 +777,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             }
             return '';
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '订单获取留言', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '订单获取留言',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 回复留言
+     *
      * @param GameLevelingOrder $order
      * @param $message
      * @throws GameLevelingOrderOperateException
@@ -686,13 +807,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.show91.url')['replyMessage'], 'replyMessage', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '订单获取留言', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '订单获取留言',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 修改账号密码
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -710,13 +837,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.show91.url')['modifyGamePassword'], 'modifyGamePassword', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '订单获取留言', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '订单获取留言',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 置顶
+     *
      * @param $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -729,7 +862,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
                 ->where('platform_id', 1)
                 ->first();
 
-            if (! $gameLevelingPlatform) {
+            if (!$gameLevelingPlatform) {
                 return true;
             }
 
@@ -742,13 +875,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.show91.url')['setTop'], 'setTop', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '订单置顶', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '订单置顶',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 获取仲裁详情
+     *
      * @param GameLevelingOrder $order
      * @return array
      * @throws GameLevelingOrderOperateException
@@ -806,13 +945,19 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             }
             return $arr;
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '获取仲裁详情', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '获取仲裁详情',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 添加仲裁证据
+     *
      * @param GameLevelingOrder $order
      * @param $pic
      * @param $content
@@ -834,7 +979,12 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             $res = static::formDataRequest($options, config('gameleveling.show91.url')['addComplainDetail'], 'addComplainDetail', $order);
         } catch (Exception $e) {
-            myLog('show91-platform-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('show91-platform-error', [
+                '方法' => '添加仲裁证据',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }

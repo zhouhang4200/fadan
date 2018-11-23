@@ -2,12 +2,12 @@
     <div class="main content amount-flow">
         <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
             <el-row :gutter="16">
-                <el-col :span="5">
+                <el-col :span="6">
                     <el-form-item label="订单编号">
                         <el-input v-model="searchParams.trade_no"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                     <el-form-item label="绑定游戏">
                         <el-select v-model="searchParams.game_name" placeholder="请选择">
                             <el-option v-for="value, key in games" :value="value" :key="key" :label="value">{{value}}</el-option>
@@ -64,6 +64,7 @@
         <el-table
                 :data="tableData"
                 :height="tableHeight"
+                v-loading="loading"
                 border
                 style="width: 100%; margin-top: 1px">
             <el-table-column
@@ -240,6 +241,7 @@
                 this.$api.GameLevelingChannelOrder(this.searchParams).then(res => {
                     this.tableData = res.data;
                     this.TotalPage = res.total;
+                    this.loading=false;
                 }).catch(err => {
                     this.$alert('获取数据失败, 请重试!', '提示', {
                         confirmButtonText: '确定',
@@ -301,6 +303,7 @@
         },
         data(){
             return {
+                loading: true,
                 status_leveling:{
                     1:'未接单',
                     13:'代练中',

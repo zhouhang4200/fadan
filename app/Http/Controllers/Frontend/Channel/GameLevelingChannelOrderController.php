@@ -32,6 +32,7 @@ class GameLevelingChannelOrderController extends Controller
 {
     /**
      * 获取所有的代练游戏
+     *
      * @return mixed
      */
     public function game()
@@ -49,6 +50,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 获取所有的代练游戏
+     *
      * @return mixed
      */
     public function games()
@@ -70,6 +72,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 获取游戏的区
+     *
      * @return mixed
      */
     public function regions()
@@ -88,6 +91,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 获取区的服
+     *
      * @param Request $request
      * @return mixed
      */
@@ -104,6 +108,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 游戏代练类型
+     *
      * @return mixed
      */
     public function gameLevelingTypes()
@@ -124,6 +129,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 游戏代练等级
+     *
      * @return mixed
      */
     public function gameLevelingLevels()
@@ -161,6 +167,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 自动计算下单价格和时间等信息
+     *
      * @return mixed
      */
     public function gameLevelingAmountTime()
@@ -184,6 +191,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 创建订单并返回支付信息
+     *
      * @return \Yansongda\Pay\Gateways\Alipay\WapGateway|\Yansongda\Pay\Gateways\Wechat\WapGateway
      * @throws EasyWeChat\Kernel\Exceptions\InvalidConfigException
      */
@@ -275,6 +283,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 微信回调
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws EasyWeChat\Kernel\Exceptions\Exception
      */
@@ -322,6 +331,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 获取IP地址
+     *
      * @return string
      */
     public static function getIp()
@@ -340,6 +350,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 渠道订单筛选
+     *
      * @return mixed
      */
     public function orderList()
@@ -360,6 +371,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 完成验收
+     *
      * @return mixed
      */
     public function complete()
@@ -392,6 +404,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 取消退款
+     *
      * @return mixed
      */
     public function cancelRefund()
@@ -445,6 +458,8 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 申请退款
+     *
+     * @return mixed
      */
     public function applyRefund()
     {
@@ -541,6 +556,7 @@ class GameLevelingChannelOrderController extends Controller
 
     /**
      * 订单详情
+     *
      * @return mixed
      */
     public function show()
