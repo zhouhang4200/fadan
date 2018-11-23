@@ -20,14 +20,13 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
     # 需登录后可访问
     Route::middleware(['auth'])->group(function () {
         # 获取所有游戏
-        Route::any('games', 'GameController@index')->name('games');
+        Route::post('games', 'GameController@index')->name('games');
         # 游戏区服数据
         Route::post('game-region-server', 'GameController@gameRegionServer')->name('game-region-server');
         # 游戏代练类型
         Route::post('game-leveling-types', 'GameLevelingTypeController@index')->name('game-leveling-types');
         # 订单
         Route::prefix('order')->namespace('Order')->group(function () {
-            // 代练订单
             # 代练订单
             Route::prefix('game-leveling')->namespace('GameLeveling')->group(function () {
                 // 渠道订单
@@ -49,6 +48,8 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 Route::post('store', 'IndexController@store')->name('order.game-leveling.store');
                 # 更新
                 Route::post('update', 'IndexController@update')->name('order.game-leveling.update');
+                # 更新发单用户备注
+                Route::post('update-user-remark', 'IndexController@updateUserRemark')->name('order.game-leveling.update-user-remark');
                 # 加价
                 Route::post('add-amount', 'IndexController@addAmount')->name('order.game-leveling.add-amount');
                 # 加代练天与小时
@@ -206,6 +207,25 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
         });
         # 设置
         Route::prefix('setting')->namespace('Setting')->group(function () {
+
+            # 游戏代练要求模板
+            Route::prefix('game-leveling-requirement-template')->group(function () {
+                Route::post('/', 'GameLevelingRequirementTemplateController@index');
+                Route::post('show', 'GameLevelingRequirementTemplateController@show');
+                Route::post('update', 'GameLevelingRequirementTemplateController@update');
+                Route::post('store', 'GameLevelingRequirementTemplateController@store');
+                Route::post('delete', 'GameLevelingRequirementTemplateController@delete');
+            });
+
+            # 商户联系方式模板
+            Route::prefix('businessman-contact-template')->group(function () {
+                Route::post('/', 'BusinessmanContactTemplateController@index');
+                Route::post('show', 'BusinessmanContactTemplateController@show');
+                Route::post('update', 'BusinessmanContactTemplateController@update');
+                Route::post('store', 'BusinessmanContactTemplateController@store');
+                Route::post('delete', 'BusinessmanContactTemplateController@delete');
+            });
+
             # 抓取商品配置
             Route::get('goods', 'SettingController@goods')->name('v2.setting.goods');
             Route::post('goods-delivery', 'SettingController@goodsDelivery')->name('v2.setting.goods-delivery');

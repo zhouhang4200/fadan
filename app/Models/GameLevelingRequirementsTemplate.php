@@ -8,7 +8,7 @@ class GameLevelingRequirementsTemplate extends Model
 {
     protected $fillable = ['user_id', 'game_id', 'name', 'status', 'content', 'created_at', 'updated_at'];
 
-    protected $hidden = ['id', 'user_id', 'created_at', 'updated_at'];
+    protected $hidden = ['user_id', 'created_at', 'updated_at'];
 
     public static function rules()
     {

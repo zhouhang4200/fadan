@@ -266,7 +266,7 @@ class IndexController extends Controller
                     $orderCurrent['profit'] = '';
                     $orderCurrent['client_wang_wang'] = '';
                     $orderCurrent['seller_nick'] = '';
-                    $orderCurrent['source_price'] = '';
+                    $orderCurrent['source_amount'] = '';
                     $orderCurrent['customer_service_remark'] = '';
                 }
 
@@ -359,7 +359,7 @@ class IndexController extends Controller
             $orderData = $request->data; // 表单所有数据
             $gameId = $orderData['game_id']; // 游戏ID
             $templateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id'); // 模版ID
-            $originalPrice = $orderData['source_price']; // 原价
+            $originalPrice = $orderData['source_amount']; // 原价
             $price = $orderData['game_leveling_amount']; // 代练价格
             $foreignOrderNO = isset($orderData['source_order_no']) ? $orderData['source_order_no'] : ''; // 来源订单号
             $orderData['urgent_order'] = isset($orderData['urgent_order']) ? 1 : 0; // 是否加急
@@ -655,7 +655,7 @@ class IndexController extends Controller
             $detail['profit'] = '';
             $detail['client_wang_wang'] = '';
             $detail['seller_nick'] = '';
-            $detail['source_price'] = '';
+            $detail['source_amount'] = '';
             $detail['customer_service_remark'] = '';
         }
         // 如果是未接单状态则查询订单发送情况
@@ -1225,7 +1225,7 @@ class IndexController extends Controller
                             OrderDetail::where('order_no', $orderNo)->where('field_name', $key)->update([
                                 'field_value' => $value
                             ]);
-                            if ($key == 'source_price') {
+                            if ($key == 'source_amount') {
                                 $order->original_amount = $requestData[$key];
                                 $order->save();
                             }
@@ -1279,18 +1279,18 @@ class IndexController extends Controller
                     foreach ($otherOrders as $otherOrder) {
                         OrderDetail::where('order_no', $otherOrder->no)
                             ->where('order_no', '!=', $order->no)
-                            ->where('field_name', 'source_price')
-                            ->update(['field_value' => $orderDetails['source_price']]);
+                            ->where('field_name', 'source_amount')
+                            ->update(['field_value' => $orderDetails['source_amount']]);
                         OrderModel::where('no', $otherOrder->no)
                             ->where('no', '!=', $order->no)
-                            ->update(['original_price' =>  $orderDetails['source_price']]);
+                            ->update(['original_price' =>  $orderDetails['source_amount']]);
                     }
                 }
             }
 
             // 将来源价格同步到订单表
-            $order->original_amount = $orderDetails['source_price'];
-            $order->original_price = $orderDetails['source_price'];
+            $order->original_amount = $orderDetails['source_amount'];
+            $order->original_price = $orderDetails['source_amount'];
             $order->save();
 
             // 写入基础数据表
@@ -1578,7 +1578,7 @@ class IndexController extends Controller
                 MAX(CASE WHEN a.field_name='efficiency_deposit' THEN a.field_value ELSE '' END) AS efficiency_deposit,
                 MAX(CASE WHEN a.field_name='user_phone' THEN a.field_value ELSE '' END) AS user_phone,
                 MAX(CASE WHEN a.field_name='user_qq' THEN a.field_value ELSE '' END) AS user_qq,
-                MAX(CASE WHEN a.field_name='source_price' THEN a.field_value ELSE '' END) AS source_price,
+                MAX(CASE WHEN a.field_name='source_amount' THEN a.field_value ELSE '' END) AS source_amount,
                 MAX(CASE WHEN a.field_name='client_name' THEN a.field_value ELSE '' END) AS client_name,
                 MAX(CASE WHEN a.field_name='client_phone' THEN a.field_value ELSE '' END) AS client_phone,
                 MAX(CASE WHEN a.field_name='client_qq' THEN a.field_value ELSE '' END) AS client_qq,
@@ -1701,9 +1701,9 @@ class IndexController extends Controller
             }
             // dd($value, $sourceArr);
             // 如果用户手写了来源价格,谁大就返回谁
-            if (isset($request->source_price) && ! empty($request->source_price) && is_numeric($request->source_price)) {
-                if ($request->source_price > $value) {
-                    return response()->ajax(1, $request->source_price);
+            if (isset($request->source_amount) && ! empty($request->source_amount) && is_numeric($request->source_amount)) {
+                if ($request->source_amount > $value) {
+                    return response()->ajax(1, $request->source_amount);
                 } 
             }
             return response()->ajax(1, $value);

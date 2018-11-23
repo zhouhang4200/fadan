@@ -23,11 +23,11 @@ class CreateGameLevelingOrdersTable extends Migration
             $table->string('platform_trade_no')->default('')->comment('外部接单平台订单号');
             $table->integer('game_id')->unsigned()->comment('游戏ID');
             $table->unsignedTinyInteger('repeat')->default(0)->comment('是否重复下单');
-            $table->decimal('amount', 17, 4)->comment('代练价格');
-            $table->decimal('source_price', 17, 4)->default(0)->comment('来源价格');
-            $table->decimal('security_deposit', 17, 4)->default(0)->comment('安全保证金');
-            $table->decimal('efficiency_deposit', 17, 4)->default(0)->comment('效率保证金');
-            $table->decimal('poundage', 17, 4)->default(0)->comment('手续费');
+            $table->decimal('amount', 17, 2)->comment('代练价格');
+            $table->decimal('source_amount', 17, 2)->default(0)->comment('来源价格');
+            $table->decimal('security_deposit', 17, 2)->default(0)->comment('安全保证金');
+            $table->decimal('efficiency_deposit', 17, 2)->default(0)->comment('效率保证金');
+            $table->decimal('poundage', 17, 2)->default(0)->comment('手续费');
             $table->integer('source')->default(1)->comment('订单来源:默认 1-淘宝');
             $table->integer('user_id')->unsigned()->comment('下单用户ID');
             $table->integer('parent_user_id')->unsigned()->comment('下单用户父ID');
@@ -48,8 +48,8 @@ class CreateGameLevelingOrdersTable extends Migration
             $table->string('buyer_nick')->default('')->comment('买家旺旺');
             $table->string('pre_sale')->default('')->comment('接单客服');
             $table->string('take_order_password', 30)->default('')->comment('接单密码');
-            $table->decimal('price_increase_step', 17, 4)->default(0)->comment('自动加价步长');
-            $table->decimal('price_ceiling', 17, 4)->default(0)->comment('自动加价上限');
+            $table->decimal('price_increase_step', 17, 2)->default(0)->comment('自动加价步长');
+            $table->decimal('price_ceiling', 17, 2)->default(0)->comment('自动加价上限');
             $table->dateTime('take_at')->nullable()->comment('接单时间');
             $table->dateTime('top_at')->nullable()->comment('置顶的时间');
             $table->dateTime('apply_complete_at')->nullable()->comment('申请验收时间');

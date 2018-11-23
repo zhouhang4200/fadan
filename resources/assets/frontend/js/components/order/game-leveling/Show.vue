@@ -118,17 +118,19 @@
                                                             <el-col :span="22">
                                                                 <el-input
                                                                         :disabled="fieldDisabled"
-                                                                        type="input"
+                                                                        type="age"
                                                                         v-model="form.title"
                                                                         autocomplete="off">
-                                                                    <el-tooltip slot="append" placement="top">
-                                                                        <div slot="content">多行信息<br/>第二行信息</div>
-                                                                        <el-button><i class="el-icon-question"></i>
-                                                                        </el-button>
-                                                                    </el-tooltip>
                                                                 </el-input>
                                                             </el-col>
-                                                            <el-col :span="1"></el-col>
+                                                            <el-col :span="1">
+                                                                <el-tooltip placement="top">
+                                                                    <div slot="content">多行信息<br/>第二行信息</div>
+                                                                    <span class="icon-button">
+                                                                        <i class="el-icon-question"></i>
+                                                                    </span>
+                                                                </el-tooltip>
+                                                            </el-col>
                                                         </el-row>
                                                     </el-form-item>
                                                 </el-col>
@@ -152,38 +154,93 @@
                                             </el-row>
                                             <el-row>
                                                 <el-col :span="12">
-                                                    <el-form-item label="代练天/小时" prop="day_hour">
+                                                    <el-form-item label="代练天/小时">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
-                                                                <el-cascader
-                                                                        :disabled="fieldDisabled"
-                                                                        :options="dayHourOptions"
-                                                                        v-model="form.day_hour">
-                                                                </el-cascader>
+                                                                <el-row :gutter="10">
+                                                                    <el-col :span="12">
+                                                                        <el-select
+                                                                                :disabled="fieldDisabled"
+                                                                                v-model="form.day"
+                                                                                filterable
+                                                                                placeholder="请选择">
+                                                                            <el-option
+                                                                                    v-for="item in dayOptions"
+                                                                                    :key="item.value"
+                                                                                    :label="item.label"
+                                                                                    :value="item.value">
+                                                                            </el-option>
+                                                                        </el-select>
+                                                                    </el-col>
+                                                                    <el-col :span="12">
+                                                                        <el-select
+                                                                                :disabled="fieldDisabled"
+                                                                                v-model="form.hour"
+                                                                                filterable
+                                                                                placeholder="请选择">
+                                                                            <el-option
+                                                                                    v-for="item in hourOptions"
+                                                                                    :key="item.value"
+                                                                                    :label="item.label"
+                                                                                    :value="item.value">
+                                                                            </el-option>
+                                                                        </el-select>
+                                                                    </el-col>
+                                                                </el-row>
+
                                                             </el-col>
-                                                            <el-col :span="1" class="icon-button">
-                                                                <i class="el-icon-circle-plus-outline"
-                                                                   @click.prevent="handleAddDayHour()">
-                                                                </i>
+                                                            <el-col :span="1">
+                                                                <span class="icon-button"
+                                                                      v-if="(form.status == 13 || form.status ==  14 || form.status == 17)"
+                                                                      @click.prevent="addTimeDialogVisible = true">
+                                                                     <i class="el-icon-circle-plus-outline"></i>
+                                                                </span>
                                                             </el-col>
                                                         </el-row>
                                                     </el-form-item>
+
                                                 </el-col>
                                                 <el-col :span="12">
+
                                                     <el-form-item label="代练要求模版">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-select
                                                                         :disabled="fieldDisabled"
-                                                                        v-model="form"
+                                                                        @change="handleGameLevelingRequirementIdChange"
+                                                                        v-model="form.gameLevelingRequirementId"
                                                                         placeholder="请选择">
+                                                                    <el-option
+                                                                            v-for="item in gameLevelingRequirementOptions"
+                                                                            :key="item.id"
+                                                                            :label="item.name"
+                                                                            :value="item.id">
+                                                                    </el-option>
                                                                 </el-select>
                                                             </el-col>
-                                                            <el-col :span="1" class="icon-button">
-                                                                <i class="el-icon-circle-plus-outline"></i>
+                                                            <el-col :span="1">
+                                                                <span class="icon-button"
+                                                                      @click="handleGameLevelingRequirementVisible({visible:true})">
+                                                                    <i class="el-icon-circle-plus"></i>
+                                                                </span>
                                                             </el-col>
                                                         </el-row>
                                                     </el-form-item>
+
+                                                    <!--<el-form-item label="代练要求模版">-->
+                                                    <!--<el-row :gutter="10">-->
+                                                    <!--<el-col :span="22">-->
+                                                    <!--<el-select-->
+                                                    <!--:disabled="fieldDisabled"-->
+                                                    <!--v-model="form"-->
+                                                    <!--placeholder="请选择">-->
+                                                    <!--</el-select>-->
+                                                    <!--</el-col>-->
+                                                    <!--<el-col :span="1" class="icon-button">-->
+                                                    <!--<i class="el-icon-circle-plus-outline"></i>-->
+                                                    <!--</el-col>-->
+                                                    <!--</el-row>-->
+                                                    <!--</el-form-item>-->
                                                 </el-col>
                                             </el-row>
                                             <el-row>
@@ -233,7 +290,8 @@
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1" class="icon-button">
-                                                                <i class="el-icon-circle-plus-outline"
+                                                                <i class="el-icon-circle-plus"
+                                                                   v-if="(form.status == 13 || form.status ==  14 || form.status == 17)"
                                                                    @click.prevent="handleAddAmount()">
                                                                 </i>
                                                             </el-col>
@@ -311,16 +369,27 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
 
-                                                                <el-input
+                                                                <el-select
                                                                         :disabled="fieldDisabled"
-                                                                        type="input"
-                                                                        placeholder="请输入内容"
-                                                                        v-model="form.user_qq">
-                                                                </el-input>
+                                                                        v-model="form.user_qq"
+                                                                        placeholder="请选择">
+                                                                    <el-option
+                                                                            v-for="item in businessmanQQOptions"
+                                                                            :key="item.id"
+                                                                            :label="item.name + '-' + item.content"
+                                                                            :value="item.content">
+                                                                    </el-option>
+                                                                </el-select>
                                                             </el-col>
-                                                            <el-col :span="1"></el-col>
+                                                            <el-col :span="1">
+                                                               <span class="icon-button"
+                                                                     @click="handleBusinessmanQQVisible({visible:true})">
+                                                                    <i class="el-icon-circle-plus"></i>
+                                                                </span>
+                                                            </el-col>
                                                         </el-row>
                                                     </el-form-item>
+
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -363,42 +432,42 @@
                                             <el-row>
                                                 <el-col :span="12">
 
-                                                    <el-form-item label="补款单号" prop="take_order_password">
+                                                    <!--<el-form-item label="补款单号" prop="take_order_password">-->
 
-                                                        <el-row :gutter="10">
-                                                            <el-col :span="22">
-                                                                <el-input
-                                                                        type="input"
-                                                                        v-model="form.take_order_password"
-                                                                        autocomplete="off">
-                                                                </el-input>
-                                                            </el-col>
-                                                            <el-col :span="1" class="icon-button">
-                                                                <i class="el-icon-circle-plus-outline"
-                                                                   @click.prevent="addDomain(domain)">
-                                                                </i>
-                                                            </el-col>
-                                                        </el-row>
+                                                    <!--<el-row :gutter="10">-->
+                                                    <!--<el-col :span="22">-->
+                                                    <!--<el-input-->
+                                                    <!--type="input"-->
+                                                    <!--v-model="form.take_order_password"-->
+                                                    <!--autocomplete="off">-->
+                                                    <!--</el-input>-->
+                                                    <!--</el-col>-->
+                                                    <!--<el-col :span="1" class="icon-button">-->
+                                                    <!--<i class="el-icon-circle-plus-outline"-->
+                                                    <!--@click.prevent="addDomain(domain)">-->
+                                                    <!--</i>-->
+                                                    <!--</el-col>-->
+                                                    <!--</el-row>-->
 
-                                                    </el-form-item>
+                                                    <!--</el-form-item>-->
 
-                                                    <el-form-item
-                                                            v-for="(domain, index) in form.domains"
-                                                            :label="'补款单号' + (index +1)"
-                                                            :key="domain.key"
-                                                            :prop="'domains.' + index + '.value'"
-                                                            :rules="{required: true, message: '补款单号不能为空', trigger: 'blur'}">
-                                                        <el-row :gutter="10">
-                                                            <el-col :span="22">
-                                                                <el-input v-model="domain.value"></el-input>
-                                                            </el-col>
-                                                            <el-col :span="1" class="icon-button">
-                                                                <i class="el-icon-remove-outline"
-                                                                   @click.prevent="removeDomain(domain)">
-                                                                </i>
-                                                            </el-col>
-                                                        </el-row>
-                                                    </el-form-item>
+                                                    <!--<el-form-item-->
+                                                    <!--v-for="(domain, index) in form.domains"-->
+                                                    <!--:label="'补款单号' + (index +1)"-->
+                                                    <!--:key="domain.key"-->
+                                                    <!--:prop="'domains.' + index + '.value'"-->
+                                                    <!--:rules="{required: true, message: '补款单号不能为空', trigger: 'blur'}">-->
+                                                    <!--<el-row :gutter="10">-->
+                                                    <!--<el-col :span="22">-->
+                                                    <!--<el-input v-model="domain.value"></el-input>-->
+                                                    <!--</el-col>-->
+                                                    <!--<el-col :span="1" class="icon-button">-->
+                                                    <!--<i class="el-icon-remove-outline"-->
+                                                    <!--@click.prevent="removeDomain(domain)">-->
+                                                    <!--</i>-->
+                                                    <!--</el-col>-->
+                                                    <!--</el-row>-->
+                                                    <!--</el-form-item>-->
                                                 </el-col>
                                                 <el-col :span="12">
 
@@ -428,6 +497,7 @@
                                     </el-card>
 
                                 </el-tab-pane>
+
                                 <el-tab-pane label="仲裁证据" name="2">
 
                                     <el-table
@@ -634,6 +704,7 @@
                 </el-col>
             </el-row>
         </div>
+
         <div class="footer" v-if="displayFooter">
             <el-row>
                 <el-col :span="16">
@@ -748,6 +819,7 @@
                 </el-col>
             </el-row>
         </div>
+
         <div id="chat">
             <el-dialog
                     title="订单留言"
@@ -783,7 +855,10 @@
                     title="订单投诉"
                     :before-close="handleBusinessmanComplainVisible"
                     :visible=businessmanComplainVisible>
-                <el-form :model="businessmanComplainForm" ref="businessmanComplainForm" label-width="110px"
+                <el-form
+                        :model="businessmanComplainForm"
+                         ref="businessmanComplainForm"
+                         label-width="110px"
                          class="demo-ruleForm">
                     <el-form-item label="证据截图"
                                   prop="images"
@@ -847,32 +922,69 @@
                       :efficiencyDeposit="efficiencyDeposit"
                       @handleApplyConsultVisible="handleApplyConsultVisible">
         </ApplyConsult>
+
+        <GameLevelingRequirement v-if="gameLevelingRequirementVisible"
+                                 @handleGameLevelingRequirementVisible="handleGameLevelingRequirementVisible">
+        </GameLevelingRequirement>
+
+        <BusinessmanQQ v-if="businessmanQQVisible"
+                       @handleBusinessmanQQVisible="handleBusinessmanQQVisible">
+        </BusinessmanQQ>
+
+        <el-dialog
+
+                top="35vh"
+                custom-class="add-time-dialog"
+                title="增加代练时间"
+                :visible.sync="addTimeDialogVisible">
+
+            <el-form ref="addTimeForm" :rules="addTimeFormRules" :model="addTimeForm" label-width="80px">
+                <el-form-item
+                        prop="day"
+                        label="天">
+                    <el-input v-model.number="addTimeForm.day"></el-input>
+                </el-form-item>
+
+                <el-form-item
+                        prop="hour"
+                        label="小时">
+                    <el-input v-model.number="addTimeForm.hour"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button @click="addTimeDialogVisible = false">取消</el-button>
+                    <el-button type="primary" @click="handleAddDayHour">确认</el-button>
+                </el-form-item>
+
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 
 <script>
     import ApplyComplain from './ApplyComplain';
     import ApplyConsult from './ApplyConsult';
+    import GameLevelingRequirement from './GameLevelingRequirement';
+    import BusinessmanQQ from './BusinessmanQQ';
 
     export default {
         name: "GameLevelingShow",
         components: {
             ApplyComplain,
             ApplyConsult,
+            GameLevelingRequirement,
+            BusinessmanQQ,
         },
-        props: [
-            'tradeNo',
-        ],
         computed: {
             fieldDisabled() {
-                if (this.form.status == 1 || this.form.status == 22) {
+                if (this.form.status === 1 || this.form.status === 22) {
                     return false;
                 } else {
                     return true;
                 }
             },
             displayFooter() {
-                if (this.orderTab == "1") {
+                if (this.orderTab === "1") {
                     return true;
                 } else {
                     return false;
@@ -881,19 +993,26 @@
             // 商户投诉图片上传数量限制 3 张
             businessmanComplainImageExceedLimit() {
                 return [
-                    this.businessmanComplainForm.images.length == 3 ? 'exceed' : ' '
+                    this.businessmanComplainForm.images.length === 3 ? 'exceed' : ' '
                 ];
             },
             // 仲裁证据补充图片上传数量限制 1 张
             complainMessageImageExceedLimit() {
                 return [
-                    this.complainMessageForm.pic != '' ? 'exceed' : ' '
+                    this.complainMessageForm.pic !== '' ? 'exceed' : ' '
                 ];
             },
 
         },
         data() {
             return {
+                tradeNo: this.$route.query.trade_no,
+                gameLevelingRequirementVisible: false,
+                gameLevelingRequirementOptions: [],
+                businessmanQQVisible: false,
+                businessmanQQOptions: [],
+                dayOptions: [],
+                hourOptions: [],
                 fileReader: '',
                 amount: 0,
                 securityDeposit: 0,
@@ -907,8 +1026,37 @@
                 gameRegionServerOptions: [], // 游戏/区/服 选项
                 dayHourOptions: [],  // 天数/小时  选项
                 gameLevelingTypeOptions: [], // 游戏代练类型 选项
-                addDay: 0, // 增加的天数
-                addHour: 0, // 增加的小时
+                addTimeForm: {
+                    day: 0, // 增加的天数
+                    hour: 0, // 增加的小时
+                },
+                addTimeFormRules: {
+                    day: [
+                        {validator: (rule, value, callback) => {
+                                if (this.addTimeForm.day === "" && this.addTimeForm.hour === "") {
+                                    callback(new Error("加价天数与小时不能都为空"));
+                                } else if ((/^[1-9][0-9]*$/).test(value) == false && value != 0) {
+                                    callback(new Error("加价小时不能为小数"));
+                                } else {
+                                    callback();
+                                }
+                            }, trigger: ['change', 'blur']},
+                    ],
+                    hour: [
+                        {validator: (rule, value, callback) => {
+                                if (this.addTimeForm.day === 0 && this.addTimeForm.hour === 0) {
+                                    callback(new Error("加价天数与小时不能都为0"));
+                                } else if (this.addTimeForm.day === "" && this.addTimeForm.hour === "") {
+                                    callback(new Error("加价天数与小时不能都为空"));
+                                } else if ((/^[1-9][0-9]*$/).test(value) == false && value != 0) {
+                                    callback(new Error("加价小时不能为小数"));
+                                } else {
+                                    callback();
+                                }
+                            }, trigger: ['change', 'blur']},
+                    ],
+                },
+                addTimeDialogVisible: false,
                 chatData: [],
                 businessmanComplainForm: {
                     trade_no: this.tradeNo,
@@ -957,6 +1105,9 @@
                     user_qq: '', // 商户qq
                     domains: [],
                     remark: '',
+                    day: 0,
+                    hour: 1,
+                    gameLevelingRequirementId: '',
                 },
                 rules: {
                     game_leveling_type_id: [
@@ -991,20 +1142,13 @@
                         {required: true, message: '请输入代练价格', trigger: 'change'}
                     ],
                     source_amount: [
-                        {
-                            validator: (rule, value, callback) => {
-                                if (value != "" && value != undefined) {
-                                    if ((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false) {
-                                        callback(new Error("加价幅度必须为数字值"));
-                                    } else {
-                                        callback();
-                                    }
+                        { validator: (rule, value, callback) => {
+                                if ((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false) {
+                                    callback(new Error("来源价格必须为数字值"));
                                 } else {
                                     callback();
                                 }
-                            },
-                            trigger: 'blur'
-                        },
+                            }, trigger: 'blur'},
                     ],
                     efficiency_deposit: [
                         {required: true, message: '请输入效率保证金', trigger: 'change'}
@@ -1081,11 +1225,27 @@
             };
         },
         methods: {
+            // 设置添加代练要求模版是否显示
+            handleGameLevelingRequirementVisible(data) {
+                this.gameLevelingRequirementVisible = data.visible;
+                if (data.visible == false) {
+
+                }
+            },
+            // 设置添加商户QQ是否显示
+            handleBusinessmanQQVisible(data) {
+                this.businessmanQQVisible = data.visible;
+                if (data.visible == false) {
+
+                }
+            },
             handleFromStatus() {
                 return (this.form.status == 1 || this.form.status == 22) ? false : false;
             },
             handleFromData() {
                 this.$api.gameLevelingOrderEdit({trade_no: this.tradeNo}).then(res => {
+                    this.status = res.status;
+                    this.trade_no = res.trade_no;
                     this.amount = res.amount;
                     this.securityDeposit = res.security_deposit;
                     this.efficiencyDeposit = res.efficiency_deposit;
@@ -1243,7 +1403,6 @@
                             value: res.taobao_data.created,
                         }
                     ];
-
                 }).catch(err => {
                 });
             },
@@ -1260,6 +1419,7 @@
                     this.gameLevelingTypeOptions = res.data;
                 }).catch(err => {
                 });
+                this.handleAutoChoseTemplate();
             },
             handleSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -1267,9 +1427,8 @@
                         this.form.game_id = this.form.game_region_server[0];
                         this.form.game_region_id = this.form.game_region_server[1];
                         this.form.game_server_id = this.form.game_region_server[2];
-                        this.form.day = this.form.day_hour[0];
-                        this.form.hour = this.form.day_hour[1];
-                        axios.post(this.orderUpdateApi, this.form).then(res => {
+
+                        this.$api.gameLevelingOrderUpdate(this.form).then(res => {
                             this.$message({
                                 'type': res.status == 1 ? 'success' : 'error',
                                 'message': res.message,
@@ -1313,50 +1472,27 @@
             },
             // 增加天数与小时
             handleAddDayHour() {
-                const h = this.$createElement;
-                const currentThis = this;
-                this.$msgbox({
-                    title: '选择增加的天数与小时',
-                    message: h('div', null, [
-                        h('el-cascader', {
-                            props: {
-                                options: this.dayHourOptions,
-                            },
-                            on: {
-                                'change'(addDayHour) {
-                                    currentThis.addDay = addDayHour[0];
-                                    currentThis.addHour = addDayHour[1];
-                                }
-                            }
-                        }, ''),
-                    ]),
-                    showCancelButton: true,
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    beforeClose: (action, instance, done) => {
-                        if (action == 'confirm') {
-                            // 发送加天与小时请求
-                            this.$api.gameLevelingOrderAddDayHour({
-                                trade_no: this.form.trade_no,
-                                day: this.addDay,
-                                hour: this.addHour
-                            }).then(res => {
-                                this.$message({
-                                    'type': res.status == 1 ? 'success' : 'error',
-                                    'message': res.message,
-                                });
-                                if (res.status == 1) {
-                                    done();
-                                }
-                            }).catch(err => {
-                                this.$message({
-                                    'type': 'error',
-                                    'message': '加时失败，服务器错误！',
-                                });
+                this.$refs.addTimeForm.validate((valid) => {
+                    if (valid) {
+                        // 发送加天与小时请求
+                        this.$api.gameLevelingOrderAddDayHour({
+                            trade_no: this.form.trade_no,
+                            day: this.addDay,
+                            hour: this.addHour
+                        }).then(res => {
+                            this.$message({
+                                'type': res.status == 1 ? 'success' : 'error',
+                                'message': res.message,
                             });
-                        } else {
-                            done();
-                        }
+                            if (res.status == 1) {
+                                this.addTimeDialogVisible = false;
+                            }
+                        }).catch(err => {
+                            this.$message({
+                                'type': 'error',
+                                'message': '加时失败，服务器错误！',
+                            });
+                        });
                     }
                 });
             },
@@ -1748,11 +1884,11 @@
             handleUploadPreview(file) {
                 const h = this.$createElement;
                 this.$msgbox({
-                    message: h('img', {attrs:{src:file.url}}),
+                    message: h('img', {attrs: {src: file.url}}),
                     showCancelButton: false,
                     cancelButtonText: false,
                     showConfirmButton: false,
-                    customClass:'preview-image'
+                    customClass: 'preview-image'
                 });
             },
             // 仲裁证据补充图片删除
@@ -1843,36 +1979,96 @@
                 let index = this.businessmanComplainForm.images.indexOf(file.response);
                 this.businessmanComplainForm.images.splice(index, 1);
             },
-            // 初始化天数与小时
-            handleDayHour() {
+            handleDayOption() {
                 for (let i = 0; i <= 90; i++) {
-                    let day = [];
-                    for (let i = 0; i <= 24; i++) {
-                        day.push({
-                            value: i,
-                            label: i + '小时',
-                        })
-                    }
-                    this.dayHourOptions.push({
+                    this.dayOptions.push({
                         value: i,
                         label: i + '天',
-                        children: day,
                     })
                 }
-            }
+            },
+            handleHourOption() {
+                for (let i = 0; i <= 24; i++) {
+                    this.hourOptions.push({
+                        value: i,
+                        label: i + '小时',
+                    })
+                }
+            },
+            // 商户QQ选项
+            businessmanQQOption() {
+                this.$api.businessmanContactTemplate().then(res => {
+                    this.businessmanQQOptions = res.data;
+                });
+            },
+            // 游戏代练要求选项
+            gameLevelingRequirementOption() {
+                this.$api.gameLevelingRequirementTemplate().then(res => {
+                    this.gameLevelingRequirementOptions = res.data;
+                });
+            },
+            handleAutoChoseTemplate() {
+                let vm = this;
+                this.businessmanQQOptions.forEach(function (item) {
+                    if (item.game_id === 0 && item.status === 1) {
+                        vm.form.user_qq = item.content;
+                    }
+                    if (item.game_id === vm.form.game_region_server[0]) {
+                        vm.form.user_qq = item.content;
+                    }
+                    if (item.game_id === vm.form.game_region_server[0] && item.status === 1) {
+                        vm.form.user_qq = item.content;
+                    }
+                });
+                this.gameLevelingRequirementOptions.forEach(function (item) {
+
+                    if (item.game_id === 0 && item.status === 1) {
+                        vm.form.gameLevelingRequirementId = item.id;
+                    }
+                    if (item.game_id === vm.form.game_region_server[0]) {
+                        vm.form.gameLevelingRequirementId = item.id;
+                    }
+                    if (item.game_id === vm.form.game_region_server[0] && item.status === 1) {
+                        vm.form.gameLevelingRequirementId = item.id;
+                    }
+                });
+                this.handleGameLevelingRequirementIdChange();
+            },
+            handleGameLevelingRequirementIdChange() {
+                let vm = this;
+                this.gameLevelingRequirementOptions.forEach(function (item) {
+                    if (item.id === vm.form.gameLevelingRequirementId) {
+                        vm.form.requirement = item.content;
+                        return false;
+                    }
+                });
+            },
         },
         created() {
-            this.handleFromGameRegionServerOptions();
-            this.handleFromData();
-            this.handleDayHour();
+
         },
         mounted() {
+            this.businessmanQQOption();
+            this.gameLevelingRequirementOption();
+            this.handleFromData();
+            this.handleFromGameRegionServerOptions();
+            this.handleDayOption();
+            this.handleHourOption();
             this.fileReader = new FileReader()
         }
     }
 </script>
 
 <style lang="less">
+    .add-time-dialog {
+        border-radius: 4px;
+        width: 420px;
+    }
+    .add-time-dialog .el-dialog__body {
+        padding: 10px 20px 5px;
+        text-align: right;
+    }
+
     .img-box {
         width: auto;
         padding: 0;

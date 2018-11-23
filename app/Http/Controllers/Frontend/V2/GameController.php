@@ -18,7 +18,9 @@ class GameController extends Controller
      */
     public function index()
     {
-        return Game::get(['id', 'name']);
+        $games = Game::select(['id', 'name'])->get();
+
+        return response()->json(['status' => 1, 'message' => 'success', 'data' => $games]);
     }
 
     /*
@@ -40,6 +42,6 @@ class GameController extends Controller
         // 替换游戏区关联关系名称
         $lastData = str_replace("game_servers", "children", $replaceRegionNameAfter);
 
-        return $lastData;
+        return response()->json(['status' => 1, 'message' => 'success', 'data' => json_decode($lastData)]);
     }
 }

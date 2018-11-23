@@ -18,6 +18,7 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-cascader
+                                                                        :filterable=true
                                                                         @change="handleFromGameLevelingTypeIdOptions"
                                                                         :options="gameRegionServerOptions"
                                                                         v-model="form.game_region_server">
@@ -89,14 +90,18 @@
                                                     <el-form-item label="代练标题" prop="title">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
-                                                                    <el-input type="age" v-model="form.title" autocomplete="off">
-
+                                                                    <el-input
+                                                                            type="age"
+                                                                            v-model="form.title"
+                                                                            autocomplete="off">
                                                                     </el-input>
                                                                 </el-col>
                                                             <el-col :span="1">
                                                                 <el-tooltip  placement="top">
                                                                     <div slot="content">多行信息<br/>第二行信息</div>
-                                                                    <i class="el-icon-question"></i>
+                                                                    <span class="icon-button">
+                                                                        <i class="el-icon-question" ></i>
+                                                                    </span>
                                                                 </el-tooltip>
                                                             </el-col>
                                                         </el-row>
@@ -119,12 +124,38 @@
                                                     <el-form-item label="代练天/小时" prop="day_hour">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
-                                                                <el-cascader
-                                                                        :options="dayHourOptions"
-                                                                        v-model="form.day_hour">
-                                                                </el-cascader>
+                                                                <el-row :gutter="10">
+                                                                    <el-col :span="12">
+                                                                        <el-select
+                                                                                v-model="form.day"
+                                                                                filterable
+                                                                                placeholder="请选择">
+                                                                            <el-option
+                                                                                    v-for="item in dayOptions"
+                                                                                    :key="item.value"
+                                                                                    :label="item.label"
+                                                                                    :value="item.value">
+                                                                            </el-option>
+                                                                        </el-select>
+                                                                    </el-col>
+                                                                    <el-col :span="12">
+                                                                        <el-select
+                                                                                v-model="form.hour"
+                                                                                filterable
+                                                                                placeholder="请选择">
+                                                                            <el-option
+                                                                                    v-for="item in hourOptions"
+                                                                                    :key="item.value"
+                                                                                    :label="item.label"
+                                                                                    :value="item.value">
+                                                                            </el-option>
+                                                                        </el-select>
+                                                                    </el-col>
+                                                                </el-row>
+
                                                             </el-col>
-                                                            <el-col :span="1"></el-col>
+                                                            <el-col :span="1">
+                                                            </el-col>
                                                         </el-row>
                                                     </el-form-item>
                                                 </el-col>
@@ -132,16 +163,23 @@
                                                     <el-form-item label="代练要求模版">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
-                                                                <el-select v-model="form" placeholder="请选择">
-                                                                    <!--<el-option-->
-                                                                    <!--v-for="item in options"-->
-                                                                    <!--:key="item.value"-->
-                                                                    <!--:label="item.label"-->
-                                                                    <!--:value="item.value">-->
-                                                                    <!--</el-option>-->
+                                                                <el-select
+                                                                        @change="handleGameLevelingRequirementIdChange"
+                                                                        v-model="form.gameLevelingRequirementId"
+                                                                        placeholder="请选择">
+                                                                    <el-option
+                                                                            v-for="item in gameLevelingRequirementOptions"
+                                                                            :key="item.id"
+                                                                            :label="item.name"
+                                                                            :value="item.id">
+                                                                    </el-option>
                                                                 </el-select>
                                                             </el-col>
-                                                            <el-col :span="1"></el-col>
+                                                            <el-col :span="1">
+                                                                <span class="icon-button" @click="handleGameLevelingRequirementVisible({visible:true})">
+                                                                    <i class="el-icon-circle-plus" ></i>
+                                                                </span>
+                                                            </el-col>
                                                         </el-row>
                                                     </el-form-item>
                                                 </el-col>
@@ -156,6 +194,7 @@
                                                                         :rows="3"
                                                                         placeholder="请输入内容"
                                                                         v-model="form.explain">
+                                                                    <el-button slot="append" icon="el-icon-search"></el-button>
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -258,21 +297,23 @@
                                                     <el-form-item label="商户QQ" prop="user_qq">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
-                                                                <el-input
-                                                                        type="input"
-                                                                        placeholder="请输入内容"
-                                                                        v-model="form.user_qq">
-                                                                </el-input>
-                                                                <!---->
-                                                                <!--<el-autocomplete-->
-                                                                <!--class="inline-input"-->
-                                                                <!--v-model="form.user_qq"-->
-                                                                <!--:fetch-suggestions="handleUserQQOptions"-->
-                                                                <!--placeholder="请输入内容"-->
-                                                                <!--@select="handleSelect"-->
-                                                                <!--&gt;</el-autocomplete>-->
+                                                                <el-select
+                                                                        @change="handleBusinessmanQQIdChange"
+                                                                        v-model="form.businessmanQQId"
+                                                                        placeholder="请选择">
+                                                                    <el-option
+                                                                            v-for="item in businessmanQQOptions"
+                                                                            :key="item.id"
+                                                                            :label="item.name + '-' + item.content"
+                                                                            :value="item.id">
+                                                                    </el-option>
+                                                                </el-select>
                                                             </el-col>
-                                                            <el-col :span="1"></el-col>
+                                                            <el-col :span="1">
+                                                               <span class="icon-button" @click="handleBusinessmanQQVisible({visible:true})">
+                                                                    <i class="el-icon-circle-plus" ></i>
+                                                                </span>
+                                                            </el-col>
                                                         </el-row>
                                                     </el-form-item>
                                                 </el-col>
@@ -311,47 +352,47 @@
                                                     </el-form-item>
                                                 </el-col>
                                             </el-row>
-                                            <el-row>
-                                                <el-col :span="12">
+                                            <!--<el-row>-->
+                                                <!--<el-col :span="12">-->
 
-                                                    <el-form-item label="补款单号"  prop="take_order_password">
-                                                        <el-row :gutter="10">
-                                                            <el-col :span="22">
-                                                                <el-input
-                                                                        type="input"
-                                                                        v-model="form.take_order_password"
-                                                                        autocomplete="off">
-                                                                </el-input>
-                                                            </el-col>
-                                                            <el-col :span="1">
-                                                                <i class="el-icon-circle-plus-outline"
-                                                                   @click.prevent="addDomain(domain)">
-                                                                </i>
-                                                            </el-col>
-                                                        </el-row>
-                                                    </el-form-item>
+                                                    <!--<el-form-item label="补款单号"  prop="take_order_password">-->
+                                                        <!--<el-row :gutter="10">-->
+                                                            <!--<el-col :span="22">-->
+                                                                <!--<el-input-->
+                                                                        <!--type="input"-->
+                                                                        <!--v-model="form.take_order_password"-->
+                                                                        <!--autocomplete="off">-->
+                                                                <!--</el-input>-->
+                                                            <!--</el-col>-->
+                                                            <!--<el-col :span="1">-->
+                                                                <!--<i class="el-icon-circle-plus"-->
+                                                                   <!--@click.prevent="addDomain(domain)">-->
+                                                                <!--</i>-->
+                                                            <!--</el-col>-->
+                                                        <!--</el-row>-->
+                                                    <!--</el-form-item>-->
 
-                                                    <el-form-item
-                                                            v-for="(domain, index) in form.domains"
-                                                            :label="'补款单号' + (index +1)"
-                                                            :key="domain.key"
-                                                            :prop="'domains.' + index + '.value'"
-                                                            :rules="{required: true, message: '补款单号不能为空', trigger: 'blur'}">
-                                                        <el-row :gutter="10">
-                                                            <el-col :span="22">
-                                                                <el-input v-model="domain.value">
-                                                                    <el-button  slot="append" @click.prevent="removeDomain(domain)">删除</el-button>
-                                                                </el-input>
-                                                            </el-col>
-                                                            <el-col :span="1"></el-col>
-                                                        </el-row>
+                                                    <!--<el-form-item-->
+                                                            <!--v-for="(domain, index) in form.domains"-->
+                                                            <!--:label="'补款单号' + (index +1)"-->
+                                                            <!--:key="domain.key"-->
+                                                            <!--:prop="'domains.' + index + '.value'"-->
+                                                            <!--:rules="{required: true, message: '补款单号不能为空', trigger: 'blur'}">-->
+                                                        <!--<el-row :gutter="10">-->
+                                                            <!--<el-col :span="22">-->
+                                                                <!--<el-input v-model="domain.value">-->
+                                                                    <!--<el-button  slot="append" @click.prevent="removeDomain(domain)">删除</el-button>-->
+                                                                <!--</el-input>-->
+                                                            <!--</el-col>-->
+                                                            <!--<el-col :span="1"></el-col>-->
+                                                        <!--</el-row>-->
 
-                                                    </el-form-item>
-                                                </el-col>
-                                                <el-col :span="12">
+                                                    <!--</el-form-item>-->
+                                                <!--</el-col>-->
+                                                <!--<el-col :span="12">-->
 
-                                                </el-col>
-                                            </el-row>
+                                                <!--</el-col>-->
+                                            <!--</el-row>-->
                                             <el-row>
                                                 <el-col :span="12">
                                                     <el-form-item label="客服备注">
@@ -416,6 +457,7 @@
                 </el-col>
             </el-row>
         </div>
+
         <div class="footer">
             <el-row>
                 <el-col :span="16">
@@ -425,23 +467,45 @@
                 </el-col>
             </el-row>
         </div>
+
+        <GameLevelingRequirement v-if="gameLevelingRequirementVisible"
+                       @handleGameLevelingRequirementVisible="handleGameLevelingRequirementVisible">
+        </GameLevelingRequirement>
+
+        <BusinessmanQQ v-if="businessmanQQVisible"
+                       @handleBusinessmanQQVisible="handleBusinessmanQQVisible">
+        </BusinessmanQQ>
     </div>
 </template>
 
 <script>
+    import GameLevelingRequirement from './GameLevelingRequirement';
+    import BusinessmanQQ from './BusinessmanQQ';
     export default {
         name: "GameLevelingCreate",
+        components: {
+            GameLevelingRequirement,
+            BusinessmanQQ,
+        },
         props:[
             'tid',
         ],
         data() {
             return {
+                gameLevelingRequirementVisible:false,
+                gameLevelingRequirementOptions:[],
+                businessmanQQVisible:false,
+                businessmanQQOptions:[],
                 gameRegionServerOptions: [], // 游戏/区/服 选项
                 dayHourOptions: [],
+                dayOptions:[],
+                hourOptions:[],
                 gameLevelingTypeOptions:[], // 游戏代练类型 选项
                 form: {
                     game_region_server: [], // 选择的 游戏/区/服
                     day_hour:[], // 选择的代练天/小时
+                    day:0, // 选择的代练天/小时
+                    hour:1, // 选择的代练天/小时
                     game_id: 0, // 游戏ID
                     game_region_id: 0, // 游戏区ID
                     game_server_id: 0, // 游戏服务器ID
@@ -463,6 +527,8 @@
                     user_qq:'', // 商家QQ
                     domains: [],
                     remark: '',
+                    gameLevelingRequirementId:'',
+                    businessmanQQId:'',
                 },
                 rules: {
                     game_leveling_type_id:[
@@ -482,8 +548,21 @@
                         { min: 3, max: 35, message: '长度在 3 到 35 个字符', trigger: 'blur' }
                     ],
                     day_hour:[
-                        {type: 'array', required: true, message: '请选择代练天/小时',  trigger: 'change'},
+                        // {type: 'array', required: true, message: '请选择代练天/小时',  trigger: 'change'},
+                        {
+                            validator:(rule, value, callback)=>{
+                                if(this.form.day == 0 && this.form.hour == 0){
+                                    callback(new Error("代练天数与小时不能都为0"));
+                                }else{
+                                    callback();
+                                }
+                            },
+                            trigger:'change'
+                        },
                     ],
+                    // day_hour:[
+                    //     {type: 'array', required: true, message: '请选择代练天/小时',  trigger: 'change'},
+                    // ],
                     game_region_server:[
                         {type: 'array', required: true, message: '请选择游戏/区/服', trigger: 'change' },
                     ],
@@ -565,9 +644,23 @@
             };
         },
         methods: {
+            // 设置添加代练要求模版是否显示
+            handleGameLevelingRequirementVisible(data) {
+                this.gameLevelingRequirementVisible = data.visible;
+                if (data.visible == false) {
+
+                }
+            },
+            // 设置添加商户QQ是否显示
+            handleBusinessmanQQVisible(data) {
+                this.businessmanQQVisible = data.visible;
+                if (data.visible == false) {
+
+                }
+            },
             handleFromGameRegionServerOptions() {
                 this.$api.gameRegionServer().then(res => {
-                    this.gameRegionServerOptions = res;
+                    this.gameRegionServerOptions = res.data;
                 }).catch(err => {
                 });
             },
@@ -575,12 +668,11 @@
                 this.$api.gameLevelingTypes({
                     'game_id' : this.form.game_region_server[2]
                 }).then(res => {
-                    this.gameLevelingTypeOptions = res;
+                    this.gameLevelingTypeOptions = res.data;
                 }).catch(err => {
                 });
-            },
-            handleUserQQOptions() {
 
+                this.handleAutoChoseTemplate();
             },
             handleSubmitForm(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -588,8 +680,6 @@
                         this.form.game_id = this.form.game_region_server[0];
                         this.form.game_region_id = this.form.game_region_server[1];
                         this.form.game_server_id = this.form.game_region_server[2];
-                        this.form.day = this.form.day_hour[0];
-                        this.form.hour = this.form.day_hour[1];
                         this.$api.gameLevelingOrderCreate(this.form).then(res => {
                             this.$message({
                                 'type': res.status == 1 ? 'success' : 'error',
@@ -683,27 +773,89 @@
                     
                 });
             },
-            handleDayHour() {
-                for(let i = 0; i<=90; i++) {
-                    let day = [];
-                    for (let i = 0; i<=24; i++) {
-                        day.push({
-                            value:i,
-                            label:i + '小时',
-                        })
-                    }
-                    this.dayHourOptions.push({
+            handleDayOption() {
+                for (let i = 0; i<=90; i++) {
+                    this.dayOptions.push({
                         value:i,
                         label:i + '天',
-                        children:day,
                     })
                 }
+            },
+            handleHourOption() {
+                for (let i = 0; i<=24; i++) {
+                    this.hourOptions.push({
+                        value:i,
+                        label:i + '小时',
+                    })
+                }
+            },
+            // 商户QQ选项
+            businessmanQQOption() {
+                this.$api.businessmanContactTemplate().then(res => {
+                    this.businessmanQQOptions = res.data;
+                });
+            },
+            // 游戏代练要求选项
+            gameLevelingRequirementOption() {
+                this.$api.gameLevelingRequirementTemplate().then(res => {
+                    this.gameLevelingRequirementOptions = res.data;
+                });
+            },
+            handleAutoChoseTemplate() {
+                let vm = this;
+                this.businessmanQQOptions.forEach(function (item) {
+                    if (item.game_id === 0 && item.status === 1) {
+                        vm.form.businessmanQQId = item.id;
+                    }
+                    if (item.game_id === vm.form.game_region_server[0]) {
+                        vm.form.businessmanQQId = item.id;
+                    }
+                    if (item.game_id === vm.form.game_region_server[0] && item.status === 1) {
+                        vm.form.businessmanQQId = item.id;
+                    }
+                });
+                this.gameLevelingRequirementOptions.forEach(function (item) {
+
+                    if (item.game_id === 0 && item.status === 1) {
+                        vm.form.gameLevelingRequirementId = item.id;
+                    }
+                    if (item.game_id === vm.form.game_region_server[0]) {
+                        vm.form.gameLevelingRequirementId = item.id;
+                    }
+                    if (item.game_id === vm.form.game_region_server[0] && item.status === 1) {
+                        vm.form.gameLevelingRequirementId = item.id;
+                    }
+                });
+                this.handleGameLevelingRequirementIdChange();
+                this.handleBusinessmanQQIdChange();
+            },
+            handleGameLevelingRequirementIdChange() {
+                let vm = this;
+                this.gameLevelingRequirementOptions.forEach(function (item) {
+                    if (item.id === vm.form.gameLevelingRequirementId) {
+
+                        vm.form.requirement = item.content;
+                        return false;
+                    }
+                });
+            },
+            handleBusinessmanQQIdChange() {
+                let vm = this;
+                this.businessmanQQOptions.forEach(function (item) {
+                    if (item.id === vm.form.businessmanQQId) {
+                        vm.form.user_qq = item.content;
+                        return false;
+                    }
+                });
             }
         },
         created() {
             this.handleFromGameRegionServerOptions();
             this.handelTaobaoData();
-            this.handleDayHour();
+            this.handleDayOption();
+            this.handleHourOption();
+            this.businessmanQQOption();
+            this.gameLevelingRequirementOption();
         },
     }
 </script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
+use App\Http\Resources\GameLevelingOrderCollection;
 use DB;
 use Auth;
 use Exception;
@@ -31,15 +32,77 @@ class IndexController extends Controller
      */
     public function index()
     {
-        return GameLevelingOrder::filter(array_merge([
+        $orders =  GameLevelingOrder::filter(array_merge([
             'parent_user_id' => request()->user()->getPrimaryUserId()
         ], request()->all()))
+            ->select(
+                'trade_no',
+                'parent_user_id',
+                'take_parent_user_id',
+                'channel_order_trade_no',
+                'channel_order_status',
+                'status',
+                'title',
+                'game_role',
+                'game_account',
+                'game_password',
+                'seller_nick',
+                'buyer_nick',
+                'amount',
+                'source_amount',
+                'security_deposit',
+                'efficiency_deposit',
+                'created_at',
+                'take_at',
+                'day',
+                'hour'
+            )
             ->with([
-                'gameLevelingOrderDetail',
-                'gameLevelingOrderComplain',
-                'gameLevelingOrderConsult'])
+                'gameLevelingOrderDetail' => function($query) {
+                    $query->select(
+                        'game_leveling_order_trade_no',
+                        'game_name',
+                        'game_server_name',
+                        'game_region_name',
+                        'game_leveling_type_name',
+                        'hatchet_man_phone',
+                        'hatchet_man_qq',
+                        'player_qq',
+                        'player_phone',
+                        'user_remark',
+                        'username'
+                    );
+                },
+                'gameLevelingOrderComplain' => function($query) {
+                    $query->select(
+                        'game_leveling_order_trade_no',
+                        'status',
+                        'initiator'
+                    );
+                },
+                'gameLevelingOrderConsult' => function($query) {
+                    $query->select(
+                        'game_leveling_order_trade_no',
+                        'status',
+                        'initiator'
+                    );
+                }])
             ->orderBy('id', 'desc')
             ->paginate(20);
+
+        $responseData['total'] = $orders->total();
+        foreach ($orders as $item) {
+            $item->pay_amount = $item->payAmount();
+            $item->get_amount = $item->getAmount();
+            $item->left_time = $item->leftTime();
+            $item->get_amount = $item->getAmount();
+            $item->get_poundage = $item->getPoundage();
+            $item->profit = ($item->get_amount  - $item->pay_amount  - $item->get_poundage) + 0;
+            $item->remark_edit = false;
+            $responseData['items'][] = $item;
+        }
+
+        return response()->json(['status' => 1, 'message' => 'success', 'data' => $responseData]);
     }
 
     /**
@@ -52,6 +115,7 @@ class IndexController extends Controller
             ->groupBy('status')
             ->pluck('quantity', 'status')
             ->toArray();
+
     }
 
     /**
@@ -160,14 +224,17 @@ class IndexController extends Controller
                 return response()->ajax(0, '更新成功!');
             }
         } catch (\Exception $exception) {
-            myLog('modify-order-error', ['message' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getLine()]);
             return response()->ajax(0, '更新失败服务器异常');
         }
+        # 更新日志
+//        GameLevelingOrderLog::createOrderHistory($order,
+//            1,
+//            "用户[{$order->user_id}]从[".config('order.source')[$order->source]."]渠道创建了订单");
+
         DB::commit();
 
         return response()->ajax(1, '更新成功');
     }
-
 
     /**
      * 订单操作日志
@@ -984,5 +1051,17 @@ class IndexController extends Controller
         DB::commit();
 
         return response()->ajax(1, '修改成功!');
+    }
+
+    /**
+     * 发单用户备注
+     */
+    public function updateUserRemark()
+    {
+        $order = GameLevelingOrder::where('trade_no', request('trade_no'))
+            ->where('parent_user_id', request()->user()->getPrimaryUserId())
+            ->first();
+        $order->gameLevelingOrderDetail->user_remark = request('user_remark');
+        $order->gameLevelingOrderDetail->save();
     }
 }

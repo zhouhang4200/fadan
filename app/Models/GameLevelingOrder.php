@@ -92,21 +92,33 @@ class GameLevelingOrder extends Model
         return $this->gameLevelingOrderPreviousStatuses()->latest('id')->value('status');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
     public function userAmountFlows()
     {
         return $this->morphMany(UserAmountFlow::class, 'flowable');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
     public function platformAmountFlows()
     {
         return $this->morphMany(PlatformAmountFlow::class, 'flowable');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function gameLevelingOrderConsult()
     {
         return $this->hasOne(GameLevelingOrderConsult::class, 'game_leveling_order_trade_no', 'trade_no');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function gameLevelingOrderComplain()
     {
         return $this->hasOne(GameLevelingOrderComplain::class, 'game_leveling_order_trade_no', 'trade_no');
@@ -151,6 +163,8 @@ class GameLevelingOrder extends Model
                     $taobaoTrade->save();
                     $taobaoStatus = 1;
                 }
+            } else {
+                $sourcePrice = $data['source_amount'];
             }
 
             /*****创建订单*******/
@@ -167,7 +181,7 @@ class GameLevelingOrder extends Model
                 'take_user_id' => 0,
                 'take_parent_user_id' => 0,
                 'amount' => $data['amount'],
-                'source_price' => $sourcePrice,
+                'source_amount' => $sourcePrice,
                 'security_deposit' => $data['security_deposit'],
                 'efficiency_deposit' => $data['efficiency_deposit'],
                 'source' => $source,
@@ -571,14 +585,14 @@ class GameLevelingOrder extends Model
     public function leftTime()
     {
         // 如果存在接单时间
-        if (isset($this->take_at) && !empty($this->take_at)) {
+        if (!empty($this->take_at)) {
             // 计算到期的时间戳
             $expirationTimestamp = strtotime($this->take_at) + $this->day * 86400 + $this->hour * 3600;
             // 计算剩余时间
             $leftSecond = $expirationTimestamp - time();
-            $leftTime = Sec2Time($leftSecond); // 剩余时间
+            return Sec2Time($leftSecond); // 剩余时间
         } else {
-            $leftTime = '';
+            return '';
         }
     }
 
