@@ -2,6 +2,8 @@
 
 namespace App\Services\GameLevelingPlatform;
 
+use App\Models\GameLevelingOrderComplain;
+use App\Models\GameLevelingOrderConsult;
 use Exception;
 use GuzzleHttp\Client;
 use App\Models\GameLevelingOrder;
@@ -12,6 +14,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 {
     /**
      * 成功状态
+     *
      * @var array
      */
     protected static $status = [
@@ -45,6 +48,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 表单请求
+     *
      * @param $options
      * @param $functionName
      * @param $order
@@ -117,6 +121,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 普通请求
+     *
      * @param $options
      * @param $functionName
      * @param $order
@@ -184,6 +189,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 获取签名
+     *
      * @param $method
      * @param $time
      * @return string
@@ -200,6 +206,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 上架
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -245,6 +252,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 下架
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -287,8 +295,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
+
     /**
      * 申请协商
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -323,6 +333,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 取消协商
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -350,6 +361,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 同意协商
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -374,8 +386,10 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
+
     /**
      * 申请仲裁
+     *
      * @param GameLevelingOrder $order
      * @param $pic
      * @throws GameLevelingOrderOperateException
@@ -412,6 +426,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 取消申诉
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -440,6 +455,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 完成
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -469,6 +485,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 锁定
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -497,6 +514,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 取消锁定
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -525,6 +543,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 撤单
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -566,6 +585,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 修改订单
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -622,6 +642,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 加时
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -660,6 +681,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 加款
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -697,6 +719,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 订单详情
+     *
      * @param GameLevelingOrder $order
      * @return bool|mixed
      * @throws GameLevelingOrderOperateException
@@ -733,6 +756,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 获取订单截图
+     *
      * @param GameLevelingOrder $order
      * @return array
      * @throws GameLevelingOrderOperateException
@@ -782,6 +806,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 获取留言
+     *
      * @param GameLevelingOrder $order
      * @return array
      * @throws GameLevelingOrderOperateException
@@ -822,6 +847,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 回复留言
+     *
      * @param GameLevelingOrder $order
      * @param string $message
      * @throws GameLevelingOrderOperateException
@@ -851,6 +877,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 修改账号密码
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -880,6 +907,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 获取仲裁详情
+     *
      * @param GameLevelingOrder $order
      * @return array|string
      * @throws GameLevelingOrderOperateException
@@ -930,6 +958,7 @@ class MaYiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 添加仲裁证据
+     *
      * @param GameLevelingOrder $order
      * @param $pic
      * @param $content

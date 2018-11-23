@@ -14,6 +14,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
 {
     /**
      * 表单发送
+     *
      * @param $options
      * @param $url
      * @param $functionName
@@ -84,6 +85,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
 
     /**
      * 普通请求
+     *
      * @param $options
      * @param $url
      * @param $functionName
@@ -140,13 +142,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             }
             return json_decode($result, true);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '请求', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '请求',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new Exception($e->getMessage());
         }
     }
 
     /**
      * 生成签名
+     *
      * @param array $options
      * @return string
      */
@@ -157,11 +165,12 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
         foreach ($options as $key => $value) {
             $str .= $key . '=' . $value . '&';
         }
-        return md5(rtrim($str,  '&') . config('gameleveling.wanzi.app_secret'));
+        return md5(rtrim($str,'&') . config('gameleveling.wanzi.app_secret'));
     }
 
     /**
      * 上架
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -196,13 +205,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }  catch (Exception $e) {
             static::delete($order);
-            myLog('wanzi-platform-error', ['方法' => '上架', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '上架',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 下架
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -237,13 +252,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             throw new GameLevelingOrderOperateException($e->getMessage());
         }  catch (Exception $e) {
             static::delete($order);
-            myLog('wanzi-platform-error', ['方法' => '下架', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '下架',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 申请协商
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
@@ -269,13 +290,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['applyConsult'], 'applyConsult', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '申请协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '申请协商',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 取消协商
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
@@ -294,13 +321,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['cancelConsult'], 'cancelConsult', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '取消协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '取消协商',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 同意协商
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
@@ -319,13 +352,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             $result = static::normalRequest($options, config('gameleveling.wanzi.url')['agreeConsult'], 'agreeConsult', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '同意协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '同意协商',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 不同意协商
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
@@ -344,13 +383,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['rejectConsult'], 'rejectConsult', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '不同意协商', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '不同意协商',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 申请仲裁
+     *
      * @param GameLevelingOrder $order
      * @param $pic
      * @throws GameLevelingOrderOperateException
@@ -379,13 +424,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::formDataRequest($options, config('gameleveling.wanzi.url')['applyComplain'], 'applyComplain', $order);
         } catch (Exception $e) {
-            myLog('wanzi-local-error', ['方法' => '申请仲裁', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-local-error', [
+                '方法' => '申请仲裁',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 取消仲裁
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
@@ -404,13 +455,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['cancelComplain'], 'cancelComplain', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '取消仲裁', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '取消仲裁',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 完成
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
@@ -429,13 +486,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['complete'], 'complete', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '订单完成', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '订单完成',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 锁定
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
@@ -454,13 +517,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['lock'], 'lock', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '锁定', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '锁定',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 取消锁定
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
@@ -479,13 +548,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['cancelLock'], 'cancelLock', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '取消锁定', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '取消锁定',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 撤单
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -515,13 +590,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
 
             return true;
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '删除订单', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '删除订单',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 修改订单
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -573,13 +654,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
 
             myLog('wanzi-modify-order-result', ['请求参数' => $options, '地址' => config('gameleveling.wanzi.url')['modifyOrder'], '结果' => $result ?? '']);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '修改订单', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '修改订单',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 加时
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -610,13 +697,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['addTime'], 'addTime', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '订单加时', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '订单加时',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 加价
+     *
      * @param GameLevelingOrder $order
      * @return bool
      * @throws GameLevelingOrderOperateException
@@ -645,13 +738,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['addAmount'], 'addAmount', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '订单加款', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '订单加款',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 订单详情
+     *
      * @param GameLevelingOrder $order
      * @return mixed
      * @throws GameLevelingOrderOperateException
@@ -679,13 +778,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             return static::normalRequest($options, config('gameleveling.wanzi.url')['orderInfo'], 'orderInfo', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '订单详情', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '订单详情',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 获取订单截图
+     *
      * @param GameLevelingOrder $order
      * @return array
      * @throws GameLevelingOrderOperateException
@@ -719,13 +824,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
                 return [];
             }
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '获取订单完成截图', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '获取订单完成截图',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 获取留言
+     *
      * @param GameLevelingOrder $order
      * @return array|string
      * @throws GameLevelingOrderOperateException
@@ -767,13 +878,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             }
             return '';
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '订单获取留言', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '订单获取留言',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 回复留言
+     *
      * @param GameLevelingOrder $order
      * @param $message
      * @throws GameLevelingOrderOperateException
@@ -794,13 +911,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['replyMessage'], 'replyMessage', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '订单获取留言', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '订单获取留言',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 修改账号密码
+     *
      * @param GameLevelingOrder $order
      * @throws GameLevelingOrderOperateException
      * * @throws \GuzzleHttp\Exception\GuzzleException
@@ -822,17 +945,23 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['modifyGamePassword'], 'modifyGamePassword', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '订单获取留言', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '订单获取留言',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 置顶
-     * @param $orderDatas
+     *
+     * @param $order
      * @return bool
      * @throws GameLevelingOrderOperateException
-     * * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function setTop($order)
     {
@@ -856,13 +985,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             static::normalRequest($options, config('gameleveling.wanzi.url')['setTop'], 'setTop', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '订单置顶', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '订单置顶',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 获取仲裁详情
+     *
      * @param GameLevelingOrder $order
      * @return array
      * @throws GameLevelingOrderOperateException
@@ -918,13 +1053,19 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             }
             return $arr;
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '获取仲裁详情', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '获取仲裁详情',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
 
     /**
      * 增加仲裁证据
+     *
      * @param GameLevelingOrder $order
      * @param $pic
      * @param $content
@@ -949,7 +1090,12 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
             // 发送
             return static::formDataRequest($options, config('gameleveling.wanzi.url')['addComplainDetail'], 'addComplainDetail', $order);
         } catch (Exception $e) {
-            myLog('wanzi-platform-error', ['方法' => '添加仲裁证据', '原因' => $e->getMessage(), $e->getFile(), $e->getLine()]);
+            myLog('wanzi-platform-error', [
+                '方法' => '添加仲裁证据',
+                '原因' => $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ]);
             throw new GameLevelingOrderOperateException($e->getMessage());
         }
     }
