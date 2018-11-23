@@ -14,12 +14,12 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                     <el-form-item label="店铺名称">
                         <el-input v-model="searchParams.seller_nick"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                     <el-form-item label="接单平台">
                         <el-input v-model="searchParams.platform_id"></el-input>
                     </el-form-item>

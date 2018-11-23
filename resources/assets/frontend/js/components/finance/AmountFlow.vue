@@ -28,7 +28,7 @@
                         </el-select>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                     <el-form-item label="天猫单号">
                         <el-input v-model="searchParams.channel_order_trade_no"></el-input>
                     </el-form-item>

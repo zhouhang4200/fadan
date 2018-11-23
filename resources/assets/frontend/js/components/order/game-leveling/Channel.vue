@@ -2,12 +2,12 @@
     <div class="main content amount-flow">
         <el-form :inline="true" :model="searchParams" class="search-form-inline" size="small">
             <el-row :gutter="16">
-                <el-col :span="5">
+                <el-col :span="6">
                     <el-form-item label="订单编号">
                         <el-input v-model="searchParams.trade_no"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                     <el-form-item label="绑定游戏">
                         <el-select v-model="searchParams.game_name" placeholder="请选择">
                             <el-option v-for="value, key in games" :value="value" :key="key" :label="value">{{value}}</el-option>
