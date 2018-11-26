@@ -24,7 +24,7 @@ class OperationDistributeController extends Controller
     {
         parent::__construct();
 
-        if ($order = GameLevelingOrder::where('trade_no', request('order_no'))->first()) {
+        if ($order = GameLevelingOrder::where('trade_no', request('no'))->first()) {
             $this->type = 'new';
         } else {
             $this->type = 'old';
@@ -173,6 +173,7 @@ class OperationDistributeController extends Controller
     // 回传
     public function callback()
     {
+        myLog('new', [$this->type]);
         if ($this->type == 'new') {
             return (new GameLevelingOrderOperateController())->callback(request());
         } else {
