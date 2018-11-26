@@ -227,20 +227,6 @@
                                                         </el-row>
                                                     </el-form-item>
 
-                                                    <!--<el-form-item label="代练要求模版">-->
-                                                    <!--<el-row :gutter="10">-->
-                                                    <!--<el-col :span="22">-->
-                                                    <!--<el-select-->
-                                                    <!--:disabled="fieldDisabled"-->
-                                                    <!--v-model="form"-->
-                                                    <!--placeholder="请选择">-->
-                                                    <!--</el-select>-->
-                                                    <!--</el-col>-->
-                                                    <!--<el-col :span="1" class="icon-button">-->
-                                                    <!--<i class="el-icon-circle-plus-outline"></i>-->
-                                                    <!--</el-col>-->
-                                                    <!--</el-row>-->
-                                                    <!--</el-form-item>-->
                                                 </el-col>
                                             </el-row>
                                             <el-row>
@@ -521,7 +507,8 @@
                                         </el-table-column>
                                     </el-table>
                                     <p></p>
-                                    <el-row :gutter="12" v-if="complainDesData.length">
+                                    <el-row :gutter="12"
+                                            v-if="complainDesData.length">
                                         <el-col :span="8">
                                             <el-card
                                                     v-if="complainDesData[0].pic1"
@@ -650,7 +637,9 @@
                                        @click="handleOpenChat">
                                 订单留言
                             </el-button>
-                            <el-button type="primary" icon="el-icon-search"
+                            <el-button @click="handleApplyCompleteImage"
+                                       type="primary" 
+                                       icon="el-icon-search"
                                        style="position: absolute; right: 125px; top:15px">查看图片
                             </el-button>
                         </div>
@@ -709,8 +698,8 @@
             <el-row>
                 <el-col :span="16">
                     <div style="text-align: center;line-height: 60px;">
-
-                        <el-button v-if="(form.status == 1 || form.status == 22)"
+                        <!--v-if="(form.status == 1 || form.status == 22)"-->
+                        <el-button
                                    type="primary"
                                    @click="handleSubmitForm('form')"
                                    style="margin-right: 8px">确认修改
@@ -805,10 +794,13 @@
 
                         <!-- 19, 20, 21, 22, 23, 24 -->
                         <span v-if="([19, 20, 21, 23, 24].indexOf(form.status)) != -1">
-                            <el-button
-                                    size="small"
-                                    type="primary"
-                                    @click="handleRepeatOrder()">重发</el-button>
+                            <router-link :to="{name:'gameLevelingOrderRepeat', query:{trade_no:$route.query.trade_no}}">
+                                <el-button
+                                        size="small"
+                                        type="primary"
+                                        >
+                                    重发</el-button>
+                             </router-link>
                              <el-button
                                      size="small"
                                      type="primary"
@@ -1059,7 +1051,7 @@
                 addTimeDialogVisible: false,
                 chatData: [],
                 businessmanComplainForm: {
-                    trade_no: this.tradeNo,
+                    trade_no: this.$route.query.trade_no,
                     images: [],
                     amount: '',
                     reason: '',
@@ -1067,18 +1059,18 @@
                     dialogImageUrl: '',
                 },
                 complainMessageForm: {
-                    trade_no: this.tradeNo,
+                    trade_no: this.$route.query.trade_no,
                     reason: '',
                     pic: '',
                     dialogVisible: false,
                     dialogImageUrl: '',
                 },
                 chatForm: {
-                    trade_no: this.tradeNo,
+                    trade_no: this.$route.query.trade_no,
                     content: '',
                 },
                 form: {
-                    trade_no: this.tradeNo,
+                    trade_no: this.$route.query.trade_no,
                     status: 0,
                     game_leveling_order_consult: [],
                     game_leveling_order_complain: [],
@@ -1243,8 +1235,7 @@
                 return (this.form.status == 1 || this.form.status == 22) ? false : false;
             },
             handleFromData() {
-                this.$api.gameLevelingOrderEdit({trade_no: this.tradeNo}).then(res => {
-                    this.status = res.status;
+                this.$api.gameLevelingOrderEdit({trade_no: this.$route.query.trade_no}).then(res => {
                     this.trade_no = res.trade_no;
                     this.amount = res.amount;
                     this.securityDeposit = res.security_deposit;
@@ -1502,8 +1493,8 @@
                 }
                 // 订单操作日志
                 if (tab.name == 3) {
-                    this.$api.gameLevelingOrderLog({trade_no: this.tradeNo}).then(res => {
-                        this.logData = res.data;
+                    this.$api.gameLevelingOrderLog({trade_no: this.$route.query.trade_no}).then(res => {
+                        this.logData = res;
                     });
                 }
             },
@@ -1601,7 +1592,7 @@
             },
             // 申请仲裁
             handleApplyComplain(row) {
-                this.tradeNo = this.form.trade_no;
+                this.$route.query.trade_no = this.form.trade_no;
                 this.applyComplainVisible = true;
             },
             // 取消仲裁
@@ -1632,44 +1623,81 @@
             },
             // 查看图片
             handleApplyCompleteImage() {
-                const h = this.$createElement;
-                const currentThis = this;
-                this.$msgbox({
-                    title: '查看验收图片',
-                    message: h('el-carousel', {
-                        // props: {
-                        //     options:this.dayHourOptions,
-                        // },
-                    }, '<h3>3</h3>'),
-                    showCancelButton: true,
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    beforeClose: (action, instance, done) => {
-                        if (action == 'confirm') {
-                            // 发送加天与小时请求
-                            this.$api.gameLevelingOrderAddDayHour({
-                                trade_no: this.form.trade_no,
-                                day: this.addDay,
-                                hour: this.addHour
-                            }).then(res => {
-                                this.$message({
-                                    'type': res.status == 1 ? 'success' : 'error',
-                                    'message': res.message,
-                                });
-                                if (res.status == 1) {
-                                    done();
-                                }
-                            }).catch(err => {
-                                this.$message({
-                                    'type': 'error',
-                                    'message': '加时失败，服务器错误！',
-                                });
-                            });
-                        } else {
-                            done();
-                        }
+                // 请求图片
+                this.$api.gameLevelingOrderApplyCompleteImage({
+                    'trade_no': this.form.trade_no
+                }).then(res => {
+                    if (res.status == 1) {
+                        const h = this.$createElement;
+                        let item = [];
+                        res.content.forEach(function (val) {
+                            item.push(h('el-carousel-item', null, [
+                                h('img', {
+                                    attrs: {
+                                        src: val['url']
+                                    }
+                                }, '')
+                            ]))
+                        });
+
+                        this.$msgbox({
+                            title: '查看验收图片',
+                            message: h('el-carousel', null, item),
+                            showCancelButton: true,
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                        });
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: res.message
+                        });
                     }
+                }).catch(err => {
+                    this.$message({
+                        type: 'error',
+                        message: '操作失败'
+                    });
                 });
+
+                // const h = this.$createElement;
+                // const currentThis = this;
+                // this.$msgbox({
+                //     title: '查看验收图片',
+                //     message: h('el-carousel', {
+                //         // props: {
+                //         //     options:this.dayHourOptions,
+                //         // },
+                //     }, '<h3>3</h3>'),
+                //     showCancelButton: true,
+                //     confirmButtonText: '确定',
+                //     cancelButtonText: '取消',
+                //     beforeClose: (action, instance, done) => {
+                //         if (action == 'confirm') {
+                //             // 发送加天与小时请求
+                //             this.$api.gameLevelingOrderAddDayHour({
+                //                 trade_no: this.form.trade_no,
+                //                 day: this.addDay,
+                //                 hour: this.addHour
+                //             }).then(res => {
+                //                 this.$message({
+                //                     'type': res.status == 1 ? 'success' : 'error',
+                //                     'message': res.message,
+                //                 });
+                //                 if (res.status == 1) {
+                //                     done();
+                //                 }
+                //             }).catch(err => {
+                //                 this.$message({
+                //                     'type': 'error',
+                //                     'message': '加时失败，服务器错误！',
+                //                 });
+                //             });
+                //         } else {
+                //             done();
+                //         }
+                //     }
+                // });
             },
             // 完成验收
             handleComplete(row) {
@@ -1699,7 +1727,7 @@
             },
             // 申请撤销
             handleApplyConsult(row) {
-                this.tradeNo = this.form.trade_no;
+                this.$route.query.trade_no = this.form.trade_no;
                 this.amount = this.amount;
                 this.securityDeposit = this.securityDeposit;
                 this.efficiencyDeposit = this.efficiencyDeposit;
@@ -1851,7 +1879,7 @@
             },
             // 重新下单
             handleRepeatOrder() {
-                location.href = this.orderRepeatApi + '/' + this.tradeNo;
+                location.href = this.orderRepeatApi + '/' + this.$route.query.trade_no;
             },
             // 查看图片大图
             handleOpenImage(src) {
@@ -1865,9 +1893,11 @@
             },
             // 获取仲裁数据
             handleComplainData() {
-                this.$api.gameLevelingOrderComplainInfo({trade_no: this.tradeNo}).then(res => {
-                    this.complainDesData = [res.detail];
-                    this.complainMessageData = res.info;
+                this.$api.gameLevelingOrderComplainInfo({trade_no: this.$route.query.trade_no}).then(res => {
+                    if (res.content.length > 0) {
+                        this.complainDesData = [res.content.detail];
+                        this.complainMessageData = res.content.info;
+                    }
                 });
             },
             // 添加仲裁留言

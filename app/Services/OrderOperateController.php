@@ -1261,6 +1261,7 @@ class OrderOperateController
                     }
                     throw new GameLevelingOrderOperateException("您的账号余额不足!");
                 } else {
+                    myLog('ex', [$exception->getFile(), $exception->getMessage(), $exception->getLine()]);
                     throw new GameLevelingOrderOperateException("发单流水扣除异常!");
                 }
             }

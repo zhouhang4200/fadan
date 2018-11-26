@@ -53,7 +53,7 @@ export default {
     },
     // 游戏代练订单 发送消息
     gameLevelingOrderSendMessage(params) {
-        return post('/v2/order/game-leveling/status-quantity', params);
+        return post('/v2/order/game-leveling/send-message', params);
     },
     // 游戏代练订单 上架
     gameLevelingOrderOnSale(params) {

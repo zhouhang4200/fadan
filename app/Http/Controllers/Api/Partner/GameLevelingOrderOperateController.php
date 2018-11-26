@@ -119,7 +119,7 @@ class GameLevelingOrderOperateController
                 throw new GameLevelingOrderOperateException("订单不存在!");
             }
 
-//            // 询用查询接口
+            // 询用查询接口
             $queryResult = call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['orderInfo']], [$order]);
 
             // 同步价格

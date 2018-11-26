@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Partner;
 
 use App\Http\Controllers\Controller;
 use App\Models\GameLevelingOrder;
+use App\Models\GameLevelingPlatform;
 use App\Repositories\Frontend\OrderRepository;
 
 /**
@@ -24,7 +25,7 @@ class OperationDistributeController extends Controller
     {
         parent::__construct();
 
-        if ($order = GameLevelingOrder::where('trade_no', request('no'))->first()) {
+        if ($order = GameLevelingPlatform::where('platform_trade_no', request('order_no'))->first()) {
             $this->type = 'new';
         } else {
             $this->type = 'old';

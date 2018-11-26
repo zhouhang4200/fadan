@@ -37,7 +37,6 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 Route::post('channel/game', 'ChannelController@game')->name('order.channel.game');
                 Route::post('channel/status', 'ChannelController@status')->name('order.channel.status');
                 Route::post('channel/refund', 'ChannelController@refund')->name('order.channel.refund');
-                // 获取订单
                 # 获取订单
                 Route::post('/', 'IndexController@index')->name('order.game-leveling');
                 # 订单状态数量
@@ -93,7 +92,7 @@ Route::prefix('v2')->namespace('Frontend\V2')->group(function () {
                 # 客服仲裁
                 Route::post('arbitration', 'IndexController@arbitration')->name('order.game-leveling.arbitration');
                 # 申请验收图片
-                Route::post('apply-complete-image?', 'IndexController@applyCompleteImage')->name('order.game-leveling.apply-complete-image');
+                Route::post('apply-complete-image', 'IndexController@applyCompleteImage')->name('order.game-leveling.apply-complete-image');
                 # 订单操作日志
                 Route::post('log', 'IndexController@log')->name('order.game-leveling.log');
                 # 仲裁信息

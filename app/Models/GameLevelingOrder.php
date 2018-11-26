@@ -565,7 +565,7 @@ class GameLevelingOrder extends Model
      * 获取撤销发起人
      * @return int 0 不存在撤销 1 撤销发起人为 发单方
      */
-    public function getConsultInitiator()
+    public function getConsultinitiator()
     {
         return (int) optional($this->gameLevelingOrderConsult)->initiator;
     }
@@ -574,7 +574,7 @@ class GameLevelingOrder extends Model
      * 获取仲裁发起人
      * @return int 0 不存在仲裁 1 仲裁发起人为 发单方
      */
-    public function getComplainInitiator()
+    public function getComplaininitiator()
     {
         return (int) optional($this->gameLevelingOrderComplain)->initiator;
     }
@@ -625,14 +625,14 @@ class GameLevelingOrder extends Model
             if ($this->gameLevelingOrderConsult->initiator == 1) { // 如果发起人为发单方
 
                 // 当前用户父Id 等于撤销发起人
-                if ($this->gameLevelingOrderConsult->parent_user_id == request()->user()->parent_id) {
-                    return sprintf("您发起撤销, <br/> 你支付代练费用 %.2f 元, 对方支付保证金 %.2f, <br/> 原因: %s",
+                if ($this->gameLevelingOrderConsult->parent_user_id == request()->user()->getPrimaryUserId()) {
+                    return sprintf("您发起撤销, <br/> 您支付代练费用 %.2f 元, 对方支付保证金 %.2f, <br/> 原因: %s",
                         $this->gameLevelingOrderConsult->amount,
                         bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
                         $this->gameLevelingOrderConsult->reason
                     );
                 } else {
-                    return sprintf("对方发起撤销, <br/> 对方支付代练费用 %.2f 元, 你方支付保证金 %.2f, <br/> 原因: %s",
+                    return sprintf("对方发起撤销, <br/> 对方支付代练费用 %.2f 元, 您方支付保证金 %.2f, <br/> 原因: %s",
                         $this->gameLevelingOrderConsult->amount,
                         bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
                         $this->gameLevelingOrderConsult->reason
@@ -640,8 +640,8 @@ class GameLevelingOrder extends Model
                 }
             } else if ($this->gameLevelingOrderConsult->initiator == 2) {  // 如果发起人为接单方
 
-                if ($this->gameLevelingOrderConsult->parent_user_id == request()->user()->parent_id) {
-                    return sprintf("您发起撤销, <br/> 对方支付代练费用 %.2f 元, 你支付保证金 %.2f, <br/> 原因: %s",
+                if ($this->gameLevelingOrderConsult->parent_user_id == request()->user()->getPrimaryUserId()) {
+                    return sprintf("您发起撤销, <br/> 对方支付代练费用 %.2f 元, 您支付保证金 %.2f, <br/> 原因: %s",
                         $this->gameLevelingOrderConsult->amount,
                         bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
                         $this->gameLevelingOrderConsult->reason
@@ -668,8 +668,8 @@ class GameLevelingOrder extends Model
     {
         if (! is_null($this->gameLevelingOrderComplain) && $this->gameLevelingOrderComplain->status != 3) {
             // 当前用户父Id 等于仲裁发起人
-            if ($this->gameLevelingOrderComplain->parent_user_id == request()->user()->parent_id) {
-                return sprintf("你发起仲裁 <br/> 原因: %s",
+            if ($this->gameLevelingOrderComplain->parent_user_id == request()->user()->getPrimaryUserId()) {
+                return sprintf("您发起仲裁 <br/> 原因: %s",
                     $this->gameLevelingOrderComplain->reason
                 );
             } else {
@@ -693,30 +693,30 @@ class GameLevelingOrder extends Model
             if ($this->gameLevelingOrderComplain->initiator == 1) { // 如果发起人为发单方
 
                 // 当前用户父Id 等于仲裁发起人
-                if ($this->gameLevelingOrderComplain->parent_user_id == request()->user()->parent_id) {
-                    return sprintf("客服进行了【仲裁】  <br/> 你支付代练费用 %.2f 元, 对方支付保证金 %.2f <br/> 仲裁说明： %s",
+                if ($this->gameLevelingOrderComplain->parent_user_id == request()->user()->getPrimaryUserId()) {
+                    return sprintf("客服进行了【仲裁】  <br/> 您支付代练费用 %.2f 元, 对方支付保证金 %.2f <br/> 仲裁说明： %s",
                         $this->gameLevelingOrderComplain->amount,
                         bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit),
                         $this->gameLevelingOrderComplain->reason
                     );
                 } else {
 
-                    return sprintf("客服进行了【仲裁】  <br/> 你支付代练费用 %.2f 元, 对方支付保证金 %.2f <br/> 仲裁说明： %s",
+                    return sprintf("客服进行了【仲裁】  <br/> 您支付代练费用 %.2f 元, 对方支付保证金 %.2f <br/> 仲裁说明： %s",
                         $this->gameLevelingOrderComplain->amount,
                         bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit),
                         $this->gameLevelingOrderComplain->reason
                     );
                 }
             } else if ($this->gameLevelingOrderComplain->initiator == 2) {  // 如果发起人为接单方
-                // 客服进行了【仲裁】【你（对方）支出代练费1.0元，对方（你）支出保证金0.0元。仲裁说明：经查证，双方协商退单，已判定】
-                if ($this->gameLevelingOrderComplain->parent_user_id == request()->user()->parent_id) {
-                    return sprintf("客服进行了【仲裁】 <br/> 对方支付代练费用 %.2f 元, 你支付保证金 %.2f <br/> 仲裁说明： %s",
+                // 客服进行了【仲裁】【您（对方）支出代练费1.0元，对方（您）支出保证金0.0元。仲裁说明：经查证，双方协商退单，已判定】
+                if ($this->gameLevelingOrderComplain->parent_user_id == request()->user()->getPrimaryUserId()) {
+                    return sprintf("客服进行了【仲裁】 <br/> 对方支付代练费用 %.2f 元, 您支付保证金 %.2f <br/> 仲裁说明： %s",
                         $this->gameLevelingOrderComplain->amount,
                         bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit),
                         $this->gameLevelingOrderComplain->reason
                     );
                 } else {
-                    return sprintf("客服进行了【仲裁】 <br/> 你支付代练费用 %.2f 元, 对方支付保证金 %.2f <br/> 仲裁说明： %s",
+                    return sprintf("客服进行了【仲裁】 <br/> 您支付代练费用 %.2f 元, 对方支付保证金 %.2f <br/> 仲裁说明： %s",
                         $this->gameLevelingOrderComplain->amount,
                         bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit),
                         $this->gameLevelingOrderComplain->reason

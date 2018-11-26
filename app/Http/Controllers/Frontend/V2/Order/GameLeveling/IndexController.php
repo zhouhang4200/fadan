@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
-use App\Http\Resources\GameLevelingOrderCollection;
 use DB;
 use Auth;
 use Exception;
@@ -41,6 +40,8 @@ class IndexController extends Controller
                 'take_parent_user_id',
                 'channel_order_trade_no',
                 'channel_order_status',
+                'platform_trade_no',
+                'platform_id',
                 'status',
                 'title',
                 'game_role',
@@ -115,7 +116,6 @@ class IndexController extends Controller
             ->groupBy('status')
             ->pluck('quantity', 'status')
             ->toArray();
-
     }
 
     /**
@@ -245,7 +245,7 @@ class IndexController extends Controller
         return GameLevelingOrderLog::where([
             'game_leveling_order_trade_no' => request('trade_no'),
             'parent_user_id' => request()->user()->getPrimaryUserId(),
-        ])->orderBy('id', 'desc')->get();
+        ])->get();
     }
 
     /**
@@ -720,7 +720,7 @@ class IndexController extends Controller
         DB::beginTransaction();
         try {
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['getScreenShot']], [$order]);
+                $images = call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['getScreenShot']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }
@@ -732,13 +732,7 @@ class IndexController extends Controller
             return response()->ajax(0, '订单异常！');
         }
         DB::commit();
-        return response()->ajax(1, '操作成功!');
-//        获取到图片返回数组
-//        return response()->ajax(1, '获取成功', [
-//            ['img' => 'http://tm.test/frontend/v2/images/logo.png'],
-//            ['img' => 'http://tm.test/frontend/v2/images/logo.png'],
-//            ['img' => 'http://baidu.com'],
-//        ]);
+        return response()->ajax(1, '操作成功!', $images);
     }
 
     /**

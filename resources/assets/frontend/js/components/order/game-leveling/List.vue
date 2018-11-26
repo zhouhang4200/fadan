@@ -197,11 +197,11 @@
                     fixed
                     prop="trade_no"
                     label="订单号"
-                    width="230">
+                    width="240">
                 <template slot-scope="scope">
                     <router-link :to="{name:'gameLevelingOrderShow', query:{trade_no:scope.row.trade_no}}">
-                        <div style="margin-left: 10px"> 淘宝：{{ scope.row.trade_no }}</div>
-                        <div style="margin-left: 10px">渠道：{{ scope.row.channel_order_trade_no }}</div>
+                        <div style="margin-left: 10px">淘宝：{{ scope.row.trade_no }}</div>
+                        <div style="margin-left: 10px">{{ platformMap[scope.row.platform_id] }}：{{ scope.row.platform_trade_no }}</div>
                     </router-link>
                 </template>
             </el-table-column>
@@ -281,7 +281,7 @@
             <el-table-column
                     prop="zip"
                     label="发单/接单时间"
-                    width="135">
+                    width="140">
                 <template slot-scope="scope">
                     <div>{{ scope.row.created_at }}</div>
                     <div>{{ scope.row.take_at }}</div>
@@ -302,7 +302,7 @@
             </el-table-column>
             <el-table-column
                     prop="zip"
-                    label="打手QQ电话"
+                    label="打手QQ/电话"
                     width="120">
                 <template slot-scope="scope">
                     <div>{{ scope.row.game_leveling_order_detail.hatchet_man_phone }}</div>
@@ -507,6 +507,12 @@
                     {key: 1, value: '91代练'},
                     {key: 3, value: '蚂蚁代练'},
                 ],
+                platformMap: {
+                    5: '丸子代练',
+                    1: '91代练',
+                    4: 'DD373',
+                    3: '蚂蚁代练',
+                },
                 gameLevelingTypeOptions: [],
                 gameOptions: [],
                 search: {
@@ -730,7 +736,7 @@
                             item.push(h('el-carousel-item', null, [
                                 h('img', {
                                     attrs: {
-                                        src: val['img']
+                                        src: val['url']
                                     }
                                 }, '')
                             ]))
