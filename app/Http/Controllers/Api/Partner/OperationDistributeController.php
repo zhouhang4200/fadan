@@ -137,7 +137,7 @@ class OperationDistributeController extends Controller
     public function cancelArbitration()
     {
         if ($this->type == 'new') {
-            return (new GameLevelingOrderOperateController())->cancelComplete(request());
+            return (new GameLevelingOrderOperateController())->cancelComplain(request());
         } else {
             return (new OrderController())->cancelArbitration(request());
         }
@@ -147,6 +147,8 @@ class OperationDistributeController extends Controller
     public function forceArbitration()
     {
         if ($this->type == 'new') {
+            return (new GameLevelingOrderOperateController())->arbitration(request());
+        } else {
             return (new OrderController())->forceArbitration(request());
         }
     }
