@@ -639,31 +639,6 @@ class IndexController extends Controller
         return response()->ajax(1, '操作成功!');
     }
 
-
-    /**
-     * 修改订单
-     * @return mixed
-     */
-    public function modifyOrder()
-    {
-        DB::beginTransaction();
-        try {
-            if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['modifyOrder']], [$order]);
-            } else {
-                throw new GameLevelingOrderOperateException('订单不存在!');
-            }
-        } catch (GameLevelingOrderOperateException $e) {
-            DB::rollback();
-            return response()->ajax(0, $e->getMessage());
-        } catch (Exception $e) {
-            DB::rollback();
-            return response()->ajax(0, '订单异常！');
-        }
-        DB::commit();
-        return response()->ajax(1, '操作成功!');
-    }
-
     /**
      * 加时
      * 增加代练天数/小时 (待验收 已接单 异常:状态可增加时间与天数)
