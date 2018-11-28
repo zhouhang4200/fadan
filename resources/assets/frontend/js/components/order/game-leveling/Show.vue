@@ -760,6 +760,7 @@
                         <span v-if="form.status == 16">
                             <el-button
                                     size="small"
+                                    v-if="(this.form.game_leveling_order_complain.initiator == 1 && this.form.game_leveling_order_complain.status == 1)"
                                     type="primary" @click="handleCancelComplain()">取消仲裁</el-button>
                         </span>
 
