@@ -118,6 +118,7 @@ class FinanceController extends Controller
 
         return UserAmountFlow::filter($filter)->where('user_id', Auth::user()->getPrimaryUserId())
             ->with('order')
+            ->latest('id')
             ->paginate(15);
     }
 
