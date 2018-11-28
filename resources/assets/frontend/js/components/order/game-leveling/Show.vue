@@ -759,6 +759,10 @@
                         <!--仲裁中 16 -->
                         <span v-if="form.status == 16">
                             <el-button
+                                    v-if="(this.form.game_leveling_order_consult && this.form.game_leveling_order_consult.initiator == 2 && this.form.game_leveling_order_consult.status == 1)"
+                                    size="small"
+                                    @click="handleAgreeConsult()">同意撤销</el-button>
+                            <el-button
                                     size="small"
                                     v-if="(this.form.game_leveling_order_complain.initiator == 1 && this.form.game_leveling_order_complain.status == 1)"
                                     type="primary" @click="handleCancelComplain()">取消仲裁</el-button>
