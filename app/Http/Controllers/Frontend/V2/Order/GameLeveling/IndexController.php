@@ -187,6 +187,41 @@ class IndexController extends Controller
             $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                 ->get();
 
+            // 订单日志
+            $historyData = [
+                'order_no' => $order->trade_no,
+                'user_id' => $order->user_id,
+                'admin_user_id' => '',
+                'type' => 1,
+                'name' => '修改',
+                'description' => "用户[{$order->user_id}]修改了订单",
+                'before' => '',
+                'after' => '',
+                'created_at' => Carbon::now()->toDateTimeString(),
+                'creator_primary_user_id' => $order->parent_user_id,
+            ];
+
+            OrderHistory::create($historyData);
+
+            // 是否设置了自动加价
+            GameLevelingOrder::checkAutoMarkUpPrice($order);
+
+            /***存在来源订单号（淘宝主订单号）, 写入关联淘宝订单表***/
+            GameLevelingOrder::changeSameOriginOrderSourcePrice($order, request()->all());
+
+            // 更新基础表数据
+            $orderBasicData = OrderBasicData::where('order_no', $order->trade_no)->first();
+
+            if ($orderBasicData) {
+                $orderBasicData->game_id = $order->game_id;
+                $orderBasicData->game_name = $order->gameLevelingOrderDetail->game_name;
+                $orderBasicData->price = $order->price;
+                $orderBasicData->security_deposit = $order->security_deposit;
+                $orderBasicData->efficiency_deposit = $order->efficiency_deposit;
+                $orderBasicData->original_price = $order->source_price;
+                $orderBasicData->save();
+            }
+
             if ($gameLevelingPlatforms->count() > 0) {
                 // 订单是没有接单情况可修改所有信息 in_array($order->status, [1, 22])
                 if (in_array($order->status, [1, 22])) {
@@ -211,7 +246,7 @@ class IndexController extends Controller
                         DB::rollBack();
                         return response()->ajax(0, '更新失败');
                     }
-                } elseif($order->status == 18) { // 状态锁定 可改密码
+                } elseif ($order->status == 18) { // 状态锁定 可改密码
                     $order->update(request()->only(['game_account', 'game_password']));
                     // 调用更新接口
                     call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['modifyOrder']], [$order]);
@@ -244,55 +279,19 @@ class IndexController extends Controller
                     }
                 } else {
                     DB::rollBack();
-                    return response()->ajax(0, '当前状态不允许更改');
+                    return response()->ajax(0, '当前状态不允许更改!');
                 }
-
-                // 订单日志
-                $historyData = [
-                    'order_no' => $order->trade_no,
-                    'user_id' => $order->user_id,
-                    'admin_user_id' => '',
-                    'type' => 1,
-                    'name' => '修改',
-                    'description' => "用户[{$order->user_id}]修改了订单",
-                    'before' => '',
-                    'after' => '',
-                    'created_at' => Carbon::now()->toDateTimeString(),
-                    'creator_primary_user_id' => $order->parent_user_id,
-                ];
-
-                OrderHistory::create($historyData);
-
-                // 是否设置了自动加价
-                GameLevelingOrder::checkAutoMarkUpPrice($order);
-
-                /***存在来源订单号（淘宝主订单号）, 写入关联淘宝订单表***/
-                GameLevelingOrder::changeSameOriginOrderSourcePrice($order, request()->all());
-
-                // 更新基础表数据
-                $orderBasicData = OrderBasicData::where('order_no', $order->trade_no)->first();
-
-                $orderBasicData->game_id = $order->game_id;
-                $orderBasicData->game_name = $order->gameLevelingOrderDetail->game_name;
-                $orderBasicData->price = $order->price;
-                $orderBasicData->security_deposit = $order->security_deposit;
-                $orderBasicData->efficiency_deposit = $order->efficiency_deposit;
-                $orderBasicData->original_price = $order->source_price;
-                $orderBasicData->save();
             } else {
                 return response()->ajax(0, '更新成功!');
             }
-        } catch (\Exception $exception) {
-            return response()->ajax(0, '更新失败服务器异常');
+        } catch (\Exception $e) {
+            DB::rollback();
+            myLog('order-update-error', [$e->getMessage(), $e->getLine(), $e->getFile()]);
+            return response()->ajax(0, '更新失败服务器异常!');
         }
-        # 更新日志
-//        GameLevelingOrderLog::createOrderHistory($order,
-//            1,
-//            "用户[{$order->user_id}]从[".config('order.source')[$order->source]."]渠道创建了订单");
 
         DB::commit();
-
-        return response()->ajax(1, '更新成功');
+        return response()->ajax(1, '更新成功!');
     }
 
     /**
