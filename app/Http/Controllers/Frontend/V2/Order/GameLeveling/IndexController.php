@@ -246,33 +246,9 @@ class IndexController extends Controller
                         DB::rollBack();
                         return response()->ajax(0, '更新失败');
                     }
-                } elseif ($order->status == 18) { // 状态锁定 可改密码
-                    $order->update(request()->only(['game_account', 'game_password']));
-                    // 调用更新接口
-                    call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['modifyOrder']], [$order]);
-                } elseif (in_array($order->status, [13, 14, 17, 18])) {
-                    // 加价
-                    if ($order->amount < request('game_leveling_amount')) {
-                        $order->amount = request('game_leveling_amount');
-                        $order->save();
-
-                        call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['addAmount']], [$order]);
-                    } elseif ($order->amount > request('game_leveling_amount')) {
-                        return response()->ajax(0, '代练价格只可增加!');
-                    }
-
-                    // 加时
-                    if (request('game_leveling_day') > $order->day || (request('game_leveling_day') == $order->day && request('game_leveling_hour') > $order->hour)) {
-                        $order->day = request('game_leveling_day');
-                        $order->hour = request('game_leveling_hour');
-                        $order->save();
-                    } else {
-                        return response()->ajax(0, '代练时间只可增加!');
-                    }
-
-                    // 修改账号密码
-                    if (request('password') != $order->game_password) {
-                        $order->game_password = request('password');
+                } elseif (in_array($order->status, [13, 14, 17, 18])) { // 状态锁定 可改密码
+                    if (request('game_password') != $order->game_password) {
+                        $order->game_password = request('game_password');
                         $order->save();
 
                         call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['modifyGamePassword']], [$order]);
