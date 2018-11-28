@@ -174,8 +174,7 @@ class OperationDistributeController extends Controller
     // 回传
     public function callback()
     {
-        myLog('new', [$this->type]);
-        if ($this->type == 'new') {
+        if (GameLevelingOrder::where('trade_no', request('no'))->first()) {
             return (new GameLevelingOrderOperateController())->callback(request());
         } else {
             return (new OrderController())->callback(request());

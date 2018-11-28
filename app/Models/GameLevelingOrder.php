@@ -293,7 +293,7 @@ class GameLevelingOrder extends Model
                 'order_password' => $order->take_order_password,
                 'creator_username' => $gameLevelingOrderDetail->username,
             ];
-            $redis->lpush('new-order:send', json_encode($sendOrder));
+           $redis->lpush('new-order:send', json_encode($sendOrder));
         } catch (Exception $e) {
             DB::rollback();
             myLog('place-order-error', ['trade_no' => $order->trade_no ?? '', 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
