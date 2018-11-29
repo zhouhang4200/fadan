@@ -37,7 +37,7 @@ class GameLevelingOrderLog extends Model
             'game_leveling_order_trade_no' => $order->trade_no,
             'user_id' => $user->id,
             'username' => $user->username,
-            'parent_user_id' => $user->parent_id,
+            'parent_user_id' => $user->parent_id == 0 ? $user->id : $user->parent_id,
             'admin_user_id' => $adminUserId ?? 0,
             'type' => $type,
             'name' => config('order.operation_type')[$type],

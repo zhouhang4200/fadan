@@ -190,8 +190,8 @@ class IndexController extends Controller
 
             // 订单日志
             $user = User::find($order->user_id);
-            $description = "用户[{$order->user_id}]修改了订单";
-            GameLevelingOrderLog::createOrderHistory($order, $user, 1, $description);
+            $description = "用户[{$user->username}]修改了订单";
+            GameLevelingOrderLog::createOrderHistory($order, $user, 22, $description);
 
             // 是否设置了自动加价
             GameLevelingOrder::checkAutoMarkUpPrice($order);
