@@ -182,6 +182,9 @@ class IndexController extends Controller
             'parent_user_id' => request()->user()->getPrimaryUserId(),
         ])->lockForUpdate()->first();
 
+        $order->remark = request('remark');
+        $order->save();
+
         try {
             $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                 ->get();
