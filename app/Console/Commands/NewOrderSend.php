@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 
 use App\Events\NewOrderBasicData;
+use App\Models\OrderBasicData;
 use App\Models\OrderSendResult;
 use App\Services\RedisConnect;
 
@@ -170,7 +171,8 @@ class NewOrderSend extends Command
                             }
                         }
                         // 写基础数据
-                        event(new NewOrderBasicData($order));
+//                        event(new NewOrderBasicData($order));
+                        OrderBasicData::createData($order);
                     } else {
                         // 没有查到订单则再次丢入队列
                         $this->redis->lpush('order:send', json_encode($orderData));
