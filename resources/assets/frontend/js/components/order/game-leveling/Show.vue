@@ -1473,8 +1473,8 @@
                         // 发送加天与小时请求
                         this.$api.gameLevelingOrderAddDayHour({
                             trade_no: this.form.trade_no,
-                            day: this.addDay,
-                            hour: this.addHour
+                            day: this.addTimeForm.day,
+                            hour: this.addTimeForm.hour
                         }).then(res => {
                             this.$message({
                                 'type': res.status == 1 ? 'success' : 'error',
