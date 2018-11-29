@@ -518,34 +518,34 @@
                                     </el-table>
                                     <p></p>
                                     <el-row :gutter="12"
-                                            v-if="complainDesData.length">
-                                        <el-col :span="8">
+                                            >
+                                        <el-col :span="8" v-if="complainImage.pic1">
                                             <el-card
-                                                    v-if="complainDesData[0].pic1"
+                                                    v-if="complainImage.pic1"
                                                     :style="{
-                                                backgroundImage:'url(' + complainDesData[0].pic1 + ')',
+                                                backgroundImage:'url(' + complainImage.pic1 + ')',
                                                 height:'150px',
                                                 backgroundSize: 'cover',
                                                 width: '100%',
                                                 display:'block',
-                                              }" @click.native="handleOpenImage(complainDesData[0].pic1)">
+                                              }" @click.native="handleOpenImage(complainImage.pic1)">
                                             </el-card>
                                         </el-col>
-                                        <el-col :span="8">
+                                        <el-col :span="8" v-if="complainImage.pic2">
                                             <el-card
-                                                    v-if="complainDesData[0].pic2"
+                                                    v-if="complainImage.pic2"
                                                     :style="{
-                                                backgroundImage:'url(' + complainDesData[0].pic2 + ')',
+                                                backgroundImage:'url(' + complainImage.pic2 + ')',
                                                 height:'150px',
                                                 backgroundSize: 'cover',
                                                 width: '100%',
                                             }"
-                                                    @click.native="handleOpenImage(complainDesData[0].pic2)">
+                                                    @click.native="handleOpenImage(complainImage.pic2)">
                                             </el-card>
                                         </el-col>
-                                        <el-col :span="8">
+                                        <el-col :span="8" v-if="complainImage.pic3">
                                             <el-card
-                                                    v-if="complainDesData[0].pic3"
+                                                    v-if="complainImage.pic3"
                                                     :style="{
                                                 backgroundImage:'url(' + complainDesData[0].pic3 + ')',
                                                 height:'150px',
@@ -1227,6 +1227,11 @@
                 taobaoData: [],
                 logData: [],
                 complainDesData: [],
+                complainImage:{
+                    pic1:'',
+                    pic2:'',
+                    pic3:''
+                },
                 complainMessageData: []
             };
         },
@@ -1910,9 +1915,20 @@
             // 获取仲裁数据
             handleComplainData() {
                 this.$api.gameLevelingOrderComplainInfo({trade_no: this.$route.query.trade_no}).then(res => {
-                    if (res.content.length > 0) {
-                        this.complainDesData = [res.content.detail];
-                        this.complainMessageData = res.content.info;
+                    if (res.detail) {
+                        this.complainDesData = [res.detail];
+                    }
+                    if (this.complainDesData[0].pic1) {
+                        this.complainImage.pic1=this.complainDesData[0].pic1;
+                    }
+                    if (this.complainDesData[0].pic2) {
+                        this.complainImage.pic2=this.complainDesData[0].pic2;
+                    }
+                    if (this.complainDesData[0].pic3) {
+                        this.complainImage.pic3=this.complainDesData[0].pic3;
+                    }
+                    if (res.info) {
+                        this.complainMessageData = res.info;
                     }
                 });
             },
