@@ -92,11 +92,21 @@
 
                                                         <el-row>
                                                             <el-col :span="22">
-                                                                <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="input"
-                                                                        v-model="form.game_password"
-                                                                        autocomplete="off"></el-input>
+                                                                <template>
+                                                                    <div v-if="form.status === 13 || form.status === 14 || form.status === 17 || form.status === 18">
+                                                                        <el-input
+                                                                                type="input"
+                                                                                v-model="form.game_password"
+                                                                                autocomplete="off"></el-input>
+                                                                    </div>
+                                                                    <div v-else>
+                                                                        <el-input
+                                                                                :disabled="fieldDisabled"
+                                                                                type="input"
+                                                                                v-model="form.game_password"
+                                                                                autocomplete="off"></el-input>
+                                                                    </div>
+                                                                </template>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
                                                         </el-row>

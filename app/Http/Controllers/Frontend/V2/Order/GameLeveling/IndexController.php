@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
+use App\Models\User;
 use DB;
 use Auth;
 use Exception;
@@ -188,20 +189,9 @@ class IndexController extends Controller
                 ->get();
 
             // 订单日志
-            $logData = [
-                'game_leveling_order_trade_no' => $order->trade_no,
-                'user_id' => $order->user_id,
-                'username' => $order->sendUser->username,
-                'admin_user_id' => '',
-                'type' => 1,
-                'name' => '修改',
-                'description' => "用户[{$order->user_id}]修改了订单",
-                'created_at' => Carbon::now()->toDateTimeString(),
-                'updated_at' => Carbon::now()->toDateTimeString(),
-                'parent_user_id' => $order->parent_user_id,
-            ];
-
-            GameLevelingOrderLog::create($logData);
+            $user = User::find($order->user_id);
+            $description = "用户[{$order->user_id}]修改了订单";
+            GameLevelingOrderLog::createOrderHistory($order, $user, 1, $description);
 
             // 是否设置了自动加价
             GameLevelingOrder::checkAutoMarkUpPrice($order);
