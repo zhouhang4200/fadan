@@ -31,6 +31,7 @@
                 </el-dialog>
             </el-form-item>
             <el-form-item label="仲裁原因"
+                          prop="reason"
                           :rules="[{ required: true, message: '仲裁原因不能为空'}]">
                 <el-input type="textarea"
                           :rows="8"
@@ -108,7 +109,7 @@
                     }
                 });
             },
-            HandleResetForm(formName) {
+            handleResetForm(formName) {
                 this.$refs[formName].resetFields();
             },
             // 预览图片

@@ -20,6 +20,7 @@
                 </el-form-item>
 
                 <el-form-item label="需要对方赔付保证金"
+                              prop="payment_deposit"
                               :rules="[{ required: true, message: '仲裁原因不能为空'}]">
                     <el-input type="input"
                               v-model="form.payment_deposit"></el-input>
@@ -38,12 +39,14 @@
                 </el-form-item>
 
                 <el-form-item label="我愿意支付代练费（元）"
+                              prop="payment_amount"
                               :rules="[{ required: true, message: '仲裁原因不能为空'}]">
                     <el-input type="input"
-                              v-model="form.payment_amount" prop="no"></el-input>
+                              v-model="form.payment_amount"></el-input>
                 </el-form-item>
 
                 <el-form-item label="撤销理由"
+                              prop="reason"
                               :rules="[{ required: true, message: '仲裁原因不能为空'}]">
                     <el-input type="textarea"
                               :rows="5"
@@ -116,9 +119,9 @@
                     }
                 });
             },
-            HandleResetForm(formName) {
+            handleResetForm(formName) {
                 this.$refs[formName].resetFields();
-            },
+            }
         },
         watch: {
             // getVisible(val) {
