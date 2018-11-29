@@ -161,8 +161,8 @@
                                                                     <el-col :span="12">
                                                                         <el-select
                                                                                 :disabled="fieldDisabled"
-                                                                                v-model="form.day"
                                                                                 filterable
+                                                                                v-model="form.day"
                                                                                 placeholder="请选择">
                                                                             <el-option
                                                                                     v-for="item in dayOptions"
@@ -175,8 +175,8 @@
                                                                     <el-col :span="12">
                                                                         <el-select
                                                                                 :disabled="fieldDisabled"
-                                                                                v-model="form.hour"
                                                                                 filterable
+                                                                                v-model="form.hour"
                                                                                 placeholder="请选择">
                                                                             <el-option
                                                                                     v-for="item in hourOptions"
@@ -1258,6 +1258,8 @@
                         res.day,
                         res.hour,
                     ];
+                    this.form.day=res.day;
+                    this.form.hour=res.hour;
                     this.form.game_id = res.game_id; // 游戏ID
                     this.form.game_region_id = res.game_region_id; // 游戏区ID
                     this.form.game_server_id = res.game_server_id;// 游戏服务器ID
