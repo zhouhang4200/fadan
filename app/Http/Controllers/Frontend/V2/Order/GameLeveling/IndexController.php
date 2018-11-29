@@ -124,8 +124,6 @@ class IndexController extends Controller
      */
     public function store()
     {
-        // 验证前台传入数据
-
         // 下单
         try {
             GameLevelingOrder::placeOrder(request()->user(),request()->all());

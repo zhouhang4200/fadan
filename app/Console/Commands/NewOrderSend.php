@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 
+use App\Events\NewOrderBasicData;
 use App\Models\OrderSendResult;
 use App\Services\RedisConnect;
 
@@ -10,7 +11,6 @@ use GuzzleHttp\Exception\ConnectException;
 use Redis;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use App\Events\OrderBasicData;
 use Illuminate\Console\Command;
 use Log, Config, Weight, Order;
 use App\Models\GameLevelingOrder;
@@ -170,7 +170,7 @@ class NewOrderSend extends Command
                             }
                         }
                         // 写基础数据
-                        event(new OrderBasicData($order));
+                        event(new NewOrderBasicData($order));
                     } else {
                         // 没有查到订单则再次丢入队列
                         $this->redis->lpush('order:send', json_encode($orderData));

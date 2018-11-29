@@ -252,7 +252,8 @@ class GameLevelingOrder extends Model
 //            static::changeSameOriginOrderSourcePrice($order, $data);
 
             /************写入订单操作记录***********/
-            GameLevelingOrderLog::createOrderHistory($order, 1, "用户[{$order->user_id}]从[".config('order.source')[$order->source]."]渠道创建了订单");
+            $user = User::find($order->user_id);
+            GameLevelingOrderLog::createOrderHistory($order, $user, 1, "用户[{$user->username}]从[".config('order.source')[$order->source]."]渠道创建了订单");
 
             /************* 如果设置了接单人则直接变为接单*************************/
             if (isset($data['gainer_user_id']) && $data['gainer_user_id']) {
