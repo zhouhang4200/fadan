@@ -291,6 +291,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -330,6 +333,9 @@ class OrderOperateController
 
             // 写入基础数据
             OrderBasicData::createData(static::$order);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -370,6 +376,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -412,6 +421,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -479,6 +491,9 @@ class OrderOperateController
             Redis::hDel('our_notice_orders', static::$order->trade_no);
             // 发送短信
             static::sendMessage(4, '代练订单申请协商短信');
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -526,6 +541,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -573,6 +591,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -677,6 +698,9 @@ class OrderOperateController
 
             // 写入基础数据
             OrderBasicData::createData(static::$order);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -741,6 +765,9 @@ class OrderOperateController
 
             // 发送短信
             static::sendMessage(5, '代练订单申请仲裁短信');
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -788,6 +815,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -896,6 +926,9 @@ class OrderOperateController
 
             // 写入基础数据
             OrderBasicData::createData(static::$order);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -945,6 +978,9 @@ class OrderOperateController
 
             // 发送短信
             static::sendMessage(3, '代练订单申请验收短信');
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -990,6 +1026,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1047,6 +1086,9 @@ class OrderOperateController
 
             // 写入基础数据
             OrderBasicData::createData(static::$order);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1081,6 +1123,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1115,6 +1160,9 @@ class OrderOperateController
 
             // 删除存在的订单报警
             Redis::hDel('our_notice_orders', static::$order->trade_no);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1173,6 +1221,9 @@ class OrderOperateController
 
             // 写入基础数据
             OrderBasicData::createData(static::$order);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -1308,6 +1359,9 @@ class OrderOperateController
 
             // 写入基础数据
             OrderBasicData::createData(static::$order);
+        } catch (GameLevelingOrderOperateException $e) {
+            DB::rollback();
+            throw new GameLevelingOrderOperateException($e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
