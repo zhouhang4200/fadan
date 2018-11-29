@@ -92,6 +92,14 @@ class GameLevelingOrder extends Model
         return $this->gameLevelingOrderPreviousStatuses()->latest('id')->value('status');
     }
 
+    public function sendUser() {
+        return $this->belongsTo(User::class, 'id', 'user_id');
+    }
+
+    public function takeUser() {
+        return $this->belongsTo(User::class, 'id', 'take_user_id');
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */

@@ -188,20 +188,20 @@ class IndexController extends Controller
                 ->get();
 
             // 订单日志
-            $historyData = [
-                'order_no' => $order->trade_no,
+            $logData = [
+                'game_leveling_order_trade_no' => $order->trade_no,
                 'user_id' => $order->user_id,
+                'username' => $order->sendUser->username,
                 'admin_user_id' => '',
                 'type' => 1,
                 'name' => '修改',
                 'description' => "用户[{$order->user_id}]修改了订单",
-                'before' => '',
-                'after' => '',
                 'created_at' => Carbon::now()->toDateTimeString(),
-                'creator_primary_user_id' => $order->parent_user_id,
+                'updated_at' => Carbon::now()->toDateTimeString(),
+                'parent_user_id' => $order->parent_user_id,
             ];
 
-            OrderHistory::create($historyData);
+            GameLevelingOrderLog::create($logData);
 
             // 是否设置了自动加价
             GameLevelingOrder::checkAutoMarkUpPrice($order);
@@ -277,8 +277,7 @@ class IndexController extends Controller
     public function log()
     {
         return GameLevelingOrderLog::where([
-            'game_leveling_order_trade_no' => request('trade_no'),
-            'parent_user_id' => request()->user()->getPrimaryUserId(),
+            'game_leveling_order_trade_no' => request('trade_no')
         ])->get();
     }
 

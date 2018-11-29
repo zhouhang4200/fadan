@@ -606,7 +606,6 @@
                                 </el-tab-pane>
 
                                 <el-tab-pane label="操作记录" name="3">
-
                                     <el-table
                                             :data="logData"
                                             border
