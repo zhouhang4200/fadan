@@ -1655,7 +1655,8 @@
                             item.push(h('el-carousel-item', null, [
                                 h('img', {
                                     attrs: {
-                                        src: val['url']
+                                        src: val['url'],
+                                        class:'avatar'
                                     }
                                 }, '')
                             ]))
@@ -2320,4 +2321,9 @@
         display: none;
     }
 
+    .avatar {
+        width: 500px;
+        height: 500px;
+        display: block;
+    }
 </style>
