@@ -24,10 +24,12 @@ class GameLevelingOrderLog extends Model
 
     /**
      * 写订单日志
+     *
      * @param GameLevelingOrder $order
+     * @param User $user
      * @param $type
-     * @param int $adminUserId
      * @param string $description
+     * @param int $adminUserId
      */
     public static function createOrderHistory(GameLevelingOrder $order, User $user, $type, $description = '', $adminUserId = 0)
     {

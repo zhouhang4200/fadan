@@ -272,17 +272,20 @@ class IndexController extends Controller
 
     /**
      * 订单操作日志
+     *
      * @return mixed
      */
     public function log()
     {
         return GameLevelingOrderLog::where([
-            'game_leveling_order_trade_no' => request('trade_no')
+            'game_leveling_order_trade_no' => request('trade_no'),
+            'parent_user_id' => request()->user()->getPrimaryUserId(),
         ])->get();
     }
 
     /**
      * 删除
+     *
      * @return mixed
      */
     public function delete()
