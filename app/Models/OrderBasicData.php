@@ -100,11 +100,11 @@ class OrderBasicData extends Model
             $data['creator_judge_payment'] = 0;
 
             $gameLevelingOrderConsult = GameLevelingOrderConsult::where('game_leveling_order_trade_no', $order->trade_no)
-                ->where('status', 1)
+                ->where('status', 2)
                 ->first();
 
             $gameLevelingOrderComplain = GameLevelingOrderComplain::where('game_leveling_order_trade_no', $order->trade_no)
-                ->where('status', 1)
+                ->where('status', 2)
                 ->first();
 
             // 投诉表
