@@ -77,10 +77,9 @@
         },
         data() {
             var mustOverZero = (rule, value, callback) => {
-                if (!Number.isInteger(value)) {
-                    callback(new Error('请输入数字值'));
-                } else if (value < 0) {
-                    callback(new Error('输入值不得小于0!'));
+                let grep=/^([1-9]\d*|0)(\.\d{1,2})?$/;
+                if (!grep.test(value)) {
+                    callback(new Error('金额必须大于0，支持2位小数!'));
                 } else {
                     callback();
                 }
