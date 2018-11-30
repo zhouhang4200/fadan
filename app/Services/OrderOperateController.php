@@ -65,11 +65,15 @@ class OrderOperateController
      */
     private static function handleDeposit($amount = 0, $deposit = 0)
     {
-        if ($amount < 0 || $amount > static::$order->amount) {
+        if ($amount < 0 || $deposit < 0) {
+            throw new GameLevelingOrderOperateException('填写金额不得小于0!');
+        }
+
+        if ($amount > static::$order->amount) {
             throw new GameLevelingOrderOperateException('协商代练金额超出代练订单金额!');
         }
 
-        if ($deposit < 0 || $deposit > bcadd(static::$order->security_deposit, static::$order->efficiency_deposit)) {
+        if ($deposit > bcadd(static::$order->security_deposit, static::$order->efficiency_deposit)) {
             throw new GameLevelingOrderOperateException('协商双金超出代练订单双金!');
         }
 
