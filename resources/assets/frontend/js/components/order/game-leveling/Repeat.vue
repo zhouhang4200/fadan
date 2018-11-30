@@ -7,7 +7,6 @@
                         <div class="grid-content bg-purple" style="padding: 15px;background-color: #fff" >
                             <el-tabs>
                                 <el-tab-pane label="订单信息">
-
                                     <el-card class="box-card">
                                         <div class="text item">
                                             <el-row>
@@ -28,12 +27,10 @@
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="12">
-
                                                     <el-form-item label="代练类型" prop="game_leveling_type_id">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-select
-                                                                        
                                                                         v-model="form.game_leveling_type_id"
                                                                         placeholder="请选择">
                                                                     <el-option
@@ -47,7 +44,6 @@
                                                             <el-col :span="1"></el-col>
                                                         </el-row>
                                                     </el-form-item>
-
                                                 </el-col>
                                             </el-row>
                                             <el-row>
@@ -56,55 +52,45 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        
                                                                         type="input"
                                                                         v-model.number="form.game_role"
                                                                         autocomplete="off"></el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
                                                         </el-row>
-
                                                     </el-form-item>
                                                 </el-col>
                                             </el-row>
                                             <el-row>
                                                 <el-col :span="12">
                                                     <el-form-item label="游戏账号" prop="game_account">
-
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
-
                                                                 <el-input
-                                                                        
                                                                         type="input"
                                                                         v-model="form.game_account"
                                                                         autocomplete="off"></el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
                                                         </el-row>
-
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="12">
                                                     <el-form-item label="游戏密码" prop="game_password">
-
                                                         <el-row>
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        
                                                                         type="input"
                                                                         v-model="form.game_password"
                                                                         autocomplete="off"></el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
                                                         </el-row>
-
                                                     </el-form-item>
                                                 </el-col>
                                             </el-row>
                                         </div>
                                     </el-card>
-
                                     <el-card class="box-card">
                                         <div class="text item">
                                             <el-row>
@@ -115,7 +101,6 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        
                                                                         type="age"
                                                                         v-model="form.title"
                                                                         autocomplete="off">
@@ -132,7 +117,6 @@
                                                         </el-row>
                                                     </el-form-item>
                                                 </el-col>
-
                                                 <el-col :span="12">
                                                     <el-form-item
                                                             label="接单密码"
@@ -140,7 +124,6 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        
                                                                         type="input"
                                                                         v-model="form.take_order_password"
                                                                         autocomplete="off"></el-input>
@@ -158,7 +141,6 @@
                                                                 <el-row :gutter="10">
                                                                     <el-col :span="12">
                                                                         <el-select
-                                                                                
                                                                                 v-model="form.day"
                                                                                 filterable
                                                                                 placeholder="请选择">
@@ -172,7 +154,6 @@
                                                                     </el-col>
                                                                     <el-col :span="12">
                                                                         <el-select
-                                                                                
                                                                                 v-model="form.hour"
                                                                                 filterable
                                                                                 placeholder="请选择">
@@ -185,17 +166,13 @@
                                                                         </el-select>
                                                                     </el-col>
                                                                 </el-row>
-
                                                             </el-col>
                                                             <el-col :span="1">
-
                                                             </el-col>
                                                         </el-row>
                                                     </el-form-item>
-
                                                 </el-col>
                                                 <el-col :span="12">
-
                                                     <el-form-item label="代练要求模版">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
@@ -218,7 +195,6 @@
                                                             </el-col>
                                                         </el-row>
                                                     </el-form-item>
-
                                                 </el-col>
                                             </el-row>
                                             <el-row>
@@ -227,7 +203,6 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        
                                                                         type="textarea"
                                                                         :rows="3"
                                                                         placeholder="请输入内容"
@@ -260,14 +235,12 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.amount">
+                                                                        v-model.number="form.amount">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1" class="icon-button">
-
                                                             </el-col>
                                                         </el-row>
                                                     </el-form-item>
@@ -277,10 +250,9 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.source_amount">
+                                                                        v-model.number="form.source_amount">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -293,12 +265,10 @@
                                                     <el-form-item label="安全保证金" prop="security_deposit">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
-
                                                                 <el-input
-                                                                        
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.security_deposit">
+                                                                        v-model.number="form.security_deposit">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -310,10 +280,9 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.efficiency_deposit">
+                                                                        v-model.number="form.efficiency_deposit">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -342,7 +311,7 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-select
-                                                                        v-model="form.user_qq"
+                                                                        v-model.number="form.user_qq"
                                                                         placeholder="请选择">
                                                                     <el-option
                                                                             v-for="item in businessmanQQOptions"
@@ -374,7 +343,7 @@
                                                             <el-col :span="22">
                                                                 <el-input
                                                                         type="input"
-                                                                        v-model="form.price_increase_step"
+                                                                        v-model.number="form.price_increase_step"
                                                                         autocomplete="off">
                                                                 </el-input>
                                                             </el-col>
@@ -388,7 +357,7 @@
                                                             <el-col :span="22">
                                                                 <el-input
                                                                         type="input"
-                                                                        v-model="form.price_ceiling"
+                                                                        v-model.number="form.price_ceiling"
                                                                         autocomplete="off">
                                                                 </el-input>
                                                             </el-col>
@@ -399,10 +368,8 @@
                                             </el-row>
                                             <el-row>
                                                 <el-col :span="12">
-
                                                 </el-col>
                                                 <el-col :span="12">
-
                                                 </el-col>
                                             </el-row>
                                             <el-row>
@@ -422,12 +389,10 @@
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="12">
-
                                                 </el-col>
                                             </el-row>
                                         </div>
                                     </el-card>
-
                                 </el-tab-pane>
                             </el-tabs>
                         </div>
@@ -516,6 +481,22 @@
                     callback();
                 }
             };
+            var mustOverZero = (rule, value, callback) => {
+                let isNumber=/^([1-9]\d*|0)(\.\d{1,2})?$/;
+                if (value && !isNumber.test(value)) {
+                    callback(new Error('请输入大于0的数字值，支持2位小数!'));
+                } else {
+                    callback();
+                }
+            };
+            var overZeroInt = (rule, value, callback) => {
+                let isNumber=/^[1-9]\d*$/;
+                if (value && !isNumber.test(value)) {
+                    callback(new Error('请输入大于0的整数值!'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 tradeNo:this.$route.query.trade_no,
                 gameLevelingRequirementVisible:false,
@@ -590,29 +571,19 @@
                         { required: true, message: '请输入代练要求', trigger: 'change' },
                     ],
                     amount: [
-                        { required: true, message: '请输入代练价格', trigger: 'change' }
+                        { required: true, message: '请输入代练价格', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     source_amount: [
-                        {
-                            validator:(rule, value, callback)=>{
-                                if(value != "" && value != undefined){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
-                                        callback(new Error("加价幅度必须为数字值"));
-                                    }else{
-                                        callback();
-                                    }
-                                }else{
-                                    callback();
-                                }
-                            },
-                            trigger:'blur'
-                        },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     efficiency_deposit: [
-                        { required: true, message: '请输入效率保证金', trigger: 'change' }
+                        { required: true, message: '请输入效率保证金', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     security_deposit: [
-                        { required: true, message: '请输入安全保证金', trigger: 'change' }
+                        { required: true, message: '请输入安全保证金', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     user_qq: [
                         { required: true, message: '请输入商户QQ号', trigger: 'change' }
@@ -622,36 +593,10 @@
                         { validator: isPhone, trigger: 'blur' }
                     ],
                     price_increase_step: [
-                        {
-                            validator:(rule, value, callback)=>{
-                                if(value != "" && value != undefined){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
-                                        callback(new Error("加价幅度必须为数字值"));
-                                    }else{
-                                        callback();
-                                    }
-                                }else{
-                                    callback();
-                                }
-                            },
-                            trigger:'blur'
-                        },
+                        { validator: overZeroInt, trigger: 'blur' }
                     ],
                     price_ceiling: [
-                        {
-                            validator:(rule,value,callback)=>{
-                                if(value != "" && value != undefined){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
-                                        callback(new Error("加价上限必须为数字值"));
-                                    }else{
-                                        callback();
-                                    }
-                                }else{
-                                    callback();
-                                }
-                            },
-                            trigger:'blur'
-                        },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
 
                 },

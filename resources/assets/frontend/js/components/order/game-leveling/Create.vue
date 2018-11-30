@@ -107,7 +107,6 @@
                                                         </el-row>
                                                     </el-form-item>
                                                 </el-col>
-
                                                 <el-col :span="12">
                                                     <el-form-item label="接单密码" prop="take_order_password">
                                                         <el-row :gutter="10">
@@ -225,7 +224,7 @@
                                                                 <el-input
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.amount">
+                                                                        v-model.number="form.amount">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -239,7 +238,7 @@
                                                                 <el-input
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.source_amount">
+                                                                        v-model.number="form.source_amount">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -256,7 +255,7 @@
                                                                         type="input"
                                                                         :rows="2"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.security_deposit">
+                                                                        v-model.number="form.security_deposit">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -270,7 +269,7 @@
                                                                 <el-input
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.efficiency_deposit">
+                                                                        v-model.number="form.efficiency_deposit">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -299,7 +298,7 @@
                                                             <el-col :span="22">
                                                                 <el-select
                                                                         @change="handleBusinessmanQQIdChange"
-                                                                        v-model="form.businessmanQQId"
+                                                                        v-model.number="form.businessmanQQId"
                                                                         placeholder="请选择">
                                                                     <el-option
                                                                             v-for="item in businessmanQQOptions"
@@ -329,7 +328,7 @@
                                                             <el-col :span="22">
                                                                 <el-input
                                                                         type="input"
-                                                                        v-model="form.price_increase_step"
+                                                                        v-model.number="form.price_increase_step"
                                                                         autocomplete="off">
                                                                 </el-input>
                                                             </el-col>
@@ -343,7 +342,7 @@
                                                             <el-col :span="22">
                                                                 <el-input
                                                                         type="input"
-                                                                        v-model="form.price_ceiling"
+                                                                        v-model.number="form.price_ceiling"
                                                                         autocomplete="off">
                                                                 </el-input>
                                                             </el-col>
@@ -411,7 +410,6 @@
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="12">
-
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -499,6 +497,22 @@
                     callback();
                 }
             };
+            var mustOverZero = (rule, value, callback) => {
+                let isNumber=/^([1-9]\d*|0)(\.\d{1,2})?$/;
+                if (value && !isNumber.test(value)) {
+                    callback(new Error('请输入大于0的数字值，支持2位小数!'));
+                } else {
+                    callback();
+                }
+            };
+            var overZeroInt = (rule, value, callback) => {
+                let isNumber=/^[1-9]\d*$/;
+                if (value && !isNumber.test(value)) {
+                    callback(new Error('请输入大于0的整数值!'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 gameLevelingRequirementVisible:false,
                 gameLevelingRequirementOptions:[],
@@ -581,29 +595,19 @@
                         { required: true, message: '请输入代练要求', trigger: 'blur' },
                     ],
                     amount: [
-                        { required: true, message: '请输入代练价格', trigger: 'change' }
+                        { required: true, message: '请输入代练价格', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     source_amount: [
-                        {
-                            validator:(rule, value, callback)=>{
-                                if(value != ""){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
-                                        callback(new Error("加价幅度必须为数字值"));
-                                    }else{
-                                        callback();
-                                    }
-                                }else{
-                                    callback();
-                                }
-                            },
-                            trigger:'blur'
-                        },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     efficiency_deposit: [
-                        { required: true, message: '请输入效率保证金', trigger: 'change' }
+                        { required: true, message: '请输入效率保证金', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     security_deposit: [
-                        { required: true, message: '请输入安全保证金', trigger: 'change' }
+                        { required: true, message: '请输入安全保证金', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     player_phone: [
                         { required: true, message: '请输入玩家电话', trigger: 'blur' },
@@ -613,36 +617,10 @@
                         { required: true, message: '请选择商户QQ', trigger: 'blur' },
                     ],
                     price_increase_step: [
-                        {
-                            validator:(rule, value, callback)=>{
-                                if(value != ""){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
-                                        callback(new Error("加价幅度必须为数字值"));
-                                    }else{
-                                        callback();
-                                    }
-                                }else{
-                                    callback();
-                                }
-                            },
-                            trigger:'blur'
-                        },
+                        { validator: overZeroInt, trigger: 'blur' }
                     ],
                     price_ceiling: [
-                        {
-                            validator:(rule,value,callback)=>{
-                                if(value != ""){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
-                                        callback(new Error("加价上限必须为数字值"));
-                                    }else{
-                                        callback();
-                                    }
-                                }else{
-                                    callback();
-                                }
-                            },
-                            trigger:'blur'
-                        },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
 
                 },
