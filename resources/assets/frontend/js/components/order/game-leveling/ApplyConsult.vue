@@ -12,8 +12,7 @@
                         :closable="false">
                 </el-alert>
 
-                <el-form-item label="我已支付代练费（元）"
-                              :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                <el-form-item label="我已支付代练费（元）">
                     <el-input type="input"
                               :disabled=true
                               v-model="form.amount"></el-input>
