@@ -100,6 +100,13 @@
                     callback();
                 }
             };
+            var reasonRule = (rule, value, callback) => {
+                if (value.length > 50) {
+                    callback(new Error('申请协商原因不得大于50字！'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 fileReader:'',
                 visible: false,
@@ -126,7 +133,8 @@
                         { validator: depositRule, trigger: 'blur' }
                     ],
                     reason: [
-                        { required: true, message: '必填项不能为空'}
+                        { required: true, message: '必填项不能为空'},
+                        { validator: reasonRule, trigger: 'blur' }
                     ]
                 }
             };
