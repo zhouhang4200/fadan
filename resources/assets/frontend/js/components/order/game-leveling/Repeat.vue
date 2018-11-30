@@ -329,7 +329,7 @@
                                                                 <el-input
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.player_phone">
+                                                                        v-model.number="form.player_phone">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -508,6 +508,14 @@
             }
         },
         data() {
+            var isPhone = (rule, value, callback) => {
+                let phone=/^(13[012356789][0-9]{8}|15[012356789][0-9]{8}|18[02356789][0-9]{8}|147[0-9]{8}|1349[0-9]{7})$/;
+                if (!phone.test(value)) {
+                    callback(new Error('请填写正确的手机号！'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 tradeNo:this.$route.query.trade_no,
                 gameLevelingRequirementVisible:false,
@@ -611,7 +619,7 @@
                     ],
                     player_phone: [
                         { required: true, message: '请输入无家电话', trigger: 'blur' },
-                        { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                        { validator: isPhone, trigger: 'blur' }
                     ],
                     price_increase_step: [
                         {
