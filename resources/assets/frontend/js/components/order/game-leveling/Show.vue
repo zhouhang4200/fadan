@@ -92,11 +92,21 @@
 
                                                         <el-row>
                                                             <el-col :span="22">
-                                                                <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="input"
-                                                                        v-model="form.game_password"
-                                                                        autocomplete="off"></el-input>
+                                                                <template>
+                                                                    <div v-if="form.status === 13 || form.status === 14 || form.status === 17 || form.status === 18">
+                                                                        <el-input
+                                                                                type="input"
+                                                                                v-model="form.game_password"
+                                                                                autocomplete="off"></el-input>
+                                                                    </div>
+                                                                    <div v-else>
+                                                                        <el-input
+                                                                                :disabled="fieldDisabled"
+                                                                                type="input"
+                                                                                v-model="form.game_password"
+                                                                                autocomplete="off"></el-input>
+                                                                    </div>
+                                                                </template>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
                                                         </el-row>
@@ -161,8 +171,8 @@
                                                                     <el-col :span="12">
                                                                         <el-select
                                                                                 :disabled="fieldDisabled"
-                                                                                v-model="form.day"
                                                                                 filterable
+                                                                                v-model="form.day"
                                                                                 placeholder="请选择">
                                                                             <el-option
                                                                                     v-for="item in dayOptions"
@@ -175,8 +185,8 @@
                                                                     <el-col :span="12">
                                                                         <el-select
                                                                                 :disabled="fieldDisabled"
-                                                                                v-model="form.hour"
                                                                                 filterable
+                                                                                v-model="form.hour"
                                                                                 placeholder="请选择">
                                                                             <el-option
                                                                                     v-for="item in hourOptions"
@@ -508,34 +518,34 @@
                                     </el-table>
                                     <p></p>
                                     <el-row :gutter="12"
-                                            v-if="complainDesData.length">
-                                        <el-col :span="8">
+                                            >
+                                        <el-col :span="8" v-if="complainImage.pic1">
                                             <el-card
-                                                    v-if="complainDesData[0].pic1"
+                                                    v-if="complainImage.pic1"
                                                     :style="{
-                                                backgroundImage:'url(' + complainDesData[0].pic1 + ')',
+                                                backgroundImage:'url(' + complainImage.pic1 + ')',
                                                 height:'150px',
                                                 backgroundSize: 'cover',
                                                 width: '100%',
                                                 display:'block',
-                                              }" @click.native="handleOpenImage(complainDesData[0].pic1)">
+                                              }" @click.native="handleOpenImage(complainImage.pic1)">
                                             </el-card>
                                         </el-col>
-                                        <el-col :span="8">
+                                        <el-col :span="8" v-if="complainImage.pic2">
                                             <el-card
-                                                    v-if="complainDesData[0].pic2"
+                                                    v-if="complainImage.pic2"
                                                     :style="{
-                                                backgroundImage:'url(' + complainDesData[0].pic2 + ')',
+                                                backgroundImage:'url(' + complainImage.pic2 + ')',
                                                 height:'150px',
                                                 backgroundSize: 'cover',
                                                 width: '100%',
                                             }"
-                                                    @click.native="handleOpenImage(complainDesData[0].pic2)">
+                                                    @click.native="handleOpenImage(complainImage.pic2)">
                                             </el-card>
                                         </el-col>
-                                        <el-col :span="8">
+                                        <el-col :span="8" v-if="complainImage.pic3">
                                             <el-card
-                                                    v-if="complainDesData[0].pic3"
+                                                    v-if="complainImage.pic3"
                                                     :style="{
                                                 backgroundImage:'url(' + complainDesData[0].pic3 + ')',
                                                 height:'150px',
@@ -606,7 +616,6 @@
                                 </el-tab-pane>
 
                                 <el-tab-pane label="操作记录" name="3">
-
                                     <el-table
                                             :data="logData"
                                             border
@@ -759,7 +768,12 @@
                         <!--仲裁中 16 -->
                         <span v-if="form.status == 16">
                             <el-button
+                                    v-if="(this.form.game_leveling_order_consult && this.form.game_leveling_order_consult.initiator == 2 && this.form.game_leveling_order_consult.status == 1)"
                                     size="small"
+                                    @click="handleAgreeConsult()">同意撤销</el-button>
+                            <el-button
+                                    size="small"
+                                    v-if="(this.form.game_leveling_order_complain.initiator == 1 && this.form.game_leveling_order_complain.status == 1)"
                                     type="primary" @click="handleCancelComplain()">取消仲裁</el-button>
                         </span>
 
@@ -1213,6 +1227,11 @@
                 taobaoData: [],
                 logData: [],
                 complainDesData: [],
+                complainImage:{
+                    pic1:'',
+                    pic2:'',
+                    pic3:''
+                },
                 complainMessageData: []
             };
         },
@@ -1253,6 +1272,8 @@
                         res.day,
                         res.hour,
                     ];
+                    this.form.day=res.day;
+                    this.form.hour=res.hour;
                     this.form.game_id = res.game_id; // 游戏ID
                     this.form.game_region_id = res.game_region_id; // 游戏区ID
                     this.form.game_server_id = res.game_server_id;// 游戏服务器ID
@@ -1468,8 +1489,8 @@
                         // 发送加天与小时请求
                         this.$api.gameLevelingOrderAddDayHour({
                             trade_no: this.form.trade_no,
-                            day: this.addDay,
-                            hour: this.addHour
+                            day: this.addTimeForm.day,
+                            hour: this.addTimeForm.hour
                         }).then(res => {
                             this.$message({
                                 'type': res.status == 1 ? 'success' : 'error',
@@ -1634,7 +1655,8 @@
                             item.push(h('el-carousel-item', null, [
                                 h('img', {
                                     attrs: {
-                                        src: val['url']
+                                        src: val['url'],
+                                        class:'avatar'
                                     }
                                 }, '')
                             ]))
@@ -1894,9 +1916,20 @@
             // 获取仲裁数据
             handleComplainData() {
                 this.$api.gameLevelingOrderComplainInfo({trade_no: this.$route.query.trade_no}).then(res => {
-                    if (res.content.length > 0) {
-                        this.complainDesData = [res.content.detail];
-                        this.complainMessageData = res.content.info;
+                    if (res.detail) {
+                        this.complainDesData = [res.detail];
+                    }
+                    if (this.complainDesData[0].pic1) {
+                        this.complainImage.pic1=this.complainDesData[0].pic1;
+                    }
+                    if (this.complainDesData[0].pic2) {
+                        this.complainImage.pic2=this.complainDesData[0].pic2;
+                    }
+                    if (this.complainDesData[0].pic3) {
+                        this.complainImage.pic3=this.complainDesData[0].pic3;
+                    }
+                    if (res.info) {
+                        this.complainMessageData = res.info;
                     }
                 });
             },
@@ -2288,4 +2321,9 @@
         display: none;
     }
 
+    .avatar {
+        width: 500px;
+        height: 500px;
+        display: block;
+    }
 </style>

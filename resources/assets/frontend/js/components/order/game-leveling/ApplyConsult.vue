@@ -4,7 +4,7 @@
                 title="申请撤销"
                 :visible=true
                 :before-close="handleBeforeClose">
-        <el-form :model="form" ref="form" label-width="204px" class="demo-ruleForm">
+        <el-form :model="form" ref="form" :rules="consultRules" label-width="204px" class="demo-ruleForm">
                 <el-alert
                         title="双方友好协商撤单，若有分歧可以在订单中留言或申请客服介入；若申请成功，此单将被锁定，若双方取消撤单会退回至原有状态。"
                         type="success"
@@ -12,17 +12,17 @@
                         :closable="false">
                 </el-alert>
 
-                <el-form-item label="我已支付代练费（元）"
-                              :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                <el-form-item label="我已支付代练费（元）">
                     <el-input type="input"
                               :disabled=true
                               v-model="form.amount"></el-input>
                 </el-form-item>
 
                 <el-form-item label="需要对方赔付保证金"
-                              :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                              prop="payment_deposit"
+                >
                     <el-input type="input"
-                              v-model="form.payment_deposit"></el-input>
+                              v-model.number="form.payment_deposit"></el-input>
                 </el-form-item>
 
                 <el-form-item label="对方已预付安全保证金（元）">
@@ -38,13 +38,15 @@
                 </el-form-item>
 
                 <el-form-item label="我愿意支付代练费（元）"
-                              :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                              prop="payment_amount"
+                              >
                     <el-input type="input"
-                              v-model="form.payment_amount" prop="no"></el-input>
+                              v-model.number="form.payment_amount"></el-input>
                 </el-form-item>
 
                 <el-form-item label="撤销理由"
-                              :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                              prop="reason"
+                             >
                     <el-input type="textarea"
                               :rows="5"
                               v-model="form.reason"></el-input>
@@ -74,6 +76,36 @@
             // }
         },
         data() {
+            var mustOverZero = (rule, value, callback) => {
+                let grep=/^([1-9]\d*|0)(\.\d{1,2})?$/;
+                if (!grep.test(value)) {
+                    callback(new Error('金额必须大于0，支持2位小数!'));
+                } else {
+                    callback();
+                }
+            };
+            var amountRule = (rule, value, callback) => {
+                if (value > this.form.amount) {
+                    callback(new Error('填写赔偿代练费不得超过订单代练费！'));
+                } else {
+                    callback();
+                }
+            };
+            var depositRule = (rule, value, callback) => {
+                let total=Number(this.form.security_deposit)+Number(this.form.efficiency_deposit);
+                if (value > total) {
+                    callback(new Error('填写赔偿双金不得大于订单双金！'));
+                } else {
+                    callback();
+                }
+            };
+            var reasonRule = (rule, value, callback) => {
+                if (value.length > 50) {
+                    callback(new Error('申请协商原因不得大于50字！'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 fileReader:'',
                 visible: false,
@@ -88,6 +120,22 @@
                     security_deposit: this.securityDeposit,
                     efficiency_deposit: this.efficiencyDeposit
                 },
+                consultRules: {
+                    payment_amount: [
+                        { required: true, message: '必填项不能为空'},
+                        { validator: mustOverZero, trigger: 'blur' },
+                        { validator: amountRule, trigger: 'blur' }
+                    ],
+                    payment_deposit: [
+                        { required: true, message: '必填项不能为空'},
+                        { validator: mustOverZero, trigger: 'blur' },
+                        { validator: depositRule, trigger: 'blur' }
+                    ],
+                    reason: [
+                        { required: true, message: '必填项不能为空'},
+                        { validator: reasonRule, trigger: 'blur' }
+                    ]
+                }
             };
         },
         methods: {
@@ -116,9 +164,9 @@
                     }
                 });
             },
-            HandleResetForm(formName) {
+            handleResetForm(formName) {
                 this.$refs[formName].resetFields();
-            },
+            }
         },
         watch: {
             // getVisible(val) {

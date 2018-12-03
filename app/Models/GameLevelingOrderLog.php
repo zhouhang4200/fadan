@@ -24,17 +24,20 @@ class GameLevelingOrderLog extends Model
 
     /**
      * 写订单日志
+     *
      * @param GameLevelingOrder $order
+     * @param User $user
      * @param $type
-     * @param int $adminUserId
      * @param string $description
+     * @param int $adminUserId
      */
-    public static function createOrderHistory(GameLevelingOrder $order, $type, $description = '', $adminUserId = 0)
+    public static function createOrderHistory(GameLevelingOrder $order, User $user, $type, $description = '', $adminUserId = 0)
     {
         static::create([
             'game_leveling_order_trade_no' => $order->trade_no,
-            'user_id' => $order->user_id,
-            'parent_user_id' => $order->parent_user_id,
+            'user_id' => $user->id,
+            'username' => $user->username,
+            'parent_user_id' => $user->parent_id == 0 ? $user->id : $user->parent_id,
             'admin_user_id' => $adminUserId ?? 0,
             'type' => $type,
             'name' => config('order.operation_type')[$type],

@@ -148,6 +148,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\OrderBasicData' => [
             'App\Listeners\OrderBasicData\WriteOrderBasicData',
         ],
+        'App\Events\NewOrderBasicData' => [
+            'App\Listeners\OrderBasicData\NewOrderBasicData',
+        ],
     ];
 
     /**

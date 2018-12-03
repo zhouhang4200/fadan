@@ -97,7 +97,7 @@
                 <el-form :model="form" ref="form" :rules="rules" label-width="120px">
                     <el-form-item label="店铺" prop="seller_nick">
                         <el-select v-model="form.seller_nick" placeholder="请选择">
-                            <el-option v-for="value of sellerNicks" :value="value" :key="value"  :label="value">{{value}}</el-option>
+                            <el-option v-for="value in sellerNicks" :value="value" :key="value"  :label="value">{{value}}</el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="绑定游戏" prop="game_id">

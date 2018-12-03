@@ -86,6 +86,8 @@ class OrderBasicData extends Model
     public static function createData(GameLevelingOrder $order)
     {
         try {
+            $order = GameLevelingOrder::where('trade_no', $order->trade_no)->first();
+
             $data                          = [];
             $data['tm_status']             = '';
             $data['tm_income']             = 0;
@@ -98,11 +100,11 @@ class OrderBasicData extends Model
             $data['creator_judge_payment'] = 0;
 
             $gameLevelingOrderConsult = GameLevelingOrderConsult::where('game_leveling_order_trade_no', $order->trade_no)
-                ->where('status', 1)
+                ->where('status', 2)
                 ->first();
 
             $gameLevelingOrderComplain = GameLevelingOrderComplain::where('game_leveling_order_trade_no', $order->trade_no)
-                ->where('status', 1)
+                ->where('status', 2)
                 ->first();
 
             // 投诉表
@@ -133,8 +135,9 @@ class OrderBasicData extends Model
             }
 
             // 来源单号和天猫单号
-            $sourceOrderNos = GameLevelingOrder::where('channel_order_trade_no', $order->channel_order_trade_no)
-                ->pluck('trade_no')
+            $sourceOrderNos = GameLevelingOrderRelationChannel::where('game_leveling_order_trade_no', $order->trade_no)
+                ->where('channel', 1)
+                ->pluck('game_leveling_channel_order_trade_no')
                 ->unique()
                 ->toArray();
 
@@ -172,16 +175,16 @@ class OrderBasicData extends Model
             $data['gainer_primary_user_id']  = $order->take_parent_user_id;
             $data['price']                   = $order->amount;
             $data['pay_amount']              = $payAmount;
-            $data['security_deposit']        = $order->security_deposit;
-            $data['efficiency_deposit']      = $order->efficiency_deposit;
-            $data['original_price']          = $order->source_price;
+            $data['security_deposit']        = $order->security_deposit ?? 0;
+            $data['efficiency_deposit']      = $order->efficiency_deposit ?? 0;
+            $data['original_price']          = $order->source_price ?? 0;
             $data['order_created_at']        = $order->created_at->toDateTimeString();
             $data['order_finished_at']       = $order->complete_at;
-            $data['is_repeat']               = $order->repeat;
+            $data['is_repeat']               = $order->repeat ?? 0;
 
             static::updateOrCreate(['order_no' => $order->trade_no], $data);
         } catch (\Exception $exception) {
-            myLog('base-data-error', [$exception->getMessage(), $exception->getFile(), $exception->getLine()]);
+            myLog('new-base-data-error', [$exception->getMessage(), $exception->getFile(), $exception->getLine()]);
         }
     }
 }

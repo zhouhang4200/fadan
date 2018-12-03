@@ -98,7 +98,7 @@
                                                                 </el-col>
                                                             <el-col :span="1">
                                                                 <el-tooltip  placement="top">
-                                                                    <div slot="content">多行信息<br/>第二行信息</div>
+                                                                    <div slot="content">王者荣耀标题规范示例：黄金3（2星）-钻石1 （3星） 铭文：129</div>
                                                                     <span class="icon-button">
                                                                         <i class="el-icon-question" ></i>
                                                                     </span>
@@ -107,7 +107,6 @@
                                                         </el-row>
                                                     </el-form-item>
                                                 </el-col>
-
                                                 <el-col :span="12">
                                                     <el-form-item label="接单密码" prop="take_order_password">
                                                         <el-row :gutter="10">
@@ -225,7 +224,7 @@
                                                                 <el-input
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.amount">
+                                                                        v-model.number="form.amount">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -239,7 +238,7 @@
                                                                 <el-input
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.source_amount">
+                                                                        v-model.number="form.source_amount">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -256,10 +255,17 @@
                                                                         type="input"
                                                                         :rows="2"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.security_deposit">
+                                                                        v-model.number="form.security_deposit">
                                                                 </el-input>
                                                             </el-col>
-                                                            <el-col :span="1"></el-col>
+                                                            <el-col :span="1">
+                                                                <el-tooltip  placement="top">
+                                                                    <div slot="content">安全保证金是指对上家游戏账号安全进行保障时下家所需预先支付的保证形式的费用。<br/>当在代练过程中出现账号安全问题，即以双方协商或客服仲裁的部分或全部金额赔付给上家。<br/>（安全问题包括游戏内虚拟道具的安全，例如：符文、角色经验、胜点、负场经下家代练后不增反减、私自与号主联系、下家使用第三方软件带来的风险）</div>
+                                                                    <span class="icon-button">
+                                                                        <i class="el-icon-question" ></i>
+                                                                    </span>
+                                                                </el-tooltip>
+                                                            </el-col>
                                                         </el-row>
                                                     </el-form-item>
                                                 </el-col>
@@ -270,10 +276,17 @@
                                                                 <el-input
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.efficiency_deposit">
+                                                                        v-model.number="form.efficiency_deposit">
                                                                 </el-input>
                                                             </el-col>
-                                                            <el-col :span="1"></el-col>
+                                                            <el-col :span="1">
+                                                                <el-tooltip  placement="top">
+                                                                    <div slot="content">效率保证金是指对上家的代练要求进行效率保障时下家所需预先支付的保证形式的费用。<br/>当下家未在规定时间内完成代练要求，即以双方协商或客服仲裁的部分或全部金额赔付给上家。<br/>（代练要求包括：下家在规定时间内没有完成上家的代练要求，接单4小时内没有上号，代练时间过四分之一但代练进度未达六分之一，下家原因退单，下家未及时上传代练截图）</div>
+                                                                    <span class="icon-button">
+                                                                        <i class="el-icon-question" ></i>
+                                                                    </span>
+                                                                </el-tooltip>
+                                                            </el-col>
                                                         </el-row>
                                                     </el-form-item>
                                                 </el-col>
@@ -286,7 +299,7 @@
                                                                 <el-input
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.player_phone">
+                                                                        v-model.number="form.player_phone">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -299,7 +312,7 @@
                                                             <el-col :span="22">
                                                                 <el-select
                                                                         @change="handleBusinessmanQQIdChange"
-                                                                        v-model="form.businessmanQQId"
+                                                                        v-model.number="form.businessmanQQId"
                                                                         placeholder="请选择">
                                                                     <el-option
                                                                             v-for="item in businessmanQQOptions"
@@ -329,11 +342,18 @@
                                                             <el-col :span="22">
                                                                 <el-input
                                                                         type="input"
-                                                                        v-model="form.price_increase_step"
+                                                                        v-model.number="form.price_increase_step"
                                                                         autocomplete="off">
                                                                 </el-input>
                                                             </el-col>
-                                                            <el-col :span="1"></el-col>
+                                                            <el-col :span="1">
+                                                                <el-tooltip  placement="top">
+                                                                    <div slot="content">设置后，若一小时仍无人接单，将自动补款所填金额，每小时补款一次</div>
+                                                                    <span class="icon-button">
+                                                                        <i class="el-icon-question" ></i>
+                                                                    </span>
+                                                                </el-tooltip>
+                                                            </el-col>
                                                         </el-row>
                                                     </el-form-item>
                                                 </el-col>
@@ -343,11 +363,18 @@
                                                             <el-col :span="22">
                                                                 <el-input
                                                                         type="input"
-                                                                        v-model="form.price_ceiling"
+                                                                        v-model.number="form.price_ceiling"
                                                                         autocomplete="off">
                                                                 </el-input>
                                                             </el-col>
-                                                            <el-col :span="1"></el-col>
+                                                            <el-col :span="1">
+                                                                <el-tooltip  placement="top">
+                                                                    <div slot="content">自动加价将不超过该价格</div>
+                                                                    <span class="icon-button">
+                                                                        <i class="el-icon-question" ></i>
+                                                                    </span>
+                                                                </el-tooltip>
+                                                            </el-col>
                                                         </el-row>
                                                     </el-form-item>
                                                 </el-col>
@@ -411,7 +438,6 @@
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="12">
-
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -491,6 +517,30 @@
             'tid',
         ],
         data() {
+            var isPhone = (rule, value, callback) => {
+                let phone=/^(13[012356789][0-9]{8}|15[012356789][0-9]{8}|18[02356789][0-9]{8}|147[0-9]{8}|1349[0-9]{7})$/;
+                if (!phone.test(value)) {
+                    callback(new Error('请填写正确的手机号！'));
+                } else {
+                    callback();
+                }
+            };
+            var mustOverZero = (rule, value, callback) => {
+                let isNumber=/^([1-9]\d*|0)(\.\d{1,2})?$/;
+                if (value && !isNumber.test(value)) {
+                    callback(new Error('请输入大于0的数字值，支持2位小数!'));
+                } else {
+                    callback();
+                }
+            };
+            var overZeroInt = (rule, value, callback) => {
+                let isNumber=/^[1-9]\d*$/;
+                if (value && !isNumber.test(value)) {
+                    callback(new Error('请输入大于0的整数值!'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 gameLevelingRequirementVisible:false,
                 gameLevelingRequirementOptions:[],
@@ -573,68 +623,32 @@
                         { required: true, message: '请输入代练要求', trigger: 'blur' },
                     ],
                     amount: [
-                        { required: true, message: '请输入代练价格', trigger: 'change' }
+                        { required: true, message: '请输入代练价格', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     source_amount: [
-                        {
-                            validator:(rule, value, callback)=>{
-                                if(value != ""){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
-                                        callback(new Error("加价幅度必须为数字值"));
-                                    }else{
-                                        callback();
-                                    }
-                                }else{
-                                    callback();
-                                }
-                            },
-                            trigger:'blur'
-                        },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     efficiency_deposit: [
-                        { required: true, message: '请输入效率保证金', trigger: 'change' }
+                        { required: true, message: '请输入效率保证金', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     security_deposit: [
-                        { required: true, message: '请输入安全保证金', trigger: 'change' }
+                        { required: true, message: '请输入安全保证金', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     player_phone: [
                         { required: true, message: '请输入玩家电话', trigger: 'blur' },
-                        { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                        { validator: isPhone, trigger: 'blur' }
                     ],
                     user_qq: [
                         { required: true, message: '请选择商户QQ', trigger: 'blur' },
                     ],
                     price_increase_step: [
-                        {
-                            validator:(rule, value, callback)=>{
-                                if(value != ""){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
-                                        callback(new Error("加价幅度必须为数字值"));
-                                    }else{
-                                        callback();
-                                    }
-                                }else{
-                                    callback();
-                                }
-                            },
-                            trigger:'blur'
-                        },
+                        { validator: overZeroInt, trigger: 'blur' }
                     ],
                     price_ceiling: [
-                        {
-                            validator:(rule,value,callback)=>{
-                                if(value != ""){
-                                    if((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false){
-                                        callback(new Error("加价上限必须为数字值"));
-                                    }else{
-                                        callback();
-                                    }
-                                }else{
-                                    callback();
-                                }
-                            },
-                            trigger:'blur'
-                        },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
 
                 },

@@ -4,6 +4,7 @@
             :visible=true
             :before-close="handleBeforeClose">
         <el-form :model="form"
+                 :rules="complainRule"
                  ref="form"
                  label-width="100px"
                  class="demo-ruleForm">
@@ -31,7 +32,7 @@
                 </el-dialog>
             </el-form-item>
             <el-form-item label="仲裁原因"
-                          :rules="[{ required: true, message: '仲裁原因不能为空'}]">
+                          prop="reason">
                 <el-input type="textarea"
                           :rows="8"
                           v-model="form.reason"></el-input>
@@ -62,6 +63,13 @@
             }
         },
         data() {
+            var reasonRule = (rule, value, callback) => {
+                if (value.length > 50) {
+                    callback(new Error('申请仲裁原因不得大于50字！'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 fileReader: '',
                 dialogImageUrl: '',
@@ -74,6 +82,12 @@
                     images:[],
                     trade_no: this.tradeNo
                 },
+                complainRule:{
+                    reason: [
+                        { required: true, message: '必填项不能为空'},
+                        { validator: reasonRule, trigger: 'blur' }
+                    ]
+                }
             };
         },
         methods: {
@@ -108,7 +122,7 @@
                     }
                 });
             },
-            HandleResetForm(formName) {
+            handleResetForm(formName) {
                 this.$refs[formName].resetFields();
             },
             // 预览图片

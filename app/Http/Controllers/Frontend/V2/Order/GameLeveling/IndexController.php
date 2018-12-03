@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
+use App\Models\User;
 use DB;
 use Auth;
 use Exception;
@@ -123,8 +124,6 @@ class IndexController extends Controller
      */
     public function store()
     {
-        // 验证前台传入数据
-
         // 下单
         try {
             GameLevelingOrder::placeOrder(request()->user(),request()->all());
@@ -183,9 +182,36 @@ class IndexController extends Controller
             'parent_user_id' => request()->user()->getPrimaryUserId(),
         ])->lockForUpdate()->first();
 
+        $order->remark = request('remark');
+        $order->save();
+
         try {
             $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                 ->get();
+
+            // 订单日志
+            $user = User::find($order->user_id);
+            $description = "用户[{$user->username}]修改了订单";
+            GameLevelingOrderLog::createOrderHistory($order, $user, 22, $description);
+
+            // 是否设置了自动加价
+            GameLevelingOrder::checkAutoMarkUpPrice($order);
+
+            /***存在来源订单号（淘宝主订单号）, 写入关联淘宝订单表***/
+            GameLevelingOrder::changeSameOriginOrderSourcePrice($order, request()->all());
+
+            // 更新基础表数据
+            $orderBasicData = OrderBasicData::where('order_no', $order->trade_no)->first();
+
+            if ($orderBasicData) {
+                $orderBasicData->game_id = $order->game_id;
+                $orderBasicData->game_name = $order->gameLevelingOrderDetail->game_name;
+                $orderBasicData->price = $order->price;
+                $orderBasicData->security_deposit = $order->security_deposit;
+                $orderBasicData->efficiency_deposit = $order->efficiency_deposit;
+                $orderBasicData->original_price = $order->source_price;
+                $orderBasicData->save();
+            }
 
             if ($gameLevelingPlatforms->count() > 0) {
                 // 订单是没有接单情况可修改所有信息 in_array($order->status, [1, 22])
@@ -211,33 +237,33 @@ class IndexController extends Controller
                         DB::rollBack();
                         return response()->ajax(0, '更新失败');
                     }
-                } elseif($order->status == 18) { // 状态锁定 可改密码
-                    $order->update(request()->only(['game_account', 'game_password']));
-                    // 调用更新接口
-                    call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['modifyOrder']], [$order]);
+                } elseif (in_array($order->status, [13, 14, 17, 18])) { // 状态锁定 可改密码
+                    if (request('game_password') != $order->game_password) {
+                        $order->game_password = request('game_password');
+                        $order->save();
+
+                        call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['modifyGamePassword']], [$order]);
+                    }
                 } else {
                     DB::rollBack();
-                    return response()->ajax(0, '当前状态不允许更改');
+                    return response()->ajax(0, '当前状态不允许更改!');
                 }
-
             } else {
                 return response()->ajax(0, '更新成功!');
             }
-        } catch (\Exception $exception) {
-            return response()->ajax(0, '更新失败服务器异常');
+        } catch (\Exception $e) {
+            DB::rollback();
+            myLog('order-update-error', [$e->getMessage(), $e->getLine(), $e->getFile()]);
+            return response()->ajax(0, '更新失败服务器异常!');
         }
-        # 更新日志
-//        GameLevelingOrderLog::createOrderHistory($order,
-//            1,
-//            "用户[{$order->user_id}]从[".config('order.source')[$order->source]."]渠道创建了订单");
 
         DB::commit();
-
-        return response()->ajax(1, '更新成功');
+        return response()->ajax(1, '更新成功!');
     }
 
     /**
      * 订单操作日志
+     *
      * @return mixed
      */
     public function log()
@@ -250,6 +276,7 @@ class IndexController extends Controller
 
     /**
      * 删除
+     *
      * @return mixed
      */
     public function delete()
@@ -262,7 +289,7 @@ class IndexController extends Controller
                 $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                     ->get();
 
-                if ($gameLevelingPlatforms->count() > 1) {
+                if ($gameLevelingPlatforms->count() > 0) {
                     // 删除下单成功的
                     foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
                         call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['delete']], [$order]);
@@ -296,7 +323,7 @@ class IndexController extends Controller
                 $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                     ->get();
 
-                if ($gameLevelingPlatforms->count() > 1) {
+                if ($gameLevelingPlatforms->count() > 0) {
                     // 下单成功的接单平台
                     foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
                         call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['onSale']], [$order]);
@@ -330,7 +357,7 @@ class IndexController extends Controller
                 $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                     ->get();
 
-                if ($gameLevelingPlatforms->count() > 1) {
+                if ($gameLevelingPlatforms->count() > 0) {
                     // 下单成功的接单平台
                     foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
                         call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['offSale']], [$order]);
@@ -566,31 +593,6 @@ class IndexController extends Controller
             if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
                 OrderOperateController::init(Auth::user(), $order)->cancelComplain();
                 call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['cancelComplain']], [$order]);
-            } else {
-                throw new GameLevelingOrderOperateException('订单不存在!');
-            }
-        } catch (GameLevelingOrderOperateException $e) {
-            DB::rollback();
-            return response()->ajax(0, $e->getMessage());
-        } catch (Exception $e) {
-            DB::rollback();
-            return response()->ajax(0, '订单异常！');
-        }
-        DB::commit();
-        return response()->ajax(1, '操作成功!');
-    }
-
-
-    /**
-     * 修改订单
-     * @return mixed
-     */
-    public function modifyOrder()
-    {
-        DB::beginTransaction();
-        try {
-            if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
-                call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['modifyOrder']], [$order]);
             } else {
                 throw new GameLevelingOrderOperateException('订单不存在!');
             }

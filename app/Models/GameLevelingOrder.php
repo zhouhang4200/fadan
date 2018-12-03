@@ -92,6 +92,14 @@ class GameLevelingOrder extends Model
         return $this->gameLevelingOrderPreviousStatuses()->latest('id')->value('status');
     }
 
+    public function sendUser() {
+        return $this->belongsTo(User::class, 'id', 'user_id');
+    }
+
+    public function takeUser() {
+        return $this->belongsTo(User::class, 'id', 'take_user_id');
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
@@ -244,7 +252,8 @@ class GameLevelingOrder extends Model
 //            static::changeSameOriginOrderSourcePrice($order, $data);
 
             /************写入订单操作记录***********/
-            GameLevelingOrderLog::createOrderHistory($order, 1, "用户[{$order->user_id}]从[".config('order.source')[$order->source]."]渠道创建了订单");
+            $user = User::find($order->user_id);
+            GameLevelingOrderLog::createOrderHistory($order, $user, 1, "用户[{$user->username}]从[".config('order.source')[$order->source]."]渠道创建了订单");
 
             /************* 如果设置了接单人则直接变为接单*************************/
             if (isset($data['gainer_user_id']) && $data['gainer_user_id']) {
@@ -293,7 +302,7 @@ class GameLevelingOrder extends Model
                 'order_password' => $order->take_order_password,
                 'creator_username' => $gameLevelingOrderDetail->username,
             ];
-            $redis->lpush('new-order:send', json_encode($sendOrder));
+           $redis->lpush('new-order:send', json_encode($sendOrder));
         } catch (Exception $e) {
             DB::rollback();
             myLog('place-order-error', ['trade_no' => $order->trade_no ?? '', 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);

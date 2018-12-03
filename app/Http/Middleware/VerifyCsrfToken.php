@@ -14,5 +14,6 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         '/channel/order/',
         '/channel/pay/wx/notify/',
+        '/v2/account/authentication-upload/',
     ];
 }

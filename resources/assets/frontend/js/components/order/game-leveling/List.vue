@@ -803,7 +803,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.gameLevelingOrderCancelConsult({
+                    this.$api.gameLevelingOrderCancelConsult({
                         'trade_no': row.trade_no
                     }).then(res => {
                         this.$message({

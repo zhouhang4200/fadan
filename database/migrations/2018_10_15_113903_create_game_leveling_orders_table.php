@@ -54,6 +54,7 @@ class CreateGameLevelingOrdersTable extends Migration
             $table->dateTime('top_at')->nullable()->comment('置顶的时间');
             $table->dateTime('apply_complete_at')->nullable()->comment('申请验收时间');
             $table->dateTime('complete_at')->nullable()->comment('订单完成时间');
+            $table->string('remark', 100)->nullable()->comment('客服备注');
             $table->timestamps();
         });
     }
