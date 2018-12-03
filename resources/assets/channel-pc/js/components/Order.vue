@@ -30,45 +30,9 @@
 
             <div class="game">
                 <ul>
-                    <li>
-                        <img src="/channel-pc/images/wz.png" alt="">
-                        <div>王者荣耀</div>
-                    </li>
-                    <li>
-                        <img src="/channel-pc/images/wz.png" alt="">
-                        <div>王者荣耀</div>
-                    </li>
-                    <li>
-                        <img src="/channel-pc/images/wz.png" alt="">
-                        <div>王者荣耀</div>
-                    </li>
-                    <li>
-                        <img src="/channel-pc/images/wz.png" alt="">
-                        <div>王者荣耀</div>
-                    </li>
-                    <li>
-                        <img src="/channel-pc/images/wz.png" alt="">
-                        <div>王者荣耀</div>
-                    </li>
-                    <li>
-                        <img src="/channel-pc/images/wz.png" alt="">
-                        <div>王者荣耀</div>
-                    </li>
-                    <li>
-                        <img src="/channel-pc/images/wz.png" alt="">
-                        <div>王者荣耀</div>
-                    </li>
-                    <li>
-                        <img src="/channel-pc/images/wz.png" alt="">
-                        <div>王者荣耀</div>
-                    </li>
-                    <li>
-                        <img src="/channel-pc/images/wz.png" alt="">
-                        <div>王者荣耀</div>
-                    </li>
-                    <li>
-                        <img src="/channel-pc/images/wz.png" alt="">
-                        <div>王者荣耀</div>
+                    <li :class=" item.id === form.game_id ? 'activate' : '' " v-for="item in gameOptions" @click="onClickGame(item.id)">
+                        <img src="/channel-pc/images/wz.png" alt="单击选择游戏">
+                        <div>{{ item.text }}</div>
                     </li>
                 </ul>
                 <div class="clear-float"></div>
@@ -81,23 +45,23 @@
                     <el-form-item label="游戏区服">
                         <el-cascader
                                 style="width: 100%;"
-                                :options="options"
-                                v-model="selectedOptions"
+                                :options="gameRegionServerOptions"
+                                v-model="gameRegionServerActivate"
                         >
                         </el-cascader>
                     </el-form-item>
 
                     <el-form-item label="代练类型">
                         <el-select
-                                v-model="form.game_id"
+                                @change="onGameLevelingChange"
+                                v-model="form.game_leveling_type_id"
                                 style="width: 100%;"
                                 placeholder="请选择">
                             <el-option
-                                    v-for="item in options2"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
-                                    :disabled="item.disabled">
+                                    v-for="item in gameLevelingTypeOptions"
+                                    :key="item.id"
+                                    :label="item.text"
+                                    :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -105,21 +69,33 @@
                     <el-form-item label="代练目标">
 
                         <el-col :span="11">
-                            <el-date-picker type="date"
-                                            placeholder="选择日期"
-                                            v-model="form.date1"
-                                            style="width: 100%;">
-                            </el-date-picker>
+                            <el-select
+                                    v-model="form.current_level_id"
+                                    style="width: 100%;"
+                                    placeholder="请选择">
+                                <el-option
+                                        v-for="item in levelOptions"
+                                        :key="item.id"
+                                        :label="item.text"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
                         </el-col>
 
                         <el-col style="text-align: center" :span="2">-</el-col>
 
                         <el-col :span="11">
-                            <el-time-picker type="fixed-time"
-                                            placeholder="选择时间"
-                                            v-model="form.date2"
-                                            style="width: 100%;">
-                            </el-time-picker>
+                            <el-select
+                                    v-model="form.target_id"
+                                    style="width: 100%;"
+                                    placeholder="请选择">
+                                <el-option
+                                        v-for="item in targetLevelOptions"
+                                        :key="item.id"
+                                        :label="item.text"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
                         </el-col>
                     </el-form-item>
 
@@ -178,87 +154,54 @@
 
         data() {
             return {
-                options2: [{
-                    value: '选项1',
-                    label: '黄金糕'
-                }, {
-                    value: '选项2',
-                    label: '双皮奶',
-                    disabled: true
-                }, {
-                    value: '选项3',
-                    label: '蚵仔煎'
-                }, {
-                    value: '选项4',
-                    label: '龙须面'
-                }, {
-                    value: '选项5',
-                    label: '北京烤鸭'
-                }],
-                options: [
-                    {
-                        value: 'zhinan',
-                        label: '指南',
-                        children: [
-                            {
-                                value: 'shejiyuanze',
-                                label: '设计原则',
-                            },
-                            {
-                                value: 'daohang',
-                                label: '导航',
-                            }
-                        ]
-                    },
-                    {
-                        value: 'ziyuan',
-                        label: '资源',
-                        children: [{
-                            value: 'axure',
-                            label: 'Axure Components'
-                        }, {
-                            value: 'sketch',
-                            label: 'Sketch Templates'
-                        }, {
-                            value: 'jiaohu',
-                            label: '组件交互文档'
-                        }]
-                    }],
-                selectedOptions: [],
-                selectedOptions2: [],
-                active: 0,
+                gameOptions:[], // 游戏选项
+                gameRegionServerOptions:[],  // 代练区服选项
+                gameRegionServerActivate:[], // 当前选中的代练区服
+                gameLevelingTypeOptions:[], // 代练类型选项
+                levelOptions:[], // 代练等级
+                targetLevelOptions:[], // 代练等级目标
                 form: {
                     game_id: '',
+                    game_leveling_type_id: '',
+                    current_level_id: '', // 当前段位
+                    target_level_id: '', // 目标段位
                 }
             };
         },
 
-        mounted() {
+        created() {
             this.getGameOptions();
         },
 
         methods: {
-            onClickLeft() {
-                this.$toast('返回');
-            },
+            // 获取游戏选项
             getGameOptions() {
                 this.$api.games().then(res => {
-                    this.gamesOptions = res.content;
+                    this.gameOptions = res.content;
                 });
             },
-            getGameLevelingOptions() {
-                this.$api.gameLevelingTypes({game_id: this.gameId}).then(res => {
+            // 获取游戏区服选项
+            getGameRegionServerOptions() {
+                this.$api.gameRegionServer({game_id: this.form.game_id}).then(res => {
+                    this.gameRegionServerOptions = res.content;
+                });
+            },
+            // 获取游戏代练类型选项
+            getGameLevelingTypeOptions() {
+                this.$api.gameLevelingTypes({game_id: this.form.game_id}).then(res => {
                     this.gameLevelingTypeOptions = res.content;
                 });
             },
+            // 获取游戏代练等级选项
             getGameLevelingLevelOptions() {
                 this.$api.gameLevelingLevels({
-                    game_id: this.gameId,
-                    game_leveling_type_id: this.gameLevelingTypeId
+                    game_id: this.form.game_id,
+                    game_leveling_type_id: this.form.game_leveling_type_id
                 }).then(res => {
-                    this.levels = res.content;
-                    this.gameLevelingLevelOptions[0].values = res.content;
-                    this.gameLevelingLevelOptions[1].values = res.content[0].level;
+                    this.levelOptions = res.content;
+                    let level = res.content.concat();
+                    // this.targetLevelOptions = level.splice(0,1);
+                    console.log(level);
                 });
             },
             getGameLevelingAmountTime() {
@@ -272,6 +215,19 @@
                     this.amount = res.content.discount_amount + '元';
                     this.discount = '原价' + '<s>' + res.content.amount + '元</s>';
                 });
+            },
+            onClickGame(value) {
+                this.form.game_id = value;
+                this.form.game_leveling_type_id = '';
+                this.gameRegionServerOptions = [];
+                this.gameRegionServerActivate = [];
+                this.gameLevelingTypeOptions = [];
+                this.getGameRegionServerOptions();
+                this.getGameLevelingTypeOptions();
+            },
+            onGameLevelingChange(value) {
+                this.form.game_leveling_type_id = value;
+                this.getGameLevelingLevelOptions();
             },
             onConfirmGame(value) {
                 this.gameId = value.id;
@@ -329,15 +285,6 @@
                 this.time = '待评估';
                 this.discount = '代练价格';
             },
-            // $router.back(-1)
-            test() {
-                this.$router.push({
-                    name:'paySuccess',
-                    query:{
-                        'trade_no' : 'sd'
-                    }
-                })
-            }
         }
     }
 </script>
@@ -360,7 +307,7 @@
             }
             .game {
                 text-align: center;
-                color: #CDCDCD;
+                /*color: #CDCDCD;*/
                 ul {
                     li {
                         padding: 30px 0 0 40px;
@@ -370,6 +317,9 @@
                             height: 50px;
                             border-radius: 50%;
                         }
+                    }
+                    .activate {
+                        color:#409EFF;
                     }
                 }
             }

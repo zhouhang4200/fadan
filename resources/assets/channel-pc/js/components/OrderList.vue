@@ -605,7 +605,7 @@
             }
             .table {
                 /*border: 1px solid #efefef;*/
-                min-height: 700px;
+                min-height: 600px;
                 .table-warp {
                     padding: 0 15px;
                 }
@@ -644,4 +644,5 @@
             }
         }
     }
+
 </style>

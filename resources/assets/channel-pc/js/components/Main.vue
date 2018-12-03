@@ -43,10 +43,29 @@
         </div>
 
         <div class="footer">
-            <div class="container">
-
+            <div class="container" style="padding-top: 35px">
+                <div class="fl" style="width: 200px">
+                    <div class="">在线客服: </div>
+                    <div class="">服务时间: 09:00-23:00</div>
+                </div>
+                <div class="fl" style="width: 1px;height: 60px; background: #b0b0b0;"></div>
+                <div class="fl nav" style="padding-left: 40px">
+                    <div class="" style="margin-bottom: 5px;">
+                        <ul>
+                            <li>关注我们</li>
+                            <li>联系我们</li>
+                            <li>免责声明隐私政策</li>
+                            <li>商务合作</li>
+                        </ul>
+                        <div class="clear-float"></div>
+                    </div>
+                    <div style="margin-bottom: 5px;">网站备案:鄂ICP备17017191号　　网络文化经营许可证:鄂网文(2017) 8165-175号</div>
+                    <div style="margin-bottom: 5px;">copyrighto 2017湖北氟金网络科技有限公司All Rights Reserved</div>
+                </div>
+                <div class="clear-float"></div>
             </div>
         </div>
+
     </div>
 
 </template>
@@ -155,16 +174,23 @@
     }
 
     .main {
-         margin-top: 75px;
+        margin-top: 75px;
+        min-height: calc(100vh - 125px);
     }
 
     .footer {
-        position: relative;
-        padding: 45px 0;
-        line-height: 24px;
+        height: 125px;
+        /*line-height: 24px;*/
         color: #b0b0b0;
         background: #434654;
         font-size: 12px;
-        box-shadow: 0 2px 5px 0 rgba(29, 8, 8, .12)
+        -webkit-box-shadow: 0 2px 5px 0 rgba(29, 8, 8, 0.12);
+        box-shadow: 0 2px 5px 0 rgba(29, 8, 8, .12);
+        .nav {
+            ul li {
+                float: left;
+                padding-right: 15px;
+            }
+        }
     }
 </style>

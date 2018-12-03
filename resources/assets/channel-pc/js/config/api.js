@@ -1,45 +1,42 @@
-import { post, get } from './axios';
+import { post } from './axios';
 
 // 获取订单数据
 export default {
+    games() {
+        return post('/games');
+    },
     // 渠道订单
     GameLevelingChannelOrderList(params) {
-        return post('/channel/order-list', params)
+        return post('/order-list', params);
     },
     GameLevelingChannelOrderComplete(params) {
-        return post('/channel/complete', params)
+        return post('/complete', params);
     },
     GameLevelingChannelOrderCancelRefund(params) {
-        return post('/channel/cancel-refund', params)
+        return post('/cancel-refund', params);
     },
-    games() {
-        return post('/channel/games')
-    },
-    gameRegions(params) {
-        return post('/channel/game-regions', params)
-    },
-    gameServers(params) {
-        return post('/channel/game-servers', params)
+    gameRegionServer(params) {
+        return post('/game-region-server', params);
     },
     gameLevelingTypes(params) {
-        return post('/channel/game-leveling-types', params)
+        return post('/game-leveling-types', params);
     },
     //　获取代练等级
     gameLevelingLevels(params) {
-        return post('/channel/game-leveling-levels', params)
+        return post('/game-leveling-levels', params);
     },
     // 计算代练价格与时间
     gameLevelingAmountTime(params) {
-        return post('/channel/game-leveling-amount-time', params)
+        return post('/game-leveling-amount-time', params);
     },
     // 创建订单
     gameLevelingChannelOrderCreate(params) {
-        return post('/channel/store', params)
+        return post('/store', params);
     },
     GameLevelingChannelOrderApplyRefund(params) {
-        return post('/channel/apply-refund', params)
+        return post('/apply-refund', params);
     },
     GameLevelingChannelOrderShow(params) {
-        return post('/channel/show', params)
+        return post('/show', params);
     }
 }

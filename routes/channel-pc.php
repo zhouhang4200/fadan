@@ -8,10 +8,8 @@ Route::namespace('Channel')->group(function () {
         })->where('vue', '[\/\w\.-]*');
         #　获取代练游戏
         Route::post('games', 'GameLevelingChannelOrderController@games');
-        #　获取游戏区
-        Route::post('game-regions', 'GameLevelingChannelOrderController@regions');
-        # 获取游戏服
-        Route::post('game-servers', 'GameLevelingChannelOrderController@servers');
+        #　获取游戏区与服
+        Route::post('game-region-server', 'GameLevelingChannelOrderController@regionServer');
         # 获取代练类型
         Route::post('game-leveling-types', 'GameLevelingChannelOrderController@gameLevelingTypes');
         # 获取代练等级

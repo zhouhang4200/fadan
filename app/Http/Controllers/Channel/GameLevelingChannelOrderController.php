@@ -33,34 +33,18 @@ class GameLevelingChannelOrderController extends Controller
      *
      * @return mixed
      */
-    public function game()
-    {
-        try {
-            $games = GameLevelingChannelGame::where('user_id', session('user_id'))
-                ->pluck('game_name')
-                ->unique()
-                ->toArray();
-        } catch (\Exception $e) {
-            return response()->ajax(0, '数据异常');
-        }
-        return response()->ajax(1, $games);
-    }
-
-    /**
-     * 获取所有的代练游戏
-     *
-     * @return mixed
-     */
     public function games()
     {
-        
         try {
-            $games = GameLevelingChannelGame::selectRaw('game_name as text, game_id as id, user_id')
+            $games = GameLevelingChannelGame::selectRaw('game_name as text, game_id as id, user_id, game_id')
                 ->where('user_id', session('user_id'))
+                ->with(['game' => function ($query) {
+                    $query->select('id', 'icon');
+                }])
                 ->groupBy('game_id')
                 ->get()
                 ->map(function ($item, $key) {
-                    return collect($item)->except(['user_id']);
+                    return collect($item)->except(['user_id', 'game_id']);
                 });
         } catch (\Exception $e) {
             return response()->ajax(0, '数据异常' . $e->getMessage());
@@ -102,6 +86,28 @@ class GameLevelingChannelOrderController extends Controller
         } catch (Exception $e) {
             return response()->ajax(0, '', $e->getMessage());
         }
+    }
+
+    /**
+     * 获取游戏区与服
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function regionServer()
+    {
+        $gameRegionServer = GameRegion::select('id', 'id as value', 'name as label', 'game_id')
+            ->with([
+                'gameServers' => function ($query) {
+                    $query->select('id', 'id as value', 'name as label', 'game_region_id');
+                }
+            ])
+            ->where('game_id', request('game_id'))
+            ->get()
+            ->toJson();
+
+        // 替换游戏区关联关系名称
+        $lastData = str_replace("game_servers", "children", $gameRegionServer);
+
+        return response()->ajax(1, '', json_decode($lastData));
     }
 
     /**

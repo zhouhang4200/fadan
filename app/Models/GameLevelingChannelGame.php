@@ -54,4 +54,12 @@ class GameLevelingChannelGame extends Model
         }
         return $query;
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function game()
+    {
+        return $this->belongsTo(Game::class);
+    }
 }
