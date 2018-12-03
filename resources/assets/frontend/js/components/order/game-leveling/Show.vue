@@ -1272,7 +1272,7 @@
                     this.form.take_order_password = res.take_order_password; // 接单密码
                     this.form.player_phone = res.game_leveling_order_detail.player_phone; // 玩家电话
                     this.form.user_qq = res.game_leveling_order_detail.user_qq; // 商家qq
-                    this.form.remark = res.remark;
+                    this.form.remark = res.game_leveling_order_detail.user_remark;
                     this.form.domains = [];
                     // 平台数据
                     this.platformData = [

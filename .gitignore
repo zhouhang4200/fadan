@@ -15,9 +15,13 @@ yarn-error.log
 /public/frontend/v2/css/
 /public/frontend/v2/fonts/
 /public/frontend/v2/mix-manifest.json
-/public/channel/js/
-/public/channel/css/
-/public/channel/fonts/
-/public/channel/mix-manifest.json
+/public/channel-wx/js/
+/public/channel-wx/css/
+/public/channel-wx/fonts/
+/public/channel-wx/mix-manifest.json
+/public/channel-pc/js/
+/public/channel-pc/css/
+/public/channel-pc/fonts/
+/public/channel-pc/mix-manifest.json
 !.gitignore
 /app/Console/Commands/DevCommand.php

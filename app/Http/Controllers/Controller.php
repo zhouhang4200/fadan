@@ -16,6 +16,5 @@ class Controller extends BaseController
         if (php_sapi_name() != 'cli') {
             myLog('ip', [getClientIp()]);
         }
-
     }
 }

@@ -255,4 +255,8 @@ return [
     'time_url' => env('TIME_URL', 'http://js.qsios.com/time.php'),
 
     'socket_url' => env('SOCKET_URL', 'http://js.qsios.com:90'),
+    # 域名 wx 端域名
+    'channel_wx_domain' => env('CHANNEL_WX_DOMAIN', 'http://channel-m.qsios.com'),
+    # 渠道 pc 端域名
+    'channel_pc_domain' => env('CHANNEL_PC_DOMAIN', 'http://channel.qsios.com'),
 ];

@@ -9,8 +9,13 @@ if (env && env.admin) {
     return
 }
 // 判断如果是channel那就执行 webpack.channel.js 构建渠道项目，构建之后return就不会往下执行了
-if (env && env.channel) {
-    require(`${__dirname}/webpack.channel.js`);
+if (env && env.channel.wx) {
+    require(`${__dirname}/webpack.channel.wx.js`);
+    return
+}
+
+if (env && env.channel.pc) {
+    require(`${__dirname}/webpack.channel.pc.js`);
     return
 }
 

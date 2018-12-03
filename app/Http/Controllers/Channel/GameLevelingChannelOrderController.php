@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Frontend\Channel;
+namespace App\Http\Controllers\Channel;
 
 use DB;
 use Exception;
@@ -12,10 +12,8 @@ use EasyWeChat\Factory;
 use App\Models\GameServer;
 use App\Models\GameRegion;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\GameLevelingType;
 use App\Models\GameLevelingOrder;
-use App\Exceptions\DailianException;
 use App\Http\Controllers\Controller;
 use App\Models\GameLevelingChannelGame;
 use App\Models\GameLevelingChannelUser;
@@ -327,7 +325,6 @@ class GameLevelingChannelOrderController extends Controller
 
         return $response;
     }
-
 
     /**
      * 获取IP地址

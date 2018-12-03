@@ -35,13 +35,21 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        $this->mapApiRoutes();
+        # 渠道微信端
+        if(request()->getHost() == config('app.channel_wx_domain')) {
+            $this->mapChannelWxRoutes();
+        # 渠道pc端
+        } else if(request()->getHost() == config('app.channel_pc_domain')) {
+            $this->mapChannelPcRoutes();
+        } else {
+            $this->mapApiRoutes();
 
-        $this->mapWebRoutes();
+            $this->mapWebRoutes();
 
-        $this->mapBackendRoutes();
+            $this->mapBackendRoutes();
 
-        $this->mapFrontendRoutes();
+            $this->mapFrontendRoutes();
+        }
     }
 
     /**
@@ -92,5 +100,25 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
             ->namespace($this->namespace)
             ->group(base_path('routes/frontend.php'));
+    }
+
+    /**
+     * 渠道wx端路由文件
+     */
+    protected function mapChannelWxRoutes()
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/channel-wx.php'));
+    }
+
+    /**
+     * 渠道pc端路由文件
+     */
+    protected function mapChannelPcRoutes()
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/channel-pc.php'));
     }
 }

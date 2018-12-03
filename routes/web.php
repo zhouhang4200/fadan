@@ -560,7 +560,7 @@ Route::prefix('channel')->namespace('Frontend\Channel')->group(function () {
         # 申请退款
         Route::post('apply-refund', 'GameLevelingChannelOrderController@applyRefund')->name('channel.apply-refund');
         #　取消退款
-        Route::post('cancel-refund', 'GameLevelingChannelOrderController@cancelRefund')->name('channel.cancel-refund'); //
+        Route::post('cancel-refund', 'GameLevelingChannelOrderController@cancelRefund')->name('channel.cancel-refund');
     });
     # 微信支付回调
     Route::any('pay/wx/notify', 'GameLevelingChannelOrderController@weChatNotify')->name('channel.game-leveling.wx.pay.notify');
