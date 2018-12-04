@@ -85,6 +85,9 @@ class IndexController extends Controller
                 'gameLevelingOrderConsult' => function($query) {
                     $query->select(
                         'game_leveling_order_trade_no',
+                        'amount',
+                        'security_deposit',
+                        'efficiency_deposit',
                         'status',
                         'initiator'
                     );
