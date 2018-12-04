@@ -1114,6 +1114,7 @@
                     day: 0,
                     hour: 1,
                     gameLevelingRequirementId: '',
+                    consult_describe:''
                 },
                 rules: {
                     game_leveling_type_id: [
@@ -1295,6 +1296,7 @@
                     this.form.user_qq = res.game_leveling_order_detail.user_qq; // 商家qq
                     this.form.remark = res.game_leveling_order_detail.user_remark;
                     this.form.domains = [];
+                    this.form.consult_describe=res.consult_describe;
                     // 平台数据
                     this.platformData = [
                         {
@@ -1797,7 +1799,9 @@
             },
             // 同意撤销
             handleAgreeConsult(row) {
-                this.$confirm('您确定要"同意撤销"吗？', '提示', {
+                let str=this.form.consult_describe + " ，确认 同意撤销 吗?";
+
+                this.$confirm(str, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'

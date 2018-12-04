@@ -8,7 +8,7 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="5">
-                    <el-form-item label="发送手机">
+                    <el-form-item label="手机号">
                         <el-input v-model="searchParams.client_phone"></el-input>
                     </el-form-item>
                 </el-col>

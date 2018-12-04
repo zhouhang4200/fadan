@@ -769,7 +769,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.gameLevelingOrderComplete({
+                    this.$api.gameLevelingOrderComplete({
                         'trade_no': row.trade_no
                     }).then(res => {
                         this.$message({
@@ -824,7 +824,9 @@
             },
             // 同意撤销
             handleAgreeConsult(row) {
-                this.$confirm('您确定要"同意撤销"吗？', '提示', {
+                let str=row.consult_describe + " ，确认 同意撤销 吗?";
+
+                this.$confirm(str, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'

@@ -254,10 +254,9 @@
                             });
                             this.handleTableData();
                         }).catch(err => {
-                            this.$alert('获取数据失败, 请重试!', '提示', {
-                                confirmButtonText: '确定',
-                                callback: action => {
-                                }
+                            this.$message({
+                                type: 'error',
+                                message: '操作失败'
                             });
                         });
                     } else {
@@ -278,10 +277,9 @@
                             });
                             this.handleTableData();
                         }).catch(err => {
-                            this.$alert('获取数据失败, 请重试!', '提示', {
-                                confirmButtonText: '确定',
-                                callback: action => {
-                                }
+                            this.$message({
+                                type: 'error',
+                                message: '操作失败'
                             });
                         });
                     } else {
@@ -291,18 +289,23 @@
             },
             // 加价删除
             markupDelete(id) {
-                this.$api.SettingMarkupDelete({id: id}).then(res => {
-                    this.$message({
-                        showClose: true,
-                        type: res.status == 1 ? 'success' : 'error',
-                        message: res.message
-                    });
-                    this.handleTableData();
-                }).catch(err => {
-                    this.$alert('获取数据失败, 请重试!', '提示', {
+                this.$confirm('您确定要删除吗？', '提示', {
                         confirmButtonText: '确定',
-                        callback: action => {
-                        }
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                }).then(() => {
+                    this.$api.SettingMarkupDelete({id: id}).then(res => {
+                        this.$message({
+                            showClose: true,
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
+                        });
+                        this.handleTableData();
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
                     });
                 });
             },
@@ -348,10 +351,9 @@
                     });
                     this.handleTableData();
                 }).catch(err => {
-                    this.$alert('获取数据失败, 请重试!', '提示', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                        }
+                    this.$message({
+                        type: 'error',
+                        message: '操作失败'
                     });
                 });
             },

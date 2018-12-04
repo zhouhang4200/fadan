@@ -63,18 +63,23 @@
         methods: {
             // 删除
             authorizeDelete(id) {
-                this.$api.SettingAuthorizeDelete({id:id}).then(res => {
-                    this.$message({
-                        showClose: true,
-                        type: res.status == 1 ? 'success' : 'error',
-                        message: res.message
-                    });
-                    this.handleTableData();
-                }).catch(err => {
-                    this.$alert('获取数据失败, 请重试!', '提示', {
+                this.$confirm('您确定要删除吗？', '提示', {
                         confirmButtonText: '确定',
-                        callback: action => {
-                        }
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                }).then(() => {
+                    this.$api.SettingAuthorizeDelete({id:id}).then(res => {
+                        this.$message({
+                            showClose: true,
+                            type: res.status == 1 ? 'success' : 'error',
+                            message: res.message
+                        });
+                        this.handleTableData();
+                    }).catch(err => {
+                        this.$message({
+                            type: 'error',
+                            message: '操作失败'
+                        });
                     });
                 });
             },
@@ -84,10 +89,9 @@
                     this.url=res;
                     window.location.href=this.url;
                 }).catch(err => {
-                    this.$alert('获取数据失败, 请重试!', '提示', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                        }
+                    this.$message({
+                        type: 'error',
+                        message: '操作失败'
                     });
                 });
             },
