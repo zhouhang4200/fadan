@@ -17,7 +17,7 @@ Route::namespace('Channel')->group(function () {
         # 计算代练价格和时间
         Route::post('game-leveling-amount-time', 'GameLevelingChannelOrderController@gameLevelingAmountTime');
         # 创建订单
-        Route::post('store', 'GameLevelingChannelOrderController@store')->name('channel.game-leveling.store');
+        Route::post('store', 'GameLevelingChannelOrderController@pcStore');
         # 详情页
         Route::post('show', 'GameLevelingChannelOrderController@show')->name('channel.show');
         # 渠道订单列表

@@ -4,11 +4,13 @@ import ElementUI from 'element-ui';
 import api from './config/api';
 import router from './config/route';
 
+
 Vue.use(ElementUI, {size:"small"});
 Vue.use(VueRouter);
 
 // 挂载 api
 Vue.prototype.$api = api;
+Vue.prototype.$base64 = api;
 
 const app = new Vue({
     el: '#app',

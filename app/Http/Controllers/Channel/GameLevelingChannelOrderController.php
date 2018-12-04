@@ -286,6 +286,104 @@ class GameLevelingChannelOrderController extends Controller
     }
 
     /**
+     * @return mixed
+     * @throws EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     */
+    public function pcStore()
+    {
+        #　获取游戏
+        $game = Game::find(request('game_id'));
+
+        #　获取区
+        $region = GameRegion::find(request('game_region_id'));
+
+        #　获取服
+        $server = GameServer::find(request('game_server_id'));
+
+        # 游戏代练类型
+        $gameLevelingType = GameLevelingType::find(request('game_leveling_type_id'));
+
+        # 获取代练价格时间保证金
+        $amountTimeDeposit = GameLevelingChannelOrder::amountTimeDepositCompute(
+            session()->get('user_id'),
+            $game->id,
+            $gameLevelingType->id,
+            request('current_level_id'),
+            request('target_level_id'));
+
+        # 创建订单
+        $order = GameLevelingChannelOrder::create([
+            'trade_no' => generateOrderNo(),
+            'user_id' => session('user_id'),
+            'user_qq' => $amountTimeDeposit->user_qq,
+            'game_id' => $game->id,
+            'game_name' => $game->name,
+            'game_region_id' => $region->id,
+            'game_region_name' => $region->id,
+            'game_server_id' => $server->id,
+            'game_server_name' => $server->name,
+            'game_leveling_type_id' => $gameLevelingType->id,
+            'game_leveling_type_name' => $gameLevelingType->name,
+            'game_leveling_channel_user_id' => session('channel_user_id'),
+            'game_account' => request('game_account'),
+            'game_password' => request('game_password'),
+            'game_role' => request('game_role'),
+            'player_phone' => request('player_phone'),
+            'player_qq' => request('player_qq'),
+            'payment_type' => request('payment_type'),
+            'title' => $game->name . '-' . $gameLevelingType->name . '-' . $amountTimeDeposit->current_level->name . '-' . $amountTimeDeposit->target_level->name,
+            'day' => $amountTimeDeposit->day,
+            'hour' => $amountTimeDeposit->hour,
+            'amount' => $amountTimeDeposit->amount,
+            'supply_amount' => $amountTimeDeposit->supply_amount,
+            'security_deposit' => $amountTimeDeposit->security_deposit,
+            'efficiency_deposit' => $amountTimeDeposit->efficiency_deposit,
+            'explain' => $amountTimeDeposit->explain,
+            'requirement' => $amountTimeDeposit->requirement,
+            'demand' => $amountTimeDeposit->current_level->name . '-' . $amountTimeDeposit->target_level->name,
+        ]);
+
+        # 获取支付信息 1 支付宝 2 微信
+        if ($order->payment_type == 1) {
+            # 支付宝扫码支付
+            $pay = Pay::alipay(config('alipay.base_config'))->scan([
+                'out_trade_no' => $order->trade_no,
+                'total_amount' => $order->amount,
+                'subject' => '代练订单支付',
+            ]);
+
+            # 生成二维码
+            $qr = base64_encode(\QrCode::format('png')
+                ->merge('/public/channel-pc/images/alipay_qr.png')
+                ->size(200)->errorCorrection('H')
+                ->generate($pay['qr_code']));
+
+            return response()->ajax(1, 'success', ['type' => 1, 'trade_no' => $order->trade_no, 'qr' => 'data:image/png;base64,' . $qr]);
+        } elseif ($order->payment_type == 2) {
+            # 微信扫码支付
+            $app = Factory::payment(config('wechat.payment.default'));
+            $pay = $app->order->unify([
+                'body' => $order->title,
+                'detail' => '丸子代练',
+                'out_trade_no' => $order->trade_no,
+                'total_fee' => bcmul($order->amount, 100, 0),
+                'trade_type' => 'NATIVE',
+                'product_id' => $order->trade_no, // $message['product_id'] 则为生成二维码时的产品 ID
+                'notify_url' => route('channel.game-leveling.wx.pay.notify'),
+                'return_url' => url('/channel/order/pay/success', ['trade_no' => $order->trade_no]),
+            ]);
+
+            # 生成二维码
+            $qr = base64_encode(\QrCode::format('png')
+                ->merge('/public/channel-pc/images/wechat_qr.png')
+                ->size(200)->errorCorrection('H')
+                ->generate($pay['code_url']));
+
+            return response()->ajax(1, 'success', ['type' => 2, 'trade_no' => $order->trade_no, 'qr' => 'data:image/png;base64,' . $qr]);
+        }
+    }
+
+    /**
      * 微信回调
      *
      * @return \Symfony\Component\HttpFoundation\Response

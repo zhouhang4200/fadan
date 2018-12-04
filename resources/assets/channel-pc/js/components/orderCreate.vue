@@ -17,19 +17,19 @@
                     <td width="10%">总价</td>
                 </tr>
                 <tr style="height: 40px;">
-                    <td style="padding-left: 15px">代代练目标代练目s</td>
-                    <td>s</td>
-                    <td>s</td>
-                    <td>25元</td>
-                    <td>25元</td>
+                    <td style="padding-left: 15px">{{ useTimePreview.game }}{{ useTimePreview.region }}{{ useTimePreview.server }}</td>
+                    <td>{{ useTimePreview.currentLevel }} - {{ useTimePreview.targetLevel }}</td>
+                    <td>{{ useTimePreview.type }}</td>
+                    <td>{{ useTimePreview.time }}</td>
+                    <td>{{ useTimePreview.discountAmount }}</td>
                 </tr>
             </table>
 
-            <el-form ref="form" :model="form" label-width="80px" style="margin-top: 30px">
+            <el-form ref="form" :model="form" :rules="rules" label-width="80px" style="margin-top: 30px">
                 <el-row :gutter="30">
                     <el-col :span="10">
-                        <el-form-item label="活动名称">
-                            <el-input v-model="form.payment_type"></el-input>
+                        <el-form-item label="游戏角色" prop="game_role">
+                            <el-input v-model="form.game_role"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
@@ -39,26 +39,26 @@
 
                 <el-row :gutter="30">
                     <el-col :span="10">
-                        <el-form-item label="活动名称">
-                            <el-input v-model="form.payment_type"></el-input>
+                        <el-form-item label="游戏账号" prop="game_account">
+                            <el-input v-model="form.game_account"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="活动名称">
-                            <el-input v-model="form.payment_type"></el-input>
+                        <el-form-item label="游戏密码" prop="game_password">
+                            <el-input v-model="form.game_password"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
 
                 <el-row :gutter="30">
                     <el-col :span="10">
-                        <el-form-item label="活动名称">
-                            <el-input v-model="form.payment_type"></el-input>
+                        <el-form-item label="联系电话" prop="player_phone">
+                            <el-input v-model="form.player_phone"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="活动名称">
-                            <el-input v-model="form.payment_type"></el-input>
+                        <el-form-item label="联系QQ" prop="player_qq">
+                            <el-input v-model="form.player_qq"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -76,7 +76,7 @@
 
             <div class="pay" style="margin-top: 20px">
 
-                <div class="pay-method fl pay-method-activate">
+                <div class="pay-method fl" :class=" form.payment_type === 1 ? 'pay-method-activate' : '' " @click="form.payment_type = 1">
                     <img src="/channel-pc/images/ali-pay.png" alt="">
 
                     <span class="pay-method-activate-icon">
@@ -84,7 +84,10 @@
                     </span>
                 </div>
 
-                <div class="pay-method fl" style="padding: 15px 30px;margin-left: 10px">
+                <div class="pay-method fl"
+                     style="padding: 15px 30px;margin-left: 10px"
+                     :class=" form.payment_type === 2 ? 'pay-method-activate' : '' "
+                     @click="form.payment_type = 2">
                     <img src="/channel-pc/images/wechat-pay.png" alt="">
 
                     <span class="pay-method-activate-icon">
@@ -100,11 +103,11 @@
         <div class="amount box-shadow">
             <div class="fl">
                 <div class="fl">实付金额:</div>
-                <div class="fl" style="font-size: 20px;color:#ff0000;">￥25.00 </div>
-                <div class="fl" style="padding-left: 5px;text-decoration: line-through;"> ￥40.00</div>
+                <div class="fl" style="font-size: 20px;color:#ff0000;">￥ {{ useTimePreview.discountAmount  }}</div>
+                <div class="fl" style="padding-left: 5px;text-decoration: line-through;"> ￥ {{ useTimePreview.amount }}</div>
             </div>
             <div class="fr">
-                <el-button type="primary" @click="payDialogVisible = true">立即支付</el-button>
+                <el-button type="primary" @click="onSubmitForm">立即支付</el-button>
             </div>
             <div class="clear-float"></div>
         </div>
@@ -118,11 +121,11 @@
             </div>
             <div class="" style="text-align: center">
                 <div class="qr-image">
-                    <img src="/channel-pc/images/qr.png" alt="">
+                    <img :src="qr">
                 </div>
                 <div style="height: 30px;line-height: 30px;font-weight: 700;">应付金额</div>
-                <div style="height: 30px;line-height: 30px;font-size: 23px;color:#ff0000">￥65.00</div>
-                <div class="">请打开支付宝"扫一扫"完成支付</div>
+                <div style="height: 30px;line-height: 30px;font-size: 23px;color:#ff0000">￥{{ useTimePreview.discountAmount }}</div>
+                <div class="">请打开 {{ form.payment_type === 1 ? '支付宝' : '微信' }} "扫一扫"完成支付</div>
             </div>
         </el-dialog>
 
@@ -130,116 +133,98 @@
 </template>
 
 <script>
+    let Base64 = require('js-base64').Base64;
     export default {
         name: "orderCreate",
 
         data() {
-          return {
-              payDialogVisible:false,
-              gameServerOptionsShow:false,
-              gameRegionOptionsShow:false,
-              gameServer:'',
-              gameRegion:'',
-              amount:'待评估',
-              time:'待评估',
-              discount:'代练价格',
-              game:'',
-              level:'',
-              form: {
-                  payment_type:'2',
-                  game_region_id:0,
-                  game_server_id:0,
-                  game_account:'',
-                  game_password:'',
-                  game_role:'',
-                  player_phone:'',
-                  player_qq:'',
-                  game_id:this.$route.query.game,
-                  game_leveling_type_id:this.$route.query.type,
-                  current_level_id:this.$route.query.current,
-                  target_level_id:this.$route.query.target,
-              },
-              gameRegionOptions:[],
-              gameServerOptions:[],
-          }
+            return {
+                qr: '',
+                payDialogVisible: false,
+                gameServerOptionsShow: false,
+                gameRegionOptionsShow: false,
+                gameServer: '',
+                gameRegion: '',
+                amount: '待评估',
+                time: '待评估',
+                discount: '代练价格',
+                game: '',
+                level: '',
+                form: {
+                    payment_type: 1,
+                    game_account: '',
+                    game_password: '',
+                    game_role: '',
+                    player_phone: '',
+                    player_qq: '',
+                    game_id: '',
+                    game_region_id: '',
+                    game_server_id: '',
+                    game_leveling_type_id: '',
+                    current_level_id: '',
+                    target_level_id: '',
+                },
+                rules: {
+                    game_role: [
+                        { required: true, message: '请输入游戏角色', trigger: 'blur' },
+                    ],
+                    game_account: [
+                        { required: true, message: '请输入游戏账号', trigger: 'blur' },
+                    ],
+                    game_password: [
+                        { required: true, message: '请输入游戏密码', trigger: 'blur' },
+                    ],
+                    player_phone: [
+                        { required: true, message: '请输入联系电话', trigger: 'blur' },
+                    ],
+                    player_qq: [
+                        { required: true, message: '请输入联系QQ', trigger: 'blur' },
+                    ]
+                },
+                useTimePreview: {
+                    game: '',
+                    region: '',
+                    server: '',
+                    time: '',
+                    currentLevel: '',
+                    targetLevel: '',
+                    amount: '0',
+                    discountAmount: '0',
+                },
+                gameRegionOptions: [],
+                gameServerOptions: [],
+            }
         },
 
-        mounted() {
-            this.getGameRegionOptions();
-            this.getGameLevelingAmountTime();
+        created() {
+            let order = JSON.parse(Base64.decode(this.$route.query.t));
+            this.form.game_id = order.game;
+            this.form.game_region_id = order.region;
+            this.form.game_server_id = order.server;
+            this.form.game_leveling_type_id = order.type;
+            this.form.current_level_id = order.current;
+            this.form.target_level_id = order.target;
+            this.useTimePreview = order.useTimePreview;
         },
 
         methods: {
-            onClickLeft() {
-                this.$router.back(-1)
-            },
-            getGameRegionOptions() {
-                this.$api.gameRegions({game_id:this.$route.query.game}).then(res => {
-                    this.gameRegionOptions = res.content;
-                });
-            },
-            getGameServerOptions() {
-                this.$api.gameServers({region_id:this.form.game_region_id}).then(res => {
-                    this.gameServerOptions = res.content;
-                });
-            },
-            getGameLevelingAmountTime() {
-                this.$api.gameLevelingAmountTime({
-                    game_id:this.$route.query.game,
-                    game_leveling_type_id:this.$route.query.type,
-                    game_leveling_current_level_id:this.$route.query.current,
-                    game_leveling_target_level_id:this.$route.query.target,
-                }).then(res => {
-                    this.game = res.content.game;
-                    this.level = res.content.level;
-                    this.time = res.content.time;
-                    this.amount = res.content.discount_amount　+　'元';
-                    this.discount = '原价' + '<s>' + res.content.amount + '元</s>';
-                });
-            },
-            onConfirmGameRegion(value) {
-                this.form.game_region_id = value.id;
-                this.gameRegion = value.text;
-                this.getGameServerOptions();
-                this.gameRegionOptionsShow = false;
-            },
-            onConfirmGameServer(value) {
-                this.form.game_server_id = value.id;
-                this.gameServer = value.text;
-                this.gameServerOptionsShow = false;
-            },
-            onSubmitForm(){
-                this.$validator.validateAll().then((result) => {
-                    if (result) {
+            onSubmitForm() {
+                this.$refs.form.validate((valid) => {
+                    if (valid) {
                         var currentThis = this;
                         this.$api.gameLevelingChannelOrderCreate(this.form).then(res => {
-                            var storeRes = res;
                             if (res.content.type == 1) {
-                                var span = document.createElement("span");
-                                span.innerHTML = res.content;
-                                document.body.appendChild(span);
-                                document.forms[0].submit();
+                                this.qr = res.content.qr;
+                                currentThis.payDialogVisible = true;
                             } else {
-                                WeixinJSBridge.invoke(
-                                    'getBrandWCPayRequest', storeRes.content.par,
-                                    function(result){
-                                        if(result.err_msg == "get_brand_wcpay_request:ok" ) {
-                                            currentThis.$router.push({
-                                                name:'paySuccess',
-                                                query:{
-                                                    'trade_no' : storeRes.content.trade_no
-                                                }
-                                            });
-                                        }
-                                    }
-                                );
+                                this.qr = res.content.qr;
+                                currentThis.payDialogVisible = true;
                             }
                         });
                     }
                 });
             }
         }
-
     }
 </script>
 
@@ -265,24 +250,24 @@
                 border-radius: 5px;
                 width: 100px;
                 padding: 10px 30px;
-                position:relative;
-                cursor:pointer;
-                overflow:hidden;
+                position: relative;
+                cursor: pointer;
+                overflow: hidden;
 
                 img {
                     width: 100%;
 
                 }
 
-                .pay-method-activate-icon{
-                    position:absolute;
+                .pay-method-activate-icon {
+                    position: absolute;
                     width: 24px;
                     height: 24px;
-                    right:0;
+                    right: 0;
                     bottom: 0;
                     display: none;
                 }
-                .pay-method-activate-icon span{
+                .pay-method-activate-icon span {
                     display: block;
                     width: 0;
                     height: 0;
@@ -298,7 +283,7 @@
                     -webkit-transform: rotate(45deg);
                     -o-transform: rotate(7deg);
                 }
-                .pay-method-activate-icon::after{
+                .pay-method-activate-icon::after {
                     position: absolute;
                     top: 10px;
                     left: 14px;
@@ -313,7 +298,7 @@
                 }
             }
             .pay-method-activate {
-                border: 1px solid  #ff0000;
+                border: 1px solid #ff0000;
 
                 .pay-method-activate-icon {
                     display: block;
