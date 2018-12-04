@@ -769,7 +769,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.gameLevelingOrderComplete({
+                    this.$api.gameLevelingOrderComplete({
                         'trade_no': row.trade_no
                     }).then(res => {
                         this.$message({
