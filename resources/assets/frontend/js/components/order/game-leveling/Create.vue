@@ -518,7 +518,7 @@
         ],
         data() {
             var isPhone = (rule, value, callback) => {
-                let phone=/^(13[012356789][0-9]{8}|15[012356789][0-9]{8}|18[02356789][0-9]{8}|147[0-9]{8}|1349[0-9]{7})$/;
+                let phone=/^1[3|4|5|7|8][0-9]\d{8}$/;
                 if (!phone.test(value)) {
                     callback(new Error('请填写正确的手机号！'));
                 } else {
