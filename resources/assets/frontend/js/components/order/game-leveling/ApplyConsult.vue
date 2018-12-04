@@ -18,11 +18,11 @@
                               v-model="form.amount"></el-input>
                 </el-form-item>
 
-                <el-form-item label="需要对方赔付保证金"
-                              prop="payment_deposit"
-                >
+                <el-form-item label="我愿意支付代练费（元）"
+                              prop="payment_amount"
+                              >
                     <el-input type="input"
-                              v-model.number="form.payment_deposit"></el-input>
+                              v-model.number="form.payment_amount"></el-input>
                 </el-form-item>
 
                 <el-form-item label="对方已预付安全保证金（元）">
@@ -37,11 +37,11 @@
                               v-model="form.efficiency_deposit"></el-input>
                 </el-form-item>
 
-                <el-form-item label="我愿意支付代练费（元）"
-                              prop="payment_amount"
-                              >
+                <el-form-item label="需要对方赔付保证金"
+                              prop="payment_deposit"
+                >
                     <el-input type="input"
-                              v-model.number="form.payment_amount"></el-input>
+                              v-model.number="form.payment_deposit"></el-input>
                 </el-form-item>
 
                 <el-form-item label="撤销理由"
