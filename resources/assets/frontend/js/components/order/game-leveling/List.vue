@@ -824,17 +824,7 @@
             },
             // 同意撤销
             handleAgreeConsult(row) {
-                let who='';
-                let str='';
-                let deposit='';
-                if (row.game_leveling_order_consult.initiator === 1) {
-                    who='您';
-                } else {
-                    who='对方';
-                }
-
-                deposit=Number(row.game_leveling_order_consult.security_deposit)+Number(row.game_leveling_order_consult.efficiency_deposit);
-                str=who+"发起撤销，您支出代练费: "+Number(row.game_leveling_order_consult.amount)+"，您收入双金: "+deposit+"，确认 同意撤销 吗？";
+                let str=row.consult_describe + " ，确认 同意撤销 吗?";
 
                 this.$confirm(str, '提示', {
                     confirmButtonText: '确定',

@@ -104,6 +104,7 @@ class IndexController extends Controller
             $item->get_poundage = $item->getPoundage();
             $item->profit = ($item->get_amount  - $item->pay_amount  - $item->get_poundage) + 0;
             $item->remark_edit = false;
+            $item->consult_describe = $item->getConsultDescribe();
             $responseData['items'][] = $item;
         }
 

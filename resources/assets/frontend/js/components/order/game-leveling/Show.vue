@@ -1114,6 +1114,7 @@
                     day: 0,
                     hour: 1,
                     gameLevelingRequirementId: '',
+                    consult_describe:''
                 },
                 rules: {
                     game_leveling_type_id: [
@@ -1295,6 +1296,7 @@
                     this.form.user_qq = res.game_leveling_order_detail.user_qq; // 商家qq
                     this.form.remark = res.game_leveling_order_detail.user_remark;
                     this.form.domains = [];
+                    this.form.consult_describe=res.consult_describe;
                     // 平台数据
                     this.platformData = [
                         {
@@ -1797,17 +1799,7 @@
             },
             // 同意撤销
             handleAgreeConsult(row) {
-                let who='';
-                let str='';
-                let deposit='';
-                if (this.form.game_leveling_order_consult.initiator === 1) {
-                    who='您';
-                } else {
-                    who='对方';
-                }
-
-                deposit=Number(this.form.game_leveling_order_consult.security_deposit)+Number(this.form.game_leveling_order_consult.efficiency_deposit);
-                str=who+"发起撤销，您支出代练费: "+Number(this.form.game_leveling_order_consult.amount)+"，您收入双金: "+deposit+"，确认 同意撤销 吗？";
+                let str=this.form.consult_describe + " ，确认 同意撤销 吗?";
 
                 this.$confirm(str, '提示', {
                     confirmButtonText: '确定',
