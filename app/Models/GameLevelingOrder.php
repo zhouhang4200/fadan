@@ -656,7 +656,7 @@ class GameLevelingOrder extends Model
                         $this->gameLevelingOrderConsult->reason
                     );
                 } else {
-                    return sprintf("对方发起撤销, <br/> 对方支付代练费用 %.2f 元, 您支付保证金 %.2f <br/> 原因: %s",
+                    return sprintf("对方发起撤销, <br/> 您支付代练费用 %.2f 元, 对方支付保证金 %.2f <br/> 原因: %s",
                         $this->gameLevelingOrderConsult->amount,
                         bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
                         $this->gameLevelingOrderConsult->reason
@@ -709,8 +709,7 @@ class GameLevelingOrder extends Model
                         $this->gameLevelingOrderComplain->reason
                     );
                 } else {
-
-                    return sprintf("客服进行了【仲裁】  <br/> 您支付代练费用 %.2f 元, 对方支付保证金 %.2f <br/> 仲裁说明： %s",
+                    return sprintf("客服进行了【仲裁】  <br/> 对方支付代练费用 %.2f 元, 您支付保证金 %.2f <br/> 仲裁说明： %s",
                         $this->gameLevelingOrderComplain->amount,
                         bcadd($this->gameLevelingOrderComplain->security_deposit, $this->gameLevelingOrderComplain->efficiency_deposit),
                         $this->gameLevelingOrderComplain->reason
