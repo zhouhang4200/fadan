@@ -22,7 +22,7 @@ class CreateGameLevelingChannelRefundsTable extends Migration
             $table->unsignedInteger('hour')->comment('小时');
             $table->unsignedTinyInteger('type')->comment('退款类型：1 全额 2 部分');
             $table->unsignedTinyInteger('payment_type')->comment('支付方式:1 支付宝 2 微信');
-            $table->unsignedTinyInteger('status')->comment('订单状态:1 待付款 2 进行中 3 待收货 4 完成 6 退款中 7 已退款');
+            $table->unsignedTinyInteger('status')->comment('退款状态:1 申请中 2 已退款 3 已拒绝 4 已取消');
             $table->decimal('amount', 10, 2)->unsigned()->comment('订单金额');
             $table->decimal('payment_amount', 10, 2)->unsigned()->comment('实付金额');
             $table->decimal('refund_amount', 10, 2)->default(0)->unsigned()->comment('申请退款金额');

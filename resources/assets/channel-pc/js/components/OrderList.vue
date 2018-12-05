@@ -12,26 +12,38 @@
                 <span class="fr">有问题? <span style="color: #409EFF">联系客服</span> </span>
                 <div class="clear-float"></div>
             </div>
+
             <div class="search">
                 <el-form :inline="true" :model="searchParams" class="demo-form-inline">
 
                     <el-form-item label="筛选">
-                        <el-select v-model="searchParams.status" placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
+                        <el-select
+                                v-model="searchParams.game_id"
+                                placeholder="游戏">
+                            <el-option
+                                    label="所有游戏"
+                                    value="0">
+                            </el-option>
+                            <el-option
+                                    v-for="item in gameOptions"
+                                    :key="item.id"
+                                    :label="item.text"
+                                    :value="item.id">
+                            </el-option>
                         </el-select>
+
                     </el-form-item>
                     <el-form-item>
-                        <el-input v-model="searchParams.status" placeholder="审批人"></el-input>
+                        <el-input v-model="searchParams.trade_no" placeholder="订单号"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary">查询</el-button>
+                        <el-button type="primary" @click="onClickSearch">查询</el-button>
                     </el-form-item>
                 </el-form>
             </div>
 
-            <el-tabs v-model="searchParams.status" type="border-card" @tab-click="handleClick">
-                <el-tab-pane label="全部" name="1"></el-tab-pane>
+            <el-tabs v-model="searchParams.status" type="border-card" @tab-click="onClickSearch">
+                <el-tab-pane label="全部" name="0"></el-tab-pane>
                 <el-tab-pane label="进行中" name="2"></el-tab-pane>
                 <el-tab-pane label="待收货" name="3"></el-tab-pane>
                 <el-tab-pane label="已完成" name="4"></el-tab-pane>
@@ -52,11 +64,12 @@
                     </div>
                 </div>
 
-                <div class="table-row">
+                <div class="table-row"
+                     v-for="item in list" :key="item.id">
                     <div class="row-title">
                         <div class="table-warp">
-                            <div class="fl">订单号: 545454548785454</div>
-                            <div class="fr">22222</div>
+                            <div class="fl">订单号: {{ item.trade_no }}</div>
+                            <div class="fr">下单时间: {{ item.created_at }}</div>
                             <div class="clear-float"></div>
                         </div>
                     </div>
@@ -67,93 +80,62 @@
                                     <div class="fl">
                                         <img src="/channel-pc/images/wz.png" style="height: 30px; border-radius: 50%">
                                     </div>
-                                    <span style="line-height: 30px;height: 30px;padding-left: 5px">青铜</span>
+                                    <span style="line-height: 30px;height: 30px;padding-left: 5px">{{ item.title }}</span>
                                     <div class="clear-float"></div>
                                 </div>
-                                <div class="" style="color:#AEAEAE;font-size: 11px">代练游戏: 王者荣耀</div>
-                                <div class="" style="color:#AEAEAE;font-size: 11px">区服信息: IOS微信/安卓</div>
-                            </div>
-                            <div class="fl w20" style="height: 78px;line-height: 78px;">198元</div>
-                            <div class="fl w20" :style="tableRowLineHeight('1')">
-                                <div style="padding-top: 10px">待收货</div>
-                                <div style="font-size: 11px;color: #9A9A9A">距离自动确认</div>
-                                <div style="margin:0 auto;font-weight: normal;background-color: #409EFF;border-radius: 10px;width: 45%;height: 20px;line-height: 20px;font-size: 9px;color:#fff;">
-                                    <i class="el-icon-time"></i>还有两小时
+                                <div class="" style="color:#AEAEAE;font-size: 11px">代练游戏: {{ item.game_name }}</div>
+                                <div class="" style="color:#AEAEAE;font-size: 11px">区服信息: {{ item.game_region_name }}/{{
+                                    item.game_server_name }}
                                 </div>
                             </div>
+                            <div class="fl w20" style="height: 78px;line-height: 78px;">{{ item.amount }}元</div>
+                            <div class="fl w20" :style="tableRowLineHeight(item.status)">
+
+                                <div v-if="item.status === 3">
+                                    <div style="padding-top: 10px">{{ status[item.status] }}</div>
+                                    <div style="font-size: 11px;color: #9A9A9A">距离自动确认</div>
+                                    <div style="margin:0 auto;font-weight: normal;background-color: #409EFF;border-radius: 10px;width: 45%;height: 20px;line-height: 20px;font-size: 9px;color:#fff;">
+                                        <i class="el-icon-time"></i>还有两小时
+                                    </div>
+                                </div>
+
+                                <div v-else>{{ status[item.status] }}</div>
+
+                            </div>
                             <div class="fl w20" style="height: 78px;line-height: 78px;">
+                                <el-button v-if="item.status === 2" size="small" @click="onClickApplyRefund(item)">申请退款
+                                </el-button>
 
                                 <el-popover
+                                        v-if="item.status == 3"
                                         placement="top"
                                         width="160"
-                                        v-model="visible2">
-                                    <p>这是一段内容这是一段内容确定删除吗？</p>
+                                        v-model="confirmCompleteVisible">
+                                    <p>您确认收货吗？</p>
                                     <div style="text-align: right; margin: 0">
-                                        <el-button size="mini" type="text" @click="visible2 = false">取消</el-button>
-                                        <el-button type="primary" size="mini" @click="visible2 = false">确定</el-button>
+                                        <el-button size="mini" type="text" @click="confirmCompleteVisible = false">取消</el-button>
+                                        <el-button type="primary" size="mini" @click="onClickConfirmComplete(item.trade_no)">确定</el-button>
                                     </div>
                                     <el-button size="small" slot="reference">确认收货</el-button>
                                 </el-popover>
+                                <el-button v-if="item.status === 3" size="small" @click="onClickApplyRefund(item)">申请退款</el-button>
 
-                                <el-button size="small" @click="dialogVisible = true">申请退款</el-button>
-
-                            </div>
-                            <div class="clear-float"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-row">
-                    <div class="row-title">
-                        <div class="table-warp">
-                            <div class="fl">订单号: 545454548785454</div>
-                            <div class="fr">22222</div>
-                            <div class="clear-float"></div>
-                        </div>
-                    </div>
-                    <div class="row-content">
-                        <div class="table-warp">
-                            <div class="fl w40">
-                                <div class="">
-                                    <div class="fl">
-                                        <img src="/channel-pc/images/wz.png" style="height: 30px; border-radius: 50%">
-                                    </div>
-                                    <span style="line-height: 30px;height: 30px;padding-left: 5px">青铜</span>
-                                    <div class="clear-float"></div>
+                                <div v-if="item.status === 5">
+                                    <el-popover
+                                            placement="top"
+                                            width="160"
+                                            v-model="confirmCancelRefundPopoverVisible">
+                                        <p>您确定取消退款吗？</p>
+                                        <div style="text-align: right; margin: 0">
+                                            <el-button size="mini" type="text" @click="confirmCancelRefundPopoverVisible = false">取消</el-button>
+                                            <el-button type="primary" size="mini" @click="onClickCancelRefund(item.trade_no)">确定</el-button>
+                                        </div>
+                                        <el-button size="small" slot="reference">取消退款</el-button>
+                                    </el-popover>
+                                    <el-button size="small" @click="onClickShowRefund(item.trade_no)">查看退款</el-button>
                                 </div>
-                                <div class="" style="color:#AEAEAE;font-size: 11px">代练游戏: 王者荣耀</div>
-                                <div class="" style="color:#AEAEAE;font-size: 11px">区服信息: IOS微信/安卓</div>
-                            </div>
-                            <div class="fl w20" style="height: 78px;line-height: 78px;">198元</div>
-                            <div class="fl w20" :style="tableRowLineHeight('2')">
-                                <div>还有两小时</div>
-                            </div>
-                            <div class="fl w20" style="height: 78px;line-height: 78px;">
 
-                                <el-popover
-                                        placement="top"
-                                        width="160"
-                                        v-model="visible2">
-                                    <p>这是一段内容这是一段内容确定删除吗？</p>
-                                    <div style="text-align: right; margin: 0">
-                                        <el-button size="mini" type="text" @click="visible2 = false">取消</el-button>
-                                        <el-button type="primary" size="mini" @click="visible2 = false">确定</el-button>
-                                    </div>
-                                    <el-button size="small" slot="reference">确认收货</el-button>
-                                </el-popover>
-
-                                <el-popover
-                                        placement="top"
-                                        width="160"
-                                        v-model="visible2">
-                                    <p>这是一段内容这是一段内容确定删除吗？</p>
-                                    <div style="text-align: right; margin: 0">
-                                        <el-button size="mini" type="text" @click="visible2 = false">取消</el-button>
-                                        <el-button type="primary" size="mini" @click="visible2 = false">确定</el-button>
-                                    </div>
-                                    <el-button size="small" slot="reference">申请退款</el-button>
-                                </el-popover>
-
+                                <el-button v-if="item.status === 6" size="small" @click="onClickShowRefund(item.trade_no)">查看退款</el-button>
                             </div>
                             <div class="clear-float"></div>
                         </div>
@@ -164,69 +146,68 @@
             </div>
         </div>
 
-        <!--<el-dialog-->
-        <!--title="申请退款"-->
-        <!--:visible.sync="dialogVisible"-->
-        <!--width="30%"-->
-        <!--top="15vh"-->
-        <!--:before-close="handleClose">-->
-        <!--<div class="" style="">-->
-        <!--<table style="border: 1px solid #efefef;border-spacing: 0;width: 100%;font-size: 11px">-->
-        <!--<tr style="height: 25px;background-color: #efefef;">-->
-        <!--<td width="30%" style="padding-left: 5px">代练游戏/区服</td>-->
-        <!--<td width="40%">代练目标</td>-->
-        <!--<td width="30%">订单编号</td>-->
-        <!--</tr>-->
-        <!--<tr style="height: 25px;">-->
-        <!--<td style="padding-left: 5px">代代练目标代练目s</td>-->
-        <!--<td>s</td>-->
-        <!--<td>s</td>-->
-        <!--</tr>-->
-        <!--</table>-->
-        <!--<el-form label-position="top" ref="form" :model="refundForm" label-width="80px" style="margin-top: 20px">-->
-        <!--<el-form-item label="退款金额">-->
-        <!--<el-radio-group v-model="refundForm.amount">-->
-        <!--<el-radio label="全额退款"></el-radio>-->
-        <!--<el-radio label="部分退款">部分退款 <el-input v-model="refundForm.amount" style="width: 60%"></el-input></el-radio>-->
-        <!--</el-radio-group>-->
-        <!--</el-form-item>-->
+        <el-dialog
+                title="申请退款"
+                :visible.sync="applyRefundDialogVisible"
+                width="30%"
+                top="15vh"
+                :before-close="handleClose">
+            <div class="" style="">
+                <table style="border: 1px solid #efefef;border-spacing: 0;width: 100%;font-size: 11px">
+                    <tr style="height: 25px;background-color: #efefef;">
+                        <td width="30%" style="padding-left: 5px">代练游戏/区服</td>
+                        <td width="40%">代练目标</td>
+                        <td width="30%">订单编号</td>
+                    </tr>
+                    <tr style="height: 25px;">
+                        <td style="padding-left: 5px">{{ refundForm.game_name }}/{{ refundForm.game_region_name }}/{{ refundForm.game_server_name }}</td>
+                        <td>{{ refundForm.title }}</td>
+                        <td style="padding-right: 5px">{{ refundForm.trade_no }}</td>
+                    </tr>
+                </table>
+                <el-form label-position="top" ref="refundForm" :rules="refundFormRules" :model="refundForm" label-width="80px"
+                         style="margin-top: 20px">
+                    <el-form-item label="退款金额" prop="refund_amount" class="refund-amount">
+                        <el-radio v-model="refundForm.type" label="1">全额退款</el-radio>
+                        <el-radio v-model="refundForm.type" label="2">部分退款
+                            <el-input  v-model="refundForm.refund_amount" style="width: 60%"></el-input>
+                        </el-radio>
+                    </el-form-item>
 
-        <!--<el-form-item label="问题截图" style="margin-bottom: 0;">-->
-        <!--<el-upload-->
-        <!--action="https://jsonplaceholder.typicode.com/posts/"-->
-        <!--list-type="picture-card"-->
-        <!--:on-preview="handlePictureCardPreview"-->
-        <!--:on-remove="handleRemove">-->
-        <!--<i class="el-icon-plus"></i>-->
-        <!--</el-upload>-->
-        <!--&lt;!&ndash;<el-dialog :visible.sync="dialogVisible">&ndash;&gt;-->
-        <!--&lt;!&ndash;<img width="100%" :src="dialogImageUrl" alt="">&ndash;&gt;-->
-        <!--&lt;!&ndash;</el-dialog>&ndash;&gt;-->
-        <!--<div style="margin-top: 10px;color:#959595">-->
-        <!--<i class="el-icon-warning" style="color: #FF8900"></i>-->
-        <!--如果你对服务存在异议,请提交问题截图</div>-->
-        <!--</el-form-item>-->
+                    <el-form-item label="问题截图" style="margin-bottom: 0;">
+                        <el-upload
+                                action="https://jsonplaceholder.typicode.com/posts/"
+                                list-type="picture-card">
+                            <i class="el-icon-plus"></i>
+                        </el-upload>
+                        <!--<el-dialog :visible.sync="dialogVisible">-->
+                        <!--<img width="100%" :src="dialogImageUrl" alt="">-->
+                        <!--</el-dialog>-->
+                        <div style="margin-top: 10px;color:#959595">
+                            <i class="el-icon-warning" style="color: #FF8900"></i>
+                            如果你对服务存在异议,请提交问题截图
+                        </div>
+                    </el-form-item>
 
+                    <el-form-item label="退款原因" prop="refund_reason">
+                        <el-input
+                                type="textarea"
+                                rows="3"
+                                v-model="refundForm.refund_reason">
+                        </el-input>
+                    </el-form-item>
+                </el-form>
 
-        <!--<el-form-item label="退款原因">-->
-        <!--<el-input-->
-        <!--type="textarea"-->
-        <!--rows="3"-->
-        <!--v-model="refundForm.amount">-->
-        <!--</el-input>-->
-        <!--</el-form-item>-->
-        <!--</el-form>-->
-
-        <!--</div>-->
-        <!--<span slot="footer" class="dialog-footer">-->
-        <!--<el-button type="primary" @click="dialogVisible = false" >确定提交</el-button>-->
-        <!--</span>-->
-        <!--</el-dialog>-->
+            </div>
+            <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="onClickConfirmApplyRefund">确定提交</el-button>
+        </span>
+        </el-dialog>
 
         <el-dialog
                 class="step"
                 title="查看退款"
-                :visible.sync="dialogVisible"
+                :visible.sync="showRefundDialogVisible"
                 width="30%"
                 top="15vh"
                 :before-close="handleClose">
@@ -238,62 +219,31 @@
                         <td width="30%">订单编号</td>
                     </tr>
                     <tr style="height: 25px;">
-                        <td style="padding-left: 5px">代代练目标代练目s</td>
-                        <td>s</td>
-                        <td>s</td>
+                        <td style="padding-left: 5px">{{ refundInfo.game_name }}/{{ refundInfo.game_region_name }}{{ refundInfo.game_server_name }}</td>
+                        <td>{{ refundInfo.title }}</td>
+                        <td style="padding-right: 5px">{{ refundInfo.trade_no }}</td>
                     </tr>
                 </table>
-
 
                 <div style="margin-top: 20px;">
                     <div class="" style="height: 30px;line-height: 30px;padding-bottom: 10px;">协商历史</div>
                     <div style="padding:20px 20px 10px 10px;height: 150px;overflow-x:auto;border: 1px solid #c0c4cc;background-color: #F2F2F2;">
-                        <el-steps direction="vertical" :active="2">
-                            <el-step title="步骤" description="这是一段很长很长很长的描述性文字">
-                                <div class="" slot="description">
-                                    这是一段很长很长很长的描述性文字 <span class="fr">sdd</span>
-                                </div>
-                            </el-step>
-                            <el-step title="步骤" description="这是一段很长很长很长的描述性文字">
-                                <div class="" slot="description">
-                                    这是一段很长很长很长的描述性文字 <span class="fr">sdd</span>
-                                </div>
-                            </el-step>
-                            <el-step title="步骤" description="这是一段很长很长很长的描述性文字">
-                                <div class="" slot="description">
-                                    这是一段很长很长很长的描述性文字 <span class="fr">sdd</span>
-                                </div>
-                            </el-step>
-                            <el-step title="步骤" description="这是一段很长很长很长的描述性文字">
-                                <div class="" slot="description">
-                                    这是一段很长很长很长的描述性文字 <span class="fr">sdd</span>
-                                </div>
-                            </el-step>
-                            <el-step title="步骤" description="这是一段很长很长很长的描述性文字">
-                                <div class="" slot="description">
-                                    这是一段很长很长很长的描述性文字 <span class="fr">sdd</span>
-                                </div>
-                            </el-step>
-                            <el-step title="步骤" description="这是一段很长很长很长的描述性文字">
-                                <div class="" slot="description">
-                                    这是一段很长很长很长的描述性文字 <span class="fr">sdd</span>
-                                </div>
-                            </el-step>
-                            <el-step title="步骤" description="这是一段很长很长很长的描述性文字">
-                                <div class="" slot="description">
-                                    这是一段很长很长很长的描述性文字 <span class="fr">sdd</span>
-                                </div>
-                            </el-step>
-                            <el-step title="步骤" description="这是一段很长很长很长的描述性文字">
-                                <div class="" slot="description">
-                                    这是一段很长很长很长的描述性文字 <span class="fr">sdd</span>
-                                </div>
-                            </el-step>
-                            <el-step title="步骤" description="这是一段很长很长很长的描述性文字">
-                                <div class="" slot="description">
-                                    这是一段很长很长很长的描述性文字 <span class="fr">sdd</span>
-                                </div>
-                            </el-step>
+                        <el-steps direction="vertical" :active="2" >
+
+                            <template v-for="item in refundInfo.game_leveling_channel_refund">
+                                <el-step v-if="item.status === 3" title="对方 拒绝本次退款申请">
+                                    <div class="" slot="description">
+                                        原因: {{ item.refuse_refund_reason }} <span class="fr">{{ item.updated_at }}</span>
+                                    </div>
+                                </el-step>
+
+                                <el-step title="我 发起退款申请">
+                                    <div class="" slot="description">
+                                        <span>查看截图</span> 申请退款金额: {{ item.refund_amount }} <span class="fr">{{ item.created_at }}</span>
+                                    </div>
+                                </el-step>
+
+                            </template>
 
                         </el-steps>
                     </div>
@@ -306,51 +256,102 @@
 </template>
 
 <script>
-    import {Toast} from 'vant';
-
     export default {
-        name: "Order",
+        name: "OrderList",
         data() {
             return {
-                dialogVisible: false,
-
+                refundStatus:false,
+                confirmCancelRefundPopoverVisible: false,
+                confirmCompleteVisible: false,
+                showRefundDialogVisible: false,
+                applyRefundDialogVisible: false,
+                gameOptions: [],
                 status: {
-                    1: '待付款',
                     2: '进行中',
                     3: '待收货',
                     4: '完成',
-                    6: '退款中',
-                    7: '已退款',
+                    5: '退款中',
+                    6: '已退款',
                 },
                 searchParams: {
-                    status: "1"
+                    status: "0",
+                    trade_no: "",
                 },
                 list: [],
                 loading: false,
                 noData: false,
                 refundForm: {
-                    amount: 0,
-                }
+                    game_name: '',
+                    game_region_name: '',
+                    game_server_name: '',
+                    payment_amount: '',
+                    trade_no: '',
+                    type: '1',
+                    refund_amount: '',
+                    images:[],
+                    refund_reason:'',
+                },
+                refundFormRules: {
+                    refund_amount: [
+                        {
+                            validator:(rule, value, callback)=>{
+                                if(this.refundForm.type === '2' && value === '') {
+                                    callback(new Error("请输入需要退款的金额"));
+                                } else if(this.refundForm.type === '2' && value > this.refundForm.payment_amount){
+                                    callback(new Error("退款金额不可大于订单金额"));
+                                } else if(this.refundForm.type === '2' && value <= 0){
+                                    callback(new Error("退款金额需大于0"));
+                                } else {
+                                    callback();
+                                }
+                            },
+                            trigger:'blur'
+                        },
+                    ],
+                    refund_reason: [
+                        { required: true, message: '请输入退款原因', trigger: 'blur' },
+                    ],
+                },
+                refundInfo: {
+                    trade_no: '',
+                    title: '',
+                    game_name: '',
+                    game_region_name: '',
+                    game_server_name: '',
+                    game_leveling_channel_refund:[]
+                },
             };
         },
 
         mounted() {
-            this.onLoadData();
+            this.getList();
+            this.getGameOptions();
         },
 
         methods: {
+            // 列表数据
+            getList() {
+                this.$api.GameLevelingChannelOrderList(this.searchParams).then(res => {
+                    this.noData = res.length == 0 ? true : false;
+                    this.list = res;
+                    this.loading = false;
+                    this.finished = true;
+                }).catch(err => {
+
+                });
+            },
+            // 获取游戏选项
+            getGameOptions() {
+                this.$api.games().then(res => {
+                    this.gameOptions = res.content;
+                });
+            },
             tableRowLineHeight(status) {
-                if (status === '1') {
+                if (status == 3) {
                     return {
                         textAlign: 'center',
                         height: '78px',
                         lineHeight: '22px',
-                    };
-                } else if (status === '2') {
-                    return {
-                        textAlign: 'center',
-                        height: '78px',
-                        lineHeight: '78px',
                     };
                 } else {
                     return {
@@ -362,92 +363,82 @@
             },
 
             handleClose(done) {
-                this.$confirm('确认关闭？')
-                    .then(_ => {
-                        done();
-                    })
-                    .catch(_ => {
-                    });
+                done();
             },
-
-            // 详情页
-            orderShow(item) {
-                this.$router.push({name: 'orderDetail', query: {trade_no: item.trade_no, user_id: item.user_id}})
-            },
-            // 申请退款按钮
-            applyRefund(item) {
-                this.$router.push({name: 'orderRefund', query: {trade_no: item.trade_no, user_id: item.user_id}})
-            },
-            onClickLeft() {
-                this.$router.push({path: '/channel/order'})
+            // 搜索
+            onClickSearch() {
+                this.getList();
             },
             // 完成
-            complete(item) {
+            onClickComplete(item) {
                 this.$api.GameLevelingChannelOrderComplete({
-                    user_id: item.user_id,
                     trade_no: item.trade_no,
-                    game_leveling_channel_user_id: item.game_leveling_channel_user_id
                 }).then(res => {
-                    if (res.status === 1) {
-                        Toast.success(res.message);
-                    } else {
-                        Toast.fail(res.message);
-                    }
-                    this.searchParams.status = 3;
-                    this.handleOrderList();
+                    this.confirmCancelRefundPopoverVisible = false;
+                    this.getList();
                 }).catch(err => {
 
+                });
+            },
+            // 申请退款
+            onClickApplyRefund(item) {
+                console.log(item);
+                this.refundForm.title = item.title;
+                this.refundForm.trade_no = item.trade_no;
+                this.refundForm.game_name = item.game_name;
+                this.refundForm.game_region_name = item.game_region_name;
+                this.refundForm.game_server_name = item.game_server_name;
+                this.refundForm.trade_no = item.trade_no;
+                this.refundForm.payment_amount = item.payment_amount;
+                this.applyRefundDialogVisible = true
+            },
+            // 确认申请退款
+            onClickConfirmApplyRefund() {
+                this.$refs.refundForm.validate((valid) => {
+                    if (valid) {
+                        this.$api.GameLevelingChannelOrderApplyRefund(this.refundForm).then(res => {
+                            if (res.status === 1) {
+                                this.applyRefundDialogVisible = false;
+                                this.getList();
+                            } else {
+                                this.$toast.fail(res.message);
+                            }
+                        }).catch(err => {
+
+                        });
+                    }
                 });
             },
             // 取消退款
-            cancelRefund(item) {
+            onClickCancelRefund(tradeNo) {
                 this.$api.GameLevelingChannelOrderCancelRefund({
-                    user_id: item.user_id,
-                    trade_no: item.trade_no,
-                    game_leveling_channel_user_id: item.game_leveling_channel_user_id
+                    trade_no: tradeNo,
                 }).then(res => {
-                    if (res.status === 1) {
-                        Toast.success(res.message);
-                    } else {
-                        Toast.fail(res.message);
-                    }
-                    this.searchParams.status = 6;
-                    this.handleOrderList();
+                    this.confirmCancelRefundPopoverVisible = false;
+                    this.getList();
                 }).catch(err => {
 
                 });
             },
-            // 点击获取各状态数据
-            onClick(index, title) {
-                if (index === 0) {
-                    this.searchParams.status = 0;
-                    this.onLoadData();
-                } else if (index === 1) {
-                    this.searchParams.status = 2;
-                    this.onLoadData();
-                } else if (index === 2) {
-                    this.searchParams.status = 3;
-                    this.onLoadData();
-                } else if (index === 3) {
-                    this.searchParams.status = 4;
-                    this.onLoadData();
-                } else if (index === 4) {
-                    this.searchParams.status = 6;
-                    this.onLoadData();
-                } else if (index === 5) {
-                    this.searchParams.status = 7;
-                    this.onLoadData();
-                }
-            },
-            // 列表数据
-            onLoadData() {
-                this.$api.GameLevelingChannelOrderList(this.searchParams).then(res => {
-                    this.noData = res.length == 0 ? true : false;
-                    this.list = res;
-                    this.loading = false;
-                    this.finished = true;
+            // 查看退款
+            onClickShowRefund(tradeNo) {
+                this.showRefundDialogVisible = true;
+                // 获取订单信息
+                this.$api.GameLevelingChannelOrderShow({
+                    trade_no:tradeNo
+                }).then(res => {
+                    this.refundInfo = res;
                 }).catch(err => {
 
+                });
+            },
+            // 确认完成
+            onClickConfirmComplete(tradeNo) {
+                this.$api.GameLevelingChannelOrderComplete({
+                    trade_no:tradeNo,
+                }).then(res => {
+                    this.getList();
+                }).catch(err => {
                 });
             }
         }
@@ -507,6 +498,9 @@
             width: 3px;
             transition: transform .15s ease-in .05s;
             transform-origin: center;
+        }
+        .refund-amount .el-form-item__error {
+            margin-left: 200px;
         }
         /*重写上传框*/
         .el-upload--picture-card {

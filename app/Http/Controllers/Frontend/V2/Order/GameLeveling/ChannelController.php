@@ -50,12 +50,12 @@ class ChannelController extends Controller
         DB::beginTransaction();
         try {
             $gameLevelingChannelRefund = GameLevelingChannelRefund::where('game_leveling_channel_order_trade_no', request('trade_no'))
-                ->where('status', 6)
+                ->where('status', 5)
                 ->first();
 
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
                 ->where('user_id', Auth::user()->getPrimaryUserId())
-                ->where('status', 6)
+                ->where('status', 5)
                 ->first();
 
             // 两个表的支付方式是否一致
@@ -97,6 +97,12 @@ class ChannelController extends Controller
                     throw new Exception('支付失败!');
                 }
             }
+            // 退款成功改变渠道退款订单状态
+            $gameLevelingChannelRefund->status = 6;
+            $gameLevelingChannelOrder->save();
+            // 退款成功改变渠道订单状态
+            $gameLevelingChannelOrder->status = 6;
+            $gameLevelingChannelOrder->save();
         } catch (Exception $e) {
             DB::rollback();
             return response()->ajax(0, '操作失败：服务器错误!');
@@ -114,32 +120,35 @@ class ChannelController extends Controller
     {
         DB::beginTransaction();
         try {
-            // 申请退款状态改变
+            // 申请退款问单据改为拒绝
             $gameLevelingChannelRefund = GameLevelingChannelRefund::where('game_leveling_channel_order_trade_no', request('trade_no'))
-                ->where('status', 6)
-                ->first();
+                ->where('status', 5)
+                ->update([
+                    'refuse_refund_reason' => request('refuse_refund_reason'),
+                    'status' => 3
+                ]);
+//
+//            $gameLevelingChannelRefund->refuse_refund_reason = request('refuse_refund_reason');
+//            $gameLevelingChannelRefund->status = 2;
+//            $gameLevelingChannelRefund->save();
 
-            $gameLevelingChannelRefund->refuse_refund_reason = request('refuse_refund_reason');
-            $gameLevelingChannelRefund->status = 2;
-            $gameLevelingChannelRefund->save();
-
-            // 渠道订单状态改变
+            // 渠道订单状态改回进行中
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
-                ->where('status', 6)
-                ->first();
+                ->where('status', 5)
+                ->update(['status' => 2]);
 
-            $gameLevelingChannelOrder->status = 2;
-            $gameLevelingChannelOrder->save();
+//            $gameLevelingChannelOrder->status = 2;
+//            $gameLevelingChannelOrder->save();
 
-            // 平台订单的渠道订单状态改变
+            // 平台订单的渠道订单状态改为进行中
             $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
-                ->where('channel_order_status', 6)
-                ->get();
+                ->where('channel_order_status', 5)
+                ->update(['channel_order_status' => 2]);
 
-            foreach ($gameLevelingOrders as $gameLevelingOrder) {
-                $gameLevelingOrder->channel_order_status = 2;
-                $gameLevelingOrder->save();
-            }
+//            foreach ($gameLevelingOrders as $gameLevelingOrder) {
+//                $gameLevelingOrder->channel_order_status = 2;
+//                $gameLevelingOrder->save();
+//            }
         } catch (Exception $e) {
             DB::rollback();
             return response()->ajax(0, '操作失败：服务器错误!');
@@ -194,7 +203,7 @@ class ChannelController extends Controller
     public function refund()
     {
         try {
-            return GameLevelingChannelRefund::where('status', 6)
+            return GameLevelingChannelRefund::where('status', 5)
                 ->where('game_leveling_channel_order_trade_no', request('trade_no'))
                 ->first();
         } catch (Exception $e) {

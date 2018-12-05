@@ -111,6 +111,12 @@
 
 <style lang="less">
 
+    .el-form-item.is-success .el-input__inner,
+    .el-form-item.is-success .el-input__inner:focus,
+    .el-form-item.is-success .el-textarea__inner,
+    .el-form-item.is-success .el-textarea__inner:focus{
+        border: 1px solid #dcdfe6;
+    }
     .container {
         width: 1000px;
         margin: 0 auto;
