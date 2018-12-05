@@ -154,6 +154,12 @@ class IndexController extends Controller
         ])->first();
 
         $order->left_time = $order->leftTime();
+
+        // 已结算单剩余代练时间为空
+        if (in_array($order->status, [19, 20, 21, 23, 24])) {
+            $order->left_time = '';
+        }
+
         $order->pay_amount = $order->payAmount();
         $order->get_amount = $order->getAmount();
         $order->get_poundage = $order->getPoundage();
