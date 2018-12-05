@@ -64,12 +64,12 @@ class GameLevelingChannelOrder extends Model
      */
     public function scopeFilter($query, $filter = [])
     {
-        if (isset($filter['tradeNo']) && !empty($filter['tradeNo'])) {
-            $query->where('trade_no', $filter['tradeNo']);
+        if (isset($filter['trade_no']) && !empty($filter['trade_no'])) {
+            $query->where('trade_no', $filter['trade_no']);
         }
 
-        if (isset($filter['gameName']) && !empty($filter['gameName'])) {
-            $query->where('game_name', $filter['gameName']);
+        if (isset($filter['game_id']) && !empty($filter['game_id'])) {
+            $query->where('game_id', $filter['game_id']);
         }
 
         if (isset($filter['status']) && !empty($filter['status'])) {
@@ -88,7 +88,7 @@ class GameLevelingChannelOrder extends Model
 
     public function gameLevelingChannelRefund()
     {
-        return $this->hasOne(GameLevelingChannelRefund::class, 'game_leveling_channel_order_trade_no', 'trade_no');
+        return $this->hasMany(GameLevelingChannelRefund::class, 'game_leveling_channel_order_trade_no', 'trade_no');
     }
 
     /**

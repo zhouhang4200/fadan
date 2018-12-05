@@ -457,7 +457,7 @@ class GameLevelingChannelOrderController extends Controller
     public function orderList()
     {
         try {
-            $gameLevelingChannelOrders = GameLevelingChannelOrder::filter(['status' => request('status')])
+            $gameLevelingChannelOrders = GameLevelingChannelOrder::filter(request()->all())
                 ->where('game_leveling_channel_user_id', session('channel_user_id'))
                 ->where('user_id', session('user_id'))
                 ->oldest('id')
@@ -523,7 +523,7 @@ class GameLevelingChannelOrderController extends Controller
 
             // 渠道表状态更新
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
-                ->where('status', 6)
+                ->where('status', 5)
                 ->where('user_id', session('user_id'))
                 ->first();
 
@@ -531,23 +531,23 @@ class GameLevelingChannelOrderController extends Controller
             $gameLevelingChannelOrder->save();
 
             // 申请退款表状态更新
-            $gameLevelingChannelRefund = GameLevelingChannelRefund::where('game_leveling_channel_order_trade_no', request('trade_no'))
-                ->where('status', 6)
-                ->first();
+            GameLevelingChannelRefund::where('game_leveling_channel_order_trade_no', request('trade_no'))
+                ->where('status', 1)
+                ->update(['status' => 4]);
 
-            $gameLevelingChannelRefund->status = 2;
-            $gameLevelingChannelRefund->save();
+//            $gameLevelingChannelRefund->status = 4;
+//            $gameLevelingChannelRefund->save();
 
             // 发单平台表状态更新
             $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
-                ->where('channel_order_status', 6)
+                ->where('channel_order_status', 5)
                 ->where('user_id', session('user_id'))
-                ->get();
+                ->update(['channel_order_status' => 2]);
 
-            foreach ($gameLevelingOrders as $gameLevelingOrder) {
-                $gameLevelingOrder->channel_order_status = 2;
-                $gameLevelingOrder->save();
-            }
+//            foreach ($gameLevelingOrders as $gameLevelingOrder) {
+//                $gameLevelingOrder->channel_order_status = 2;
+//                $gameLevelingOrder->save();
+//            }
         } catch (Exception $e) {
             DB::rollback();
             myLog('channel-cancel-refund', [$e->getMessage(), $e->getLine()]);
@@ -566,7 +566,7 @@ class GameLevelingChannelOrderController extends Controller
     {
         DB::beginTransaction();
         try {
-            // 申请退款表状态更新
+            // 获取渠道订单
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
                 ->where('status', 2)
                 ->where('user_id', session('user_id'))
@@ -599,7 +599,7 @@ class GameLevelingChannelOrderController extends Controller
             if (request('type') == 2 && request('refund_amount') && $gameLevelingChannelOrder->payment_amount < request('refund_amount')) {
                 return response()->ajax(0, '申请退款金额不得大于订单实际支付金额!');
             }
-            $gameLevelingChannelOrder->status = 6;
+            $gameLevelingChannelOrder->status = 5;
             $gameLevelingChannelOrder->save();
 
             // 图片
@@ -625,7 +625,7 @@ class GameLevelingChannelOrderController extends Controller
             $data['hour'] = $gameLevelingChannelOrder->hour;
             $data['type'] = request('type');
             $data['payment_type'] = $gameLevelingChannelOrder->payment_type;
-            $data['status'] = 6;
+            $data['status'] = 1;
             $data['amount'] = $gameLevelingChannelOrder->amount;
             $data['payment_amount'] = $gameLevelingChannelOrder->payment_amount;
             $data['refund_amount'] = request('type') == 1 ? $gameLevelingChannelOrder->payment_amount : request('refund_amount');
@@ -635,17 +635,17 @@ class GameLevelingChannelOrderController extends Controller
             $data['refund_reason'] = request('refund_reason');
             $data['refuse_refund_reason'] = '';
 
-            GameLevelingChannelRefund::updateOrCreate(['game_leveling_channel_order_trade_no' => request('trade_no')], $data);
-            // 发单平台表状态更新
+            GameLevelingChannelRefund::create($data);
+            // 发单平台表渠道订单状态更新
             $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
                 ->where('channel_order_status', 2)
                 ->where('user_id', session('user_id'))
-                ->get();
+                ->update(['channel_order_status' => 5]);
 
-            foreach ($gameLevelingOrders as $gameLevelingOrder) {
-                $gameLevelingOrder->channel_order_status = 6;
-                $gameLevelingOrder->save();
-            }
+//            foreach ($gameLevelingOrders as $gameLevelingOrder) {
+//                $gameLevelingOrder->channel_order_status = 5;
+//                $gameLevelingOrder->save();
+//            }
         } catch (Exception $e) {
             myLog('channel-apply-refund-error', ['trade_no' => $gameLevelingChannelOrder->trade_no ?? '', 'message' => $e->getMessage(), 'line' => $e->getLine()]);
             DB::rollback();
@@ -666,6 +666,20 @@ class GameLevelingChannelOrderController extends Controller
             return GameLevelingChannelOrder::where('trade_no', request('trade_no'))
                 ->where('user_id', session('user_id'))
                 ->where('game_leveling_channel_user_id', session('channel_user_id'))
+                ->with(['gameLevelingChannelRefund' => function($query) {
+                    $query->select('game_leveling_channel_order_trade_no',
+                        'created_at',
+                        'updated_at',
+                        'status',
+                        'refund_reason',
+                        'refuse_refund_reason',
+                        'status',
+                        'pic1',
+                        'pic2',
+                        'pic3'
+                    )
+                        ->orderBy('id', 'desc');
+                }])
                 ->first();
         } catch (Exception $e) {
             myLog('channel-order-show-error', [$e->getMessage(), $e->getLine()]);
