@@ -1192,7 +1192,7 @@
                         { validator: isPhone, trigger: 'blur' }
                     ],
                     price_increase_step: [
-                        { validator: mustOverZero, trigger: 'blur' }
+                        { validator: overZeroInt, trigger: 'blur' }
                     ],
                     price_ceiling: [
                         { validator: mustOverZero, trigger: 'blur' }
@@ -1282,8 +1282,8 @@
                     this.form.game_role = res.game_role; // 游戏角色
                     this.form.game_account = res.game_account; // 游戏账号
                     this.form.game_password = res.game_password; // 游戏密码
-                    this.form.price_increase_step = res.price_increase_step != '0.0000' ? res.price_increase_step : ''; // 自动加价步长
-                    this.form.price_ceiling = res.price_ceiling != '0.0000' ? res.price_ceiling : ''; // 自动加价上限
+                    this.form.price_increase_step = res.price_increase_step != '0.0000' ? Number(res.price_increase_step) : ''; // 自动加价步长
+                    this.form.price_ceiling = res.price_ceiling != '0.0000' ? Number(res.price_ceiling) : ''; // 自动加价上限
                     this.form.explain = res.game_leveling_order_detail.explain; // 代练说明
                     this.form.requirement = res.game_leveling_order_detail.requirement; // 代练要求
                     this.form.take_order_password = res.take_order_password; // 接单密码
