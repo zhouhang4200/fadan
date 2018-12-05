@@ -314,22 +314,21 @@ class GameLevelingOrder extends Model
 
     /**
      * 设置了自动加价,则开启加价
-     * @param $order
      */
-    public static function checkAutoMarkUpPrice($order)
+    public function checkAutoMarkUpPrice()
     {
         // 设置了自动加价,则开启加价
-        if (! isset($order->price_increase_step) || empty($order->price_increase_step)
-            || ! isset($order->price_ceiling) || empty($order->price_ceiling)) {
-            Redis::hDel('order:price-markup', $order->trade_no); // 没有设置或设置取消了，清除redis
-        } elseif (isset($order->price_increase_step) && ! empty($order->price_increase_step)
-            && isset($order->price_ceiling) && ! empty($order->price_ceiling)) {
-            if (bcsub($order->amount, $order->price_ceiling) >= 0) {
-                Redis::hDel('order:price-markup', $order->trade_no); // 设置的最大加价金额小于代练金额，清除redis
+        if (! isset($this->price_increase_step) || empty($this->price_increase_step)
+            || ! isset($this->price_ceiling) || empty($this->price_ceiling)) {
+            Redis::hDel('order:price-markup', $this->trade_no); // 没有设置或设置取消了，清除redis
+        } elseif (isset($this->price_increase_step) && ! empty($this->price_increase_step)
+            && isset($this->price_ceiling) && ! empty($this->price_ceiling)) {
+            if (bcsub($this->amount, $this->price_ceiling) >= 0) {
+                Redis::hDel('order:price-markup', $this->trade_no); // 设置的最大加价金额小于代练金额，清除redis
             } else {
-                $key = $order->trade_no;
+                $key = $this->trade_no;
                 $name = "order:price-markup";
-                $value = "0@".$order->amount."@".$order->updated_at;
+                $value = "0@".$this->amount."@".$this->updated_at;
 
                 Redis::hSet($name, $key, $value);
             }

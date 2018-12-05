@@ -132,7 +132,8 @@ class IndexController extends Controller
     {
         // 下单
         try {
-            GameLevelingOrder::placeOrder(request()->user(),request()->all());
+            $order = GameLevelingOrder::placeOrder(request()->user(),request()->all());
+            $order->checkAutoMarkUpPrice();
             return response()->json(['status' => 1, 'message' => '下单成功']);
         } catch (\Exception $exception) {
             return response()->json(['status' => 0, 'message' => $exception->getMessage()]);
@@ -207,7 +208,7 @@ class IndexController extends Controller
             GameLevelingOrderLog::createOrderHistory($order, $user, 22, $description);
 
             // 是否设置了自动加价
-            GameLevelingOrder::checkAutoMarkUpPrice($order);
+            $order->checkAutoMarkUpPrice();
 
             /***存在来源订单号（淘宝主订单号）, 写入关联淘宝订单表***/
             GameLevelingOrder::changeSameOriginOrderSourcePrice($order, request()->all());
@@ -1034,7 +1035,7 @@ class IndexController extends Controller
             OrderHistory::create($historyData);
 
             // 是否设置了自动加价
-            GameLevelingOrder::checkAutoMarkUpPrice($gameLevelingOrder);
+            $gameLevelingOrder->checkAutoMarkUpPrice();
 
            /***存在来源订单号（淘宝主订单号）, 写入关联淘宝订单表***/
             GameLevelingOrder::changeSameOriginOrderSourcePrice($gameLevelingOrder, $requestData);
