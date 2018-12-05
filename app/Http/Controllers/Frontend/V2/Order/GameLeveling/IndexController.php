@@ -79,6 +79,7 @@ class IndexController extends Controller
                     $query->select(
                         'game_leveling_order_trade_no',
                         'status',
+                        'reason',
                         'initiator'
                     );
                 },
@@ -89,6 +90,7 @@ class IndexController extends Controller
                         'security_deposit',
                         'efficiency_deposit',
                         'status',
+                        'reason',
                         'initiator'
                     );
                 }])
