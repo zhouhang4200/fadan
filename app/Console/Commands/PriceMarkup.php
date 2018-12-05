@@ -2,12 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Exceptions\GameLevelingOrderOperateException;
+use App\Models\GameLevelingOrderLog;
+use App\Models\GameLevelingPlatform;
+use App\Models\User;
 use DB;
 use Redis;
 use Asset;
 use Exception;
 use Carbon\Carbon;
-use App\Models\OrderHistory;
 use App\Extensions\Asset\Expend;
 use App\Exceptions\DailianException;
 use App\Exceptions\AssetException;
@@ -28,7 +31,7 @@ class PriceMarkup extends Command
      *
      * @var string
      */
-    protected $description = '新的每小时自动加价';
+    protected $description = '新的订单每小时自动加价';
 
     /**
      * Create a new command instance.
@@ -163,19 +166,9 @@ class PriceMarkup extends Command
             // 第几次加价
             $number = $info['add_number']+1;
             // 写订单日志
-            $data = [];
-            $data['order_no'] = $order->trade_no;
-            $data['user_id'] = $order->user_id;
-            $data['admin_user_id'] = '';
-            $data['type'] = '';
-            $data['name'] = '加价';
-            $data['description'] = '订单第'.$number.'次自动加价，加价金额为'.$rangeMoney.'元，加价后订单金额为'.$afterAddAmount.'元';
-            $data['before'] = '';
-            $data['after'] = '';
-            $data['created_at'] = Carbon::now()->toDateTimeString();
-            $data['creator_primary_user_id'] = $order->parent_user_id;
-
-            OrderHistory::create($data);
+            $user = User::find($order->user_id);
+            $description = '订单第'.$number.'次自动加价，加价金额为'.$rangeMoney.'元，加价后订单金额为'.$afterAddAmount.'元';
+            GameLevelingOrderLog::createOrderHistory($order, $user, 34, $description);
         } catch (DailianException $e) {
             DB::rollback();
             myLog('price-markup-error', ['订单号' => isset($order) ? $order->trade_no : '', '原因' => $e->getMessage()]);
@@ -245,21 +238,23 @@ class PriceMarkup extends Command
     public function thirdAddPrice($info, $order)
     {
         $order = GameLevelingOrder::where('trade_no', $order->trade_no)->first();
-        // 加价 其他平台通用
-        if (config('leveling.third_orders')) {
-            foreach (config('leveling.third_orders') as $third => $thirdOrderNoName) {
-                // 如果订单详情里面存在某个代练平台的订单号，撤单此平台订单
-                if (isset($order->platform_id) && ! empty($order->platform_id) && $order->platform_id == $third) {
-                    try {
-                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['updateOrder']], [$order]);
-                        myLog('price-markup-success', ['订单号' => isset($order) ? $order->trade_no : '', '结果' => '平台'.$third.'加价成功', '加价后金额' => isset($order) ? $order->amount : '']);
-                    } catch (DailianException $e) {
-                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$order]);
-                        myLog('price-markup-error', ['订单号' => isset($order) ? $order->trade_no : '', '结果' => '失败,已调用'.$third.'撤单，已删除本地订单', '原因' => $e->getMessage()]);
-                    } catch (Exception $e) {
-                        call_user_func_array([config('leveling.controller')[$third], config('leveling.action')['delete']], [$order]);
-                        myLog('price-markup-error', ['订单号' => isset($order) ? $order->trade_no : '', '结果' => '失败,已调用'.$third.'撤单，已删除本地订单', '原因' => $e->getMessage()]);
-                    }
+
+        // 该订单下单成功的接单平台
+        $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
+            ->get();
+
+        if ($gameLevelingPlatforms->count() > 0) {
+            // 删除下单成功的
+            foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
+                try {
+                    call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['modifyOrder']], [$order]);
+                    myLog('price-markup-success', ['订单号' => isset($order) ? $order->trade_no : '', '结果' => '平台'.$gameLevelingPlatform->platform_id.'加价成功', '加价后金额' => isset($order) ? $order->amount : '']);
+                } catch (GameLevelingOrderOperateException $e) {
+                    call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['delete']], [$order]);
+                    myLog('price-markup-error', ['订单号' => isset($order) ? $order->trade_no : '', '结果' => '失败,已调用'.$gameLevelingPlatform->platform_id.'撤单，已删除本地订单', '原因' => $e->getMessage()]);
+                } catch (Exception $e) {
+                    call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['delete']], [$order]);
+                    myLog('price-markup-error', ['订单号' => isset($order) ? $order->trade_no : '', '结果' => '失败,已调用'.$gameLevelingPlatform->platform_id.'撤单，已删除本地订单', '原因' => $e->getMessage()]);
                 }
             }
         }
