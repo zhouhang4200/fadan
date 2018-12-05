@@ -195,8 +195,6 @@ class IndexController extends Controller
             'parent_user_id' => request()->user()->getPrimaryUserId(),
         ])->lockForUpdate()->first();
 
-        $order->remark = request('remark');
-        $order->save();
 
         try {
             $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
@@ -230,14 +228,17 @@ class IndexController extends Controller
                 // 订单是没有接单情况可修改所有信息 in_array($order->status, [1, 22])
                 if (in_array($order->status, [1, 22])) {
                     if($order->update(request()->all())){
-                        if ($res = $order->gameLevelingOrderDetail()
-                            ->where('game_leveling_order_trade_no', request('trade_no'))
-                            ->update(request()->only([
-                                'user_qq',
-                                'player_phone',
-                                'explain',
-                                'requirement',
-                            ]))){
+                        $data = request()->only([
+                            'user_qq',
+                            'player_phone',
+                            'explain',
+                            'requirement'
+                        ]);
+
+                        $data['user_remark'] = request('remark');
+
+                        if ($res = GameLevelingOrderDetail::where('game_leveling_order_trade_no', request('trade_no'))
+                            ->update($data)){
                             // 调用更新接口
                             foreach($gameLevelingPlatforms as $gameLevelingPlatform) {
                                 call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['modifyOrder']], [$order]);

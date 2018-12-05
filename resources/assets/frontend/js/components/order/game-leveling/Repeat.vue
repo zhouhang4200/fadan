@@ -357,7 +357,7 @@
                                                             <el-col :span="22">
                                                                 <el-input
                                                                         type="input"
-                                                                        v-model.number="form.price_increase_step"
+                                                                        v-model="form.price_increase_step"
                                                                         autocomplete="off">
                                                                 </el-input>
                                                             </el-col>
@@ -378,7 +378,7 @@
                                                             <el-col :span="22">
                                                                 <el-input
                                                                         type="input"
-                                                                        v-model.number="form.price_ceiling"
+                                                                        v-model="form.price_ceiling"
                                                                         autocomplete="off">
                                                                 </el-input>
                                                             </el-col>
@@ -502,7 +502,7 @@
         },
         data() {
             var isPhone = (rule, value, callback) => {
-                let phone=/^(13[012356789][0-9]{8}|15[012356789][0-9]{8}|18[02356789][0-9]{8}|147[0-9]{8}|1349[0-9]{7})$/;
+                let phone=/^1[3|4|5|7|8][0-9]\d{8}$/;
                 if (!phone.test(value)) {
                     callback(new Error('请填写正确的手机号！'));
                 } else {
@@ -617,7 +617,7 @@
                         { required: true, message: '请输入商户QQ号', trigger: 'change' }
                     ],
                     player_phone: [
-                        { required: true, message: '请输入无家电话', trigger: 'blur' },
+                        { required: true, message: '请输入玩家电话', trigger: 'blur' },
                         { validator: isPhone, trigger: 'blur' }
                     ],
                     price_increase_step: [

@@ -342,7 +342,7 @@
                                                             <el-col :span="22">
                                                                 <el-input
                                                                         type="input"
-                                                                        v-model.number="form.price_increase_step"
+                                                                        v-model="form.price_increase_step"
                                                                         autocomplete="off">
                                                                 </el-input>
                                                             </el-col>
@@ -363,7 +363,7 @@
                                                             <el-col :span="22">
                                                                 <el-input
                                                                         type="input"
-                                                                        v-model.number="form.price_ceiling"
+                                                                        v-model="form.price_ceiling"
                                                                         autocomplete="off">
                                                                 </el-input>
                                                             </el-col>

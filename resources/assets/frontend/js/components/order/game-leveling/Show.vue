@@ -352,7 +352,7 @@
                                                                         :disabled="fieldDisabled"
                                                                         type="input"
                                                                         placeholder="请输入内容"
-                                                                        v-model="form.player_phone">
+                                                                        v-model.number="form.player_phone">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -367,7 +367,7 @@
 
                                                                 <el-select
                                                                         :disabled="fieldDisabled"
-                                                                        v-model="form.user_qq"
+                                                                        v-model.number="form.user_qq"
                                                                         placeholder="请选择">
                                                                     <el-option
                                                                             v-for="item in businessmanQQOptions"
@@ -1011,6 +1011,30 @@
 
         },
         data() {
+            var isPhone = (rule, value, callback) => {
+                let phone=/^1[3|4|5|7|8][0-9]\d{8}$/;
+                if (!phone.test(value)) {
+                    callback(new Error('请填写正确的手机号！'));
+                } else {
+                    callback();
+                }
+            };
+            var mustOverZero = (rule, value, callback) => {
+                let isNumber=/^([1-9]\d*|0)(\.\d{1,2})?$/;
+                if (value && !isNumber.test(value)) {
+                    callback(new Error('请输入大于0的数字值，支持2位小数!'));
+                } else {
+                    callback();
+                }
+            };
+            var overZeroInt = (rule, value, callback) => {
+                let isNumber=/^[1-9]\d*$/;
+                if (value && !isNumber.test(value)) {
+                    callback(new Error('请输入大于0的整数值!'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 tradeNo: this.$route.query.trade_no,
                 gameLevelingRequirementVisible: false,
@@ -1117,90 +1141,61 @@
                     consult_describe:''
                 },
                 rules: {
-                    game_leveling_type_id: [
-                        {required: true, message: '请选择代练类型', trigger: 'change'},
+                    game_leveling_type_id:[
+                        { required: true, message: '请选择代练类型', trigger: 'change' },
                     ],
-                    game_role: [
-                        {required: true, message: '请输入游戏角色', trigger: 'blur'},
+                    game_role:[
+                        { required: true, message: '请输入游戏角色', trigger: 'blur' },
                     ],
-                    game_account: [
-                        {required: true, message: '请输入游戏账号', trigger: 'change'},
+                    game_account:[
+                        { required: true, message: '请输入游戏账号', trigger: 'change' },
                     ],
-                    game_password: [
-                        {required: true, message: '请输入游戏密码', trigger: 'change'},
+                    game_password:[
+                        { required: true, message: '请输入游戏密码', trigger: 'change' },
                     ],
-                    title: [
-                        {required: true, message: '请输入代练标题', trigger: 'change'},
-                        {min: 3, max: 35, message: '长度在 3 到 35 个字符', trigger: 'change'}
+                    title:[
+                        { required: true, message: '请输入代练标题', trigger: 'change' },
+                        { min: 3, max: 35, message: '长度在 3 到 35 个字符', trigger: 'change' }
                     ],
-                    day_hour: [
-                        {type: 'array', required: true, message: '请选择代练天/小时', trigger: 'change'},
+                    day_hour:[
+                        {type: 'array', required: true, message: '请选择代练天/小时',  trigger: 'change'},
                     ],
-                    game_region_server: [
-                        {type: 'array', required: true, message: '请选择游戏/区/服', trigger: 'change'},
+                    game_region_server:[
+                        {type: 'array', required: true, message: '请选择游戏/区/服', trigger: 'change' },
                     ],
-                    explain: [
-                        {required: true, message: '请输入代练说明', trigger: 'change'},
+                    explain:[
+                        { required: true, message: '请输入代练说明', trigger: 'change' },
                     ],
-                    requirement: [
-                        {required: true, message: '请输入代练要求', trigger: 'change'},
+                    requirement:[
+                        { required: true, message: '请输入代练要求', trigger: 'change' },
                     ],
                     amount: [
-                        {required: true, message: '请输入代练价格', trigger: 'change'}
+                        { required: true, message: '请输入代练价格', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     source_amount: [
-                        { validator: (rule, value, callback) => {
-                                if ((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false) {
-                                    callback(new Error("来源价格必须为数字值"));
-                                } else {
-                                    callback();
-                                }
-                            }, trigger: 'blur'},
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     efficiency_deposit: [
-                        {required: true, message: '请输入效率保证金', trigger: 'change'}
+                        { required: true, message: '请输入效率保证金', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     security_deposit: [
-                        {required: true, message: '请输入安全保证金', trigger: 'change'}
+                        { required: true, message: '请输入安全保证金', trigger: 'change' },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     user_qq: [
-                        {required: true, message: '请输入商户QQ号', trigger: 'change'}
+                        { required: true, message: '请输入商户QQ号', trigger: 'change' }
                     ],
                     player_phone: [
-                        {required: true, message: '请输入无家电话', trigger: 'blur'},
-                        {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+                        { required: true, message: '请输入玩家电话', trigger: 'blur' },
+                        { validator: isPhone, trigger: 'blur' }
                     ],
                     price_increase_step: [
-                        {
-                            validator: (rule, value, callback) => {
-                                if (value != "" && value != undefined) {
-                                    if ((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false) {
-                                        callback(new Error("加价幅度必须为数字值"));
-                                    } else {
-                                        callback();
-                                    }
-                                } else {
-                                    callback();
-                                }
-                            },
-                            trigger: 'blur'
-                        },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
                     price_ceiling: [
-                        {
-                            validator: (rule, value, callback) => {
-                                if (value != "" && value != undefined) {
-                                    if ((/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/).test(value) == false) {
-                                        callback(new Error("加价上限必须为数字值"));
-                                    } else {
-                                        callback();
-                                    }
-                                } else {
-                                    callback();
-                                }
-                            },
-                            trigger: 'blur'
-                        },
+                        { validator: mustOverZero, trigger: 'blur' }
                     ],
 
                 },
