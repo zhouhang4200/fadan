@@ -635,13 +635,13 @@ class GameLevelingOrder extends Model
 
                 // 当前用户父Id 等于撤销发起人
                 if ($this->gameLevelingOrderConsult->parent_user_id == request()->user()->getPrimaryUserId()) {
-                    return sprintf("您发起撤销,  您支付代练费用 %.2f 元, 对方支付保证金 %.2f  原因: %s",
+                    return sprintf("您发起撤销,  您支付代练费用 %.2f 元, 对方支付保证金 %.2f 元，原因: %s",
                         $this->gameLevelingOrderConsult->amount,
                         bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
                         $this->gameLevelingOrderConsult->reason
                     );
                 } else {
-                    return sprintf("对方发起撤销,  对方支付代练费用 %.2f 元, 您方支付保证金 %.2f  原因: %s",
+                    return sprintf("对方发起撤销,  对方支付代练费用 %.2f 元, 您方支付保证金 %.2f 元，原因: %s",
                         $this->gameLevelingOrderConsult->amount,
                         bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
                         $this->gameLevelingOrderConsult->reason
@@ -650,13 +650,13 @@ class GameLevelingOrder extends Model
             } else if ($this->gameLevelingOrderConsult->initiator == 2) {  // 如果发起人为接单方
 
                 if ($this->gameLevelingOrderConsult->parent_user_id == request()->user()->getPrimaryUserId()) {
-                    return sprintf("您发起撤销,  对方支付代练费用 %.2f 元, 您支付保证金 %.2f  原因: %s",
+                    return sprintf("您发起撤销,  对方支付代练费用 %.2f 元, 您支付保证金 %.2f 元，原因: %s",
                         $this->gameLevelingOrderConsult->amount,
                         bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
                         $this->gameLevelingOrderConsult->reason
                     );
                 } else {
-                    return sprintf("对方发起撤销,  您支付代练费用 %.2f 元, 对方支付保证金 %.2f  原因: %s",
+                    return sprintf("对方发起撤销,  您支付代练费用 %.2f 元, 对方支付保证金 %.2f 元，原因: %s",
                         $this->gameLevelingOrderConsult->amount,
                         bcadd($this->gameLevelingOrderConsult->security_deposit, $this->gameLevelingOrderConsult->efficiency_deposit),
                         $this->gameLevelingOrderConsult->reason
