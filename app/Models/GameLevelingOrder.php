@@ -630,7 +630,6 @@ class GameLevelingOrder extends Model
     public function getConsultDescribe()
     {
         if (! is_null($this->gameLevelingOrderConsult) && optional($this->gameLevelingOrderConsult)->status != 3) {
-            myLog('test', [$this->gameLevelingOrderConsult->reason]);
             if ($this->gameLevelingOrderConsult->initiator == 1) { // 如果发起人为发单方
 
                 // 当前用户父Id 等于撤销发起人
