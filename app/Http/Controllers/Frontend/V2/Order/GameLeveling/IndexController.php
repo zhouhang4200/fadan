@@ -32,7 +32,7 @@ class IndexController extends Controller
      */
     public function index()
     {
-        $orders =  GameLevelingOrder::filter(array_merge([
+        $orders = GameLevelingOrder::filter(array_merge([
             'parent_user_id' => request()->user()->getPrimaryUserId()
         ], request()->all()))
             ->select(
@@ -98,6 +98,7 @@ class IndexController extends Controller
             ->paginate(20);
 
         $responseData['total'] = $orders->total();
+
         foreach ($orders as $item) {
             $item->pay_amount = $item->payAmount();
             $item->get_amount = $item->getAmount();
@@ -107,6 +108,7 @@ class IndexController extends Controller
             $item->profit = ($item->get_amount  - $item->pay_amount  - $item->get_poundage) + 0;
             $item->remark_edit = false;
             $item->consult_describe = $item->getConsultDescribe();
+            $item->game_password = '******';
             $responseData['items'][] = $item;
         }
 
