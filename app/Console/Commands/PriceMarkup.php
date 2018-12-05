@@ -203,7 +203,7 @@ class PriceMarkup extends Command
 
         $number = $info['add_number'] + 1;
         $amount = bcadd($info['add_amount'], $rangeMoney, 2);
-        $time = Carbon::parse($info['add_time'])->addMinutes(1)->toDateTimeString();
+        $time = Carbon::parse($info['add_time'])->addHours(1)->toDateTimeString();
 
         $key = $order->trade_no;
         $name = "order:price-markup";
@@ -219,7 +219,7 @@ class PriceMarkup extends Command
      */
     public function checkTimeToAddPrice($info, $order)
     {
-        $addTime = Carbon::parse($info['add_time'])->addMinutes(1); // 时间是否到了加价的点
+        $addTime = Carbon::parse($info['add_time'])->addHours(1); // 时间是否到了加价的点
         $isOverAmount = bcsub($info['add_amount'], $order->price_ceiling) < 0 ? true : false; // 加价金额是否到了上限
 
         if (! $isOverAmount) {
