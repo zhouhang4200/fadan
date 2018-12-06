@@ -9,7 +9,12 @@ import "./static/gt.js";
 import "./static/encrypt.js";
 import api from './config/api';
 import router from './config/route';
+import VueSocketIO from 'vue-socket.io';
 
+Vue.use(new VueSocketIO({
+    debug: true,
+    connection: window.location.hostname
+}));
 Vue.use(ElementUI, {size:"small"});
 Vue.use(VueRouter);
 

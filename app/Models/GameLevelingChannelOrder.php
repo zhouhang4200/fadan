@@ -43,6 +43,8 @@ class GameLevelingChannelOrder extends Model
         'remark',
     ];
 
+    protected $appends = ['visible'];
+
     /**
      * 渠道C端用户表
      */
@@ -170,5 +172,14 @@ class GameLevelingChannelOrder extends Model
             'hour' => 1,
             'day' => 0,
         ], $gameLevelingChannelGame->toArray());
+    }
+
+    /**
+     * 用于前端按钮是否显确认弹窗
+     * @return bool
+     */
+    public function getVisibleAttribute()
+    {
+        return false;
     }
 }

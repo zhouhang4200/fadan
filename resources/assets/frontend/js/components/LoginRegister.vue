@@ -319,7 +319,7 @@
                         new_captcha: true,
                         product: 'float',
                         area: '#form',
-                        next_width: '50%',
+                        next_width: '100%',
                         bg_color: '#ffffff',
                         lang: 'zh-cn',
                         http: 'http://',
@@ -349,7 +349,7 @@
                         new_captcha: true,
                         product: 'float',
                         area: '#form',
-                        next_width: '50%',
+                        next_width: '100%',
                         bg_color: 'black',
                         lang: 'zh-cn',
                         http: 'http://',
@@ -375,6 +375,7 @@
             handleSubmitLoginForm() {
                 this.$refs.formLogin.validate((valid) => {
                     if (valid) {
+                        this.loginPasswordErrorMessage = '';
                         this.formLogin.password = encrypt(this.formLogin.password);
                         this.$api.login(this.formLogin).then(res => {
                             if (res.status == 1) {
@@ -385,6 +386,8 @@
                                 this.loginPasswordErrorMessage = res.message;
                                 this.formLogin.password = '';
                             }
+                        }).catch((error) => {
+                            this.formLogin.password = '';
                         });
                     }
                 });
@@ -425,7 +428,7 @@
                     }
                 });
             },
-        },
+    },
         created() {
             this.initLoginCaptcha();
             this.initRegisterCaptcha();

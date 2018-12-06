@@ -129,6 +129,24 @@
             </div>
         </el-dialog>
 
+        <el-dialog
+                title=""
+                :visible.sync="paySuccessDialogVisible"
+                width="20%">
+            <div style="text-align: center">
+                <div class="" style="text-align: center;margin-bottom: 50px">
+                    <div class="qr-image">
+                        <i class="el-icon-success" style="color:limegreen;font-size: 100px"></i>
+                    </div>
+                </div>
+                <div class="" style="margin-bottom: 40px;font-size: 20px;">支付成功</div>
+
+                <router-link :to="{name:'orderList'}">
+                    <el-button type="success" style="" >立即查看</el-button>
+                </router-link>
+            </div>
+        </el-dialog>
+
     </div>
 </template>
 
@@ -141,6 +159,7 @@
             return {
                 qr: '',
                 payDialogVisible: false,
+                paySuccessDialogVisible: false,
                 gameServerOptionsShow: false,
                 gameRegionOptionsShow: false,
                 gameServer: '',
@@ -205,6 +224,10 @@
             this.form.current_level_id = order.current;
             this.form.target_level_id = order.target;
             this.useTimePreview = order.useTimePreview;
+            this.sockets.subscribe('notification:channelPcPayResult', (data) => {
+                this.payDialogVisible = false;
+                this.paySuccessDialogVisible = true;
+            });
         },
 
         methods: {

@@ -30,5 +30,6 @@ Route::namespace('Channel')->group(function () {
         Route::post('cancel-refund', 'GameLevelingChannelOrderController@cancelRefund')->name('channel.cancel-refund');
     });
     # 微信支付回调
-    Route::any('pay/wx/notify', 'GameLevelingChannelOrderController@weChatNotify')->name('channel.game-leveling.wx.pay.notify');
+    Route::any('pay/wechat/notify', 'GameLevelingChannelOrderController@pcWeChatNotify')->name('channel.game-leveling.wechat.pay.notify');
+    Route::any('pay/alipay/notify', 'GameLevelingChannelOrderController@pcAliPayNotify')->name('game-leveling.alipay.pay.notify');
 });

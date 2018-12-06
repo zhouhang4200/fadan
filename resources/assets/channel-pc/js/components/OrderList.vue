@@ -110,11 +110,11 @@
                                         v-if="item.status == 3"
                                         placement="top"
                                         width="160"
-                                        v-model="confirmCompleteVisible">
+                                        v-model="item.visible">
                                     <p>您确认收货吗？</p>
                                     <div style="text-align: right; margin: 0">
-                                        <el-button size="mini" type="text" @click="confirmCompleteVisible = false">取消</el-button>
-                                        <el-button type="primary" size="mini" @click="onClickConfirmComplete(item.trade_no)">确定</el-button>
+                                        <el-button size="mini" type="text" @click="item.visible = false">取消</el-button>
+                                        <el-button type="primary" size="mini" @click="onClickConfirmComplete(item)">确定</el-button>
                                     </div>
                                     <el-button size="small" slot="reference">确认收货</el-button>
                                 </el-popover>
@@ -124,11 +124,11 @@
                                     <el-popover
                                             placement="top"
                                             width="160"
-                                            v-model="confirmCancelRefundPopoverVisible">
+                                            v-model="item.visible">
                                         <p>您确定取消退款吗？</p>
                                         <div style="text-align: right; margin: 0">
-                                            <el-button size="mini" type="text" @click="confirmCancelRefundPopoverVisible = false">取消</el-button>
-                                            <el-button type="primary" size="mini" @click="onClickCancelRefund(item.trade_no)">确定</el-button>
+                                            <el-button size="mini" type="text" @click="item.visible = false">取消</el-button>
+                                            <el-button type="primary" size="mini" @click="onClickCancelRefund(item)">确定</el-button>
                                         </div>
                                         <el-button size="small" slot="reference">取消退款</el-button>
                                     </el-popover>
@@ -334,8 +334,8 @@
                 this.$api.GameLevelingChannelOrderList(this.searchParams).then(res => {
                     this.noData = res.length == 0 ? true : false;
                     this.list = res;
-                    this.loading = false;
-                    this.finished = true;
+                    // this.loading = false;
+                    // this.finished = true;
                 }).catch(err => {
 
                 });
@@ -410,9 +410,9 @@
                 });
             },
             // 取消退款
-            onClickCancelRefund(tradeNo) {
+            onClickCancelRefund(item) {
                 this.$api.GameLevelingChannelOrderCancelRefund({
-                    trade_no: tradeNo,
+                    trade_no: item.trade_no,
                 }).then(res => {
                     this.confirmCancelRefundPopoverVisible = false;
                     this.getList();
@@ -433,9 +433,10 @@
                 });
             },
             // 确认完成
-            onClickConfirmComplete(tradeNo) {
+            onClickConfirmComplete(item) {
+                item.visible = false;
                 this.$api.GameLevelingChannelOrderComplete({
-                    trade_no:tradeNo,
+                    trade_no:item.trade_no,
                 }).then(res => {
                     this.getList();
                 }).catch(err => {
