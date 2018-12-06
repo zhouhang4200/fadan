@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\V2\Statistic;
 
+use App\Models\OrderBasicData;
 use DB;
 use Auth;
 use App\Models\User;
@@ -27,43 +28,36 @@ class StatisticController extends Controller
     /**
      * 员工统计接口
      *
+     * @return mixed
      */
     public function employeeDataList()
     {
-        $userName = request('username', '');
-        $startDate = request('date')[0] ?? '';
-        $endDate = request('date')[1] ?? '';
+        $userId = request('username', '');
+        $startDate = request('date')[0] ?? null;
+        $endDate = request('date')[1] ?? null;
 
-        $filter = compact('userName', 'startDate', 'endDate');
+        $parentUser = User::find(Auth::user()->getPrimaryUserId());
 
-        $allIds = User::where('parent_id', Auth::user()->getPrimaryUserId())
-            ->pluck('id')
-            ->merge(Auth::user()->getPrimaryUserId())
-            ->unique();
+        $userIds = User::where('parent_id', $parentUser->id)->pluck('id')->merge($parentUser->id);
 
-        $userIds = User::whereIn('id', $allIds)
-            ->pluck('id');
+        $filter = compact('userId', 'startDate', 'endDate');
 
-        $query = EmployeeStatistic::whereIn('employee_statistics.user_id', $userIds)
-            ->filter($filter)
+        $orderBasicData = OrderBasicData::filter($filter)
+            ->whereIn('creator_user_id', $userIds)
             ->select(DB::raw('
-                employee_statistics.user_id, 
+                order_basic_datas.creator_user_id, 
                 users.name as name,
                 users.username as username,
-                sum(employee_statistics.complete_order_count) as complete_order_count, 
-                sum(employee_statistics.revoke_order_count) as revoke_order_count, 
-                sum(employee_statistics.arbitrate_order_count) as arbitrate_order_count, 
-                sum(employee_statistics.profit) as profit, 
-                sum(employee_statistics.complete_order_amount) as complete_order_amount,
-                sum(all_count) as all_count,
-                sum(all_original_price) as all_original_price,
-                sum(all_price) as all_price,
-                sum(subtract_price) as subtract_price
+                sum(1) as order_count,
+                sum(order_basic_datas.original_price) as original_price, 
+                sum(order_basic_datas.price) as price, 
+                sum(order_basic_datas.original_price) - sum(order_basic_datas.price) as diff_price
             '))
-            ->leftJoin('users', 'users.id', '=', 'employee_statistics.user_id')
-            ->groupBy('employee_statistics.user_id');
+            ->leftJoin('users', 'users.id', '=', 'order_basic_datas.creator_user_id')
+            ->groupBy('order_basic_datas.creator_user_id')
+            ->paginate(15);
 
-        return $query->paginate(15);
+        return $orderBasicData;
     }
 
     /**
@@ -97,39 +91,44 @@ class StatisticController extends Controller
      */
     public function orderDataList()
     {
-        $startDate = request('date')[0] ?? '';
-        $endDate = request('date')[1] ?? '';
-
-        $allIds = User::where('parent_id', Auth::user()->getPrimaryUserId())
-            ->pluck('id')
-            ->merge(Auth::user()->getPrimaryUserId())
-            ->unique();
-
-        $userIds = User::whereIn('id', $allIds)
-            ->pluck('id');
+        $startDate = request('date')[0] ?? null;
+        $endDate = request('date')[1] ?? null;
 
         $filter = compact('startDate', 'endDate');
 
-        return OrderStatistic::whereIn('user_id', $userIds)
+        $parentUser = User::find(Auth::user()->getPrimaryUserId());
+
+        $userIds = User::where('parent_id', $parentUser->id)->pluck('id')->merge($parentUser->id);
+
+        // 统计数据
+        $orderBasicData = OrderBasicData::where('creator_user_id', Auth::id())
+            ->whereIn('creator_user_id', $userIds)
             ->filter($filter)
             ->select(DB::raw('
-                user_id, date, 
-				sum(send_order_count) as send_order_count,
-			 	sum(receive_order_count) as receive_order_count, 
-			 	sum(complete_order_count) as complete_order_count,
-			 	ifnull(round(sum(complete_order_count)/sum(receive_order_count), 4), 0) as complete_order_rate, 
-			 	sum(revoke_order_count) as revoke_order_count, 
-				sum(arbitrate_order_count) as arbitrate_order_count,
-				sum(three_status_original_amount) as three_status_original_amount,
-				sum(complete_order_amount) as complete_order_amount,
-				sum(two_status_payment) as two_status_payment,
-				sum(two_status_income) as two_status_income,
-				sum(poundage) as poundage,
-				sum(profit) as profit
-			'))
+                date,
+                creator_user_id,
+                sum(1) as send_order_count,
+			 	sum(case when status = 13 then 1 else 0 end) as receive_order_count, 
+			 	sum(case when status = 20 then 1 else 0 end) as complete_order_count,
+			 	sum(case when status = 19 then 1 else 0 end) as revoke_order_count, 
+				sum(case when status = 21 then 1 else 0 end) as arbitrate_order_count,
+				sum(case when status in (19, 20, 21) then original_price else 0 end) as three_status_original_amount,
+				sum(case when status = 20 then price else 0 end) as complete_order_amount,
+				sum(case when status in (19, 21) then consult_amount else 0 end) as two_status_payment,
+				sum(case when status in (19, 21) then consult_deposit else 0 end) as two_status_income,
+				sum(case when status in (19, 21) then consult_poundage else 0 end) as poundage,
+				sum(case when status = 20 then original_price - price else 0 end) - 
+				sum(case when status in (19, 21) then consult_amount-consult_poundage-consult_deposit else 0 end) as profit 
+            '))
             ->latest('date')
             ->groupBy('date')
             ->paginate(15);
+
+        foreach ($orderBasicData as $item) {
+            $item->complete_order_rate = $item->receive_order_count == 0 ? 0 : bcdiv($item->complete_order_count*100, $item->receive_order_count, 2);
+        }
+
+        return $orderBasicData;
     }
 
     /**

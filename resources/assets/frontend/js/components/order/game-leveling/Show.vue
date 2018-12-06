@@ -475,10 +475,11 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        type="textarea"
-                                                                        :rows="2"
-                                                                        placeholder="请输入内容"
-                                                                        v-model="form.remark">
+                                                                    :disabled="fieldDisabled"
+                                                                    type="textarea"
+                                                                    :rows="2"
+                                                                    placeholder="请输入内容"
+                                                                    v-model="form.remark">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -707,31 +708,31 @@
             <el-row>
                 <el-col :span="16">
                     <div style="text-align: center;line-height: 60px;">
-                        <!--v-if="(form.status == 1 || form.status == 22)"-->
                         <el-button
-                                   type="primary"
-                                   @click="handleSubmitForm('form')"
-                                   style="margin-right: 8px">确认修改
+                           v-if="form.status == 1 || form.status == 13 || form.status == 14 || form.status == 17 || form.status == 18 || form.status == 22 || form.status == 22"
+                           type="primary"
+                           @click="handleSubmitForm('form')"
+                           style="margin-right: 8px">确认修改
                         </el-button>
 
                         <!--未接单 1 -->
                         <span v-if="form.status == 1">
                             <el-button
-                                    size="small"
-                                    @click="handleDelete()">撤单</el-button>
+                                size="small"
+                                @click="handleDelete()">撤单</el-button>
                             <el-button
-                                    size="small"
-                                    type="primary" @click="handleOffSale()">下架</el-button>
+                                size="small"
+                                type="primary" @click="handleOffSale()">下架</el-button>
                         </span>
 
                         <!--代练中 13 -->
                         <span v-if="form.status == 13">
                             <el-button
-                                    size="small"
-                                    @click="handleApplyConsult()">撤销</el-button>
+                                size="small"
+                                @click="handleApplyConsult()">撤销</el-button>
                             <el-button
-                                    size="small"
-                                    type="primary" @click="handleApplyComplain()">仲裁</el-button>
+                                size="small"
+                                type="primary" @click="handleApplyComplain()">仲裁</el-button>
                         </span>
 
                         <!--待验收 14 -->

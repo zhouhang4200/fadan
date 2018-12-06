@@ -107,7 +107,7 @@
                     label="订单号"
                     width="250">
                 <template slot-scope="scope">
-                    <router-link :to="{name:'gameLevelingOrderShow', params:{trade_no:scope.row.game_leveling_order_trade_no}}">
+                    <router-link :to="{name:'gameLevelingOrderShow', query:{trade_no:scope.row.game_leveling_order_trade_no}}">
                         <div style="margin-left: 10px"> 淘宝：{{ scope.row.game_leveling_order.channel_order_trade_no }}</div>
                         <div style="margin-left: 10px"> {{ platform[scope.row.game_leveling_order.platform_id] }}：{{ scope.row.game_leveling_order.platform_trade_no }}</div>
                     </router-link>
@@ -121,27 +121,25 @@
                 </template>
             </el-table-column>
             <el-table-column
-                    prop="city"
+                    prop="order_status"
                     label="平台订单状态">
+                    <template slot-scope="scope">
+                        {{ orderStatusMap[scope.row.game_leveling_order.status] }}
+                    </template>
             </el-table-column>
             <el-table-column
                     prop="game_name"
                     label="游戏">
                 <template slot-scope="scope">
-                    {{ gameMap[scope.row.game_leveling_order.game_id] }}
+                    {{scope.row.game_leveling_order.game_leveling_order_detail.game_name}}
                 </template>
             </el-table-column>
             <el-table-column
-                    prop="zip"
+                    prop="amount"
                     label="要求赔偿金额">
-                <template slot-scope="scope">
-                    <a :href="'http://www.taobao.com/webww/ww.php?ver=3&touid=' + scope.row.buyer_nick +'&siteid=cntaobao&status=1&charset=utf-8'" target="_blank">
-                        <div style="margin-left: 10px">{{ scope.row.buyer_nick }}</div>
-                    </a>
-                </template>
             </el-table-column>
             <el-table-column
-                    prop="price"
+                    prop="status"
                     label="投诉状态">
                 <template slot-scope="scope">
                     {{ complainStatusMap[scope.row.status] }}
@@ -205,6 +203,11 @@
     .search-form-inline .el-form-item__content {
         width:80%;
     }
+    .avatar {
+        width: 500px;
+        height: 500px;
+        display: block;
+    }
 </style>
 
 <script>
@@ -236,7 +239,6 @@
                     2:'91代练',
                     3:'蚂蚁代练',
                 },
-                gameMap:[],
                 taobaoStatusMap: {
                     1: '投诉中',
                     2: '已取消',
@@ -249,7 +251,7 @@
                     3: '投诉成功',
                     4: '投诉失败',
                 },
-                statusMap: {
+                orderStatusMap: {
                     1: '未接单',
                     13: '代练中',
                     14: '待验收',
@@ -294,7 +296,7 @@
             // 加载游戏选项
             handleGameOptions() {
                 this.$api.games().then(res => {
-                    this.gameOptions = res;
+                    this.gameOptions = res.data;
                     let currentThis = this;
                     res.forEach(function (item) {
                         currentThis.gameMap[item.id]  = item.name;
@@ -338,7 +340,8 @@
                         item.push(h('el-carousel-item', null, [
                             h('img', {
                                 attrs:{
-                                    src:val
+                                    src:val,
+                                    class:'avatar'
                                 }
                             }, '')
                         ]))

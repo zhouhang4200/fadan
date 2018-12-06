@@ -701,7 +701,13 @@ class OrderOperateController
             Redis::hDel('our_notice_orders', static::$order->trade_no);
 
             // 写入基础数据
-            OrderBasicData::createData(static::$order);
+            $orderBasicData = OrderBasicData::where('order_no', static::$order->trade_no)->first();
+            $orderBasicData->status = 19;
+            $orderBasicData->consult_amount = $gameLevelingOrderConsult->amount;
+            $orderBasicData->consult_deposit = bcadd($gameLevelingOrderConsult->security_deposit, $gameLevelingOrderConsult->efficiency_deposit);
+            $orderBasicData->consult_poundage = $poundage;
+            $orderBasicData->order_finished_at = Carbon::now()->toDateTimeString();
+            $orderBasicData->save();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -929,7 +935,13 @@ class OrderOperateController
             Redis::hDel('our_notice_orders', static::$order->trade_no);
 
             // 写入基础数据
-            OrderBasicData::createData(static::$order);
+            $orderBasicData = OrderBasicData::where('order_no', static::$order->trade_no)->first();
+            $orderBasicData->status = 21;
+            $orderBasicData->consult_amount = $gameLevelingOrderComplain->amount;
+            $orderBasicData->consult_deposit = bcadd($gameLevelingOrderComplain->security_deposit, $gameLevelingOrderComplain->efficiency_deposit);
+            $orderBasicData->consult_poundage = $poundage;
+            $orderBasicData->order_finished_at = Carbon::now()->toDateTimeString();
+            $orderBasicData->save();
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             throw new GameLevelingOrderOperateException($e->getMessage());

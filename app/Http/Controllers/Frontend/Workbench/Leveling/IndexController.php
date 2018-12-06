@@ -1715,9 +1715,10 @@ class IndexController extends Controller
 
     /**
      * v1订单列表
+     *
      * @param Request $request
      * @param OrderRepository $orderRepository
-     * @return $this|\Illuminate\Http\RedirectResponse
+     * @return $this|void
      */
     public function indexNew(Request $request, OrderRepository $orderRepository)
     {

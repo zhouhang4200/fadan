@@ -112,7 +112,7 @@ export default {
         return post('/v2/order/game-leveling/apply-complete-image', params);
     },
     gameLevelingOrderBusinessmanComplainStore(params) {
-        return post('/v2/order/game-leveling/status-quantity', params);
+        return post('/v2/order/game-leveling/businessman-complain/store', params);
     },
     // 添加代练订单 增加价格
     gameLevelingOrderAddAmount(params) {

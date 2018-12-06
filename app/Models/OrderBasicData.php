@@ -24,27 +24,31 @@ class OrderBasicData extends Model
      */
     public static function scopeFilter($query, $filters = [])
     {
-        if ($filters['userIds']) {
+        if (isset($filters['userId']) && !empty($filters['userId'])) {
+            $query->where('creator_user_id', $filters['userId']);
+        }
+
+        if (isset($filters['userIds']) && !empty($filters['userIds'])) {
             $query->whereIn('creator_user_id', $filters['userIds']);
         }
 
-        if ($filters['third']) {
+        if (isset($filters['third']) && !empty($filters['third'])) {
             $query->where('third', $filters['third']);
         }
 
-        if ($filters['gameId']) {
+        if (isset($filters['gameId']) && !empty($filters['gameId'])) {
             $query->where('game_id', $filters['gameId']);
         }
 
-        if ($filters['startDate'] && empty($filters['endDate'])) {
+        if (isset($filters['startDate']) && empty($filters['endDate'])) {
             $query->where('date', '>=', $filters['startDate']);
         }
 
-        if ($filters['endDate'] && empty($filters['startDate'])) {
+        if (isset($filters['endDate']) && empty($filters['startDate'])) {
             $query->where('date', '<=', $filters['endDate']);
         }
 
-        if ($filters['endDate'] && $filters['startDate']) {
+        if (isset($filters['endDate']) && isset($filters['startDate']) && !empty($filters['endDate']) && !empty($filters['startDate'])) {
             $addDate = Carbon::parse($filters['endDate'])->addDays(1)->toDateString();
             
             $query->where('date', '>=', $filters['startDate'])->where('date', '<', $addDate);
@@ -175,9 +179,9 @@ class OrderBasicData extends Model
             $data['gainer_primary_user_id']  = $order->take_parent_user_id;
             $data['price']                   = $order->amount;
             $data['pay_amount']              = $payAmount;
-            $data['security_deposit']        = $order->security_deposit ?? 0;
-            $data['efficiency_deposit']      = $order->efficiency_deposit ?? 0;
-            $data['original_price']          = $order->source_price ?? 0;
+            $data['security_deposit']        = $order->security_deposit;
+            $data['efficiency_deposit']      = $order->efficiency_deposit;
+            $data['original_price']          = $order->source_amount;
             $data['order_created_at']        = $order->created_at->toDateTimeString();
             $data['order_finished_at']       = $order->complete_at;
             $data['is_repeat']               = $order->repeat ?? 0;

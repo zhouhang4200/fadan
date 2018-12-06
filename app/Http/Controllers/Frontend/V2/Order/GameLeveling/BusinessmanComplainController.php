@@ -24,9 +24,7 @@ class BusinessmanComplainController extends Controller
     public function index()
     {
         return GameLevelingOrderBusinessmanComplain::filter(request()->all())
-            ->with(['gameLevelingOrder' => function($query) {
-                $query->select('trade_no', 'game_id', 'platform_trade_no', 'channel_order_trade_no', 'platform_id');
-            }])
+            ->with('gameLevelingOrder.gameLevelingOrderDetail')
             ->where('from_user_id', auth()->user()->getPrimaryUserId())
             ->paginate(50);
     }
@@ -100,9 +98,11 @@ class BusinessmanComplainController extends Controller
                 if (isset(request()->images[0])) {
                     $complaintArr['images'][] = base64ToImg(request()->images[0], 'complaints');
                 }
+
                 if(isset(request()->images[1])) {
                     $complaintArr['images'][] = base64ToImg(request()->images[1], 'complaints');
                 }
+
                 if(isset(request()->images[2])) {
                     $complaintArr['images'][] = base64ToImg(request()->images[2], 'complaints');
                 }

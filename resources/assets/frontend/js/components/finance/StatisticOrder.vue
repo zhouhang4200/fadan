@@ -56,7 +56,7 @@
                     label="已结算占比"
                     width="100">
                 <template slot-scope="scope">
-                    {{ scope.row.complete_order_rate == 0 ? 0 : scope.row.complete_order_rate*100 }}%
+                    {{Number(scope.row.complete_order_rate)}}%
                 </template>
             </el-table-column>
             <el-table-column
@@ -74,7 +74,7 @@
                     label="已结算/撤销/仲裁来源价格"
                     width="">
                 <template slot-scope="scope">
-                    {{ scope.row.three_status_original_amount == 0 ? 0 : scope.row.three_status_original_amount }}
+                    {{Number(scope.row.three_status_original_amount)}}
                 </template>
             </el-table-column>
             <el-table-column
@@ -82,7 +82,7 @@
                     label="已结算单发单金额"
                     width="">
                 <template slot-scope="scope">
-                    {{ scope.row.complete_order_amount == 0 ? 0 : scope.row.complete_order_amount }}
+                    {{Number(scope.row.complete_order_amount)}}
                 </template>
             </el-table-column>
             <el-table-column
@@ -90,7 +90,7 @@
                 label="撤销/仲裁支付金额"
                 width="">
                 <template slot-scope="scope">
-                    {{ scope.row.two_status_payment == 0 ? 0 : scope.row.two_status_payment }}
+                    {{Number(scope.row.two_status_payment)}}
                 </template>
             </el-table-column>
             <el-table-column
@@ -98,7 +98,7 @@
                     label="撤销/仲裁获得赔偿"
                     width="">
                 <template slot-scope="scope">
-                    {{ scope.row.two_status_income == 0 ? 0 : scope.row.two_status_income }}
+                    {{Number(scope.row.two_status_income)}}
                 </template>
             </el-table-column>
             <el-table-column
@@ -106,7 +106,7 @@
                     label="手续费"
                     width="100">
                 <template slot-scope="scope">
-                    {{ scope.row.poundage == 0 ? 0 : scope.row.poundage }}
+                    {{Number(scope.row.poundage)}}
                 </template>
             </el-table-column>
             <el-table-column
@@ -114,7 +114,7 @@
                     label="利润"
                     width="100">
                 <template slot-scope="scope">
-                    {{ scope.row.profit == 0 ? 0 : scope.row.profit }}
+                    {{Number(scope.row.profit)}}
                 </template>
             </el-table-column>
         </el-table>
