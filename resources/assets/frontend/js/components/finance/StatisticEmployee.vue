@@ -52,16 +52,25 @@
                     prop="original_price"
                     label="来源价格"
                     width="300">
+                    <template slot-scope="scope">
+                        {{Number(scope.row.original_price)}}
+                    </template>
             </el-table-column>
             <el-table-column
                     prop="price"
                     label="发布价格"
                     width="300">
+                    <template slot-scope="scope">
+                        {{Number(scope.row.price)}}
+                    </template>
             </el-table-column>
             <el-table-column
                     prop="diff_price"
                     label="来源/发布差价"
                     width="">
+                    <template slot-scope="scope">
+                        {{Number(scope.row.diff_price)}}
+                    </template>
             </el-table-column>
         </el-table>
         <el-pagination
