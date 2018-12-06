@@ -586,7 +586,7 @@
             // 加载游戏选项
             handleGameOptions() {
                 this.$api.games().then(res => {
-                    this.gameOptions = res;
+                    this.gameOptions = res.data;
                 });
             },
             // 搜索
