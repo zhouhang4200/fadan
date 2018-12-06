@@ -214,6 +214,7 @@ class FinanceController extends Controller
 
         $orders = GameLevelingOrder::financeOrderFilter(compact('tradeNo', 'gameId', 'status', 'startDate', 'endDate', 'platformId', 'sellerNick'))
             ->with('gameLevelingOrderDetail')
+            ->latest('id')
             ->paginate(15);
 
         foreach ($orders as $order) {
