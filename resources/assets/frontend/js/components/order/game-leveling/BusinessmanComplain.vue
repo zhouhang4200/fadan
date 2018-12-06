@@ -107,7 +107,7 @@
                     label="订单号"
                     width="250">
                 <template slot-scope="scope">
-                    <router-link :to="{name:'gameLevelingOrderShow', params:{trade_no:scope.row.game_leveling_order_trade_no}}">
+                    <router-link :to="{name:'gameLevelingOrderShow', query:{trade_no:scope.row.game_leveling_order_trade_no}}">
                         <div style="margin-left: 10px"> 淘宝：{{ scope.row.game_leveling_order.channel_order_trade_no }}</div>
                         <div style="margin-left: 10px"> {{ platform[scope.row.game_leveling_order.platform_id] }}：{{ scope.row.game_leveling_order.platform_trade_no }}</div>
                     </router-link>
