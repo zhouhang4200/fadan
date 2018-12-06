@@ -203,6 +203,11 @@
     .search-form-inline .el-form-item__content {
         width:80%;
     }
+    .avatar {
+        width: 500px;
+        height: 500px;
+        display: block;
+    }
 </style>
 
 <script>
@@ -335,7 +340,8 @@
                         item.push(h('el-carousel-item', null, [
                             h('img', {
                                 attrs:{
-                                    src:val
+                                    src:val,
+                                    class:'avatar'
                                 }
                             }, '')
                         ]))
