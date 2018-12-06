@@ -94,18 +94,15 @@ class StatisticController extends Controller
         $startDate = request('date')[0] ?? null;
         $endDate = request('date')[1] ?? null;
 
-        $allIds = User::where('parent_id', Auth::user()->getPrimaryUserId())
-            ->pluck('id')
-            ->merge(Auth::user()->getPrimaryUserId())
-            ->unique();
-
-        $userIds = User::whereIn('id', $allIds)
-            ->pluck('id');
-
         $filter = compact('startDate', 'endDate');
+
+        $parentUser = User::find(Auth::user()->getPrimaryUserId());
+
+        $userIds = User::where('parent_id', $parentUser->id)->pluck('id')->merge($parentUser->id);
 
         // 统计数据
         $orderBasicData = OrderBasicData::where('creator_user_id', Auth::id())
+            ->whereIn('creator_user_id', $userIds)
             ->filter($filter)
             ->select(DB::raw('
                 date,
