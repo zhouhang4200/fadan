@@ -108,7 +108,6 @@ class IndexController extends Controller
             $item->profit = ($item->get_amount  - $item->pay_amount  - $item->get_poundage) + 0;
             $item->remark_edit = false;
             $item->consult_describe = $item->getConsultDescribe();
-            $item->game_password = '******';
             $responseData['items'][] = $item;
         }
 

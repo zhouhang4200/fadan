@@ -197,7 +197,7 @@
                     fixed
                     prop="trade_no"
                     label="订单号"
-                    width="240">
+                    width="250">
                 <template slot-scope="scope">
                     <router-link :to="{name:'gameLevelingOrderShow', query:{trade_no:scope.row.trade_no}}">
                         <div style="margin-left: 10px">淘宝：{{ scope.row.trade_no }}</div>
