@@ -100,9 +100,11 @@ class BusinessmanComplainController extends Controller
                 if (isset(request()->images[0])) {
                     $complaintArr['images'][] = base64ToImg(request()->images[0], 'complaints');
                 }
+
                 if(isset(request()->images[1])) {
                     $complaintArr['images'][] = base64ToImg(request()->images[1], 'complaints');
                 }
+
                 if(isset(request()->images[2])) {
                     $complaintArr['images'][] = base64ToImg(request()->images[2], 'complaints');
                 }

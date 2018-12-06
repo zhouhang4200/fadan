@@ -11,6 +11,7 @@ use App\Models\GameLevelingOrderComplain;
 use App\Models\GameLevelingOrderConsult;
 use App\Services\OrderOperateController;
 use App\Exceptions\GameLevelingOrderOperateException;
+use Illuminate\Support\Facades\Redis;
 
 class GameLevelingOrderOperateController
 {
@@ -124,7 +125,7 @@ class GameLevelingOrderOperateController
 
             // 同步价格
             if ($queryResult[config('gameleveling.third_orders_price')[$gameLevelingPlatform->platform_id]['data']][config('gameleveling.third_orders_price')[$gameLevelingPlatform->platform_id]['price']] != $order->amount) {
-                AutoMarkupOrderEveryHour::deleteRedisHashKey($order->trade_no);
+                Redis::hDel('order:price-markup', $order->trade_no);
                 return response()->partner(0, '接单失败, 订单价格不一致!' . $order->trade_no);
             }
 
