@@ -24,6 +24,10 @@ class OrderBasicData extends Model
      */
     public static function scopeFilter($query, $filters = [])
     {
+        if (isset($filters['userId']) && !empty($filters['userId'])) {
+            $query->where('creator_user_id', $filters['userId']);
+        }
+
         if (isset($filters['userIds']) && !empty($filters['userIds'])) {
             $query->whereIn('creator_user_id', $filters['userIds']);
         }

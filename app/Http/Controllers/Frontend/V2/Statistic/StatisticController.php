@@ -32,40 +32,32 @@ class StatisticController extends Controller
      */
     public function employeeDataList()
     {
-        $userName = request('username', '');
-        $startDate = request('date')[0] ?? '';
-        $endDate = request('date')[1] ?? '';
+        $userId = request('username', '');
+        $startDate = request('date')[0] ?? null;
+        $endDate = request('date')[1] ?? null;
 
-        $filter = compact('userName', 'startDate', 'endDate');
+        $parentUser = User::find(Auth::user()->getPrimaryUserId());
 
-        $allIds = User::where('parent_id', Auth::user()->getPrimaryUserId())
-            ->pluck('id')
-            ->merge(Auth::user()->getPrimaryUserId())
-            ->unique();
+        $userIds = User::where('parent_id', $parentUser->id)->pluck('id')->merge($parentUser->id);
 
-        $userIds = User::whereIn('id', $allIds)
-            ->pluck('id');
+        $filter = compact('userId', 'startDate', 'endDate');
 
-        $query = EmployeeStatistic::whereIn('employee_statistics.user_id', $userIds)
-            ->filter($filter)
+        $orderBasicData = OrderBasicData::filter($filter)
+            ->whereIn('creator_user_id', $userIds)
             ->select(DB::raw('
-                employee_statistics.user_id, 
+                order_basic_datas.creator_user_id, 
                 users.name as name,
                 users.username as username,
-                sum(employee_statistics.complete_order_count) as complete_order_count, 
-                sum(employee_statistics.revoke_order_count) as revoke_order_count, 
-                sum(employee_statistics.arbitrate_order_count) as arbitrate_order_count, 
-                sum(employee_statistics.profit) as profit, 
-                sum(employee_statistics.complete_order_amount) as complete_order_amount,
-                sum(all_count) as all_count,
-                sum(all_original_price) as all_original_price,
-                sum(all_price) as all_price,
-                sum(subtract_price) as subtract_price
+                sum(1) as order_count,
+                sum(order_basic_datas.original_price) as original_price, 
+                sum(order_basic_datas.price) as price, 
+                sum(order_basic_datas.original_price) - sum(order_basic_datas.price) as diff_price
             '))
-            ->leftJoin('users', 'users.id', '=', 'employee_statistics.user_id')
-            ->groupBy('employee_statistics.user_id');
+            ->leftJoin('users', 'users.id', '=', 'order_basic_datas.creator_user_id')
+            ->groupBy('order_basic_datas.creator_user_id')
+            ->paginate(15);
 
-        return $query->paginate(15);
+        return $orderBasicData;
     }
 
     /**

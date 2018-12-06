@@ -44,22 +44,22 @@
                     width="300">
             </el-table-column>
             <el-table-column
-                    prop="all_count"
+                    prop="order_count"
                     label="发布数量"
                     width="300">
             </el-table-column>
             <el-table-column
-                    prop="all_original_price"
+                    prop="original_price"
                     label="来源价格"
                     width="300">
             </el-table-column>
             <el-table-column
-                    prop="all_price"
+                    prop="price"
                     label="发布价格"
                     width="300">
             </el-table-column>
             <el-table-column
-                    prop="subtract_price"
+                    prop="diff_price"
                     label="来源/发布差价"
                     width="">
             </el-table-column>
