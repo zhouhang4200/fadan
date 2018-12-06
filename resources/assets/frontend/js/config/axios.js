@@ -1,6 +1,6 @@
-import Vue from 'vue'
-import axios from 'axios'
-import {Message, MessageBox} from 'element-ui'
+import Vue from 'vue';
+import axios from 'axios';
+import {Message, MessageBox} from 'element-ui';
 
 // 响应时间
 axios.defaults.timeout = 5 * 10000;
@@ -33,7 +33,7 @@ axios.interceptors.request.use(
         // if (config.method === 'post') {
         //     config.data = qs.stringify(config.data)
         // }
-        return config
+        return config;
     },
     err => {
         // loadingInstance.close();
@@ -48,7 +48,7 @@ axios.interceptors.response.use(
         if (res.status === 200) {
             return res;
         } else {
-            Message.error(res.data.message)
+            Message.error(res.data.message);
         }
     },
     err => {
@@ -56,13 +56,15 @@ axios.interceptors.response.use(
             MessageBox.alert('您的登录信息失效需要重新登录', '登录失效', {
                 confirmButtonText: '确定',
                 callback: action => {
-                   window.location='/login';
+                    window.location = '/login';
                 }
             });
+        } else if (err.response.status === 423) {
+            Message.error(err.response.data.errors.name[0]);
         } else {
             Message.error('请求失败，请稍后再试');
         }
-        return Promise.reject(err)
+        return Promise.reject(err);
     }
 );
 

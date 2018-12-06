@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Channel;
 
+use App\Events\NotificationEvent;
 use DB;
 use Exception;
 use EasyWeChat;
@@ -346,7 +347,9 @@ class GameLevelingChannelOrderController extends Controller
         # 获取支付信息 1 支付宝 2 微信
         if ($order->payment_type == 1) {
             # 支付宝扫码支付
-            $pay = Pay::alipay(config('alipay.base_config'))->scan([
+            $pay = Pay::alipay(array_merge(config('alipay.base_config'), [
+                'notify_url' => route('game-leveling.alipay.pay.notify'),
+            ]))->scan([
                 'out_trade_no' => $order->trade_no,
                 'total_amount' => $order->amount,
                 'subject' => '代练订单支付',
@@ -535,19 +538,12 @@ class GameLevelingChannelOrderController extends Controller
                 ->where('status', 1)
                 ->update(['status' => 4]);
 
-//            $gameLevelingChannelRefund->status = 4;
-//            $gameLevelingChannelRefund->save();
-
             // 发单平台表状态更新
             $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
                 ->where('channel_order_status', 5)
                 ->where('user_id', session('user_id'))
                 ->update(['channel_order_status' => 2]);
 
-//            foreach ($gameLevelingOrders as $gameLevelingOrder) {
-//                $gameLevelingOrder->channel_order_status = 2;
-//                $gameLevelingOrder->save();
-//            }
         } catch (Exception $e) {
             DB::rollback();
             myLog('channel-cancel-refund', [$e->getMessage(), $e->getLine()]);
@@ -637,15 +633,11 @@ class GameLevelingChannelOrderController extends Controller
 
             GameLevelingChannelRefund::create($data);
             // 发单平台表渠道订单状态更新
-            $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
+            GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
                 ->where('channel_order_status', 2)
                 ->where('user_id', session('user_id'))
                 ->update(['channel_order_status' => 5]);
 
-//            foreach ($gameLevelingOrders as $gameLevelingOrder) {
-//                $gameLevelingOrder->channel_order_status = 5;
-//                $gameLevelingOrder->save();
-//            }
         } catch (Exception $e) {
             myLog('channel-apply-refund-error', ['trade_no' => $gameLevelingChannelOrder->trade_no ?? '', 'message' => $e->getMessage(), 'line' => $e->getLine()]);
             DB::rollback();
@@ -684,5 +676,67 @@ class GameLevelingChannelOrderController extends Controller
         } catch (Exception $e) {
             myLog('channel-order-show-error', [$e->getMessage(), $e->getLine()]);
         }
+    }
+
+    public function pcWeChatNotify()
+    {
+        myLog('pc-wecaht', [request()->all()]);
+    }
+
+    /**
+     * pc 扫码支付回调
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function pcAliPayNotify()
+    {
+        $alipay = Pay::alipay(config('alipay.base_config'));
+
+        try{
+            $data = $alipay->verify();
+
+            myLog('alipay', [$data]);
+
+            # 支付宝确认交易成功
+            if (in_array($data->trade_status,  ['TRADE_SUCCESS', 'TRADE_FINISHED'])) {
+                // 查找 订单
+                $order = GameLevelingChannelOrder::where('trade_no', $data->out_trade_no)
+                    ->where('amount', $data->total_amount)
+                    ->where('status', 1)
+                    ->first();
+
+                # 查到充值订单
+                if ($order) {
+                    DB::beginTransaction();
+
+                    try {
+                        $order->payment_at = date('Y-m-d H:i:s');
+                        $order->payment_amount = $data->total_amount;
+                        $order->status = 2;
+                        $order->save();
+
+                        $user = User::find($order->user_id);
+                        $gameLevelingOrder = GameLevelingOrder::placeOrder($user, array_merge($order->toArray(), ['source_amount' => $order->amount])); // 下单
+                        # 更新渠道订单状态
+                        $gameLevelingOrder->channel_order_trade_no = $order->trade_no; // 渠道订单
+                        $gameLevelingOrder->channel_order_status = 2; // 渠道订单支付状态
+                        $gameLevelingOrder->save();
+                    } catch (\Exception $exception) {
+                        myLog('alipayNotify', [$exception->getLine(), $exception->getMessage()]);
+                        DB::rollback();
+                    }
+
+                    DB::commit();
+
+                    # 发送通知
+                    event((new NotificationEvent('channelPcPayResult', [
+                        'message' => '充值成功',
+                    ])));
+                }
+            }
+        } catch (Exception $e) {
+            \Log::debug('Alipay notify Error', [$e->getMessage()]);
+        }
+
+        return $alipay->success();
     }
 }

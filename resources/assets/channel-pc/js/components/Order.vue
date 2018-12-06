@@ -134,13 +134,12 @@
                             <div style="border-bottom: 1.4px dashed rgb(222, 221, 222);padding-top: 10px;margin-bottom: 5px;"></div>
                             <div class="game-amount preview-row">
                                 <div class="fl" style="line-height: 20px">
-                                    <div class="">{{ useTimePreview.game }}{{useTimePreview.region
-                                        }}{{useTimePreview.server }}
+                                    <div class="">{{ useTimePreview.game }}{{useTimePreview.region }}{{useTimePreview.server }}
                                     </div>
                                     <div style="font-size: 11px;color:#B1B1B1">代练价格</div>
                                 </div>
                                 <div class="fr" style="line-height: 40px;font-size: 18px;color:#ff0000">{{
-                                    useTimePreview.amount }} 元
+                                    useTimePreview.discountAmount }} 元
                                 </div>
                                 <div class="clear-float"></div>
                             </div>
