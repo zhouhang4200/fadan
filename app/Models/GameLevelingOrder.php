@@ -14,6 +14,7 @@ class GameLevelingOrder extends Model
 {
     public $fillable = [
         'trade_no',
+        'source_amount',
         'status',
         'channel_order_trade_no',
         'channel_order_status',
@@ -151,7 +152,6 @@ class GameLevelingOrder extends Model
 
             // 来源淘宝订单是否存在
             $sourceOrderNo = '';
-            $sourcePrice = 0;
             $source = 1; // 人工
             $taobaoStatus = '';
             /****************存在来源单号则订单的来源单号和来源价格为淘宝相应单号与价格***********************/

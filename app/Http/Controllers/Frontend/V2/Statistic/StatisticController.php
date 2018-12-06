@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\V2\Statistic;
 
+use App\Models\OrderBasicData;
 use DB;
 use Auth;
 use App\Models\User;
@@ -27,6 +28,7 @@ class StatisticController extends Controller
     /**
      * 员工统计接口
      *
+     * @return mixed
      */
     public function employeeDataList()
     {
@@ -97,8 +99,8 @@ class StatisticController extends Controller
      */
     public function orderDataList()
     {
-        $startDate = request('date')[0] ?? '';
-        $endDate = request('date')[1] ?? '';
+        $startDate = request('date')[0] ?? null;
+        $endDate = request('date')[1] ?? null;
 
         $allIds = User::where('parent_id', Auth::user()->getPrimaryUserId())
             ->pluck('id')
@@ -110,26 +112,34 @@ class StatisticController extends Controller
 
         $filter = compact('startDate', 'endDate');
 
-        return OrderStatistic::whereIn('user_id', $userIds)
+        // 统计数据
+        $orderBasicData = OrderBasicData::where('creator_user_id', Auth::id())
             ->filter($filter)
             ->select(DB::raw('
-                user_id, date, 
-				sum(send_order_count) as send_order_count,
-			 	sum(receive_order_count) as receive_order_count, 
-			 	sum(complete_order_count) as complete_order_count,
-			 	ifnull(round(sum(complete_order_count)/sum(receive_order_count), 4), 0) as complete_order_rate, 
-			 	sum(revoke_order_count) as revoke_order_count, 
-				sum(arbitrate_order_count) as arbitrate_order_count,
-				sum(three_status_original_amount) as three_status_original_amount,
-				sum(complete_order_amount) as complete_order_amount,
-				sum(two_status_payment) as two_status_payment,
-				sum(two_status_income) as two_status_income,
-				sum(poundage) as poundage,
-				sum(profit) as profit
-			'))
+                date,
+                creator_user_id,
+                sum(1) as send_order_count,
+			 	sum(case when status = 13 then 1 else 0 end) as receive_order_count, 
+			 	sum(case when status = 20 then 1 else 0 end) as complete_order_count,
+			 	sum(case when status = 19 then 1 else 0 end) as revoke_order_count, 
+				sum(case when status = 21 then 1 else 0 end) as arbitrate_order_count,
+				sum(case when status in (19, 20, 21) then original_price else 0 end) as three_status_original_amount,
+				sum(case when status = 20 then price else 0 end) as complete_order_amount,
+				sum(case when status in (19, 21) then consult_amount else 0 end) as two_status_payment,
+				sum(case when status in (19, 21) then consult_deposit else 0 end) as two_status_income,
+				sum(case when status in (19, 21) then consult_poundage else 0 end) as poundage,
+				sum(case when status = 20 then original_price - price else 0 end) - 
+				sum(case when status in (19, 21) then consult_amount-consult_poundage-consult_deposit else 0 end) as profit 
+            '))
             ->latest('date')
             ->groupBy('date')
             ->paginate(15);
+
+        foreach ($orderBasicData as $item) {
+            $item->complete_order_rate = $item->receive_order_count == 0 ? 0 : bcdiv($item->complete_order_count*100, $item->receive_order_count, 2);
+        }
+
+        return $orderBasicData;
     }
 
     /**
