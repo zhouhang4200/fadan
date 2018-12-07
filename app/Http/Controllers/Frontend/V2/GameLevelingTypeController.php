@@ -18,7 +18,7 @@ class GameLevelingTypeController extends Controller
      */
     public function index()
     {
-        $types =  GameLevelingType::where('game_id', request('game_id'))->get(['id', 'name']);
+        $types =  GameLevelingType::where('game_id', request('game_id'))->get();
 
         return response()->json(['status' => 1, 'message' => 'success', 'data' => $types]);
     }

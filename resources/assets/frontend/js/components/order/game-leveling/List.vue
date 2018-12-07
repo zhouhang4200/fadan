@@ -37,7 +37,7 @@
                         <el-select v-model="search.game_leveling_type_id" placeholder="请选择">
                             <el-option
                                     v-for="item in gameLevelingTypeOptions"
-                                    :key="item.id"
+                                    :key="item.name"
                                     :label="item.name"
                                     :value="item.id">
                             </el-option>
@@ -608,7 +608,7 @@
                     this.$api.gameLevelingTypes({
                         'game_id': this.search.game_id
                     }).then(res => {
-                        this.gameLevelingTypeOptions = res;
+                        this.gameLevelingTypeOptions = res.data;
                     });
                 } else {
                     this.gameLevelingTypeOptions = [];
