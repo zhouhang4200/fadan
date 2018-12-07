@@ -20,7 +20,7 @@
                                        value="0">
                             </el-option>
                             <el-option
-                                    v-for="(value, key) of TradeTypeArr"
+                                    v-for="(value, key) in TradeTypeArr"
                                     :value="key"
                                     :key="key"
                                     :label="value">
@@ -98,11 +98,17 @@
                     prop="fee"
                     label="变动金额"
                     width="150">
+                    <template slot-scope="scope">
+                        {{Number(scope.row.fee)}}
+                    </template>
             </el-table-column>
             <el-table-column
                     prop="balance"
                     label="账户余额"
                     width="150">
+                <template slot-scope="scope">
+                    {{Number(scope.row.balance)}}
+                </template>
             </el-table-column>
             <el-table-column
                     prop="created_at"

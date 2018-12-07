@@ -13,6 +13,9 @@
                     prop="amount"
                     label="金额"
                     width="200">
+                <template slot-scope="scope">
+                    {{Number(scope.row.amount)}}
+                </template>
             </el-table-column>
         </el-table>
     </div>
