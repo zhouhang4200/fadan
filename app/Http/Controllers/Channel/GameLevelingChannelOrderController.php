@@ -547,7 +547,7 @@ class GameLevelingChannelOrderController extends Controller
                 ->update(['channel_order_status' => 2]);
 
             // 取消成功之后，上架第三方平台的订单
-            if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
+            if ($order = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))->where('status', 22)->latest('id')->first()) {
                 OrderOperateController::init(User::find($order->user_id), $order)->onSale();
 
                 // 该订单下单成功的接单平台
@@ -560,8 +560,6 @@ class GameLevelingChannelOrderController extends Controller
                         call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['onSale']], [$order]);
                     }
                 }
-            } else {
-                throw new GameLevelingOrderOperateException('订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             myLog('channel-cancel-refund-error', ['trade_no' => $gameLevelingChannelOrder->trade_no ?? '', 'message' => $e->getMessage(), 'line' => $e->getLine()]);
@@ -663,7 +661,7 @@ class GameLevelingChannelOrderController extends Controller
                 ->update(['channel_order_status' => 5]);
 
             // 申请成功之后，下架第三方平台的订单
-            if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
+            if ($order = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))->where('status', 1)->latest('id')->first()) {
                 OrderOperateController::init(User::find($order->user_id), $order)->offSale();
 
                 // 该订单下单成功的接单平台
@@ -676,8 +674,6 @@ class GameLevelingChannelOrderController extends Controller
                         call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['offSale']], [$order]);
                     }
                 }
-            } else {
-                throw new GameLevelingOrderOperateException('订单不存在!');
             }
         } catch (GameLevelingOrderOperateException $e) {
             myLog('channel-apply-refund-error', ['trade_no' => $gameLevelingChannelOrder->trade_no ?? '', 'message' => $e->getMessage(), 'line' => $e->getLine()]);
