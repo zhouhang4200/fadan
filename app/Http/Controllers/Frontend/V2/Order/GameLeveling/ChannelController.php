@@ -207,7 +207,6 @@ class ChannelController extends Controller
     {
         try {
             return GameLevelingChannelRefund::where('status', 1)
-                ->where('user_id', request()->user()->getPrimaryUserId())
                 ->where('game_leveling_channel_order_trade_no', request('trade_no'))
                 ->first();
         } catch (Exception $e) {
