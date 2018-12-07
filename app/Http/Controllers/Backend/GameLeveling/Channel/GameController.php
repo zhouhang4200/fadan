@@ -55,6 +55,7 @@ class GameController extends Controller
 
         try {
             $has = GameLevelingChannelGame::where('game_id', $gameInfo[0])
+                ->where('user_id', request('user_id'))
                 ->where('game_leveling_type_id', $typeInfo[0])
                 ->first();
 
@@ -111,7 +112,9 @@ class GameController extends Controller
             $gameLevelingChannelGame = GameLevelingChannelGame::where('id', request('id'))->first();
 
             if ($gameLevelingChannelGame->game_id != $gameInfo[0] || $gameLevelingChannelGame->game_leveling_type_id != $typeInfo[0]) {
-                $exist = GameLevelingChannelGame::where('game_id', $gameInfo[0])->where('game_leveling_type_id', $typeInfo[0])->first();
+                $exist = GameLevelingChannelGame::where('game_id', $gameInfo[0])
+                    ->where('user_id', request('user_id'))
+                    ->where('game_leveling_type_id', $typeInfo[0])->first();
                 if ($exist) {
                     DB::rollback();
                     return back()->with('fail', '修改失败，对应该游戏类型存已经存在');
