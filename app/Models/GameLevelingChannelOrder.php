@@ -78,13 +78,10 @@ class GameLevelingChannelOrder extends Model
             $query->where('status', $filter['status']);
         }
 
-        if (isset($filter['startDate']) && !empty($filter['startDate'])) {
-            $query->where('created_at', '>=', $filter['startDate']);
+        if (isset($filter['created_at'])) {
+            $query->whereBetween('created_at', $filter['created_at']);
         }
 
-        if (isset($filter['endDate']) && !empty($filter['endDate'])) {
-            $query->where('created_at', '<=', $filter['endDate']);
-        }
         return $query;
     }
 
