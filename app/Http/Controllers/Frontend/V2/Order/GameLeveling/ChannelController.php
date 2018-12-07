@@ -37,6 +37,7 @@ class ChannelController extends Controller
             ->with(['gameLevelingOrders' => function ($query) {
                 return $query->latest('game_leveling_orders.id')->first();
             }])
+            ->latest('id')
             ->paginate(15);
     }
 
@@ -50,12 +51,10 @@ class ChannelController extends Controller
         DB::beginTransaction();
         try {
             $gameLevelingChannelRefund = GameLevelingChannelRefund::where('game_leveling_channel_order_trade_no', request('trade_no'))
-                ->where('status', 5)
                 ->first();
 
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
                 ->where('user_id', Auth::user()->getPrimaryUserId())
-                ->where('status', 5)
                 ->first();
 
             // 两个表的支付方式是否一致
@@ -122,7 +121,6 @@ class ChannelController extends Controller
         try {
             // 申请退款问单据改为拒绝
             $gameLevelingChannelRefund = GameLevelingChannelRefund::where('game_leveling_channel_order_trade_no', request('trade_no'))
-                ->where('status', 5)
                 ->update([
                     'refuse_refund_reason' => request('refuse_refund_reason'),
                     'status' => 3
@@ -134,7 +132,6 @@ class ChannelController extends Controller
 
             // 渠道订单状态改回进行中
             $gameLevelingChannelOrder = GameLevelingChannelOrder::where('trade_no', request('trade_no'))
-                ->where('status', 5)
                 ->update(['status' => 2]);
 
 //            $gameLevelingChannelOrder->status = 2;
@@ -142,7 +139,6 @@ class ChannelController extends Controller
 
             // 平台订单的渠道订单状态改为进行中
             $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
-                ->where('channel_order_status', 5)
                 ->update(['channel_order_status' => 2]);
 
 //            foreach ($gameLevelingOrders as $gameLevelingOrder) {
@@ -203,8 +199,7 @@ class ChannelController extends Controller
     public function refund()
     {
         try {
-            return GameLevelingChannelRefund::where('status', 5)
-                ->where('game_leveling_channel_order_trade_no', request('trade_no'))
+            return GameLevelingChannelRefund::where('game_leveling_channel_order_trade_no', request('trade_no'))
                 ->first();
         } catch (Exception $e) {
             return [];
