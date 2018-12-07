@@ -315,7 +315,7 @@ class OrderOperateController
         DB::beginTransaction();
         try {
             // 订单当前状态是否可以修改
-            if (static::$order->status != 1) {
+            if (static::$order->status != 1 || static::$order->status != 22) {
                 throw new GameLevelingOrderOperateException("操作失败！当前订单状态【".config('order.status_leveling')[static::$order->status]."】不可调用此操作！");
             }
 
