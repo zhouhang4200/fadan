@@ -50,13 +50,13 @@
             <el-tab-pane name="3">
                 <span slot="label">待收货<el-badge v-if="(this.statusCount[3] != undefined)"  :value="this.statusCount[3]"></el-badge></span>
             </el-tab-pane>
-            <el-tab-pane name="6">
+            <el-tab-pane name="5">
                 <span slot="label">退款中<el-badge v-if="(this.statusCount[6] != undefined)"  :value="this.statusCount[6]"></el-badge></span>
             </el-tab-pane>
             <el-tab-pane name="4">
                 <span slot="label">已完成<el-badge v-if="(this.statusCount[4] != undefined)"  :value="this.statusCount[4]"></el-badge></span>
             </el-tab-pane>
-            <el-tab-pane name="7">
+            <el-tab-pane name="6">
                 <span slot="label">已退款<el-badge v-if="(this.statusCount[7] != undefined)"  :value="this.statusCount[7]"></el-badge></span>
             </el-tab-pane>
         </el-tabs>
@@ -126,12 +126,12 @@
                     <el-button
                             type="primary"
                             size="small"
-                            v-if="scope.row.status === 6"
+                            v-if="scope.row.status === 5"
                             @click="showRefund(scope.row.trade_no)">同意退款</el-button>
                     <el-button
                             type="primary"
                             size="small"
-                            v-if="scope.row.status === 6"
+                            v-if="scope.row.status === 5"
                             @click="showRefuseRefund(scope.row.trade_no)">拒绝退款</el-button>
                 </template>
             </el-table-column>
@@ -322,12 +322,12 @@
                     24:'已撤单'
                 },
                 status:{
-                    1:'代付款',
+                    1:'待付款',
                     2:'进行中',
                     3:'待收货',
                     4:'完成',
-                    6:'退款中',
-                    7:'已退款'
+                    5:'退款中',
+                    6:'已退款'
                 },
                 trade_no:'',
                 refund_amount:'',
