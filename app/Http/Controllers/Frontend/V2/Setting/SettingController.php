@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\V2\Setting;
 
+use App\Models\GameType;
 use App\Models\OrderSendChannel;
 use Exception;
 use App\Models\Game;
@@ -437,7 +438,8 @@ class SettingController extends Controller
      */
     public function channelDataList()
     {
-        $games = Game::get();
+        $gameIds = GameType::where('type', 2)->pluck('game_id'); // 代练
+        $games = Game::whereIn('id', $gameIds)->get();
 
         $orderSendChannels = OrderSendChannel::where('user_id', Auth::user()->getPrimaryUserId())
             ->pluck('game_id');

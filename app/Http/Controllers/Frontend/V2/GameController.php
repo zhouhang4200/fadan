@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\V2;
 
 use App\Http\Controllers\Controller;
 use App\Models\Game;
+use App\Models\GameType;
 
 
 /**
@@ -18,7 +19,8 @@ class GameController extends Controller
      */
     public function index()
     {
-        $games = Game::select(['id', 'name'])->get();
+        $gameIds = GameType::where('type', 2)->pluck('game_id'); // 代练
+        $games = Game::whereIn('id', $gameIds)->select(['id', 'name'])->get();
 
         return response()->json(['status' => 1, 'message' => 'success', 'data' => $games]);
     }
