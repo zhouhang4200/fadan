@@ -244,7 +244,7 @@ class GameLevelingChannelOrderController extends Controller
             'player_phone' => request('player_phone'),
             'player_qq' => request('player_qq'),
             'payment_type' => request('payment_type'),
-            'title' => $game->name . '-' . $gameLevelingType->name . '-' . $amountTimeDeposit->current_level->name . '-' . $amountTimeDeposit->target_level->name,
+            'title' => $game->name . '-' . $gameLevelingType->name . '-' . $amountTimeDeposit->current_level->level . '-' . $amountTimeDeposit->target_level->level,
             'day' => $amountTimeDeposit->day,
             'hour' => $amountTimeDeposit->hour,
             'amount' => $amountTimeDeposit->amount,
@@ -334,7 +334,7 @@ class GameLevelingChannelOrderController extends Controller
             'player_phone' => request('player_phone'),
             'player_qq' => request('player_qq'),
             'payment_type' => request('payment_type'),
-            'title' => $game->name . '-' . $gameLevelingType->name . '-' . $amountTimeDeposit->current_level->name . '-' . $amountTimeDeposit->target_level->name,
+            'title' => $game->name . '-' . $gameLevelingType->name . '-' . $amountTimeDeposit->current_level->level . '-' . $amountTimeDeposit->target_level->level,
             'day' => $amountTimeDeposit->day,
             'hour' => $amountTimeDeposit->hour,
             'amount' => $amountTimeDeposit->amount,
@@ -343,7 +343,7 @@ class GameLevelingChannelOrderController extends Controller
             'efficiency_deposit' => $amountTimeDeposit->efficiency_deposit,
             'explain' => $amountTimeDeposit->explain,
             'requirement' => $amountTimeDeposit->requirement,
-            'demand' => $amountTimeDeposit->current_level->name . '-' . $amountTimeDeposit->target_level->name,
+            'demand' => $amountTimeDeposit->current_level->level . '-' . $amountTimeDeposit->target_level->level,
         ]);
 
         # 获取支付信息 1 支付宝 2 微信
