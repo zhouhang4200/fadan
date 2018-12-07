@@ -70,7 +70,7 @@ class GameController extends Controller
             );
 
             // 游戏类型
-            if (count(request('type')) > 0) {
+            if (count(request('type', [])) > 0) {
                 foreach (request('type') as $type) {
                     GameType::updateOrCreate(
                         ['type' => $type, 'game_id' => $game->id],
@@ -118,7 +118,7 @@ class GameController extends Controller
             GameType::where('game_id', $game->id)->delete();
 
             // 游戏类型
-            if (count(request('type')) > 0) {
+            if (count(request('type', [])) > 0) {
                 foreach (request('type') as $type) {
                     GameType::updateOrCreate(
                         ['type' => $type, 'game_id' => $game->id],
