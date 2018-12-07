@@ -45,7 +45,6 @@
                     </el-form-item>
                 </el-col>
             </el-row>
-
             <el-row :gutter="16">
                 <el-col :span="6">
                     <el-form-item label="发单客服">
@@ -83,107 +82,90 @@
                 <el-button type="primary" @click="handleResetForm">重置</el-button>
             </el-row>
         </el-form>
-
         <el-tabs
                 v-model="search.status"
                 @tab-click="handleParamsStatus"
                 size="small"
                 class="game-leveling-order-tab">
-
             <el-tab-pane name="0">
                 <span slot="label">
                     全部
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="1">
                 <span slot="label">
                     未接单
                     <el-badge v-if="(this.statusQuantity[1] != undefined)" :value="this.statusQuantity[1]"></el-badge>
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="13">
                 <span slot="label">
                     代练中
                     <el-badge v-if="(this.statusQuantity[13] != undefined)" :value="this.statusQuantity[13]"></el-badge>
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="14">
                 <span slot="label">
                     待验收
                     <el-badge v-if="(this.statusQuantity[14] != undefined)" :value="this.statusQuantity[14]"></el-badge>
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="15">
                 <span slot="label">
                     撤销中
                     <el-badge v-if="(this.statusQuantity[15] != undefined)" :value="this.statusQuantity[15]"></el-badge>
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="16">
                 <span slot="label">
                     仲裁中
                     <el-badge v-if="(this.statusQuantity[16] != undefined)" :value="this.statusQuantity[16]"></el-badge>
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="99">
                 <span slot="label">
                     淘宝退款中
                     <el-badge v-if="(this.statusQuantity[99] != undefined)" :value="this.statusQuantity[99]"></el-badge>
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="17">
                 <span slot="label">
                     异常
                     <el-badge v-if="(this.statusQuantity[17] != undefined)" :value="this.statusQuantity[17]"></el-badge>
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="18">
                 <span slot="label">
                     已锁定
                     <el-badge v-if="(this.statusQuantity[18] != undefined)" :value="this.statusQuantity[18]"></el-badge>
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="19">
                 <span slot="label">
                     已撤销
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="20">
                 <span slot="label">
                     已结算
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="21">
                 <span slot="label">
                     已仲裁
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="22">
                 <span slot="label">
                     已下架
                 </span>
             </el-tab-pane>
-
             <el-tab-pane name="24">
                 <span slot="label">
                     已撤单
                 </span>
             </el-tab-pane>
-
         </el-tabs>
-
         <el-table
                 @cell-mouse-enter="handleCellMouseEnter"
                 @cell-mouse-leave="handleCellMouseLeave"
@@ -268,14 +250,17 @@
                     prop="amount"
                     label="代练价格"
                     width="120">
+                <template slot-scope="scope">
+                    {{Number(scope.row.amount)}}
+                </template>
             </el-table-column>
             <el-table-column
                     prop="zip"
                     label="效率/安全保证金"
                     width="120">
                 <template slot-scope="scope">
-                    <div>{{ scope.row.security_deposit }}</div>
-                    <div>{{ scope.row.efficiency_deposit }}</div>
+                    <div>{{ Number(scope.row.security_deposit) }}</div>
+                    <div>{{ Number(scope.row.efficiency_deposit) }}</div>
                 </template>
             </el-table-column>
             <el-table-column
@@ -322,28 +307,40 @@
                     label="来源价格"
                     width="120">
                 <template slot-scope="scope">
-                    {{ scope.row.source_amount }}
+                    {{ Number(scope.row.source_amount) }}
                 </template>
             </el-table-column>
             <el-table-column
                     prop="pay_amount"
                     label="支付代练费用"
                     width="120">
+                <template slot-scope="scope">
+                    {{Number(scope.row.pay_amount)}}
+                </template>
             </el-table-column>
             <el-table-column
                     prop="get_amount"
                     label="获得赔偿金额"
                     width="120">
+                <template slot-scope="scope">
+                    {{Number(scope.row.get_amount)}}
+                </template>
             </el-table-column>
             <el-table-column
                     prop="get_poundage"
                     label="手续费"
                     width="120">
+                <template slot-scope="scope">
+                    {{Number(scope.row.get_poundage)}}
+                </template>
             </el-table-column>
             <el-table-column
                     prop="profit"
                     label="最终支付金额"
                     width="120">
+                <template slot-scope="scope">
+                    {{Number(scope.row.profit)}}
+                </template>
             </el-table-column>
             <el-table-column
                     prop="zip"
@@ -456,12 +453,10 @@
                     :total="tableDataTotal">
             </el-pagination>
         </div>
-
         <ApplyComplain v-if="applyComplainVisible"
                        :tradeNo="tradeNo"
                        @handleApplyComplainVisible="handleApplyComplainVisible">
         </ApplyComplain>
-
         <ApplyConsult v-if="applyConsultVisible"
                       :tradeNo="tradeNo"
                       :amount="amount"
