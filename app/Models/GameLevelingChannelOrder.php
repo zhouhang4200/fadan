@@ -131,7 +131,7 @@ class GameLevelingChannelOrder extends Model
         # 安全保证金
         $efficiencyDeposit = $prices->sum('efficiency_deposit');
 
-        # 安全保证金
+        # 总代练小时
         $hour = $prices->sum('hour');
 
         # 总共代练级别

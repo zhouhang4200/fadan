@@ -539,7 +539,7 @@ class GameLevelingChannelOrderController extends Controller
                 ->update(['status' => 4]);
 
             // 发单平台表状态更新
-            $gameLevelingOrders = GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
+            GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
                 ->where('channel_order_status', 5)
                 ->where('user_id', session('user_id'))
                 ->update(['channel_order_status' => 2]);
