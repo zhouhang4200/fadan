@@ -7,6 +7,13 @@
         .layui-table th, td{
             text-align: center;
         }
+
+        .layui-form-checked span, .layui-form-checked:hover span {
+            background-color: #1E9FFF !important;
+        }
+        .layui-form-checked i, .layui-form-checked:hover i {
+            color: #1E9FFF !important;
+        }
     </style>
 @endsection
 
@@ -26,6 +33,15 @@
                                     <label class="layui-form-label">*游戏名</label>
                                     <div class="layui-input-block">
                                         <input type="text" name="name" lay-verify="required" value="" autocomplete="off" placeholder="" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">*游戏类型</label>
+                                    <div class="layui-input-block">
+                                        @forelse(config('gameleveling.game_type') as $id => $name)
+                                        <input type="checkbox" name="type" value="{{ $id  }}" title="{{ $name }}">
+                                        @empty
+                                        @endforelse
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
@@ -99,9 +115,16 @@
             });
             // 新增
             form.on('submit(store)', function (data) {
+                var type=[];
+                $("input:checkbox[name='type']:checked").each(function() { // 遍历name=test的多选框
+                    $(this).val();  // 每一个被选中项的值
+                    type.push($(this).val());
+                });
+
                 $.post("{{ route('admin.game.store') }}", {
                     name:data.field.name,
-                    icon:data.field.icon
+                    icon:data.field.icon,
+                    type:type
                 }, function (result) {
                     layer.msg(result.message);
                 });

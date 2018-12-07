@@ -88,4 +88,9 @@ class Game extends Model
     {
         return $this->hasMany(GameLevelingType::class);
     }
+
+    public function gameTypes()
+    {
+        return $this->hasMany(GameType::class, 'game_id', 'id');
+    }
 }
