@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Channel;
 
-use App\Events\NotificationEvent;
 use DB;
 use Exception;
 use EasyWeChat;
@@ -15,7 +14,10 @@ use App\Models\GameRegion;
 use Illuminate\Http\Request;
 use App\Models\GameLevelingType;
 use App\Models\GameLevelingOrder;
+use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
+use App\Models\GameLevelingPlatform;
+use App\Services\OrderOperateController;
 use App\Models\GameLevelingChannelGame;
 use App\Models\GameLevelingChannelUser;
 use App\Models\GameLevelingChannelOrder;
@@ -544,9 +546,30 @@ class GameLevelingChannelOrderController extends Controller
                 ->where('user_id', session('user_id'))
                 ->update(['channel_order_status' => 2]);
 
+            // 取消成功之后，上架第三方平台的订单
+            if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
+                OrderOperateController::init(User::find($order->user_id), $order)->onSale();
+
+                // 该订单下单成功的接单平台
+                $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
+                    ->get();
+
+                // 下单成功的接单平台
+                if ($gameLevelingPlatforms->count() > 0) {
+                    foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
+                        call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['onSale']], [$order]);
+                    }
+                }
+            } else {
+                throw new GameLevelingOrderOperateException('订单不存在!');
+            }
+        } catch (GameLevelingOrderOperateException $e) {
+            myLog('channel-cancel-refund-error', ['trade_no' => $gameLevelingChannelOrder->trade_no ?? '', 'message' => $e->getMessage(), 'line' => $e->getLine()]);
+            DB::rollback();
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
-            myLog('channel-cancel-refund', [$e->getMessage(), $e->getLine()]);
+            myLog('channel-cancel-refund-error', [$e->getMessage(), $e->getLine()]);
             return response()->ajax(0, '订单异常！');
         }
         DB::commit();
@@ -632,12 +655,34 @@ class GameLevelingChannelOrderController extends Controller
             $data['refuse_refund_reason'] = '';
 
             GameLevelingChannelRefund::create($data);
+
             // 发单平台表渠道订单状态更新
             GameLevelingOrder::where('channel_order_trade_no', request('trade_no'))
                 ->where('channel_order_status', 2)
                 ->where('user_id', session('user_id'))
                 ->update(['channel_order_status' => 5]);
 
+            // 申请成功之后，下架第三方平台的订单
+            if ($order = GameLevelingOrder::where('trade_no', request('trade_no'))->first()) {
+                OrderOperateController::init(User::find($order->user_id), $order)->offSale();
+
+                // 该订单下单成功的接单平台
+                $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
+                    ->get();
+
+                // 下单成功的接单平台
+                if ($gameLevelingPlatforms->count() > 0) {
+                    foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
+                        call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['offSale']], [$order]);
+                    }
+                }
+            } else {
+                throw new GameLevelingOrderOperateException('订单不存在!');
+            }
+        } catch (GameLevelingOrderOperateException $e) {
+            myLog('channel-apply-refund-error', ['trade_no' => $gameLevelingChannelOrder->trade_no ?? '', 'message' => $e->getMessage(), 'line' => $e->getLine()]);
+            DB::rollback();
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             myLog('channel-apply-refund-error', ['trade_no' => $gameLevelingChannelOrder->trade_no ?? '', 'message' => $e->getMessage(), 'line' => $e->getLine()]);
             DB::rollback();
