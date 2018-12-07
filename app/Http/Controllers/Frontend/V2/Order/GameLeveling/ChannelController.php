@@ -163,7 +163,7 @@ class ChannelController extends Controller
     public function status()
     {
         try {
-            return GameLevelingChannelOrder::filter(request()->all())
+            return GameLevelingChannelOrder::filter(request()->except('status'))
                 ->where('user_id', request()->user()->getPrimaryUserId())
                 ->selectRaw('status, count(1) as statusCount')
                 ->groupBy('status')
