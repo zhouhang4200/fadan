@@ -445,7 +445,7 @@
     }
     .geetest_holder.geetest_mobile.geetest_ant .geetest_panel .geetest_copyright .geetest_logo {
         width: 0;
-
+    }
     .geetest_holder.geetest_mobile.geetest_ant .geetest_panel .geetest_copyright .geetest_copyright_tip {
         margin: 0;
     }
