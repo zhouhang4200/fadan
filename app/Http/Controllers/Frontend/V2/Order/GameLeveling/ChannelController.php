@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 use App\Exceptions\GameLevelingOrderOperateException;
 use App\Models\GameLevelingOrder;
 use App\Models\GameLevelingPlatform;
+use App\Models\User;
 use App\Services\OrderOperateController;
 use Exception;
 use Yansongda\Pay\Pay;
