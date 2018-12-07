@@ -101,11 +101,13 @@
                     prop="amount"
                     label="购买单价"
                     width="100">
+                <template slot-scope="scope">{{Number(scope.row.amount)}}</template>
             </el-table-column>
             <el-table-column
                     prop="payment_amount"
                     label="实付金额"
                     width="100">
+                <template slot-scope="scope">{{Number(scope.row.payment_amount)}}</template>
             </el-table-column>
             <el-table-column
                     prop="created_at"
