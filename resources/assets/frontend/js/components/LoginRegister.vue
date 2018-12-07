@@ -437,6 +437,18 @@
 </script>
 
 <style lang="less">
+    .geetest_holder.geetest_mobile.geetest_ant .geetest_slider .geetest_slider_track .geetest_slider_tip.geetest_multi_slide {
+        word-wrap: break-word;
+        white-space: normal;
+        text-align: left;
+        font-size: 12px;
+    }
+    .geetest_holder.geetest_mobile.geetest_ant .geetest_panel .geetest_copyright .geetest_logo {
+        width: 0;
+
+    .geetest_holder.geetest_mobile.geetest_ant .geetest_panel .geetest_copyright .geetest_copyright_tip {
+        margin: 0;
+    }
     .login-register {
         .el-input__inner {
             border: none;
