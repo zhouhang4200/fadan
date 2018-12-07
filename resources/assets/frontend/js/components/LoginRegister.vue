@@ -437,6 +437,19 @@
 </script>
 
 <style lang="less">
+    .geetest_holder.geetest_mobile.geetest_ant .geetest_slider .geetest_slider_track .geetest_slider_tip.geetest_multi_slide {
+        word-wrap: break-word !important;
+        white-space: normal !important;
+        text-align: left !important;
+        font-size: 12px !important;
+        line-height: 40px !important
+    }
+    .geetest_holder.geetest_mobile.geetest_ant .geetest_panel .geetest_copyright .geetest_logo {
+        width: 0 !important;
+    }
+    .geetest_holder.geetest_mobile.geetest_ant .geetest_panel .geetest_copyright .geetest_copyright_tip {
+        margin: 0 !important;
+    }
     .login-register {
         .el-input__inner {
             border: none;
