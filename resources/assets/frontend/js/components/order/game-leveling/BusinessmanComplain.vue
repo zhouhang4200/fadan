@@ -137,6 +137,9 @@
             <el-table-column
                     prop="amount"
                     label="要求赔偿金额">
+                <template slot-scope="scope">
+                    {{Number(scope.row.amount)}}
+                </template>
             </el-table-column>
             <el-table-column
                     prop="status"

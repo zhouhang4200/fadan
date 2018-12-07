@@ -60,7 +60,7 @@ class BusinessmanComplainController extends Controller
     public function store()
     {
         $this->validate(request(), [
-            'trade_no'    => 'bail|required|min:22|max:22',
+            'trade_no' => 'bail|required|min:22|max:22',
             'amount'  => 'bail|required|numeric',
             'reason'  => 'bail|required|string|max:200',
         ],[],[

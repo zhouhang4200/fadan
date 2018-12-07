@@ -29,10 +29,10 @@ class GameLevelingOrderBusinessmanComplain extends Model
      */
     public static function scopeFilter($query, $filters = [])
     {
-        if (isset($filters['game_leveling_order_trade_no']) && $filters['game_leveling_order_trade_no']) {
+        if (isset($filters['order_no']) && $filters['order_no']) {
             $query->whereHas('gameLevelingOrder', function ($query) use ($filters) {
-                return $query->where('trade_no', $filters['game_leveling_order_trade_no'])
-                    ->orWhere('platform_trade_no', $filters['game_leveling_order_trade_no']);
+                return $query->where('trade_no', $filters['order_no'])
+                    ->orWhere('platform_trade_no', $filters['order_no']);
             });
         }
 
