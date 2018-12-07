@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
+use App\Exceptions\GameLevelingOrderOperateException;
 use App\Models\GameLevelingOrder;
+use App\Models\GameLevelingPlatform;
+use App\Services\OrderOperateController;
 use Exception;
 use Yansongda\Pay\Pay;
 use Illuminate\Support\Facades\DB;
@@ -97,8 +100,29 @@ class ChannelController extends Controller
             // 退款成功改变渠道订单状态
             $gameLevelingChannelOrder->status = 6;
             $gameLevelingChannelOrder->save();
+
+            // 同意成功之后撤单第三方平台的订单
+            if ($order = GameLevelingOrder::where('channel_order_trade_no', $gameLevelingChannelOrder->trade_no)->where('status', 22)->latest('id')->first()) {
+                OrderOperateController::init(User::find($order->user_id), $order)->delete();
+
+                // 该订单下单成功的接单平台
+                $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
+                    ->get();
+
+                // 下单成功的接单平台
+                if ($gameLevelingPlatforms->count() > 0) {
+                    foreach ($gameLevelingPlatforms as $gameLevelingPlatform) {
+                        call_user_func_array([config('gameleveling.controller')[$gameLevelingPlatform->platform_id], config('gameleveling.action')['delete']], [$order]);
+                    }
+                }
+            }
+        } catch (GameLevelingOrderOperateException $e) {
+            myLog('channel-agree-refund-error', ['trade_no' => $gameLevelingChannelOrder->trade_no ?? '', 'message' => $e->getMessage(), 'line' => $e->getLine()]);
+            DB::rollback();
+            return response()->ajax(0, $e->getMessage());
         } catch (Exception $e) {
             DB::rollback();
+            myLog('channel-agree-refund-error', ['trade_no' => $gameLevelingChannelOrder->trade_no ?? '', 'message' => $e->getMessage(), 'line' => $e->getLine()]);
             return response()->ajax(0, '操作失败：服务器错误!');
         }
         DB::commit();
