@@ -182,7 +182,7 @@
                     width="250">
                 <template slot-scope="scope">
                     <router-link :to="{name:'gameLevelingOrderShow', query:{trade_no:scope.row.trade_no}}">
-                        <div style="margin-left: 10px">淘宝：{{ scope.row.trade_no }}</div>
+                        <div style="margin-left: 10px">淘宝：{{ scope.row.channel_order_trade_no }}</div>
                         <div style="margin-left: 10px">{{ platformMap[scope.row.platform_id] }}：{{ scope.row.platform_trade_no }}</div>
                     </router-link>
                 </template>
