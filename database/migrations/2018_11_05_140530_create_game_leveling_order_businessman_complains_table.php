@@ -20,6 +20,7 @@ class CreateGameLevelingOrderBusinessmanComplainsTable extends Migration
             $table->string('game_leveling_order_trade_no', 22)->comment('关联单号');
             $table->decimal('amount')->comment('要求赔偿金额');
             $table->text('remark')->comment('备注');
+            $table->integer('status')->comment('状态');
             $table->timestamps();
         });
     }
