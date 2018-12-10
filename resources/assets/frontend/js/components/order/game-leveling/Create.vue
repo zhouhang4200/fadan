@@ -325,7 +325,7 @@
                                                             <el-col :span="1">
                                                                <span class="icon-button" @click="handleBusinessmanQQVisible({visible:true})">
                                                                     <i class="el-icon-circle-plus" ></i>
-                                                                </span>
+                                                               </span>
                                                             </el-col>
                                                         </el-row>
                                                     </el-form-item>

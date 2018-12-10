@@ -221,6 +221,9 @@
                                                                 </el-select>
                                                             </el-col>
                                                             <el-col :span="1">
+                                                                <span v-if="form.status === 1" class="icon-button" @click="handleGameLevelingRequirementVisible({visible:true})">
+                                                                    <i class="el-icon-circle-plus" ></i>
+                                                                </span>
                                                             </el-col>
                                                         </el-row>
                                                     </el-form-item>
@@ -377,6 +380,9 @@
                                                                 </el-select>
                                                             </el-col>
                                                             <el-col :span="1">
+                                                                <span v-if="form.status === 1" class="icon-button" @click="handleBusinessmanQQVisible({visible:true})">
+                                                                    <i class="el-icon-circle-plus" ></i>
+                                                                </span>
                                                             </el-col>
                                                         </el-row>
                                                     </el-form-item>
