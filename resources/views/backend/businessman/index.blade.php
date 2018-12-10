@@ -84,7 +84,7 @@
                                         @endif
                                         </td>
                                         <td style="text-align: center;">
-                                            @if(auth()->user()->name != '淘宝发单平台')
+                                            @if(auth('admin')->user()->name != '淘宝发单平台')
                                                 <a href="{{ route('groups.create', ['id' => $user->id]) }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">添加角色</a>
                                                 <a href="{{ route('groups.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">查看角色</a>
                                                 <a href="{{ route('frontend.user.show', ['id' => $user->id])  }}" class="layui-btn layui-btn layui-btn-normal layui-btn-mini">详情</a>
