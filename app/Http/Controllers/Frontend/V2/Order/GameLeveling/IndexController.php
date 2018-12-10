@@ -246,10 +246,9 @@ class IndexController extends Controller
                             'user_qq' => request('user_qq'),
                             'player_phone' => request('player_phone'),
                             'explain' => request('explain'),
-                            'requirement' => request('requirement')
+                            'requirement' => request('requirement'),
+                            'user_remark' => request('remark'),
                         ];
-
-                        $data['user_remark'] = request('remark');
 
                         if ($res = GameLevelingOrderDetail::where('game_leveling_order_trade_no', request('trade_no'))
                             ->update($data)){
