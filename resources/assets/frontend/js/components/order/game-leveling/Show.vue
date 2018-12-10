@@ -30,7 +30,6 @@
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="12">
-
                                                     <el-form-item label="代练类型" prop="game_leveling_type_id">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
@@ -49,7 +48,6 @@
                                                             <el-col :span="1"></el-col>
                                                         </el-row>
                                                     </el-form-item>
-
                                                 </el-col>
                                             </el-row>
                                             <el-row>
@@ -65,14 +63,12 @@
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
                                                         </el-row>
-
                                                     </el-form-item>
                                                 </el-col>
                                             </el-row>
                                             <el-row>
                                                 <el-col :span="12">
                                                     <el-form-item label="游戏账号" prop="game_account">
-
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
 
@@ -89,22 +85,21 @@
                                                 </el-col>
                                                 <el-col :span="12">
                                                     <el-form-item label="游戏密码" prop="game_password">
-
                                                         <el-row>
                                                             <el-col :span="22">
                                                                 <template>
                                                                     <div v-if="form.status === 13 || form.status === 14 || form.status === 17 || form.status === 18">
                                                                         <el-input
-                                                                                type="input"
-                                                                                v-model="form.game_password"
-                                                                                autocomplete="off"></el-input>
+                                                                            type="input"
+                                                                            v-model="form.game_password"
+                                                                            autocomplete="off"></el-input>
                                                                     </div>
                                                                     <div v-else>
                                                                         <el-input
-                                                                                :disabled="fieldDisabled"
-                                                                                type="input"
-                                                                                v-model="form.game_password"
-                                                                                autocomplete="off"></el-input>
+                                                                            :disabled="fieldDisabled"
+                                                                            type="input"
+                                                                            v-model="form.game_password"
+                                                                            autocomplete="off"></el-input>
                                                                     </div>
                                                                 </template>
                                                             </el-col>
@@ -116,7 +111,6 @@
                                             </el-row>
                                         </div>
                                     </el-card>
-
                                     <el-card class="box-card">
                                         <div class="text item">
                                             <el-row>
@@ -152,10 +146,10 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="input"
-                                                                        v-model="form.take_order_password"
-                                                                        autocomplete="off"></el-input>
+                                                                    :disabled="fieldDisabled"
+                                                                    type="input"
+                                                                    v-model="form.take_order_password"
+                                                                    autocomplete="off"></el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
                                                         </el-row>
@@ -170,15 +164,15 @@
                                                                 <el-row :gutter="10">
                                                                     <el-col :span="12">
                                                                         <el-select
-                                                                                :disabled="fieldDisabled"
-                                                                                filterable
-                                                                                v-model="form.day"
-                                                                                placeholder="请选择">
+                                                                            :disabled="fieldDisabled"
+                                                                            filterable
+                                                                            v-model="form.day"
+                                                                            placeholder="请选择">
                                                                             <el-option
-                                                                                    v-for="item in dayOptions"
-                                                                                    :key="item.value"
-                                                                                    :label="item.label"
-                                                                                    :value="item.value">
+                                                                                v-for="item in dayOptions"
+                                                                                :key="item.value"
+                                                                                :label="item.label"
+                                                                                :value="item.value">
                                                                             </el-option>
                                                                         </el-select>
                                                                     </el-col>
@@ -189,10 +183,10 @@
                                                                                 v-model="form.hour"
                                                                                 placeholder="请选择">
                                                                             <el-option
-                                                                                    v-for="item in hourOptions"
-                                                                                    :key="item.value"
-                                                                                    :label="item.label"
-                                                                                    :value="item.value">
+                                                                                v-for="item in hourOptions"
+                                                                                :key="item.value"
+                                                                                :label="item.label"
+                                                                                :value="item.value">
                                                                             </el-option>
                                                                         </el-select>
                                                                     </el-col>
@@ -208,35 +202,28 @@
                                                             </el-col>
                                                         </el-row>
                                                     </el-form-item>
-
                                                 </el-col>
                                                 <el-col :span="12">
-
                                                     <el-form-item label="代练要求模版">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-select
-                                                                        :disabled="fieldDisabled"
-                                                                        @change="handleGameLevelingRequirementIdChange"
-                                                                        v-model="form.gameLevelingRequirementId"
-                                                                        placeholder="请选择">
+                                                                    :disabled="fieldDisabled"
+                                                                    @change="handleGameLevelingRequirementIdChange"
+                                                                    v-model="form.gameLevelingRequirementId"
+                                                                    placeholder="请选择">
                                                                     <el-option
-                                                                            v-for="item in gameLevelingRequirementOptions"
-                                                                            :key="item.id"
-                                                                            :label="item.name"
-                                                                            :value="item.id">
+                                                                        v-for="item in gameLevelingRequirementOptions"
+                                                                        :key="item.id"
+                                                                        :label="item.name"
+                                                                        :value="item.id">
                                                                     </el-option>
                                                                 </el-select>
                                                             </el-col>
                                                             <el-col :span="1">
-                                                                <span class="icon-button"
-                                                                      @click="handleGameLevelingRequirementVisible({visible:true})">
-                                                                    <i class="el-icon-circle-plus"></i>
-                                                                </span>
                                                             </el-col>
                                                         </el-row>
                                                     </el-form-item>
-
                                                 </el-col>
                                             </el-row>
                                             <el-row>
@@ -245,11 +232,11 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="textarea"
-                                                                        :rows="3"
-                                                                        placeholder="请输入内容"
-                                                                        v-model="form.explain">
+                                                                    :disabled="fieldDisabled"
+                                                                    type="textarea"
+                                                                    :rows="3"
+                                                                    placeholder="请输入内容"
+                                                                    v-model="form.explain">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -261,11 +248,11 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="textarea"
-                                                                        :rows="3"
-                                                                        placeholder="请输入内容"
-                                                                        v-model="form.requirement">
+                                                                    :disabled="fieldDisabled"
+                                                                    type="textarea"
+                                                                    :rows="3"
+                                                                    placeholder="请输入内容"
+                                                                    v-model="form.requirement">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -279,10 +266,10 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="input"
-                                                                        placeholder="请输入内容"
-                                                                        v-model="form.amount">
+                                                                    :disabled="fieldDisabled"
+                                                                    type="input"
+                                                                    placeholder="请输入内容"
+                                                                    v-model="form.amount">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1" class="icon-button">
@@ -299,10 +286,10 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="input"
-                                                                        placeholder="请输入内容"
-                                                                        v-model="form.source_amount">
+                                                                    :disabled="fieldDisabled"
+                                                                    type="input"
+                                                                    placeholder="请输入内容"
+                                                                    v-model="form.source_amount">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -315,12 +302,11 @@
                                                     <el-form-item label="安全保证金" prop="security_deposit">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
-
                                                                 <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="input"
-                                                                        placeholder="请输入内容"
-                                                                        v-model="form.security_deposit">
+                                                                    :disabled="fieldDisabled"
+                                                                    type="input"
+                                                                    placeholder="请输入内容"
+                                                                    v-model="form.security_deposit">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1">
@@ -339,10 +325,10 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="input"
-                                                                        placeholder="请输入内容"
-                                                                        v-model="form.efficiency_deposit">
+                                                                    :disabled="fieldDisabled"
+                                                                    type="input"
+                                                                    placeholder="请输入内容"
+                                                                    v-model="form.efficiency_deposit">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1">
@@ -363,10 +349,10 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="input"
-                                                                        placeholder="请输入内容"
-                                                                        v-model.number="form.player_phone">
+                                                                    :disabled="fieldDisabled"
+                                                                    type="input"
+                                                                    placeholder="请输入内容"
+                                                                    v-model.number="form.player_phone">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1"></el-col>
@@ -378,33 +364,26 @@
                                                     <el-form-item label="商户QQ" prop="user_qq">
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
-
                                                                 <el-select
-                                                                        :disabled="fieldDisabled"
-                                                                        v-model.number="form.user_qq"
-                                                                        placeholder="请选择">
+                                                                    :disabled="fieldDisabled"
+                                                                    v-model.number="form.user_qq"
+                                                                    placeholder="请选择">
                                                                     <el-option
-                                                                            v-for="item in businessmanQQOptions"
-                                                                            :key="item.id"
-                                                                            :label="item.name + '-' + item.content"
-                                                                            :value="item.content">
+                                                                        v-for="item in businessmanQQOptions"
+                                                                        :key="item.id"
+                                                                        :label="item.name + '-' + item.content"
+                                                                        :value="item.content">
                                                                     </el-option>
                                                                 </el-select>
                                                             </el-col>
                                                             <el-col :span="1">
-                                                               <span class="icon-button"
-                                                                     @click="handleBusinessmanQQVisible({visible:true})">
-                                                                    <i class="el-icon-circle-plus"></i>
-                                                                </span>
                                                             </el-col>
                                                         </el-row>
                                                     </el-form-item>
-
                                                 </el-col>
                                             </el-row>
                                         </div>
                                     </el-card>
-
                                     <el-card class="box-card">
                                         <div class="text item">
                                             <el-row>
@@ -413,10 +392,10 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="input"
-                                                                        v-model="form.price_increase_step"
-                                                                        autocomplete="off">
+                                                                    :disabled="fieldDisabled"
+                                                                    type="input"
+                                                                    v-model="form.price_increase_step"
+                                                                    autocomplete="off">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1">
@@ -435,10 +414,10 @@
                                                         <el-row :gutter="10">
                                                             <el-col :span="22">
                                                                 <el-input
-                                                                        :disabled="fieldDisabled"
-                                                                        type="input"
-                                                                        v-model="form.price_ceiling"
-                                                                        autocomplete="off">
+                                                                    :disabled="fieldDisabled"
+                                                                    type="input"
+                                                                    v-model="form.price_ceiling"
+                                                                    autocomplete="off">
                                                                 </el-input>
                                                             </el-col>
                                                             <el-col :span="1">
@@ -455,7 +434,6 @@
                                             </el-row>
                                             <el-row>
                                                 <el-col :span="12">
-
                                                     <!--<el-form-item label="补款单号" prop="take_order_password">-->
 
                                                     <!--<el-row :gutter="10">-->
@@ -494,7 +472,6 @@
                                                     <!--</el-form-item>-->
                                                 </el-col>
                                                 <el-col :span="12">
-
                                                 </el-col>
                                             </el-row>
                                             <el-row>
@@ -515,102 +492,98 @@
                                                     </el-form-item>
                                                 </el-col>
                                                 <el-col :span="12">
-
                                                 </el-col>
                                             </el-row>
                                         </div>
                                     </el-card>
-
                                 </el-tab-pane>
-
                                 <el-tab-pane label="仲裁证据" :disabled="isComplain" name="2">
-
                                     <el-table
-                                            :data="complainDesData"
-                                            :stripe=true
-                                            :border=true
-                                            style="width: 100%">
+                                        :data="complainDesData"
+                                        :stripe=true
+                                        :border=true
+                                        style="width: 100%">
                                         <el-table-column
-                                                prop="who"
-                                                label="申请仲裁"
-                                                width="180">
+                                            prop="who"
+                                            label="申请仲裁"
+                                            width="180">
                                         </el-table-column>
                                         <el-table-column
-                                                prop="created_at"
-                                                label="申请时间"
-                                                width="180">
+                                            prop="created_at"
+                                            label="申请时间"
+                                            width="180">
                                         </el-table-column>
                                         <el-table-column
-                                                prop="content"
-                                                label="仲裁理由">
+                                            prop="content"
+                                            label="仲裁理由">
                                         </el-table-column>
                                     </el-table>
                                     <p></p>
-                                    <el-row :gutter="12"
-                                            >
+                                    <el-row :gutter="12">
                                         <el-col :span="8" v-if="complainImage.pic1">
                                             <el-card
-                                                    v-if="complainImage.pic1"
-                                                    :style="{
-                                                backgroundImage:'url(' + complainImage.pic1 + ')',
-                                                height:'150px',
-                                                backgroundSize: 'cover',
-                                                width: '100%',
-                                                display:'block',
-                                              }" @click.native="handleOpenImage(complainImage.pic1)">
+                                                v-if="complainImage.pic1"
+                                                :style="{
+                                                    backgroundImage:'url(' + complainImage.pic1 + ')',
+                                                    height:'150px',
+                                                    backgroundSize: 'cover',
+                                                    width: '100%',
+                                                    display:'block',
+                                                }"
+                                                @click.native="handleOpenImage(complainImage.pic1)">
                                             </el-card>
                                         </el-col>
                                         <el-col :span="8" v-if="complainImage.pic2">
                                             <el-card
-                                                    v-if="complainImage.pic2"
-                                                    :style="{
-                                                backgroundImage:'url(' + complainImage.pic2 + ')',
-                                                height:'150px',
-                                                backgroundSize: 'cover',
-                                                width: '100%',
-                                            }"
-                                                    @click.native="handleOpenImage(complainImage.pic2)">
+                                                v-if="complainImage.pic2"
+                                                :style="{
+                                                    backgroundImage:'url(' + complainImage.pic2 + ')',
+                                                    height:'150px',
+                                                    backgroundSize: 'cover',
+                                                    width: '100%',
+                                                }"
+                                                @click.native="handleOpenImage(complainImage.pic2)">
                                             </el-card>
                                         </el-col>
                                         <el-col :span="8" v-if="complainImage.pic3">
                                             <el-card
-                                                    v-if="complainImage.pic3"
-                                                    :style="{
-                                                backgroundImage:'url(' + complainDesData[0].pic3 + ')',
-                                                height:'150px',
-                                                backgroundSize: 'cover',
-                                                width: '100%',
-                                            }"
-                                                    @click.native="handleOpenImage(complainDesData[0].pic3)">
+                                                v-if="complainImage.pic3"
+                                                :style="{
+                                                    backgroundImage:'url(' + complainDesData[0].pic3 + ')',
+                                                    height:'150px',
+                                                    backgroundSize: 'cover',
+                                                    width: '100%',
+                                                }"
+                                                @click.native="handleOpenImage(complainDesData[0].pic3)">
                                             </el-card>
                                         </el-col>
                                     </el-row>
                                     <p></p>
                                     <el-table
-                                            :data="complainMessageData"
-                                            :stripe=true
-                                            :border=true
-                                            style="width: 100%">
+                                        :data="complainMessageData"
+                                        :stripe=true
+                                        :border=true
+                                        style="width: 100%">
                                         <el-table-column
-                                                prop="who"
-                                                label="留言方">
+                                            prop="who"
+                                            label="留言方">
                                         </el-table-column>
                                         <el-table-column
-                                                prop="content"
-                                                label="留言说明">
+                                            prop="content"
+                                            label="留言说明">
                                         </el-table-column>
                                         <el-table-column
-                                                prop="created_at"
-                                                label="留言时间">
+                                            prop="created_at"
+                                            label="留言时间">
                                         </el-table-column>
                                         <el-table-column
-                                                prop="address"
-                                                label="留言证据"
-                                                width="80">
+                                            prop="address"
+                                            label="留言证据"
+                                            width="80">
                                             <template slot-scope="scope">
                                                 <el-button icon="el-icon-search"
-                                                           v-if="scope.row.pic"
-                                                           @click.native="handleOpenImage(scope.row.pic)"></el-button>
+                                                   v-if="scope.row.pic"
+                                                   @click.native="handleOpenImage(scope.row.pic)"></el-button>
                                             </template>
                                         </el-table-column>
                                     </el-table>
@@ -618,22 +591,22 @@
                                     <el-form :model="complainMessageForm" ref="complainMessageForm" label-width="100px"
                                              class="demo-ruleForm">
                                         <el-form-item
-                                                label="留言内容"
-                                                :rules="[{ required: true, message: '留言内容不能为空'}]">
+                                            label="留言内容"
+                                            :rules="[{ required: true, message: '留言内容不能为空'}]">
                                             <el-input
-                                                    type="textarea"
-                                                    :rows="6"
-                                                    v-model="complainMessageForm.reason">
+                                                type="textarea"
+                                                :rows="6"
+                                                v-model="complainMessageForm.reason">
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item label="上传证据">
                                             <el-upload action="action"
-                                                       :class="complainMessageImageExceedLimit"
-                                                       list-type="picture-card"
-                                                       :limit="1"
-                                                       :on-preview="handleUploadPreview"
-                                                       :on-remove="handleRemoveComplainMessageImage"
-                                                       :http-request="handleUploadComplainMessageImage">
+                                               :class="complainMessageImageExceedLimit"
+                                               list-type="picture-card"
+                                               :limit="1"
+                                               :on-preview="handleUploadPreview"
+                                               :on-remove="handleRemoveComplainMessageImage"
+                                               :http-request="handleUploadComplainMessageImage">
                                                 <i class="el-icon-plus"></i>
                                             </el-upload>
                                         </el-form-item>
@@ -646,40 +619,40 @@
 
                                 <el-tab-pane label="操作记录" name="3">
                                     <el-table
-                                            :data="logData"
-                                            border
-                                            style="width: 100%;margin-bottom: 15px">
+                                        :data="logData"
+                                        border
+                                        style="width: 100%;margin-bottom: 15px">
                                         <el-table-column
-                                                prop="username"
-                                                label="操作人"
-                                                width="180">
+                                            prop="username"
+                                            label="操作人"
+                                            width="180">
                                         </el-table-column>
                                         <el-table-column
-                                                prop="name"
-                                                label="操作名"
-                                                width="180">
+                                            prop="name"
+                                            label="操作名"
+                                            width="180">
                                         </el-table-column>
                                         <el-table-column
-                                                prop="description"
-                                                label="描述">
+                                            prop="description"
+                                            label="描述">
                                         </el-table-column>
                                         <el-table-column
-                                                prop="created_at"
-                                                label="时间">
+                                            prop="created_at"
+                                            label="时间">
                                         </el-table-column>
                                     </el-table>
                                 </el-tab-pane>
                             </el-tabs>
                             <el-button type="primary" icon="el-icon-document"
-                                       style="position: absolute; right: 15px; top:15px"
-                                       @click="handleOpenChat">
+                               style="position: absolute; right: 15px; top:15px"
+                               @click="handleOpenChat">
                                 订单留言
                             </el-button>
                             <el-button v-if="form.status === 14"
-                                    @click="handleApplyCompleteImage"
-                                   type="primary"
-                                   icon="el-icon-search"
-                                   style="position: absolute; right: 125px; top:15px">查看图片
+                                @click="handleApplyCompleteImage"
+                               type="primary"
+                               icon="el-icon-search"
+                               style="position: absolute; right: 125px; top:15px">查看图片
                             </el-button>
                         </div>
                     </el-col>
@@ -689,18 +662,18 @@
                         <el-tabs v-model="dataTab">
                             <el-tab-pane label="平台数据" name="1">
                                 <el-table
-                                        :data="platformData"
-                                        :show-header=false
-                                        border
-                                        style="width: 100%">
+                                    :data="platformData"
+                                    :show-header=false
+                                    border
+                                    style="width: 100%">
                                     <el-table-column
-                                            prop="name"
-                                            label=""
-                                            width="120">
+                                        prop="name"
+                                        label=""
+                                        width="120">
                                     </el-table-column>
                                     <el-table-column
-                                            prop="value"
-                                            label="">
+                                        prop="value"
+                                        label="">
                                         <template slot-scope="scope">
                                             <span v-html="scope.row.value"></span>
                                         </template>
@@ -709,18 +682,18 @@
                             </el-tab-pane>
                             <el-tab-pane label="淘宝数据" name="2">
                                 <el-table
-                                        :data="taobaoData"
-                                        :show-header=false
-                                        border
-                                        style="width: 100%">
+                                    :data="taobaoData"
+                                    :show-header=false
+                                    border
+                                    style="width: 100%">
                                     <el-table-column
-                                            prop="name"
-                                            label=""
-                                            width="120">
+                                        prop="name"
+                                        label=""
+                                        width="120">
                                     </el-table-column>
                                     <el-table-column
-                                            prop="value"
-                                            label="">
+                                        prop="value"
+                                        label="">
                                         <template slot-scope="scope">
                                             <span v-html="scope.row.value"></span>
                                         </template>
@@ -732,7 +705,6 @@
                 </el-col>
             </el-row>
         </div>
-
         <div class="footer" v-if="displayFooter">
             <el-row>
                 <el-col :span="16">
@@ -743,7 +715,6 @@
                            @click="handleSubmitForm('form')"
                            style="margin-right: 8px">确认修改
                         </el-button>
-
                         <!--未接单 1 -->
                         <span v-if="form.status == 1">
                             <el-button
@@ -753,7 +724,6 @@
                                 size="small"
                                 type="primary" @click="handleOffSale()">下架</el-button>
                         </span>
-
                         <!--代练中 13 -->
                         <span v-if="form.status == 13">
                             <el-button
@@ -763,7 +733,6 @@
                                 size="small"
                                 type="primary" @click="handleApplyComplain()">仲裁</el-button>
                         </span>
-
                         <!--待验收 14 -->
                         <span v-if="form.status == 14">
                             <el-button
@@ -779,7 +748,6 @@
                                     size="small"
                                     @click="handleLock()">锁定</el-button>
                         </span>
-
                         <!--撤销中 15 -->
                         <span v-if="form.status == 15">
                             <el-button
@@ -794,7 +762,6 @@
                                     size="small"
                                     type="primary" @click="handleApplyComplain()">仲裁</el-button>
                         </span>
-
                         <!--仲裁中 16 -->
                         <span v-if="form.status == 16">
                             <el-button
@@ -806,56 +773,48 @@
                                     v-if="(this.form.game_leveling_order_complain.initiator == 1 && this.form.game_leveling_order_complain.status == 1)"
                                     type="primary" @click="handleCancelComplain()">取消仲裁</el-button>
                         </span>
-
                         <!--异常 17 -->
                         <span v-if="form.status == 17">
                             <el-button
-                                    size="small"
-                                    type="primary" @click="handleApplyConsult()">撤销</el-button>
+                                size="small"
+                                type="primary" @click="handleApplyConsult()">撤销</el-button>
                             <el-button
-                                    size="small"
-                                    @click="handleLock()">锁定</el-button>
+                                size="small"
+                                @click="handleLock()">锁定</el-button>
                         </span>
-
                         <!--已锁定 18 -->
                         <span v-if="form.status == 18">
                             <el-button
-                                    size="small"
-                                    @click="handleCancelLock()">取消锁定</el-button>
+                                size="small"
+                                @click="handleCancelLock()">取消锁定</el-button>
                             <el-button
-                                    size="small"
-                                    type="primary"
-                                    @click="handleApplyConsult()">撤销</el-button>
+                                size="small"
+                                type="primary"
+                                @click="handleApplyConsult()">撤销</el-button>
                         </span>
-
                         <!--已下架 22 -->
                         <span v-if="form.status == 22">
                             <el-button
-                                    size="small"
-                                    type="primary"
-                                    @click="handleOnSale()">上架</el-button>
+                                size="small"
+                                type="primary"
+                                @click="handleOnSale()">上架</el-button>
                         </span>
-
                         <!-- 19, 20, 21, 22, 23, 24 -->
                         <span v-if="([19, 20, 21, 23, 24].indexOf(form.status)) != -1">
                             <router-link :to="{name:'gameLevelingOrderRepeat', query:{trade_no:$route.query.trade_no}}">
                                 <el-button
-                                        size="small"
-                                        type="primary"
-                                        >
-                                    重发</el-button>
-                             </router-link>
-                             <el-button
-                                     size="small"
-                                     type="primary"
-                                     @click="handleBusinessmanComplainVisible()">投诉</el-button>
+                                    size="small"
+                                    type="primary">重发</el-button>
+                            </router-link>
+                            <el-button
+                             size="small"
+                             type="primary"
+                             @click="handleBusinessmanComplainVisible()">投诉</el-button>
                         </span>
-
                     </div>
                 </el-col>
             </el-row>
         </div>
-
         <div id="chat">
             <el-dialog
                     title="订单留言"
@@ -875,9 +834,9 @@
                 </div>
                 <el-form :model="form">
                     <el-input
-                            type="textarea"
-                            :rows="5"
-                            v-model="chatForm.content">
+                        type="textarea"
+                        :rows="5"
+                        v-model="chatForm.content">
                     </el-input>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -885,113 +844,97 @@
                 </div>
             </el-dialog>
         </div>
-
         <template>
             <el-dialog
-                    title="订单投诉"
-                    :before-close="handleBusinessmanComplainVisible"
-                    :visible=businessmanComplainVisible>
+                title="订单投诉"
+                :before-close="handleBusinessmanComplainVisible"
+                :visible=businessmanComplainVisible>
                 <el-form
-                        :model="businessmanComplainForm"
-                         ref="businessmanComplainForm"
-                         label-width="110px"
-                         class="demo-ruleForm">
+                    :model="businessmanComplainForm"
+                     ref="businessmanComplainForm"
+                     label-width="110px"
+                     class="demo-ruleForm">
                     <el-form-item label="证据截图"
-                                  prop="images"
-                                  :rules="[
-                                     { required: true, message: '最少上传一张图片', trigger: 'change'}
-                                    ]"
-                                  ref="image">
+                        prop="images"
+                        :rules="[
+                         { required: true, message: '最少上传一张图片', trigger: 'change'}
+                        ]"
+                        ref="image">
                         <el-upload :class="businessmanComplainImageExceedLimit"
-                                   action="action"
-                                   list-type="picture-card"
-                                   :limit="3"
-                                   :on-remove="handleRemoveBusinessmanComplainImage"
-                                   :http-request="handleUploadBusinessmanComplainImage">
+                           action="action"
+                           list-type="picture-card"
+                           :limit="3"
+                           :on-remove="handleRemoveBusinessmanComplainImage"
+                           :http-request="handleUploadBusinessmanComplainImage">
                             <i class="el-icon-plus"></i>
                         </el-upload>
-
                         <el-dialog :visiblec="businessmanComplainForm.dialogVisible">
                             <img width="100%"
                                  :src="businessmanComplainForm.dialogImageUrl">
                         </el-dialog>
                     </el-form-item>
-
                     <el-form-item prop="amount"
-                                  :rules="[
-                                      { required: true, message: '赔偿金额不能为空', trigger: 'blur'},
-                                      { type: 'number', message: '赔偿金额必须为数字值', trigger: 'blur'}
-                                  ]"
-                                  label="要求赔偿金额">
-                        <el-input type="input"
-                                  :rows="8"
-                                  v-model.number="businessmanComplainForm.amount"></el-input>
+                        :rules="[
+                          { required: true, message: '赔偿金额不能为空', trigger: 'blur'},
+                          { type: 'number', message: '赔偿金额必须为数字值', trigger: 'blur'}
+                        ]"
+                        label="要求赔偿金额">
+                    <el-input type="input"
+                        :rows="8"
+                        v-model.number="businessmanComplainForm.amount"></el-input>
                     </el-form-item>
-
                     <el-form-item label="投诉原因"
-                                  :rules="[
-                                      { required: true, message: '投诉原因不能为空'},
-                                  ]"
-                                  prop="reason">
+                        :rules="[
+                          { required: true, message: '投诉原因不能为空'},
+                        ]"
+                        prop="reason">
                         <el-input type="textarea"
-                                  :rows="8"
-                                  v-model="businessmanComplainForm.reason"></el-input>
+                            :rows="8"
+                            v-model="businessmanComplainForm.reason"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary"
-                                   @click="handleSubmitBusinessmanComplainForm('businessmanComplainForm')">提交
+                            @click="handleSubmitBusinessmanComplainForm('businessmanComplainForm')">提交
                         </el-button>
                     </el-form-item>
                 </el-form>
             </el-dialog>
         </template>
-
         <ApplyComplain v-if="applyComplainVisible"
-                       :tradeNo="tradeNo"
-                       @handleApplyComplainVisible="handleApplyComplainVisible">
+            :tradeNo="tradeNo"
+            @handleApplyComplainVisible="handleApplyComplainVisible">
         </ApplyComplain>
-
         <ApplyConsult v-if="applyConsultVisible"
-                      :tradeNo="tradeNo"
-                      :amount="amount"
-                      :securityDeposit="securityDeposit"
-                      :efficiencyDeposit="efficiencyDeposit"
-                      @handleApplyConsultVisible="handleApplyConsultVisible">
+              :tradeNo="tradeNo"
+              :amount="amount"
+              :securityDeposit="securityDeposit"
+              :efficiencyDeposit="efficiencyDeposit"
+              @handleApplyConsultVisible="handleApplyConsultVisible">
         </ApplyConsult>
-
-        <GameLevelingRequirement v-if="gameLevelingRequirementVisible"
-                                 @handleGameLevelingRequirementVisible="handleGameLevelingRequirementVisible">
+        <GameLevelingRequirement v-if="gameLevelingRequirementVisible" @handleGameLevelingRequirementVisible="handleGameLevelingRequirementVisible">
         </GameLevelingRequirement>
-
-        <BusinessmanQQ v-if="businessmanQQVisible"
-                       @handleBusinessmanQQVisible="handleBusinessmanQQVisible">
+        <BusinessmanQQ v-if="businessmanQQVisible" @handleBusinessmanQQVisible="handleBusinessmanQQVisible">
         </BusinessmanQQ>
-
         <el-dialog
-
-                top="35vh"
-                custom-class="add-time-dialog"
-                title="增加代练时间"
-                :visible.sync="addTimeDialogVisible">
-
+            top="35vh"
+            custom-class="add-time-dialog"
+            title="增加代练时间"
+            :visible.sync="addTimeDialogVisible">
             <el-form ref="addTimeForm" :rules="addTimeFormRules" :model="addTimeForm" label-width="80px">
                 <el-form-item
-                        prop="day"
-                        label="天">
+                    prop="day"
+                    label="天">
                     <el-input v-model.number="addTimeForm.day"></el-input>
                 </el-form-item>
-
                 <el-form-item
-                        prop="hour"
-                        label="小时">
+                    prop="hour"
+                    label="小时">
                     <el-input v-model.number="addTimeForm.hour"></el-input>
                 </el-form-item>
-
                 <el-form-item>
                     <el-button @click="addTimeDialogVisible = false">取消</el-button>
                     <el-button type="primary" @click="handleAddDayHour">确认</el-button>
                 </el-form-item>
-
             </el-form>
         </el-dialog>
     </div>
@@ -1002,7 +945,6 @@
     import ApplyConsult from './ApplyConsult';
     import GameLevelingRequirement from './GameLevelingRequirement';
     import BusinessmanQQ from './BusinessmanQQ';
-
     export default {
         name: "GameLevelingShow",
         components: {
