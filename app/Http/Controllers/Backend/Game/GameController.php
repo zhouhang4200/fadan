@@ -147,10 +147,16 @@ class GameController extends Controller
             // 删除区,服
             $gameRegionIds = GameRegion::where('game_id', $game->id)
                 ->pluck('id');
-            foreach ($gameRegionIds as $gameRegionId) {
-                GameServer::where('game_region_id', $gameRegionId)->delete();
+
+            if ($gameRegionIds) {
+                foreach ($gameRegionIds as $gameRegionId) {
+                    GameServer::where('game_region_id', $gameRegionId)->delete();
+                }
+                GameRegion::destroy($gameRegionIds->toArray());
             }
-            GameRegion::destroy($gameRegionIds->toArray());
+
+            // 删除游戏类型
+            GameType::where('game_id', $game->id)->delete();
 
             $game->delete();
         } catch (Exception $e) {
