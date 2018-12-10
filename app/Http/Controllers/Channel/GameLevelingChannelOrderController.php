@@ -756,7 +756,10 @@ class GameLevelingChannelOrderController extends Controller
                         $order->save();
 
                         $user = User::find($order->user_id);
-                        $gameLevelingOrder = GameLevelingOrder::placeOrder($user, array_merge($order->toArray(), ['source_amount' => $order->amount])); // 下单
+                        // 下单
+                        $gameLevelingOrder = GameLevelingOrder::placeOrder($user, array_merge($order->toArray(), [
+                            'source_amount' => $order->amount,
+                            'amount' => $order->supply_amount]));
                         # 更新渠道订单状态
                         $gameLevelingOrder->channel_order_trade_no = $order->trade_no; // 渠道订单
                         $gameLevelingOrder->channel_order_status = 2; // 渠道订单支付状态
