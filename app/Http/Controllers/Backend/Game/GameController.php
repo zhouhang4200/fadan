@@ -158,6 +158,9 @@ class GameController extends Controller
             // 删除游戏类型
             GameType::where('game_id', $game->id)->delete();
 
+            // 删除游戏代练类型
+            GameLevelingType::where('game_id', $game->id)->delete();
+
             $game->delete();
         } catch (Exception $e) {
             DB::rollback();

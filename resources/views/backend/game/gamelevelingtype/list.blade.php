@@ -15,7 +15,7 @@
         @forelse($types as $type)
             <tr>
                 <td>{{ $type->id }}</td>
-                <td>{{ $type->game->name }}</td>
+                <td>{{ $type->game ? $type->game->name : '' }}</td>
                 <td>{{ $type->name }}</td>
                 <td>{{ $type->poundage }}</td>
                 <td>{{ $type->created_at }}</td>
