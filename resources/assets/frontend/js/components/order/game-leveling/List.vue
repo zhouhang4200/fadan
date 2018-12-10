@@ -731,7 +731,8 @@
                             item.push(h('el-carousel-item', null, [
                                 h('img', {
                                     attrs: {
-                                        src: val['url']
+                                        src: val['url'],
+                                        class:'avatar'
                                     }
                                 }, '')
                             ]))
@@ -878,7 +879,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.gameLevelingOrderLock({
+                    this.$api.gameLevelingOrderLock({
                         'trade_no': row.trade_no
                     }).then(res => {
                         this.$message({
@@ -983,5 +984,10 @@
         .el-table--small th, .el-table--small td {
             padding: 2px 0;
         }
+    }
+    .avatar {
+        width: 100%;
+        height: 100%;
+        display: block;
     }
 </style>
