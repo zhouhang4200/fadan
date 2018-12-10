@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Game;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
+use App\Models\GameType;
 use App\Models\GameRegion;
 use App\Models\GameServer;
 use Illuminate\Http\Request;
@@ -54,19 +55,35 @@ class GameController extends Controller
      */
     public function store()
     {
+        DB::beginTransaction();
         try {
-            Game::create([
-                'name' => request('name'),
-                'icon' => request('icon'),
-                'sortord' => 999,
-                'status' => 1,
-                'created_admin_user_id' => Auth::guard('admin')->user()->id,
-                'updated_admin_user_id' => Auth::guard('admin')->user()->id,
-            ]);
+            $game = Game::updateOrCreate(
+                ['name' => request('name')],
+                [
+                    'name' => request('name'),
+                    'icon' => request('icon'),
+                    'sortord' => 999,
+                    'status' => 1,
+                    'created_admin_user_id' => Auth::guard('admin')->user()->id,
+                    'updated_admin_user_id' => Auth::guard('admin')->user()->id,
+                ]
+            );
+
+            // 游戏类型
+            if (count(request('type', [])) > 0) {
+                foreach (request('type') as $type) {
+                    GameType::updateOrCreate(
+                        ['type' => $type, 'game_id' => $game->id],
+                        ['type' => $type, 'game_id' => $game->id]
+                    );
+                }
+            }
         } catch (Exception $e) {
+            DB::rollback();
             myLog('game-store-error', [$e->getMessage(), $e->getLine()]);
             return response()->ajax(0, '添加失败：服务器错误!');
         }
+        DB::commit();
         return response()->ajax(1, '添加成功!');
     }
 
@@ -90,16 +107,31 @@ class GameController extends Controller
      */
     public function update()
     {
+        DB::beginTransaction();
         try {
             $game = Game::find(request('id'));
 
             $game->name = request('name');
             $game->icon = request('icon');
             $game->save();
+
+            GameType::where('game_id', $game->id)->delete();
+
+            // 游戏类型
+            if (count(request('type', [])) > 0) {
+                foreach (request('type') as $type) {
+                    GameType::updateOrCreate(
+                        ['type' => $type, 'game_id' => $game->id],
+                        ['type' => $type, 'game_id' => $game->id]
+                    );
+                }
+            }
         } catch (Exception $e) {
+            DB::rollback();
             myLog('game-update-error', [$e->getMessage(), $e->getLine()]);
             return response()->ajax(0, "修改失败：服务器错误!");
         }
+        DB::commit();
         return response()->ajax(1, '修改成功!');
     }
 
@@ -115,10 +147,19 @@ class GameController extends Controller
             // 删除区,服
             $gameRegionIds = GameRegion::where('game_id', $game->id)
                 ->pluck('id');
-            foreach ($gameRegionIds as $gameRegionId) {
-                GameServer::where('game_region_id', $gameRegionId)->delete();
+
+            if ($gameRegionIds) {
+                foreach ($gameRegionIds as $gameRegionId) {
+                    GameServer::where('game_region_id', $gameRegionId)->delete();
+                }
+                GameRegion::destroy($gameRegionIds->toArray());
             }
-            GameRegion::destroy($gameRegionIds->toArray());
+
+            // 删除游戏类型
+            GameType::where('game_id', $game->id)->delete();
+
+            // 删除游戏代练类型
+            GameLevelingType::where('game_id', $game->id)->delete();
 
             $game->delete();
         } catch (Exception $e) {
