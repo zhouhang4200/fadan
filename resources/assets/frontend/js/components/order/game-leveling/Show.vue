@@ -647,10 +647,11 @@
                                        @click="handleOpenChat">
                                 订单留言
                             </el-button>
-                            <el-button @click="handleApplyCompleteImage"
-                                       type="primary" 
-                                       icon="el-icon-search"
-                                       style="position: absolute; right: 125px; top:15px">查看图片
+                            <el-button v-if="form.status === 14"
+                                    @click="handleApplyCompleteImage"
+                                   type="primary"
+                                   icon="el-icon-search"
+                                   style="position: absolute; right: 125px; top:15px">查看图片
                             </el-button>
                         </div>
                     </el-col>
