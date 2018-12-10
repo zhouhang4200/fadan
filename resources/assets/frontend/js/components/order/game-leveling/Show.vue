@@ -495,7 +495,7 @@
 
                                 </el-tab-pane>
 
-                                <el-tab-pane label="仲裁证据" name="2">
+                                <el-tab-pane label="仲裁证据" :disabled="isComplain" name="2">
 
                                     <el-table
                                             :data="complainDesData"
@@ -985,6 +985,13 @@
         computed: {
             fieldDisabled() {
                 if (this.form.status === 1 || this.form.status === 22) {
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            isComplain() {
+                if (this.form.status === 16 || this.form.status === 21) {
                     return false;
                 } else {
                     return true;
