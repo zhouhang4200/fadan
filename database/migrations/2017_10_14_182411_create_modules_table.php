@@ -15,6 +15,7 @@ class CreateModulesTable extends Migration
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('module_id');
             $table->string('name')->comment('英文名字');
             $table->string('alias')->comment('中文名字');
             $table->string('guard_name')->comment('區分前後端');
