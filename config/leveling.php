@@ -224,8 +224,8 @@ return [
     // 丸子平台
     'wanzi' => [
     	'uid'       => 7,
-    	'app_id'     => 'HZEQjP27dLvAmqZ1UC06GStn83c8fEjp6gyEMh6wfl4PVHM7ff8nwF2OqzpS', // 丸子平台的
-		'app_secret' => 'eibQmUEMMWThSK4jyr3uw0iRM8ZhBGJ83RV2d7R6MVfBBPxeXdPjVrSrCImw',  // 丸子平台的
+    	'app_id'     =>  env('WANZI_APP_ID', 'HZEQjP27dLvAmqZ1UC06GStn83c8fEjp6gyEMh6wfl4PVHM7ff8nwF2OqzpS'), // 丸子平台的
+		'app_secret' =>  env('WANZI_APP_SECRET', 'eibQmUEMMWThSK4jyr3uw0iRM8ZhBGJ83RV2d7R6MVfBBPxeXdPjVrSrCImw'),  // 丸子平台的
 		'aes_key'   => '335ss6s8m8e4f5a8e2e2ls5',
 		'aes_iv'    => '1234567891111152',
 		'pay_password'  => env('WANZI_PAY_PASSWORD', 'admin888'),
