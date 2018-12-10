@@ -104,7 +104,7 @@ class importGameInfoCommand extends Command
                 foreach ($servers as $server) {
                     GameServer::create([
                         'name' => $server->field_value,
-                        'region_id' => $newRegion->id,
+                        'game_region_id' => $newRegion->id,
                         'initials' => 1,
                     ]);
                 }
