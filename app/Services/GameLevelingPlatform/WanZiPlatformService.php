@@ -21,7 +21,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param $order
      * @param string $method
      * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws Exception
      */
     public static function formDataRequest($options, $url, $functionName, $order, $method = 'POST')
     {
@@ -92,7 +92,7 @@ class WanZiPlatformService implements GameLevelingPlatformServiceInterface
      * @param $order
      * @param string $method
      * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws Exception
      */
     public static function normalRequest($options, $url, $functionName, $order, $method = 'POST')
     {

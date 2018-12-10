@@ -1278,10 +1278,10 @@ class OrderOperateController
                     ->pluck('hatchet_man_phone')->toArray();
 
                 if (isset($blacklistQqs) && in_array($hatchetManQq, $blacklistQqs)) {
-                    return response()->partner(0, '打手已被商户拉入黑名单');
+                    throw new GameLevelingOrderOperateException('打手已被商户拉入黑名单');
                 }
                 if (isset($blacklistPhones) && in_array($hatchetManPhone, $blacklistPhones)) {
-                    return response()->partner(0, '打手已被商户拉入黑名单');
+                    throw new GameLevelingOrderOperateException('打手已被商户拉入黑名单');
                 }
             }
 
