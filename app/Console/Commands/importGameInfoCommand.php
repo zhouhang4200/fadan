@@ -50,9 +50,6 @@ class importGameInfoCommand extends Command
             $newGame = Game::create([
                 'name' => $games->name,
                 'icon' => 1,
-                'initials' => getFirstChar($games->name) == null ? substr($games->name, 0 ,1) : getFirstChar($games->name),
-                'game_type_id'=> 1,
-                'game_class_id'=> 1,
             ]);
 
             // 查找组件ID
