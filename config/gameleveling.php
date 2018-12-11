@@ -11,18 +11,18 @@ return [
     ],
     // 平台联系人邮箱地址
     'third_email' => [
-        8737 => '370423468@qq.com', // 蚂蚁
-        8739 => 'zhb@dd373.cn', // dd373
-        8456 => '724916677@qq.com', // 91
-        1 => 'jinjian@fulu.com', // 丸子
+        env('MAYI_IN_TM_USER_ID','8737') => '370423468@qq.com', // 蚂蚁
+        env('DD373_IN_TM_USER_ID','8739') => 'zhb@dd373.cn', // dd373
+        env('SHOW91_IN_TM_USER_ID','8456') => '724916677@qq.com', // 91
+        env('WANZI_IN_TM_USER_ID','1') => 'jinjian@fulu.com', // 丸子
     ],
 
     // 发单平台余额报警值
     'balance_alarm' => [
-        8737 => 5000, // 蚂蚁
-        8739 => 10000, // dd373
-        8456 => 10000, // 91
-         1 => 10000, // 丸子
+        env('MAYI_IN_TM_USER_ID','8737') => 5000, // 蚂蚁
+        env('DD373_IN_TM_USER_ID','8739') => 10000, // dd373
+        env('SHOW91_IN_TM_USER_ID','8456') => 10000, // 91
+        env('WANZI_IN_TM_USER_ID','1') => 10000, // 丸子
     ],
 
     // 外部平台存在订单详情表里面的订单号字段，接单的时候，下架其他平台订单, 平台号 =》 平台订单字段名称
