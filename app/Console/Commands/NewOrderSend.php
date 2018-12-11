@@ -172,6 +172,7 @@ class NewOrderSend extends Command
                         }
                         // 写基础数据
 //                        event(new NewOrderBasicData($order));
+                        $order['original_price'] = $order['source_amount'];
                         OrderBasicData::createData($order);
                     } else {
                         // 没有查到订单则再次丢入队列

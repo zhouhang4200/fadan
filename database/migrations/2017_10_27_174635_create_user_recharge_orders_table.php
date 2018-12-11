@@ -22,6 +22,7 @@ class CreateUserRechargeOrdersTable extends Migration
             $table->unsignedInteger('creator_user_id')->comment('创建者（主账号或子账号id）');
             $table->unsignedInteger('creator_primary_user_id')->comment('订单创建者主账号id');
             $table->string('remark', 2000)->comment('备注说明');
+            $table->integer('type');
             $table->datetime('created_at');
 
             $table->unique('no');
