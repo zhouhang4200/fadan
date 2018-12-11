@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
-use App\Models\Game;
-use App\Models\GameLevelingType;
-use App\Models\GameRegion;
-use App\Models\GameServer;
-use App\Models\User;
 use DB;
 use Auth;
 use Exception;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Game;
+use App\Models\GameRegion;
+use App\Models\GameServer;
 use App\Models\TaobaoTrade;
-use App\Models\OrderHistory;
 use App\Models\OrderBasicData;
+use App\Extensions\Asset\Expend;
+use App\Models\GameLevelingType;
 use App\Models\GameLevelingOrder;
 use App\Models\GameLevelingOrderLog;
 use App\Http\Controllers\Controller;
@@ -710,9 +710,13 @@ class IndexController extends Controller
             DB::rollback();
             return response()->ajax(0, '订单异常！' . $e->getMessage());
         }
-        // TODO 扣款
+        # 扣款
+        Asset::handle(new Expend(request('amount'), 7, request('trade_no'), '代练改价支出', $order->creator_primary_user_id));
+        # 写操作日志
+        $description = "用户[" . request()->user()->username . "]增加代练价格 [ 加价前:" . bcsub($order->amount, request('amount'), 2) . " 加价后: " . $order->amount . " ]";
+        GameLevelingOrderLog::createOrderHistory($order,request()->user(), 35, $description);
         DB::commit();
-        // TODO 写操作日志
+
         return response()->ajax(1, '加价成功!');
     }
 
