@@ -764,6 +764,11 @@
                                     v-if="(this.form.game_leveling_order_consult.initiator == 2 && this.form.game_leveling_order_consult.status == 1)"
                                     size="small"
                                     @click="handleAgreeConsult()">同意撤销</el-button>
+
+                            <el-button
+                                    v-if="(this.form.game_leveling_order_consult.initiator == 2 && this.form.game_leveling_order_consult.status == 1)"
+                                    size="small"
+                                    @click="handleRejectConsult()">不同意撤销</el-button>
                             <el-button
                                     size="small"
                                     type="primary" @click="handleApplyComplain()">仲裁</el-button>
