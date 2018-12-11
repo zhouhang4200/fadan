@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
 use DB;
 use Auth;
+use Asset;
 use Exception;
 use Carbon\Carbon;
 use App\Models\User;
@@ -677,6 +678,7 @@ class IndexController extends Controller
      * 加款
      * @return mixed
      * @throws GameLevelingOrderOperateException
+     * @throws \App\Exceptions\AssetException
      */
     public function addAmount()
     {
