@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
+use App\Models\Game;
+use App\Models\GameLevelingType;
+use App\Models\GameRegion;
+use App\Models\GameServer;
 use App\Models\User;
 use DB;
 use Auth;
@@ -198,6 +202,11 @@ class IndexController extends Controller
 
 
         try {
+            // 更改订单详情表数据
+            $game = Game::find(request('game_id'));
+            $region = GameRegion::find(request('game_region_id'));
+            $server = GameServer::find(request('game_server_id'));
+            $gameLevelingType = GameLevelingType::find(request('game_leveling_type_id'));
             $gameLevelingPlatforms = GameLevelingPlatform::where('game_leveling_order_trade_no', $order->trade_no)
                 ->get();
 
@@ -217,7 +226,7 @@ class IndexController extends Controller
 
             if ($orderBasicData) {
                 $orderBasicData->game_id = $order->game_id;
-                $orderBasicData->game_name = $order->gameLevelingOrderDetail->game_name;
+                $orderBasicData->game_name = $game->name;
                 $orderBasicData->price = $order->amount;
                 $orderBasicData->security_deposit = $order->security_deposit;
                 $orderBasicData->efficiency_deposit = $order->efficiency_deposit;
@@ -229,14 +238,17 @@ class IndexController extends Controller
                 // 订单是没有接单情况可修改所有信息 in_array($order->status, [1, 22])
                 if (in_array($order->status, [1, 22])) {
                     if($order->update(request()->all())){
-                        $data = request()->only([
-                            'user_qq',
-                            'player_phone',
-                            'explain',
-                            'requirement'
-                        ]);
-
-                        $data['user_remark'] = request('remark');
+                        $data = [
+                            'game_name' => $game->name,
+                            'game_region_name' => $region->name,
+                            'game_server_name' => $server->name,
+                            'game_leveling_type_name' => $gameLevelingType->name,
+                            'user_qq' => request('user_qq'),
+                            'player_phone' => request('player_phone'),
+                            'explain' => request('explain'),
+                            'requirement' => request('requirement'),
+                            'user_remark' => request('remark'),
+                        ];
 
                         if ($res = GameLevelingOrderDetail::where('game_leveling_order_trade_no', request('trade_no'))
                             ->update($data)){
