@@ -477,8 +477,11 @@ class Show91
 
     /**
      * 订单确认验收结算
-     * @param  [type] $options [oid => 订单id，p => 支付密码]
-     * @return [type]          [description]
+     * @param array $options
+     * @return mixed|null [type]          [description]
+     * @throws CustomException
+     * @throws DailianException
+     * @throws RequestTimeoutException
      */
     public static function accept($options = [])
     {
@@ -492,6 +495,7 @@ class Show91
      * @param array $options
      * @return array $messageArr
      * @throws CustomException
+     * @throws RequestTimeoutException
      */
     public static function messageList($options = [])
     {
