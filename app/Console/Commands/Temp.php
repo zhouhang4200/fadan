@@ -86,7 +86,7 @@ class Temp extends Command
             ->filter(['startDate' => '2018-' . $i . '-01', 'endDate' => '2018-' . $i . '-30'])
             ->with(['gainerUser', 'gainerPrimaryUser', 'detail', 'history', 'foreignOrder', 'service']);
 
-        $out = fopen(public_path('order-' . $i . '.csv'), 'w');
+        $out = fopen(public_path('export/order-' . $i . '.csv'), 'w');
         fwrite($out, chr(0xEF).chr(0xBB).chr(0xBF)); // 添加 BOM
         fputcsv($out, [
             '服务',
@@ -171,7 +171,7 @@ class Temp extends Command
         ])
             ->orderBy('id', 'desc');
 
-        $out = fopen(public_path('flow-' . $i . '.csv'), 'w');
+        $out = fopen(public_path('export/flow-' . $i . '.csv'), 'w');
         fwrite($out, chr(0xEF).chr(0xBB).chr(0xBF)); // 添加 BOM
         fputcsv($out,[
             '流水号',
