@@ -206,7 +206,7 @@ class Temp extends Command
                     $value['admin_user_id'],
                     $tradetypePlatform[$value['trade_type']],
                     $tradesubtypePlatformSub[$value['trade_subtype']],
-                    $value['trade_no'],
+                    $value['trade_no']  . "\t",
                     $value['fee'] + 0,
                     $value['remark'],
                     $value['amount'] ?? 0,
