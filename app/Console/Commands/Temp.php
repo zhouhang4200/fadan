@@ -61,6 +61,10 @@ class Temp extends Command
 
     public function order()
     {
+      for($i=1; $i<=12; $i++) {
+      
+      
+      
         $order = Order::select([
             'creator_primary_user_id',
             'gainer_primary_user_id',
@@ -79,10 +83,10 @@ class Temp extends Command
             'created_at',
             'service_id',
         ])
-            ->filter(['startDate' => '2018-01-01', 'endDate' => '2018-12-12'])
+            ->filter(['startDate' => '2018-' . $i . '-01', 'endDate' => '2018-' . $i . '-30'])
             ->with(['gainerUser', 'gainerPrimaryUser', 'detail', 'history', 'foreignOrder', 'service']);
 
-        $out = fopen(public_path('order.csv'), 'w');
+        $out = fopen(public_path('order-' . $i . '.csv'), 'w');
         fwrite($out, chr(0xEF).chr(0xBB).chr(0xBF)); // 添加 BOM
         fputcsv($out, [
             '服务',
@@ -154,17 +158,20 @@ class Temp extends Command
             }
         });
         fclose($out);
+        
+        }
     }
 
     public function flow()
     {
+      for($i=1; $i<=12; $i++) {
         $query = UserAmountFlow::adminFilter([
-            'timeStart' => '2018-01-01',
-            'timeEnd' => '2018-12-12 23:59:59',
+            'timeStart' => '2018-' . $i . '-01',
+            'timeEnd' => '2018-' . $i . '-12 23:59:59',
         ])
             ->orderBy('id', 'desc');
 
-        $out = fopen(public_path('flow.csv'), 'w');
+        $out = fopen(public_path('flow-' . $i . '.csv'), 'w');
         fwrite($out, chr(0xEF).chr(0xBB).chr(0xBF)); // 添加 BOM
         fputcsv($out,[
             '流水号',
@@ -217,5 +224,6 @@ class Temp extends Command
                 fputcsv($out, $arr);
             }
         });
+      }
     }
 }
