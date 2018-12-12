@@ -65,7 +65,7 @@ class UserAmountFlowController extends Controller
                                 $value['admin_user_id'],
                                 $tradetypePlatform[$value['trade_type']],
                                 $tradesubtypePlatformSub[$value['trade_subtype']],
-                                $value['trade_no'],
+                                "\t".$value['trade_no'],
                                 $value['fee'] + 0,
                                 $value['remark'],
                                 $value['amount'] ?? 0,
