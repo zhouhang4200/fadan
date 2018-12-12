@@ -45,9 +45,18 @@ class Temp extends Command
 
     public function handle()
     {
-        $this->order();
+      ini_set('memory_limit', '1024M');
+      
+      if ($this->argument('no') == 1) {
+      
+         $this->order();
+      } else {
+          $this->flow();
+      }
+      
+        
 
-        $this->flow();
+        
     }
 
     public function order()
