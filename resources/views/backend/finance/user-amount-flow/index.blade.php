@@ -49,7 +49,7 @@
                             </div>
                             <div class="col-md-2">
                                 <button class="btn btn-primary" type="submit">搜索</button>
-                                <a href="{{url('admin/finance/user-amount-flow/?export=1&'.http_build_query(Request::all()))}}" class="btn btn-primary" >导出</a>
+                                <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="btn btn-primary" ><i class="iconfont icon-logout"></i><span style="padding-left: 3px">导出</span></a>
                             </div>
                         </div>
                     </form>
