@@ -58,8 +58,8 @@ class UserAmountFlowRepository
 			'累计用户提现',
 			'累计用户消费',
 			'累计退款给用户',
-			'累计用户成交次数',
-			'累计用户成交金额',
+			'累计用户支出',
+			'累计用户收入',
 			'时间',
 		];
 		// 数组分割,反转
@@ -88,8 +88,8 @@ class UserAmountFlowRepository
 						$v['total_withdraw'] ?? 0,
 						$v['total_consume'] ?? 0,
 						$v['total_refund'] ?? 0,
-						$v['total_trade_quantity'] ?? 0,
-						$v['total_trade_amount'] ?? 0,
+						$v['total_expend'] ?? 0,
+						$v['total_income'] ?? 0,
 						$v['created_at'] ?? '',
 					];
 				}
