@@ -83,7 +83,7 @@ class Temp extends Command
             'created_at',
             'service_id',
         ])
-            ->filter(['startDate' => '2018-' . $i . '-01', 'endDate' => '2018-' . $i . '-30'])
+            ->filter(['startDate' => '2018-' . $i . '-01', 'endDate' => '2018-' . $i . '-31'])
             ->with(['gainerUser', 'gainerPrimaryUser', 'detail', 'history', 'foreignOrder', 'service']);
 
         $out = fopen(public_path('export/order-' . $i . '.csv'), 'w');
