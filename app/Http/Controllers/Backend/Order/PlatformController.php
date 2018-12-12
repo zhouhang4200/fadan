@@ -71,6 +71,8 @@ class PlatformController extends Controller
 
         // 订单导出
         if ($export) {
+            set_time_limit(0);
+
             return $this->order->export($filters);
         }
         // 订单列表
