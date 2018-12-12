@@ -18,6 +18,7 @@ class UserAmountFlowController extends Controller
         $timeStart    = $request->time_start;
         $timeEnd      = $request->time_end;
         $timeEndDate  = !empty($timeEnd) ? $timeEnd . ' 23:59:59' : '';
+        $fullUrl = $request->fullUrl();
 
 //		if ($request->export == 1) {
 //			$userAmountFlowRepository->export($userId, $tradeNo, $tradeType, $tradeSubtype, $timeStart, $timeEndDate);
@@ -98,7 +99,8 @@ class UserAmountFlowController extends Controller
             'tradeType',
             'tradeSubtype',
             'timeStart',
-            'timeEnd'
+            'timeEnd',
+            'fullUrl'
         ));
     }
 }
