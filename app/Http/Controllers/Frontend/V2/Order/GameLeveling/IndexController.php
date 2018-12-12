@@ -171,7 +171,8 @@ class IndexController extends Controller
         $order->get_poundage = $order->getPoundage();
         $order->complain_amount = $order->complainAmount();
         $order->consult_describe = $order->getConsultDescribe();
-        $order->complain_describe = $order->getComplainDescribe();
+        $order->complain_describe = $order->getComplainDescribe().$order->getComplainResult();
+
         // 获取淘宝订单数据
         $order->taobao_data = TaobaoTrade::select([
             'tid',
