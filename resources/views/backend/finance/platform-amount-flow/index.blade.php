@@ -49,7 +49,7 @@
                             </div>
                             <div class="col-md-2">
                                 <button class="btn btn-primary" type="submit">搜索</button>
-                                <button class="btn btn-primary" type="button" id="export-flow">导出</button>
+                                <a href="{{ $fullUrl }}{{ stripos($fullUrl, '?') === false ? '?' : '&'  }}export=1" class="btn btn-primary" ><i class="iconfont icon-logout"></i><span style="padding-left: 3px">导出</span></a>
                             </div>
                         </div>
                     </form>
@@ -125,9 +125,9 @@
 $('#time-start').datepicker();
 $('#time-end').datepicker();
 
-$('#export-flow').click(function () {
-    var url = "{{ route('finance.platform-amount-flow.export') }}?" + $('#search-flow').serialize();
-    window.location.href = url;
-});
+{{--$('#export-flow').click(function () {--}}
+    {{--var url = "{{ route('finance.platform-amount-flow.export') }}?" + $('#search-flow').serialize();--}}
+    {{--window.location.href = url;--}}
+{{--});--}}
 </script>
 @endsection
