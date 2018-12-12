@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Frontend\V2\Order\GameLeveling;
 
-use App\Models\Game;
-use App\Models\GameLevelingType;
-use App\Models\GameRegion;
-use App\Models\GameServer;
-use App\Models\User;
 use DB;
 use Auth;
+use Asset;
 use Exception;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Game;
+use App\Models\GameRegion;
+use App\Models\GameServer;
 use App\Models\TaobaoTrade;
-use App\Models\OrderHistory;
 use App\Models\OrderBasicData;
+use App\Extensions\Asset\Expend;
+use App\Models\GameLevelingType;
 use App\Models\GameLevelingOrder;
 use App\Models\GameLevelingOrderLog;
 use App\Http\Controllers\Controller;
@@ -677,33 +678,41 @@ class IndexController extends Controller
     /**
      * 加款
      * @return mixed
-     * @throws GameLevelingOrderOperateException
+     * @throws \App\Exceptions\AssetException
      */
     public function addAmount()
     {
         DB::beginTransaction();
 
-        $order = GameLevelingOrder::filter([
-            'trade_no' => request('trade_no'),
-            'parent_user_id' => request()->user()->getPrimaryUserId(),
-        ])->lockForUpdate()->first();
-
-        if (!$order) {
-            throw new GameLevelingOrderOperateException('订单不存在!');
-        }
-
-        if (bcadd($order->amount, request('amount'), 2) <= $order->amount) {
-            throw new GameLevelingOrderOperateException('加价金额必须大于原始发单金额!');
-        }
-
-        // 代练中 待验收 异常
-        if (in_array($order->status, [13, 14, 17])) {
-            $order->amount = bcadd($order->amount, request('amount'), 2);
-            $order->save();
-        }
-
         try {
+
+            $order = GameLevelingOrder::filter([
+                'trade_no' => request('trade_no'),
+                'parent_user_id' => request()->user()->getPrimaryUserId(),
+            ])->lockForUpdate()->first();
+
+            if (!$order) {
+                throw new GameLevelingOrderOperateException('订单不存在!');
+            }
+
+            if (bcadd($order->amount, request('amount'), 2) <= $order->amount) {
+                throw new GameLevelingOrderOperateException('加价金额必须大于原始发单金额!');
+            }
+
+            // 代练中 待验收 异常
+            if (in_array($order->status, [13, 14, 17])) {
+                $order->amount = bcadd($order->amount, request('amount'), 2);
+                $order->save();
+            }
+
+            # 扣款
+            Asset::handle(new Expend(request('amount'), 7, request('trade_no'), '代练改价支出', $order->parent_user_id));
+            # 写操作日志
+            $description = "用户[" . request()->user()->username . "]增加代练价格 [ 加价前:" . bcsub($order->amount, request('amount'), 2) . " 加价后: " . $order->amount . " ]";
+            GameLevelingOrderLog::createOrderHistory($order,request()->user(), 35, $description);
+
             call_user_func_array([config('gameleveling.controller')[$order->platform_id], config('gameleveling.action')['addAmount']], [$order]);
+
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             return response()->ajax(0, $e->getMessage());
@@ -711,9 +720,7 @@ class IndexController extends Controller
             DB::rollback();
             return response()->ajax(0, '订单异常！' . $e->getMessage());
         }
-        // TODO 扣款
         DB::commit();
-        // TODO 写操作日志
         return response()->ajax(1, '加价成功!');
     }
 

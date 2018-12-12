@@ -314,7 +314,7 @@
                                                             </el-col>
                                                             <el-col :span="1">
                                                                 <el-tooltip  placement="top">
-                                                                    <div slot="content">安全保证金是指对上家游戏账号安全进行保障时下家所需预先支付的保证形式的费用。<br/>当在代练过程中出现账号安全问题，即以双方协商或客服仲裁的部分或全部金额赔付给上家。<br/>（安全问题包括游戏内虚拟道具的安全，例如：符文、角色经验、胜点、负场经下家代练后不增反减、私自与号主联系、下家使用第三方软件带来的风险）</div>
+                                                                    <div slot="content">安全保证金是指对上家游戏账号安全进行保障时下家所需预先支付的保证形式的费用。<br/>当在代练过程中出现账号安全问题，即以双方协商或客服申请仲裁的部分或全部金额赔付给上家。<br/>（安全问题包括游戏内虚拟道具的安全，例如：符文、角色经验、胜点、负场经下家代练后不增反减、私自与号主联系、下家使用第三方软件带来的风险）</div>
                                                                     <span class="icon-button">
                                                                         <i class="el-icon-question" ></i>
                                                                     </span>
@@ -336,7 +336,7 @@
                                                             </el-col>
                                                             <el-col :span="1">
                                                                 <el-tooltip  placement="top">
-                                                                    <div slot="content">效率保证金是指对上家的代练要求进行效率保障时下家所需预先支付的保证形式的费用。<br/>当下家未在规定时间内完成代练要求，即以双方协商或客服仲裁的部分或全部金额赔付给上家。<br/>（代练要求包括：下家在规定时间内没有完成上家的代练要求，接单4小时内没有上号，代练时间过四分之一但代练进度未达六分之一，下家原因退单，下家未及时上传代练截图）</div>
+                                                                    <div slot="content">效率保证金是指对上家的代练要求进行效率保障时下家所需预先支付的保证形式的费用。<br/>当下家未在规定时间内完成代练要求，即以双方协商或客服申请仲裁的部分或全部金额赔付给上家。<br/>（代练要求包括：下家在规定时间内没有完成上家的代练要求，接单4小时内没有上号，代练时间过四分之一但代练进度未达六分之一，下家原因退单，下家未及时上传代练截图）</div>
                                                                     <span class="icon-button">
                                                                         <i class="el-icon-question" ></i>
                                                                     </span>
@@ -503,7 +503,7 @@
                                         </div>
                                     </el-card>
                                 </el-tab-pane>
-                                <el-tab-pane label="仲裁证据" :disabled="isComplain" name="2">
+                                <el-tab-pane label="申请仲裁证据" :disabled="isComplain" name="2">
                                     <el-table
                                         :data="complainDesData"
                                         :stripe=true
@@ -511,7 +511,7 @@
                                         style="width: 100%">
                                         <el-table-column
                                             prop="who"
-                                            label="申请仲裁"
+                                            label="申请申请仲裁"
                                             width="180">
                                         </el-table-column>
                                         <el-table-column
@@ -521,7 +521,7 @@
                                         </el-table-column>
                                         <el-table-column
                                             prop="content"
-                                            label="仲裁理由">
+                                            label="申请仲裁理由">
                                         </el-table-column>
                                     </el-table>
                                     <p></p>
@@ -734,56 +734,61 @@
                         <span v-if="form.status == 13">
                             <el-button
                                 size="small"
-                                @click="handleApplyConsult()">撤销</el-button>
+                                @click="handleApplyConsult()">协商撤销</el-button>
                             <el-button
                                 size="small"
-                                type="primary" @click="handleApplyComplain()">仲裁</el-button>
+                                type="primary" @click="handleApplyComplain()">申请仲裁</el-button>
                         </span>
                         <!--待验收 14 -->
                         <span v-if="form.status == 14">
                             <el-button
                                     size="small"
-                                    @click="handleComplete()">完成</el-button>
+                                    @click="handleComplete()">完成验收</el-button>
                             <el-button
                                     size="small"
-                                    @click="handleApplyConsult()">撤销</el-button>
+                                    @click="handleApplyConsult()">协商撤销</el-button>
                             <el-button
                                     size="small"
-                                    type="primary" @click="handleApplyComplain()">仲裁</el-button>
+                                    type="primary" @click="handleApplyComplain()">申请仲裁</el-button>
                             <el-button
                                     size="small"
                                     @click="handleLock()">锁定</el-button>
                         </span>
-                        <!--撤销中 15 -->
+                        <!--协商撤销中 15 -->
                         <span v-if="form.status == 15">
                             <el-button
                                     v-if="(this.form.game_leveling_order_consult.initiator == 1 && this.form.game_leveling_order_consult.status == 1)"
                                     size="small"
-                                    @click="handleCancelConsult()">取消撤销</el-button>
+                                    @click="handleCancelConsult()">取消协商撤销</el-button>
                             <el-button
                                     v-if="(this.form.game_leveling_order_consult.initiator == 2 && this.form.game_leveling_order_consult.status == 1)"
                                     size="small"
-                                    @click="handleAgreeConsult()">同意撤销</el-button>
+                                    @click="handleAgreeConsult()">同意协商撤销</el-button>
+
+                            <el-button
+                                    v-if="(this.form.game_leveling_order_consult.initiator == 2 && this.form.game_leveling_order_consult.status == 1)"
+                                    size="small"
+                                    @click="handleRejectConsult()">不同意协商撤销</el-button>
                             <el-button
                                     size="small"
-                                    type="primary" @click="handleApplyComplain()">仲裁</el-button>
+                                    type="primary" @click="handleApplyComplain()">申请仲裁</el-button>
                         </span>
-                        <!--仲裁中 16 -->
+                        <!--申请仲裁中 16 -->
                         <span v-if="form.status == 16">
                             <el-button
                                     v-if="(this.form.game_leveling_order_consult && this.form.game_leveling_order_consult.initiator == 2 && this.form.game_leveling_order_consult.status == 1)"
                                     size="small"
-                                    @click="handleAgreeConsult()">同意撤销</el-button>
+                                    @click="handleAgreeConsult()">同意协商撤销</el-button>
                             <el-button
                                     size="small"
                                     v-if="(this.form.game_leveling_order_complain.initiator == 1 && this.form.game_leveling_order_complain.status == 1)"
-                                    type="primary" @click="handleCancelComplain()">取消仲裁</el-button>
+                                    type="primary" @click="handleCancelComplain()">取消申请仲裁</el-button>
                         </span>
                         <!--异常 17 -->
                         <span v-if="form.status == 17">
                             <el-button
                                 size="small"
-                                type="primary" @click="handleApplyConsult()">撤销</el-button>
+                                type="primary" @click="handleApplyConsult()">协商撤销</el-button>
                             <el-button
                                 size="small"
                                 @click="handleLock()">锁定</el-button>
@@ -796,7 +801,7 @@
                             <el-button
                                 size="small"
                                 type="primary"
-                                @click="handleApplyConsult()">撤销</el-button>
+                                @click="handleApplyConsult()">协商撤销</el-button>
                         </span>
                         <!--已下架 22 -->
                         <span v-if="form.status == 22">
@@ -987,7 +992,7 @@
                     this.businessmanComplainForm.images.length === 3 ? 'exceed' : ' '
                 ];
             },
-            // 仲裁证据补充图片上传数量限制 1 张
+            // 申请仲裁证据补充图片上传数量限制 1 张
             complainMessageImageExceedLimit() {
                 return [
                     this.complainMessageForm.pic !== '' ? 'exceed' : ' '
@@ -1034,7 +1039,7 @@
                 efficiencyDeposit: 0,
                 chatVisible: false,
                 applyConsultVisible: false, // 申请协商
-                applyComplainVisible: false, // 申请仲裁
+                applyComplainVisible: false, // 申请申请仲裁
                 businessmanComplainVisible: false, // 商户投诉
                 orderTab: "1",
                 dataTab: "1",
@@ -1188,15 +1193,15 @@
                     1: '未接单',
                     13: '代练中',
                     14: '待验收',
-                    15: '撤销中',
-                    16: '仲裁中',
+                    15: '协商撤销中',
+                    16: '申请仲裁中',
                     17: '异常',
                     18: '已锁定',
-                    19: '已撤销',
+                    19: '已协商撤销',
                     20: '已结算',
-                    21: '已仲裁',
+                    21: '已申请仲裁',
                     22: '已下架',
-                    23: '强制撤销',
+                    23: '强制协商撤销',
                     24: '已撤单',
                 },
                 platform: {
@@ -1328,11 +1333,11 @@
                             value: res.game_leveling_order_detail.username
                         },
                         {
-                            name: '撤销说明',
+                            name: '协商撤销说明',
                             value: res.consult_describe
                         },
                         {
-                            name: '仲裁说明',
+                            name: '申请仲裁说明',
                             value: res.complain_describe
                         },
                         {
@@ -1593,14 +1598,14 @@
                     });
                 });
             },
-            // 申请仲裁
+            // 申请申请仲裁
             handleApplyComplain(row) {
                 this.$route.query.trade_no = this.form.trade_no;
                 this.applyComplainVisible = true;
             },
-            // 取消仲裁
+            // 取消申请仲裁
             handleCancelComplain(row) {
-                this.$confirm('您确定要"取消仲裁"吗？', '提示', {
+                this.$confirm('您确定要"取消申请仲裁"吗？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -1729,7 +1734,7 @@
                     });
                 });
             },
-            // 申请撤销
+            // 申请协商撤销
             handleApplyConsult(row) {
                 this.$route.query.trade_no = this.form.trade_no;
                 this.amount = this.amount;
@@ -1737,7 +1742,7 @@
                 this.efficiencyDeposit = this.efficiencyDeposit;
                 this.applyConsultVisible = true;
             },
-            // 设置仲裁窗口是否显示
+            // 设置申请仲裁窗口是否显示
             handleApplyComplainVisible(data) {
                 this.applyComplainVisible = data.visible;
                 if (data.visible == false) {
@@ -1751,9 +1756,9 @@
                     this.handleFromData();
                 }
             },
-            // 取消撤销
+            // 取消协商撤销
             handleCancelConsult() {
-                this.$confirm('您确定要"取消撤销"吗？', '提示', {
+                this.$confirm('您确定要"取消协商撤销"吗？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -1777,9 +1782,9 @@
                     });
                 });
             },
-            // 同意撤销
+            // 同意协商撤销
             handleAgreeConsult(row) {
-                let str=this.form.consult_describe + " ，确认 同意撤销 吗?";
+                let str=this.form.consult_describe + " ，确认 同意协商撤销 吗?";
 
                 this.$confirm(str, '提示', {
                     confirmButtonText: '确定',
@@ -1805,9 +1810,9 @@
                     });
                 });
             },
-            // 不同意撤销
+            // 不同意协商撤销
             handleRejectConsult(row) {
-                this.$confirm('您确定"不同意撤销"吗？', '提示', {
+                this.$confirm('您确定"不同意协商撤销"吗？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
@@ -1897,7 +1902,7 @@
                     message: h('img', {attrs: {src: src}}, '')
                 });
             },
-            // 获取仲裁数据
+            // 获取申请仲裁数据
             handleComplainData() {
                 this.$api.gameLevelingOrderComplainInfo({trade_no: this.$route.query.trade_no}).then(res => {
                     if (res.detail) {
@@ -1917,7 +1922,7 @@
                     }
                 });
             },
-            // 添加仲裁留言
+            // 添加申请仲裁留言
             handleAddComplainMessageForm() {
                 this.$api.gameLevelingOrderAddComplainInfo(this.complainMessageForm).then(res => {
                     if (res.status == 1) {
@@ -1938,11 +1943,11 @@
                     customClass: 'preview-image'
                 });
             },
-            // 仲裁证据补充图片删除
+            // 申请仲裁证据补充图片删除
             handleRemoveComplainMessageImage() {
                 this.complainMessageForm.pic = '';
             },
-            // 仲裁证据补充图片上传
+            // 申请仲裁证据补充图片上传
             handleUploadComplainMessageImage(options) {
                 let file = options.file;
                 if (file) {
