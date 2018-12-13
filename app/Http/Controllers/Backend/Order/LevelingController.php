@@ -210,7 +210,7 @@ class LevelingController extends Controller
     			$data = null;
     		}
             // 手动改状态
-    		$order->handChangeStatus($request->status, Auth::user(), $data);
+    		$order->handChangeStatus($request->status, auth('admin')->user(), $data);
     	} catch (OrderNoticeException $e) {
     		DB::rollback();
     		Log::info($e->getMessage());

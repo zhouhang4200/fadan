@@ -47,7 +47,7 @@ class LoginController extends Controller
 
     /**
      * 设置以username登录
-     * @return string
+     * @return [type] [description]
      */
     public function username()
     {

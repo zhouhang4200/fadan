@@ -36,7 +36,7 @@ class WangWangBlacklistController extends Controller
     {
         $wangWangBlacklist = WangWangBlacklist::firstOrNew(['wang_wang' => $request->wang_wang]);
         $wangWangBlacklist->wang_wang = $request->wang_wang;
-        $wangWangBlacklist->admin_user_id = Auth::id();
+        $wangWangBlacklist->admin_user_id = auth('admin')->user()->id;
         $wangWangBlacklist->save();
 
         return response()->ajax(1, '添加成功');
