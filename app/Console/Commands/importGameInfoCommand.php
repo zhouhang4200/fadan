@@ -47,10 +47,10 @@ class importGameInfoCommand extends Command
                 ->where('id', $item->game_id)
                 ->first();
             // 写入游戏
-            $newGame = Game::create([
-                'name' => $games->name,
-                'icon' => 1,
-            ]);
+//            $newGame = Game::create([
+//                'name' => $games->name,
+//                'icon' => 1,
+//            ]);
 
             // 查找组件ID
             $widget = \DB::connection('market')
@@ -76,7 +76,7 @@ class importGameInfoCommand extends Command
             foreach ($types as $type) {
                 GameLevelingType::create([
                     'name' => $type->field_value,
-                    'game_id' => $newGame->id,
+                    'game_id' => $games->id,
                     'poundage' => 1,
                 ]);
             }
@@ -92,7 +92,7 @@ class importGameInfoCommand extends Command
             foreach ($regions as $region) {
                 $newRegion = GameRegion::create([
                     'name' => $region->field_value,
-                    'game_id' => $newGame->id,
+                    'game_id' => $games->id,
                     'initials' => 1,
                 ]);
                 // 查找服
