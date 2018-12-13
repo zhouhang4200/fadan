@@ -106,8 +106,8 @@ class LoginController extends Controller
             if ($this->sendLoginResponse($request)) {
 
                 $indexUrl = route('frontend.workbench.index');
-
-                if (!Auth::user()->could('frontend.workbench.index')) {
+                # 检测是否有代充的权限,没有则是代练商户
+                if (!Auth::user()->could('frontend.workbench.recharge.index')) {
                     if (auth()->id() === 1) {
                         $indexUrl = url('/v2/order/game-leveling');
                     } else {

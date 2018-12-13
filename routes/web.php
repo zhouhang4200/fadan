@@ -300,9 +300,7 @@ Route::middleware(['auth'])->namespace('Frontend')->group(function () {
         // 代练
         Route::namespace('Leveling')->prefix('leveling')->group(function (){
 
-
             Route::get('new-index', 'IndexController@newIndex')->name('frontend.workbench.leveling.new-index');
-
 
             // 获取下单项的子菜单
             Route::post('get-select-child', 'IndexController@getSelectChild')->name('frontend.workbench.get-select-child');
