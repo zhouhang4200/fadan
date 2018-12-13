@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Frontend\Auth;
 
-use App\Models\LoginHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\RedisConnect;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Support\Facades\Auth;
 
+/**
+ * Class LoginController
+ * @package App\Http\Controllers\Frontend\Auth
+ */
 class LoginController extends Controller
 {
     /*
@@ -44,7 +47,7 @@ class LoginController extends Controller
 
     /**
      * 设置以username登录
-     * @return [type] [description]
+     * @return string
      */
     public function username()
     {
@@ -103,8 +106,13 @@ class LoginController extends Controller
             if ($this->sendLoginResponse($request)) {
 
                 $indexUrl = route('frontend.workbench.index');
+
                 if (!Auth::user()->could('frontend.workbench.index')) {
-                    $indexUrl = url('/v2/order/game-leveling');
+                    if (auth()->id() === 1) {
+                        $indexUrl = url('/v2/order/game-leveling');
+                    } else {
+                        $indexUrl = url('workbench/leveling');
+                    }
                 }
                 return response()->ajax(1, 'success', ['url' => $indexUrl]);
             }
