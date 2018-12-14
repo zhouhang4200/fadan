@@ -23,7 +23,6 @@ class GameLevelingOrder extends Model
         'game_id',
         'repeat',
         'amount',
-        'source_price',
         'security_deposit',
         'efficiency_deposit',
         'poundage',
