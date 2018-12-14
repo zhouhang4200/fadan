@@ -23,10 +23,10 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\PlatformAmountFlow::class, function (Faker\Generator $faker) {
     return [
-        'user_id' => $faker->numberBetween(1, 24),
-        'admin_user_id' => $faker->numberBetween(1, 24),
+        'user_id' => 12,
+        'admin_user_id' => 0,
         'trade_type' => $faker->numberBetween(1, 8),
-        'trade_subtype' => $faker->numberBetween(100, 890),
+        'trade_subtype' => [74, 75, 76, 87, 81, 82, 88, 89, 811, 812, 810][$faker->numberBetween(0, 10)],
         'trade_no' => '20180905172849000'.$faker->numberBetween(1000, 9999),
         'fee' => $faker->numberBetween(100, 500),
         'remark' => '安全保证金支出',
@@ -62,8 +62,8 @@ $factory->define(App\Models\GameLevelingOrder::class, function (Faker\Generator 
         'efficiency_deposit' => $faker->numberBetween(1, 100),
         'poundage' => $faker->numberBetween(0, 10),
         'source' => $faker->numberBetween(1, 5),
-        'user_id' => $faker->numberBetween(1, 15),
-        'parent_user_id' => $faker->numberBetween(1, 15),
+        'user_id' => 12,
+        'parent_user_id' => 12,
         'take_user_id' => $faker->numberBetween(1, 15),
         'take_parent_user_id' => $faker->numberBetween(1, 15),
         'top' => $faker->numberBetween(0, 1),
