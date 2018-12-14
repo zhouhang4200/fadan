@@ -25,10 +25,10 @@ return [
         ],
        5 => [
            'name' => '丸子代练', // 平台名称
-           'user_id' => 1, // 千手用户ID
+           'user_id' => env('MAYI_IN_TM_USER_ID', '8880'), // 千手用户ID
            'receive' => env('WANZI_API_URL', 'http://www.fulugou.net').'/tm/place-order', // 接收订单地址
-           'aes_key'   => '335ss6s8m8e4f5a8e2e2ls5',
-           'aes_iv'    => '1234567891111152',
+           'aes_key' => '335ss6s8m8e4f5a8e2e2ls5',
+           'aes_iv' => '1234567891111152',
        ],
     ]
 ];
