@@ -1,13 +1,17 @@
 <?php
 
+namespace App\Extensions\TaobaoSDK\top;
+
+use Exception;
+
 class TopClient
 {
 	public $appkey;
 
 	public $secretKey;
 
-//	public $gatewayUrl = "http://gw.api.taobao.com/router/rest";
-	public $gatewayUrl = "http://apitaobao.kamennet.com:30001/router/rest";
+	public $gatewayUrl = "http://gw.api.taobao.com/router/rest";
+//	public $gatewayUrl = "http://apitaobao.kamennet.com:30001/router/rest";
 
 	public $format = "xml";
 

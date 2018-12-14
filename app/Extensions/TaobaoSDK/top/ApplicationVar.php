@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Extensions\TaobaoSDK\top;
+
 class ApplicationVar
 {
 	var $save_file;

@@ -1,4 +1,8 @@
 <?php
+namespace App\Extensions\TaobaoSDK\top\request;
+
+use App\Extensions\TaobaoSDK\top\RequestCheckUtil;
+
 /**
  * TOP API: taobao.trade.close request
  * 

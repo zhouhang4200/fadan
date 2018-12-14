@@ -359,7 +359,7 @@ class IndexController extends Controller
             $orderData = $request->data; // 表单所有数据
             $gameId = $orderData['game_id']; // 游戏ID
             $templateId = GoodsTemplate::where('game_id', $gameId)->where('service_id', 4)->value('id'); // 模版ID
-            $originalPrice = $orderData['source_amount']; // 原价
+            $originalPrice = $orderData['source_amount'] ?? 0; // 原价
             $price = $orderData['game_leveling_amount']; // 代练价格
             $foreignOrderNO = isset($orderData['source_order_no']) ? $orderData['source_order_no'] : ''; // 来源订单号
             $orderData['urgent_order'] = isset($orderData['urgent_order']) ? 1 : 0; // 是否加急
