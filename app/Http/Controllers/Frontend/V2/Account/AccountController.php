@@ -83,11 +83,17 @@ class AccountController extends Controller
 
         $filter = compact('startDate', 'endDate');
 
-        return LoginHistory::where('user_id', Auth::user()->id)
+        $histories = LoginHistory::where('user_id', Auth::user()->id)
             ->newfilter($filter)
             ->with(['user', 'city'])
             ->latest('id')
             ->paginate(15);
+
+        foreach ($histories as $history) {
+            $history->ip = long2ip($history->ip);
+        }
+
+        return $histories;
     }
 
     /**
