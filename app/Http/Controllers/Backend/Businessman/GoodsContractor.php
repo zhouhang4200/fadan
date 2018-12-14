@@ -37,7 +37,7 @@ class GoodsContractor extends Controller
     {
         try {
             $data = $request->data;
-            $data['created_admin_user_id'] = auth()->user()->id;
+            $data['created_admin_user_id'] = auth('admin')->user()->id;
             GoodsContractorConfig::create($data);
             return response()->json(['code' => 1, 'message' => '添加成功']);
         } catch (Exception $exception) {

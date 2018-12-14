@@ -49,7 +49,7 @@ class UserWithdrawOrder extends Model
 
         // 提现
         try {
-            Asset::handle(new Withdraw($this->fee, $type, $this->no, $remark, $this->creator_primary_user_id, request()->user()->id));
+            Asset::handle(new Withdraw($this->fee, $type, $this->no, $remark, $this->creator_primary_user_id, auth('admin')->user()->id));
         }
         catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -86,7 +86,7 @@ class UserWithdrawOrder extends Model
 
         // 解冻
         try {
-            Asset::handle(new Unfreeze($this->fee, Unfreeze::TRADE_SUBTYPE_WITHDRAW, $this->no, '拒绝提现解冻', $this->creator_primary_user_id,  request()->user()->id));
+            Asset::handle(new Unfreeze($this->fee, Unfreeze::TRADE_SUBTYPE_WITHDRAW, $this->no, '拒绝提现解冻', $this->creator_primary_user_id,  auth('admin')->user()->id));
         }
         catch (Exception $e) {
             throw new Exception($e->getMessage());
