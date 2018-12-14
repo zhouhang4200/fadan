@@ -11,6 +11,6 @@ class PlatformAmountFlowSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\PlatformAmountFlow::class, 100)->create();
+        factory(\App\Models\PlatformAmountFlow::class, 100000)->create();
     }
 }
