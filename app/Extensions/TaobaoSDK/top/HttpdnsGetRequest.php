@@ -1,4 +1,5 @@
 <?php
+namespace App\Extensions\TaobaoSDK\top;
 
 class HttpdnsGetRequest
 {

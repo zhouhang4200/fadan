@@ -1,4 +1,7 @@
 <?php
+
+namespace App\Extensions\TaobaoSDK\top;
+
 /**
  * 返回的默认类
  * 

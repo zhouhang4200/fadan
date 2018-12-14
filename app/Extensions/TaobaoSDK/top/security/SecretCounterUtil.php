@@ -1,97 +1,102 @@
 <?php
 
-	include './SecretContext.php';
-	include './iCache.php';
-	include '../../TopSdk.php';
+namespace App\Extensions\TaobaoSDK\top\security;
 
-	class SecretCounterUtil
-	{
-		private $topClient ;
-		private $cacheClient = null;
+//include './SecretContext.php';
+//include './iCache.php';
+//include '../../TopSdk.php';
+use App\Extensions\TaobaoSDK\top\security\SecretContext;
 
-		private $counterMap;
 
-		function __construct($client)
-		{
-			$this->topClient = $client;
+class SecretCounterUtil
+{
+    private $topClient;
+    private $cacheClient = null;
 
-			$counterMap = array();
-		}
+    private $counterMap;
 
-		/*
-		* 如果不走缓存模式，析构即调用API回传统计信息
-		*/
-		function __destruct()
-		{
-			if($this->cacheClient == null){
+    function __construct($client)
+    {
+        $this->topClient = $client;
 
-			}
-		}
+        $counterMap = array();
+    }
 
-		function report($session)
-		{
-			$request = new TopSdkFeedbackUploadRequest;
-		}
+    /*
+    * 如果不走缓存模式，析构即调用API回传统计信息
+    */
+    function __destruct()
+    {
+        if ($this->cacheClient == null) {
 
-		function setCacheClient($cache)
-		{
-			$this->cacheClient = $cache;
-		}
+        }
+    }
 
-		function incrDecrypt($delt,$session,$type)
-		{
-			$item = getItem($session);
-			if($item == null){
-				$item = new SecretCounter();
-				putItem($session,$item);
-			}
+    function report($session)
+    {
+        $request = new TopSdkFeedbackUploadRequest;
+    }
 
-			if($type == "nick"){
-				$item->$decryptNickNum += $delt;
-			}else if($type == "receiver_name"){
-				$item->$decryptReceiverNameNum += $delt ;	
-			}else if($type == "phone"){
-				$item->$decryptPhoneNum += $delt ;	
-			}else if($type == "simple"){
-				$item->$decryptSimpleNum += $delt ;	
-			}
-		}
+    function setCacheClient($cache)
+    {
+        $this->cacheClient = $cache;
+    }
 
-		function incrEncrypt($delt,$session,$type)
-		{
-			$item = getItem($session);
-			if($item == null){
-				$item = new SecretCounter();
-				putItem($session,$item);
-			}
+    function incrDecrypt($delt, $session, $type)
+    {
+        $item = getItem($session);
+        if ($item == null) {
+            $item = new SecretCounter();
+            putItem($session, $item);
+        }
 
-			if($type == "nick"){
-				$item->$encryptNickNum += $delt ;
-			}else if($type == "receiver_name"){
-				$item->$encryptReceiverNameNum += $delt ;	
-			}else if($type == "phone"){
-				$item->$encryptPhoneNum += $delt ;	
-			}else if($type == "simple"){
-				$item->$encryptSimpleNum += $delt ;	
-			}
-		}
+        if ($type == "nick") {
+            $item->$decryptNickNum += $delt;
+        } else if ($type == "receiver_name") {
+            $item->$decryptReceiverNameNum += $delt;
+        } else if ($type == "phone") {
+            $item->$decryptPhoneNum += $delt;
+        } else if ($type == "simple") {
+            $item->$decryptSimpleNum += $delt;
+        }
+    }
 
-		function getItem($session)
-		{
-			if($this->cacheClient == null){
-				return $counterMap[$session];
-			}else{
-				return $this->cacheClient->getCache('s_'.$session);
-			}
-		}
+    function incrEncrypt($delt, $session, $type)
+    {
+        $item = getItem($session);
+        if ($item == null) {
+            $item = new SecretCounter();
+            putItem($session, $item);
+        }
 
-		function putItem($session,$item)
-		{
-			if($this->cacheClient == null){
-				$counterMap[$session] = $item;
-			}else{
-				$this->cacheClient->setCache('s_'.$session,$item);
-			}
-		}
-	}
+        if ($type == "nick") {
+            $item->$encryptNickNum += $delt;
+        } else if ($type == "receiver_name") {
+            $item->$encryptReceiverNameNum += $delt;
+        } else if ($type == "phone") {
+            $item->$encryptPhoneNum += $delt;
+        } else if ($type == "simple") {
+            $item->$encryptSimpleNum += $delt;
+        }
+    }
+
+    function getItem($session)
+    {
+        if ($this->cacheClient == null) {
+            return $counterMap[$session];
+        } else {
+            return $this->cacheClient->getCache('s_' . $session);
+        }
+    }
+
+    function putItem($session, $item)
+    {
+        if ($this->cacheClient == null) {
+            $counterMap[$session] = $item;
+        } else {
+            $this->cacheClient->setCache('s_' . $session, $item);
+        }
+    }
+}
+
 ?>
