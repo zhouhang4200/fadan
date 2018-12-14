@@ -171,7 +171,7 @@ class GameLevelingOrder extends Model
                     $taobaoStatus = 1;
                 }
             } else {
-                $sourcePrice = $data['source_amount'];
+                $sourcePrice = $data['source_amount'] ?? 0;
             }
 
             /*****创建订单*******/
