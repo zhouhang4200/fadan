@@ -138,7 +138,7 @@ class IndexController extends Controller
     {
         // 下单
         try {
-            $order = GameLevelingOrder::placeOrder(request()->user(),request()->all());
+            $order = GameLevelingOrder::placeOrder(request()->user(), request()->all());
             $order->checkAutoMarkUpPrice();
             return response()->json(['status' => 1, 'message' => '下单成功']);
         } catch (\Exception $exception) {

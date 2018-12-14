@@ -25,7 +25,7 @@ class LoginRecordController extends Controller
 
         $filters = compact('startDate', 'endDate');
 
-        $loginRecords = AdminLoginHistory::filter($filters)->where('admin_user_id', Auth::id())->paginate(config('frontend.page'));
+        $loginRecords = AdminLoginHistory::filter($filters)->where('admin_user_id', auth('admin')->user()->id)->paginate(config('frontend.page'));
 
         return view('backend.account.loginrecord.index', compact('loginRecords', 'startDate', 'endDate'));
     }

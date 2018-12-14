@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Backend\Finance;
 
-use App\Models\UserAmountFlow;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Backend\UserAmountFlowRepository;

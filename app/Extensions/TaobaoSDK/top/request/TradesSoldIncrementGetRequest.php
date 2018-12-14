@@ -1,4 +1,9 @@
 <?php
+
+namespace App\Extensions\TaobaoSDK\top\request;
+
+use App\Extensions\TaobaoSDK\top\RequestCheckUtil;
+
 /**
  * TOP API: taobao.trades.sold.increment.get request
  * 

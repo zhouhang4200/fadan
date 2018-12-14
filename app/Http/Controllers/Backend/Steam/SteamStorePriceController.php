@@ -48,7 +48,7 @@ class SteamStorePriceController extends Controller
 		$steamStorePrices = SteamStorePrice::create([
 			'user_id'=> $request->user_id,
 			'clone_price'=> $request->clone_price,
-			'username'=> Auth::user()->name,
+			'username'=> auth('admin')->user()->name,
 		]);
 		if(!$steamStorePrices){
 			return response()->ajax('0', '添加失败');

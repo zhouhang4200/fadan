@@ -48,7 +48,7 @@ class WeightController extends Controller
     {
         try {
             $data = $request->data;
-            $data['updated_admin_user_id'] = Auth::user()->id;
+            $data['updated_admin_user_id'] = auth('admin')->user()->id;
             UserWeight::where('id', $request->id)->update($data);
             return response()->json(['code' => 1, 'message' => '修改成功']);
         } catch (Exception $exception) {

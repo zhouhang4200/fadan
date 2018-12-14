@@ -44,7 +44,7 @@ class GameController extends Controller
     {
         try {
             $data = $request->data;
-            $data['updated_admin_user_id'] = Auth::user()->id;
+            $data['updated_admin_user_id'] = auth('admin')->user()->id;
             Game::where('id', $request->id)->update($data);
             return response()->json(['code' => 1, 'message' => '修改成功']);
         } catch (Exception $exception) {
@@ -60,8 +60,8 @@ class GameController extends Controller
     {
         try {
             $data = $request->data;
-            $data['created_admin_user_id'] = Auth::user()->id;
-            $data['updated_admin_user_id'] = Auth::user()->id;
+            $data['created_admin_user_id'] = auth('admin')->user()->id;
+            $data['updated_admin_user_id'] = auth('admin')->user()->id;
             Game::create($data);
             return response()->json(['code' => 1, 'message' => '添加成功']);
         } catch (Exception $exception) {
@@ -78,7 +78,7 @@ class GameController extends Controller
         $game = Game::find($request->id);
         if ($game) {
             $game->status = $request->status;
-            $game->created_admin_user_id = Auth::user()->id;
+            $game->created_admin_user_id = auth('admin')->user()->id;
             $game->save();
             return response()->json(['code' => 1, 'message' => '修改成功']);
         } else {

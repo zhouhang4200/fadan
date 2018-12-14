@@ -164,7 +164,7 @@ class Temp extends Command
         for ($i = 1; $i <= 12; $i++) {
             $query = UserAmountFlow::adminFilter([
                 'timeStart' => '2018-' . $i . '-01',
-                'timeEnd' => '2018-' . $i . '-12 23:59:59',
+                'timeEnd' => '2018-' . $i . '-31 23:59:59',
             ])
                 ->orderBy('id', 'desc');
 

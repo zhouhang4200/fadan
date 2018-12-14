@@ -87,7 +87,9 @@ class FinanceController extends Controller
         $endDate = request('date')[1] ?? '';
         $filter = compact('startDate', 'endDate');
 
-        return UserAssetDaily::filter($filter)->paginate(15);
+        return UserAssetDaily::filter($filter)
+            ->where('user_id', Auth::user()->getPrimaryUserId())
+            ->paginate(15);
     }
 
     /**
@@ -116,7 +118,8 @@ class FinanceController extends Controller
         $foreignOrderNo = $request->channel_order_trade_no ?? '';
         $filter = compact('tradeNo', 'tradeType', 'tradeSubType', 'startDate', 'endDate', 'foreignOrderNo');
 
-        return UserAmountFlow::filter($filter)->where('user_id', Auth::user()->getPrimaryUserId())
+        return UserAmountFlow::filter($filter)
+            ->where('user_id', Auth::user()->getPrimaryUserId())
             ->with('order')
             ->latest('id')
             ->paginate(15);
@@ -144,7 +147,9 @@ class FinanceController extends Controller
         $status = request('status');
         $filter = compact('startDate', 'endDate', 'status');
 
-        return UserWithdrawOrder::filter($filter)->paginate(15);
+        return UserWithdrawOrder::filter($filter)
+            ->where('creator_primary_user_id', Auth::user()->getPrimaryUserId())
+            ->paginate(15);
     }
 
     /**

@@ -1,4 +1,7 @@
 <?php
+
+namespace App\Extensions\TaobaoSDK\top\security;
+
 /**
 * 缓存接口，如果不想使用yac缓存，需要自己去使用这个接口
 */
@@ -11,4 +14,3 @@ interface iCache
 	public function setCache($key,$var);
 
 }
-?>

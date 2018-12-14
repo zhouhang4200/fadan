@@ -109,7 +109,7 @@ class UserWithdrawOrderRepository
         $no = generateOrderNo();
 
         // 资产操作
-        Asset::handle(new Freeze($fee, 3, $no, $remark, $userId, Auth::user()->id));
+        Asset::handle(new Freeze($fee, 3, $no, $remark, $userId, auth('admin')->user()->id));
 
         // 创建提现单
         $withdraw = new UserWithdrawOrder;

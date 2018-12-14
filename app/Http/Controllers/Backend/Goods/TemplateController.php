@@ -93,8 +93,8 @@ class TemplateController extends Controller
             if (GoodsTemplate::exist($data['service_id'], $data['game_id'])) {
                 return response()->json(['code' => 1, 'message' => '服务与游戏的组合已经创建了模版']);
             }
-            $data['created_admin_user_id'] = Auth::user()->id;
-            $data['updated_admin_user_id'] = Auth::user()->id;
+            $data['created_admin_user_id'] = auth('admin')->user()->id;
+            $data['updated_admin_user_id'] = auth('admin')->user()->id;
             GoodsTemplate::create($data);
             return response()->json(['code' => 1, 'message' => '添加成功']);
         } catch (Exception $exception) {
@@ -116,7 +116,7 @@ class TemplateController extends Controller
                 return response()->json(['code' => 1, 'message' => '服务与游戏的组合已经创建了模版']);
             }
 
-            $data['updated_admin_user_id'] = Auth::user()->id;
+            $data['updated_admin_user_id'] = auth('admin')->user()->id;
             GoodsTemplate::where('id', $id)->update($data);
             return response()->json(['code' => 1, 'message' => '修改成功']);
         } catch (Exception $exception) {
@@ -133,7 +133,7 @@ class TemplateController extends Controller
         $goodsTemplate = GoodsTemplate::find($request->id);
         if ($goodsTemplate) {
             $goodsTemplate->status = $request->status;
-            $goodsTemplate->created_admin_user_id = Auth::user()->id;
+            $goodsTemplate->created_admin_user_id = auth('admin')->user()->id;
             $goodsTemplate->save();
             return response()->json(['code' => 1, 'message' => '修改成功']);
         } else {

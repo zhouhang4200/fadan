@@ -234,5 +234,4 @@ Route::prefix('v1')->namespace('V1')->group(function($router) {
             });
         });
     });
-
 });

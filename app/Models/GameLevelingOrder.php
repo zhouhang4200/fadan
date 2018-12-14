@@ -23,7 +23,6 @@ class GameLevelingOrder extends Model
         'game_id',
         'repeat',
         'amount',
-        'source_price',
         'security_deposit',
         'efficiency_deposit',
         'poundage',
@@ -172,7 +171,7 @@ class GameLevelingOrder extends Model
                     $taobaoStatus = 1;
                 }
             } else {
-                $sourcePrice = $data['source_amount'];
+                $sourcePrice = $data['source_amount'] ?? 0;
             }
 
             /*****创建订单*******/
@@ -297,7 +296,7 @@ class GameLevelingOrder extends Model
                 'game_leveling_efficiency_deposit' => $order->efficiency_deposit,
                 'game_leveling_requirements' => $gameLevelingOrderDetail->requirement,
                 'game_leveling_instructions' => $gameLevelingOrderDetail->explain,
-                'businessman_phone' => $gameLevelingOrderDetail->user_phone,
+                'businessman_phone' => $data['player_phone'] ?? '', // 此处是玩家电话号码
                 'businessman_qq' => $gameLevelingOrderDetail->user_qq,
                 'order_password' => $order->take_order_password,
                 'creator_username' => $gameLevelingOrderDetail->username,
