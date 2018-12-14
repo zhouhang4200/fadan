@@ -300,10 +300,6 @@
             handleGameOptions() {
                 this.$api.games().then(res => {
                     this.gameOptions = res.data;
-                    let currentThis = this;
-                    res.forEach(function (item) {
-                        currentThis.gameMap[item.id]  = item.name;
-                    });
                 });
             },
             // 搜索
