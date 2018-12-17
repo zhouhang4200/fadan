@@ -43,6 +43,7 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\CheckOrderBasicDatas', // 检查基础数据表里面的来源价和退款
         'App\Console\Commands\OrderSendEveryMinute', // 每分钟运行一次订单发送
         'App\Console\Commands\ChangeOrderBasicDataDate', // 修改基础表里面的日期，按订单发布时间来统计数据
+        'App\Console\Commands\PriceMarkup', // 新的每小时自动加价
     ];
 
     /**
@@ -70,6 +71,7 @@ class Kernel extends ConsoleKernel
 //        $schedule->command('command:getMessageDailianmama')->everyMinute();
         $schedule->command('markup-order:one-hour')->everyMinute();
         $schedule->command('Order:SendEveryMinute')->everyMinute();
+        $schedule->command('price:markup')->everyMinute();
     }
 
     /**
