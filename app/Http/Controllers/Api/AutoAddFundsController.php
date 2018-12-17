@@ -21,6 +21,7 @@ class AutoAddFundsController
     /**
      * 自动加款会员
      * @param Request $request
+     * @return
      */
     public function member(Request $request)
     {
