@@ -166,6 +166,11 @@
 
 @section('js')
 <script>
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
 layui.use(['form', 'laytpl', 'element'], function(){
     var form = layui.form, layer = layui.layer;
 
