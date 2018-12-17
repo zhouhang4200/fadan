@@ -565,7 +565,7 @@ class Show91PlatformService implements GameLevelingPlatformServiceInterface
             ]);
             $result = $response->getBody()->getContents();
 
-            myLog('show91-platform-modify-order-result', ['请求参数' => $options, '地址' => config('gameleveling.show91.url')['updateOrder'], '结果' => $result ?? '']);
+            myLog('show91-platform-modify-order-result', ['请求参数' => $options, '地址' => config('gameleveling.show91.url')['modifyOrder'], '结果' => $result ?? '']);
         } catch (Exception $e) {
             myLog('show91-platform-error', [
                 '方法' => '修改订单',
