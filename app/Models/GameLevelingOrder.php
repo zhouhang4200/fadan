@@ -208,7 +208,7 @@ class GameLevelingOrder extends Model
                 'buyer_nick' => $data['buyer_nick'] ?? '',
                 'price_increase_step' => $data['price_increase_step'] ?? '',
                 'price_ceiling' => $data['price_ceiling'] ?? '',
-                'take_order_password' => '',
+                'take_order_password' => $data['take_order_password'] ?? '',
                 'pre_sale' => '', // 接单客服
                 'take_at' => null,
                 'apply_complete_at' => null,
