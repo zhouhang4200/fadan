@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use DB;
-use Redis;
+use RedisFacade;
 use Asset;
 use Exception;
 use Carbon\Carbon;
@@ -55,7 +55,7 @@ class OrderAutoMarkup extends Command
         // 获取当前时间
         $now = Carbon::now();
         // 获取订单和发单主账号
-        $redisDatas = Redis::hGetAll("order:autoMarkups");
+        $redisDatas = RedisFacade::hGetAll("order:autoMarkups");
         // 遍历数组
         foreach ($redisDatas as $orderNo => $numberAndTime) {
             try {
@@ -68,7 +68,7 @@ class OrderAutoMarkup extends Command
 
                 // 如果此次数和时间不存在则换下一条
                 if (! isset($number) || ! isset($addTime)) {
-                    Redis::hDel('order:autoMarkups', $order->no);
+                    RedisFacade::hDel('order:autoMarkups', $order->no);
                     continue;
                 }
 
@@ -76,7 +76,7 @@ class OrderAutoMarkup extends Command
                 $order = Order::where('no', $orderNo)->first();
 
                 if (! $order) {
-                    Redis::hDel('order:autoMarkups', $orderNo);
+                    RedisFacade::hDel('order:autoMarkups', $orderNo);
                     continue; 
                 }
 
@@ -93,7 +93,7 @@ class OrderAutoMarkup extends Command
 
                 // 如果设置了最高价,则这个加价模板不执行
                 if (isset($orderDetails['markup_top_limit']) && ! empty($orderDetails['markup_top_limit']) && isset($orderDetails['markup_range']) && ! empty($orderDetails['markup_range'])) {
-                    Redis::hDel('order:autoMarkups', $order->no);
+                    RedisFacade::hDel('order:autoMarkups', $order->no);
                     continue;
                 }
                 // 如果是已下架，跳出循环
@@ -103,7 +103,7 @@ class OrderAutoMarkup extends Command
 
                 // 如果此订单不在 未接单并且不是已下架  状态,删除redis
                 if ($order->status != 1 && $order->status != 22) {
-                    Redis::hDel('order:autoMarkups', $order->no);
+                    RedisFacade::hDel('order:autoMarkups', $order->no);
                     continue;
                 }
 
@@ -115,13 +115,13 @@ class OrderAutoMarkup extends Command
 
                 // 不存在则跳出循环,删除redis
                 if (! $orderAutoMarkup) {
-                    Redis::hDel('order:autoMarkups', $order->no);
+                    RedisFacade::hDel('order:autoMarkups', $order->no);
                     continue;
                 }
 
                 // 如果加价到了最大次数，删掉Redis
                 if (($orderAutoMarkup->markup_number == $number || $orderAutoMarkup->markup_money == 0) && $orderAutoMarkup->markup_number != 0) {
-                    Redis::hDel('order:autoMarkups', $order->no);
+                    RedisFacade::hDel('order:autoMarkups', $order->no);
                     continue;
                 }
 
@@ -149,7 +149,7 @@ class OrderAutoMarkup extends Command
                         // 其他平台加价
                         $this->otherClientAddPrice($orderDetails);
                         // 加价之后，redis次数+1, 时间换到最新加价的时间
-                        Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$orderAutoMarkupStartTime->toDateTimeString());
+                        RedisFacade::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$orderAutoMarkupStartTime->toDateTimeString());
           
                         // 写下日志
                         myLog('order.automarkup', [
@@ -178,7 +178,7 @@ class OrderAutoMarkup extends Command
                         // 其他平台加价
                         $this->otherClientAddPrice($orderDetails);
                         // 加价之后，redis次数+1, 时间换到最新加价的时间
-                        Redis::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$nextAddTime->toDateTimeString());
+                        RedisFacade::hSet('order:autoMarkups', $order->no, bcadd($number, 1, 0).'@'.$firstAmount.'@'.$nextAddTime->toDateTimeString());
                         // 写下日志
                         myLog('order.automarkup', [
                             '订单号' => $order->no,

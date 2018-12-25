@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Hash;
-use Redis;
+use RedisFacade;
 use Closure;
 use Carbon\Carbon;
 use App\Models\User;

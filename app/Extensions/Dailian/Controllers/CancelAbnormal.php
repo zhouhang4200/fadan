@@ -3,7 +3,6 @@
 namespace App\Extensions\Dailian\Controllers;
 
 use DB;
-use Redis;
 use Exception;
 use App\Exceptions\DailianException;
 

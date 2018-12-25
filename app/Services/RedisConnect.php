@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use Redis;
+use RedisFacade;
 
 /**
  * redis 连接类
@@ -16,7 +16,7 @@ class RedisConnect
      */
     public static function order()
     {
-        return Redis::connection('order');
+        return RedisFacade::connection('order');
     }
 
     /**
@@ -25,6 +25,6 @@ class RedisConnect
      */
     public static function session()
     {
-        return Redis::connection('sessions');
+        return RedisFacade::connection('sessions');
     }
 }

@@ -4,7 +4,7 @@ namespace App\Extensions\Dailian\Controllers;
 
 use DB;
 use Asset;
-use Redis;
+use RedisFacade;
 use App\Models\User;
 use App\Models\Order; 
 use App\Models\OrderDetail;
@@ -189,7 +189,7 @@ abstract class DailianAbstract
         }
 
         // 写入redis哈希 = (表名， 键， 值)
-        $result = Redis::hSet('our_notice_orders', $order->no, $redisValue);
+        $result = RedisFacade::hSet('our_notice_orders', $order->no, $redisValue);
         // 错误日志提示主题
         $message = $result == 1 ? '写入成功，新纪录' : ($result == 0 ? '写入成功，新值被覆盖' : '写入失败');
                     
@@ -205,7 +205,7 @@ abstract class DailianAbstract
      */
     public function deleteOperateSuccessOrderFromRedis($orderNo, $hashName = 'our_notice_orders')
     {
-        Redis::hDel($hashName, $orderNo);
+        RedisFacade::hDel($hashName, $orderNo);
     }
 
     /**

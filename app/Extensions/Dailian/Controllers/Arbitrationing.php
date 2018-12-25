@@ -4,7 +4,7 @@ namespace App\Extensions\Dailian\Controllers;
 
 use App\Exceptions\RequestTimeoutException;
 use DB;
-use Redis;
+use RedisFacade;
 use Image;
 use Exception;
 use App\Services\Show91;

@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 
 use App\Services\RedisConnect;
 
-use Redis;
+use RedisRacade;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use App\Events\OrderBasicData;
@@ -162,7 +162,7 @@ class OrderSendEveryMinute extends Command
         $key = $orderData['order_no'].'-'.$third.'-'.'create';
         $value = json_encode(['third' => $third, 'reason' => $orderData['notice_reason'], 'functionName' => 'create', 'datas' => $orderData]);
 
-        Redis::hSet($name, $key, $value);
+        RedisFacade::hSet($name, $key, $value);
 
          // 往群里发消息
         $client = new Client();

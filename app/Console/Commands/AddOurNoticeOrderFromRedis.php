@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use Redis;
+use RedisFacade;
 use Exception;
 use App\Models\Order;
 use App\Services\Show91;
@@ -56,7 +56,7 @@ class AddOurNoticeOrderFromRedis extends Command
     public function handle()
     {
              // 获取所有的 我们平台操作失败的报警订单号
-            $hashOrderNos = Redis::hGetAll('our_notice_orders');
+            $hashOrderNos = RedisFacade::hGetAll('our_notice_orders');
             // 遍历订单
             foreach ($hashOrderNos as $orderNo => $operateAndOrderStatus) {
                 // 第三方平台 1 ， 2
@@ -208,6 +208,6 @@ class AddOurNoticeOrderFromRedis extends Command
      */
     public function deleteOperateFailOrderFromRedis($orderNo)
     {
-        Redis::hDel('our_notice_orders', $orderNo);
+        RedisFacade::hDel('our_notice_orders', $orderNo);
     }
 }

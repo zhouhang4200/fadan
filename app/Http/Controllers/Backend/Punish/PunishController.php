@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Backend\Punish;
 
 use DB;
-use Redis;
 use Asset;
 use Excel;
 use Auth;

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend\Order;
 
 use DB;
 use Auth;
-use Redis;
+use RedisFacade;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Order;
@@ -41,7 +41,7 @@ class OrderApiNoticeController extends Controller
 
     	// 将值写入数据库
     	$name = "order:order-api-notices";
-    	$orderNotices = Redis::hGetAll($name);
+    	$orderNotices = RedisFacade::hGetAll($name);
     	$ss = OrderApiNotice::get();
 
     	if ($orderNotices) {
@@ -67,7 +67,7 @@ class OrderApiNoticeController extends Controller
                     $arr['updated_at']        = Carbon::now()->toDateTimeString();
 
     		    	$res = OrderApiNotice::updateOrCreate(['order_no' => $order['datas']['order_no'], 'third' => $third, 'function_name' => $functionName], $arr);
-    		    	Redis::hDel($name, $key);
+    		    	RedisFacade::hDel($name, $key);
                 }
     		}
     	}

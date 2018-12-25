@@ -5,7 +5,6 @@ namespace App\Extensions\Dailian\Controllers;
 use App\Exceptions\RequestTimeoutException;
 use DB;
 use Asset;
-use Redis;
 use Exception;
 use App\Models\OrderDetail;
 use App\Extensions\Asset\Expend;

@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use DB;
-use Redis;
+use RedisFacade;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Order;
@@ -50,7 +50,7 @@ class ChangeCompleteOrderStatus extends Command
     {
         $carbon = new Carbon;
 
-        $orders = Redis::hGetAll('complete_orders');
+        $orders = RedisFacade::hGetAll('complete_orders');
 
         if (isset($orders) && is_array($orders) && count($orders) > 0) {
             foreach ($orders as $orderNo => $time) {
@@ -58,12 +58,12 @@ class ChangeCompleteOrderStatus extends Command
                     $order = Order::where('no', $orderNo)->first();
 
                     if (! isset($order) || empty($order)) {
-                        Redis::hDel('complete_orders', $orderNo);
+                        RedisFacade::hDel('complete_orders', $orderNo);
                         continue;
                     }
 
                     if ($order->status != 14) {
-                        Redis::hDel('complete_orders', $orderNo);
+                        RedisFacade::hDel('complete_orders', $orderNo);
                         continue;
                     }
                     // 除了cnf 推荐号之外的都是3天
@@ -83,7 +83,7 @@ class ChangeCompleteOrderStatus extends Command
 
                     if ($readyOnTime < 0) {
                         DailianFactory::choose('complete')->run($orderNo, 0, true);
-                        Redis::hDel('complete_orders', $orderNo);
+                        RedisFacade::hDel('complete_orders', $orderNo);
                     }
                 } catch (DailianException $e) {
                     myLog('auto-complete-fail', ['订单号' => $order->no ?? '', '失败原因' => $e->getMessage()]);

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use DB;
 use Auth;
-use Redis;
+use RedisFacade;
 use Exception;
 use Carbon\Carbon;
 use App\Services\RedisConnect;
@@ -319,17 +319,17 @@ class GameLevelingOrder extends Model
         // 设置了自动加价,则开启加价
         if (! isset($this->price_increase_step) || empty($this->price_increase_step)
             || ! isset($this->price_ceiling) || empty($this->price_ceiling)) {
-            Redis::hDel('order:price-markup', $this->trade_no); // 没有设置或设置取消了，清除redis
+            RedisFacade::hDel('order:price-markup', $this->trade_no); // 没有设置或设置取消了，清除redis
         } elseif (isset($this->price_increase_step) && ! empty($this->price_increase_step)
             && isset($this->price_ceiling) && ! empty($this->price_ceiling)) {
             if (bcsub($this->amount, $this->price_ceiling) >= 0) {
-                Redis::hDel('order:price-markup', $this->trade_no); // 设置的最大加价金额小于代练金额，清除redis
+                RedisFacade::hDel('order:price-markup', $this->trade_no); // 设置的最大加价金额小于代练金额，清除redis
             } else {
                 $key = $this->trade_no;
                 $name = "order:price-markup";
                 $value = "0@".$this->amount."@".$this->updated_at;
 
-                Redis::hSet($name, $key, $value);
+                RedisFacade::hSet($name, $key, $value);
             }
         }
     }

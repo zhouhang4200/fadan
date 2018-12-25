@@ -5,7 +5,7 @@ namespace App\Services;
 use DB;
 use Cache;
 use Asset;
-use Redis;
+use RedisFacade;
 use Exception;
 use Carbon\Carbon;
 use App\Models\User;
@@ -257,7 +257,7 @@ class OrderOperateController
             static::orderCount(22, 13);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
         } catch (Exception $e) {
             DB::rollback();
             myLog('order-operate-service-error', ['trade_no' => static::$order, 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
@@ -294,7 +294,7 @@ class OrderOperateController
             static::orderCount(1, 22);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -333,7 +333,7 @@ class OrderOperateController
             static::orderCount(1, 24);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
 
             // 写入基础数据
             OrderBasicData::createData(static::$order);
@@ -379,7 +379,7 @@ class OrderOperateController
             static::orderCount($gameLevelingOrderPreviousStatus->status, 18);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -424,7 +424,7 @@ class OrderOperateController
             static::orderCount(18, static::$order->status);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -492,7 +492,7 @@ class OrderOperateController
             // 订单数量角标
             static::orderCount($gameLevelingOrderPreviousStatus->status, 15);
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
             // 发送短信
             static::sendMessage(4, '代练订单申请协商短信');
         } catch (GameLevelingOrderOperateException $e) {
@@ -544,7 +544,7 @@ class OrderOperateController
             static::orderCount(15, static::$order->status);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -594,7 +594,7 @@ class OrderOperateController
             static::orderCount(15, static::$order->status);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -695,10 +695,10 @@ class OrderOperateController
             static::orderCount($gameLevelingOrderPreviousStatus->status, 19);
 
             // 删除24小时自动验收队列
-            Redis::hDel('complete_orders',  static::$order->trade_no);
+            RedisFacade::hDel('complete_orders',  static::$order->trade_no);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
 
             // 写入基础数据
             $orderBasicData = OrderBasicData::where('order_no', static::$order->trade_no)->first();
@@ -771,7 +771,7 @@ class OrderOperateController
             static::orderCount($gameLevelingOrderPreviousStatus->status, 16);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
 
             // 发送短信
             static::sendMessage(5, '代练订单申请仲裁短信');
@@ -824,7 +824,7 @@ class OrderOperateController
             static::orderCount(16, $gameLevelingOrderPreviousStatus->status);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -929,10 +929,10 @@ class OrderOperateController
             static::orderCount(16, 21);
 
             // 删除24小时自动验收队列
-            Redis::hDel('complete_orders',  static::$order->trade_no);
+            RedisFacade::hDel('complete_orders',  static::$order->trade_no);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
 
             // 写入基础数据
             $orderBasicData = OrderBasicData::where('order_no', static::$order->trade_no)->first();
@@ -984,13 +984,13 @@ class OrderOperateController
             // 写入 redis 24H自动验收
             $now = Carbon::now()->toDateTimeString();
             $key = static::$order->trade_no;
-            Redis::hSet('complete_orders', $key, $now);
+            RedisFacade::hSet('complete_orders', $key, $now);
 
             // 订单数量角标
             static::orderCount($gameLevelingOrderPreviousStatus->status, 14);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
 
             // 发送短信
             static::sendMessage(3, '代练订单申请验收短信');
@@ -1038,10 +1038,10 @@ class OrderOperateController
             static::orderCount(14, $gameLevelingOrderPreviousStatus->status);
 
             // 删除24小时自动验收队列
-            Redis::hDel('complete_orders',  static::$order->trade_no);
+            RedisFacade::hDel('complete_orders',  static::$order->trade_no);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -1092,10 +1092,10 @@ class OrderOperateController
             static::orderCount(14, 20);
 
             // 删除24小时自动验收队列
-            Redis::hDel('complete_orders',  static::$order->trade_no);
+            RedisFacade::hDel('complete_orders',  static::$order->trade_no);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
 
             // 发送短信
             static::sendMessage(2, '代练订单完成短信');
@@ -1138,7 +1138,7 @@ class OrderOperateController
             static::orderCount(13, 17);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -1175,7 +1175,7 @@ class OrderOperateController
             static::orderCount(17, 13);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
         } catch (GameLevelingOrderOperateException $e) {
             DB::rollback();
             throw new GameLevelingOrderOperateException($e->getMessage());
@@ -1230,10 +1230,10 @@ class OrderOperateController
             static::orderCount($gameLevelingOrderPreviousStatus->status, 23);
 
             // 删除24小时自动验收队列
-            Redis::hDel('complete_orders',  static::$order->trade_no);
+            RedisFacade::hDel('complete_orders',  static::$order->trade_no);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
 
             // 写入基础数据
             OrderBasicData::createData(static::$order);
@@ -1368,7 +1368,7 @@ class OrderOperateController
             static::orderCount(1, 13);
 
             // 删除存在的订单报警
-            Redis::hDel('our_notice_orders', static::$order->trade_no);
+            RedisFacade::hDel('our_notice_orders', static::$order->trade_no);
 
             // 发送短信
             static::sendMessage(1, '代练订单被接短信');

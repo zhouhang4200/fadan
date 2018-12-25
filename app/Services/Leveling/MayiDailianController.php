@@ -2,7 +2,7 @@
 
 namespace App\Services\Leveling;
 
-use Redis;
+use RedisFacade;
 use Exception;
 use App\Models\Game;
 use Carbon\Carbon;
@@ -94,7 +94,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-3-'.$functionName;
                         $value = json_encode(['third' => 3, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
-                        Redis::hSet($name, $key, $value);
+                        RedisFacade::hSet($name, $key, $value);
 
                         // 往群里发消息
                         $client = new Client();
@@ -172,7 +172,7 @@ class MayiDailianController extends LevelingAbstract implements LevelingInterfac
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-3-'.$functionName;
                         $value = json_encode(['third' => 3, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
-                        Redis::hSet($name, $key, $value);
+                        RedisFacade::hSet($name, $key, $value);
 
                          // 往群里发消息
                         $client = new Client();

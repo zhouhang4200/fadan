@@ -18,7 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mockery\Exception;
-use Redis;
+use RedisFacade;
 
 class ExchangeController extends Controller
 {
@@ -98,10 +98,10 @@ class ExchangeController extends Controller
 
 		//限流
 		$rand = rand(1, 10);
-		$flag = Redis::get('steam:currentLimit:login-key' . $rand);
+		$flag = RedisFacade::get('steam:currentLimit:login-key' . $rand);
 		if (!$flag) {
-			Redis::set('steam:currentLimit:login-key' . $rand, 1);
-			Redis::expire('steam:currentLimit:login-key' . $rand, 1);
+			RedisFacade::set('steam:currentLimit:login-key' . $rand, 1);
+			RedisFacade::expire('steam:currentLimit:login-key' . $rand, 1);
 		} else {
 			return $this->response(10, '购买人数太多，请稍候再试！');
 		}
@@ -247,7 +247,7 @@ class ExchangeController extends Controller
 				'game_url'          => $cdkeyLibrary->cdkey->goodses->game_url,
 			]);
 			if ($order) {
-				\Redis::rpush("steam:order:order_no", $order->no); // 订单号放入队列
+				\RedisFacade::rpush("steam:order:order_no", $order->no); // 订单号放入队列
 				Helper::log('steam-order-success', ['订单号' => $order->no, 'cdk' => $cdk]);
 				SteamCdkeyLibrary::where('cdk', $cdk)->update(['status' => 4]);
 				return $this->response(7, '下单成功');

@@ -4,7 +4,6 @@ namespace App\Extensions\Dailian\Controllers;
 
 use App\Exceptions\RequestTimeoutException;
 use DB;
-use Redis;
 use Exception;
 use App\Exceptions\DailianException;
 

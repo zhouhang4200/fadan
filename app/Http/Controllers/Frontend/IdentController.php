@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend;
 
 use Auth;
-use Redis;
 use Illuminate\Http\Request;
 use App\Models\RealNameIdent;
 use App\Http\Controllers\Controller;

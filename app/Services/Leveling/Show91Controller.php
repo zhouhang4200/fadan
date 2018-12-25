@@ -2,7 +2,7 @@
 
 namespace App\Services\Leveling;
 
-use Redis;
+use RedisFacade;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
@@ -14,6 +14,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 {
     	/**
      * 调用接口时间
+     * @var [type]
      * @var [type]
      */
     // protected static $time;
@@ -69,7 +70,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-1-'.$functionName;
                         $value = json_encode(['third' => 1, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
-                        Redis::hSet($name, $key, $value);
+                        RedisFacade::hSet($name, $key, $value);
 
                          // 往群里发消息
                         $client = new Client();
@@ -148,7 +149,7 @@ class Show91Controller extends LevelingAbstract implements LevelingInterface
 //                        $name = "order:order-api-notices";
 //                        $key = $datas['order_no'].'-1-'.$functionName;
 //                        $value = json_encode(['third' => 1, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
-//                        Redis::hSet($name, $key, $value);
+//                        RedisFacade::hSet($name, $key, $value);
 //
 //                         // 往群里发消息
 //                        $client = new Client();

@@ -2,18 +2,14 @@
 
 namespace App\Console\Commands;
 
-
-use App\Events\NewOrderBasicData;
 use App\Models\OrderBasicData;
 use App\Models\OrderSendResult;
 use App\Services\RedisConnect;
-
 use GuzzleHttp\Exception\ConnectException;
-use Redis;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
-use Log, Config, Weight, Order;
+use Log, Config, Weight;
 use App\Models\GameLevelingOrder;
 use App\Models\OrderSendChannel;
 use \Exception;

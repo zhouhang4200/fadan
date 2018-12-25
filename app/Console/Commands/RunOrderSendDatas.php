@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use Redis;
 use Exception;
 use App\Models\Order;
 use App\Services\RedisConnect;

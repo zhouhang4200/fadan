@@ -5,11 +5,10 @@ namespace App\Extensions\Dailian\Controllers;
 use App\Models\AutomaticallyGrabGoods;
 use App\Models\TaobaoTrade;
 use DB;
-use Redis;
+use RedisFacade;
 use Exception;
 use Carbon\Carbon;
 use App\Exceptions\DailianException;
-use App\Events\OrderApplyComplete;
 use App\Repositories\Frontend\OrderDetailRepository;
 
 /**
@@ -84,7 +83,7 @@ class ApplyComplete extends DailianAbstract implements DailianInterface
             // 申请验收之后redis写入记录
             $now = Carbon::now()->toDateTimeString();
             $key = $this->orderNo;
-            Redis::hSet('complete_orders', $key, $now);
+            RedisFacade::hSet('complete_orders', $key, $now);
         }
     }
 

@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use DB;
-use Redis;
+use RedisFacade;
 use Exception;
 use App\Models\Order;
 use App\Services\Show91;
@@ -45,7 +45,7 @@ class AddNoticeOrderFromRedis extends Command
      */
     public function handle()
     {
-        $orderNos = Redis::hGetAll('notice_orders');
+        $orderNos = RedisFacade::hGetAll('notice_orders');
 
         // 操作成功状态为1， 操作失败状态为0
         foreach ($orderNos as $orderNo => $statusAndAction) {
@@ -312,7 +312,7 @@ class AddNoticeOrderFromRedis extends Command
      */
     public function delRedisNoticeOrder($orderNo)
     {
-        Redis::hDel('notice_orders', $orderNo);
+        RedisFacade::hDel('notice_orders', $orderNo);
     }
 
     // 我们订单的前一个状态

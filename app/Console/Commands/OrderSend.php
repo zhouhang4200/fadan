@@ -7,7 +7,7 @@ use App\Models\OrderSendResult;
 use App\Services\RedisConnect;
 
 use GuzzleHttp\Exception\ConnectException;
-use Redis;
+use RedisFacade;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use App\Events\OrderBasicData;
@@ -202,7 +202,7 @@ class OrderSend extends Command
         $key = $orderData['order_no'].'-'.$third.'-'.'create';
         $value = json_encode(['third' => $third, 'reason' => $orderData['notice_reason'], 'functionName' => 'create', 'datas' => $orderData]);
 
-        Redis::hSet($name, $key, $value);
+        RedisFacade::hSet($name, $key, $value);
 
          // 往群里发消息
         $client = new Client();

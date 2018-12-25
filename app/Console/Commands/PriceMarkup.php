@@ -7,7 +7,7 @@ use App\Models\GameLevelingOrderLog;
 use App\Models\GameLevelingPlatform;
 use App\Models\User;
 use DB;
-use Redis;
+use RedisFacade;
 use Asset;
 use Exception;
 use Carbon\Carbon;
@@ -50,7 +50,7 @@ class PriceMarkup extends Command
      */
     public function handle()
     {
-        $priceMarkups = Redis::hGetAll("order:price-markup");
+        $priceMarkups = RedisFacade::hGetAll("order:price-markup");
 
         if ($priceMarkups) {
             foreach ($priceMarkups as $tradeNo => $amountTime) {
@@ -122,7 +122,7 @@ class PriceMarkup extends Command
      */
     public static  function deleteRedisHashKey($tradeNo)
     {
-        Redis::hDel("order:price-markup", $tradeNo);
+        RedisFacade::hDel("order:price-markup", $tradeNo);
     }
 
     /**
@@ -132,7 +132,7 @@ class PriceMarkup extends Command
      */
     public function formatRedisAmount($info, $order)
     {
-        Redis::hSet("order:price-markup", $order->trade_no, $info['add_number'].'@'.$order->amount."@".$info['add_time']);
+        RedisFacade::hSet("order:price-markup", $order->trade_no, $info['add_number'].'@'.$order->amount."@".$info['add_time']);
     }
 
     /**
@@ -208,7 +208,7 @@ class PriceMarkup extends Command
         $key = $order->trade_no;
         $name = "order:price-markup";
         $value = $number.'@'.$amount."@".$time;
-        Redis::hSet($name, $key, $value);
+        RedisFacade::hSet($name, $key, $value);
     }
 
     /**

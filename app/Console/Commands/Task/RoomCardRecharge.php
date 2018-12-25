@@ -4,12 +4,7 @@ namespace App\Console\Commands\Task;
 
 use DB;
 use GuzzleHttp\Client;
-use Redis;
 use App\Models\Order;
-use App\Services\Show91;
-use App\Models\OrderNotice;
-use App\Models\OrderDetail;
-use App\Models\OrderHistory;
 use Illuminate\Console\Command;
 
 class RoomCardRecharge extends Command

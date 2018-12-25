@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use DB;
-use Redis;
+use RedisFacade;
 use Asset;
 use Exception;
 use Carbon\Carbon;
@@ -53,7 +53,7 @@ class AutoMarkupOrderEveryHour extends Command
     {
         // 取redis的值
         $name = "order:automarkup-every-hour";
-        $automarkupOrders = Redis::hGetAll($name);
+        $automarkupOrders = RedisFacade::hGetAll($name);
         // 如果存在值
         if ($automarkupOrders) {
             foreach ($automarkupOrders  as $orderNo => $addAmountAndTime) {
@@ -193,7 +193,7 @@ class AutoMarkupOrderEveryHour extends Command
     {
         $key = $orderNo;
         $name = "order:automarkup-every-hour";
-        Redis::hDel($name, $key);
+        RedisFacade::hDel($name, $key);
     }
 
     /**
@@ -208,7 +208,7 @@ class AutoMarkupOrderEveryHour extends Command
         $key = $order->no;
         $name = "order:automarkup-every-hour";
         $value = $datas['add_number'].'@'.$order->amount."@".$datas['add_time'];
-        Redis::hSet($name, $key, $value);
+        RedisFacade::hSet($name, $key, $value);
     }
 
     public function getOrderDatas($order) 
@@ -348,7 +348,7 @@ class AutoMarkupOrderEveryHour extends Command
         $key = $order->no;
         $name = "order:automarkup-every-hour";
         $value = $number.'@'.$amount."@".$time;
-        Redis::hSet($name, $key, $value);
+        RedisFacade::hSet($name, $key, $value);
     }
 
     /**

@@ -2,12 +2,11 @@
 
 namespace App\Services\Leveling;
 
-use Redis;
+use RedisFacade;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Game;
 use GuzzleHttp\Client;
-use App\Models\OrderDetail;
 use App\Exceptions\DailianException;
 
 class WanziController extends LevelingAbstract implements LevelingInterface
@@ -69,7 +68,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-5-'.$functionName;
                         $value = json_encode(['third' => 5, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
-                        Redis::hSet($name, $key, $value);
+                        RedisFacade::hSet($name, $key, $value);
 
                          // 往群里发消息
                         // $client = new Client();
@@ -145,7 +144,7 @@ class WanziController extends LevelingAbstract implements LevelingInterface
                         $name = "order:order-api-notices";
                         $key = $datas['order_no'].'-5-'.$functionName;
                         $value = json_encode(['third' => 5, 'reason' => $message, 'functionName' => $functionName, 'datas' => $datas]);
-                        Redis::hSet($name, $key, $value);
+                        RedisFacade::hSet($name, $key, $value);
 
                          // 往群里发消息
                         // $client = new Client();
