@@ -1665,7 +1665,7 @@ commander@~2.13.0:
 
 commander@~2.14.1:
   version "2.14.1"
-  resolved "http://registry.npmjs.org/commander/-/commander-2.14.1.tgz#2235123e37af8ca3c65df45b026dbd357b01b9aa"
+  resolved "https://registry.npmjs.org/commander/-/commander-2.14.1.tgz#2235123e37af8ca3c65df45b026dbd357b01b9aa"
 
 commondir@^1.0.1:
   version "1.0.1"
@@ -5203,7 +5203,7 @@ prettier@^1.7.0:
 
 printj@~1.1.0, printj@~1.1.2:
   version "1.1.2"
-  resolved "http://registry.npmjs.org/printj/-/printj-1.1.2.tgz#d90deb2975a8b9f600fb3a1c94e3f4c53c78a222"
+  resolved "https://registry.npmjs.org/printj/-/printj-1.1.2.tgz#d90deb2975a8b9f600fb3a1c94e3f4c53c78a222"
 
 private@^0.1.6, private@^0.1.8, private@~0.1.5:
   version "0.1.8"
@@ -6901,8 +6901,9 @@ xtend@^4.0.0, xtend@~4.0.1:
   resolved "http://registry.npm.taobao.org/xtend/download/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
 
 y18n@^3.2.1:
-  version "3.2.1"
-  resolved "http://registry.npm.taobao.org/y18n/download/y18n-3.2.1.tgz#6d15fba884c08679c0d77e88e7759e811e07fa41"
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/y18n/-/y18n-3.2.2.tgz#85c901bd6470ce71fc4bb723ad209b70f7f28696"
+  integrity sha512-uGZHXkHnhF0XeeAPgnKfPv1bgKAYyVvmNL1xlKsPYZPaIHxGti2hHqvOCQv71XMsLxu1QjergkqogUnms5D3YQ==
 
 y18n@^4.0.0:
   version "4.0.0"
@@ -6996,6 +6997,11 @@ yargs@~3.10.0:
     cliui "^2.1.0"
     decamelize "^1.0.0"
     window-size "0.1.0"
+
+yarn@^1.12.3:
+  version "1.22.10"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.10.tgz#c99daa06257c80f8fa2c3f1490724e394c26b18c"
+  integrity sha512-IanQGI9RRPAN87VGTF7zs2uxkSyQSrSPsju0COgbsKQOOXr5LtcVPeyXWgwVa0ywG3d8dg6kSYKGBuYK021qeA==
 
 yeast@0.1.2:
   version "0.1.2"
